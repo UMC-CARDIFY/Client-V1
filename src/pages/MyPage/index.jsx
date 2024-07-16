@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 
 const MyPageContainer = styled.div`
@@ -262,3 +262,5 @@ export const MyPage = () => {
     </MyPageContainer>
   );
 };
+
+export default MyPage

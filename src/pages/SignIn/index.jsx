@@ -1,7 +1,7 @@
-import React from 'react';
+
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { Desktop, Tablet } from '../styles/MediaQuery';
+import { Desktop, Tablet } from '../../styles/MediaQuery';
 
 const Body = styled.div`
 display: flex;
@@ -256,3 +256,5 @@ export function SignIn() {
         </>
     )
 }
+
+export default SignIn
