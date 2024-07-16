@@ -1,12 +1,39 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { Desktop, Tablet } from '../styles/MediaQuery';
+
+const Body = styled.div`
+display: flex;
+padding: var(--UI-Component-None, 10rem) var(--UI-Component-None, 24rem);
+justify-content: center;
+align-items: center;
+background: #EDEDED;
+    `;
+
+const TabletBody = styled.div`
+display: flex;
+padding: var(--UI-Component-None, 5rem) var(--UI-Component-None, 7rem);
+justify-content: center;
+align-items: center;
+background: #EDEDED;
+`
 
 const Container = styled.div`
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    `;
+width: 72rem;
+height: 47.5rem;
+flex-shrink: 0;
+background: #FFF;
+box-shadow: 0px 4px 26.7px 0px rgba(0, 0, 0, 0.02), 0px 10px 60px 0px rgba(0, 74, 162, 0.03);
+`
+
+const TabletContainer = styled.div`
+width: 61rem;
+height: 42.5rem;
+flex-shrink: 0;
+background: #FFF;
+box-shadow: 0px 4px 26.7px 0px rgba(0, 0, 0, 0.02), 0px 10px 60px 0px rgba(0, 74, 162, 0.03);
+`
 
 const Logo = styled.div`
 width: 19.125rem;
@@ -14,8 +41,12 @@ height: 3.25rem;
 flex-shrink: 0;
 border: 2px solid #000;
 background: url(<path-to-image>) lightgray 50% / cover no-repeat;
-margin: 5.81rem 26.44rem 0 26.44rem;
+margin: 11.81rem 26.44rem 0 26.44rem;
     `;
+
+const TabletLogo = styled(Logo)`
+margin: 11.81rem 20.94rem 0 20.94rem;
+`;
 
 const SignInBox = styled.div`
     display: flex;
@@ -23,6 +54,11 @@ const SignInBox = styled.div`
     margin-top: 5rem;
     margin-left: 18rem;
     `
+
+const TabletSignInBox = styled(SignInBox)`
+margin-top: 2.5rem;
+margin-left: 12rem;
+`;
 
 const InputBox = styled.div`
     display: flex;
@@ -37,7 +73,6 @@ align-items: center;
 gap: 0.5rem;
 border: 1px solid #D9D9D9;
 background: #FFF;
-
 flex: 1 0 0;
 
 /* 16 Medium */
@@ -57,6 +92,13 @@ border: 1px solid #699BF7;
 background: #FFF;
 }
 `;
+
+const TabletInput = styled(Input)`
+width: 28.625rem;
+`;
+const TabletPasswordInput = styled(TabletInput)`
+    margin-top: 1rem;
+    `;    
 
 const EmailInput = styled(Input)`
     `;
@@ -87,13 +129,23 @@ line-height: normal;
     }
     `;
 
+const TabletSignInButton = styled(SignInButton)`
+width: 7.375rem;
+height: 7.375rem;
+`;
+
 const SignUpDiv = styled.div`
     display: flex;
     margin-top: 2.13rem;
     margin-left: 18rem;
     `;
 
-    const SignUpText = styled.p`    
+const TabletSignUpDiv = styled(SignUpDiv)`
+margin-top: 2.12rem;
+margin-left: 12rem;
+`;
+
+const SignUpText = styled.p`    
     color: var(--B1B1B1, #B1B1B1);
 /* 16 Medium */
 font-family: Pretendard;
@@ -133,6 +185,10 @@ margin: 4rem 26rem 9.5rem 26rem;
     }
     `;
 
+const TabletKakaoSignInButton = styled(KakaoSignInButton)`
+margin: 2.63rem 20.5rem 8.38rem 20.5rem;
+`;
+
 const KakaoLogo = styled.div`
 width: var(--line-height-2xs, 1.25rem);
 height: var(--line-height-2xs, 1.25rem);
@@ -151,6 +207,9 @@ export function SignIn() {
     }
 
     return (
+        <>
+        <Desktop>
+        <Body>
         <Container>
             <Logo></Logo>
             <SignInBox>
@@ -169,5 +228,31 @@ export function SignIn() {
             <KakaoSignInButton> <KakaoLogo></KakaoLogo>
                 카카오 로그인</KakaoSignInButton>
         </Container>
+        </Body>
+        </Desktop>
+
+        <Tablet>
+        <TabletBody>
+        <TabletContainer>
+            <TabletLogo></TabletLogo>
+            <TabletSignInBox>
+            <InputBox>
+            <TabletInput placeholder='이메일을 입력해주세요.' />
+            <TabletPasswordInput type='password' placeholder='비밀번호를 입력해주세요.' />
+            </InputBox>
+            <TabletSignInButton onClick={()=>handleSignIn()}>로그인</TabletSignInButton>
+            </TabletSignInBox>
+
+            <TabletSignUpDiv>
+                <SignUpText>아직 계정이 없으신가요?</SignUpText>
+                <SignUpLink onClick={()=>navigate('/signup')}>회원가입</SignUpLink>
+            </TabletSignUpDiv>
+
+            <TabletKakaoSignInButton> <KakaoLogo></KakaoLogo>
+                카카오 로그인</TabletKakaoSignInButton>
+        </TabletContainer>
+        </TabletBody>
+        </Tablet>
+        </>
     )
 }
