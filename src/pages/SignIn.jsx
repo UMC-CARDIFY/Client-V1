@@ -1,0 +1,173 @@
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+
+const Container = styled.div`
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    `;
+
+const Logo = styled.div`
+width: 19.125rem;
+height: 3.25rem;
+flex-shrink: 0;
+border: 2px solid #000;
+background: url(<path-to-image>) lightgray 50% / cover no-repeat;
+margin: 5.81rem 26.44rem 0 26.44rem;
+    `;
+
+const SignInBox = styled.div`
+    display: flex;
+    flex-direction: row;
+    margin-top: 5rem;
+    margin-left: 18rem;
+    `
+
+const InputBox = styled.div`
+    display: flex;
+    flex-direction: column;
+    `;
+
+const Input = styled.input`
+    display: flex;
+width: 27.5625rem;
+padding: var(--font-size-md, 1rem);
+align-items: center;
+gap: 0.5rem;
+border: 1px solid #D9D9D9;
+background: #FFF;
+
+flex: 1 0 0;
+
+/* 16 Medium */
+font-family: Pretendard;
+font-size: 1rem;
+font-style: normal;
+font-weight: 500;
+line-height: normal;
+
+&::placeholder {
+    color: var(--B1B1B1, #B1B1B1);
+    }
+
+&:focus {
+outline: none;
+border: 1px solid #699BF7;
+background: #FFF;
+}
+`;
+
+const EmailInput = styled(Input)`
+    `;
+
+const PasswordInput = styled(Input)`
+    margin-top: 1rem;
+    `;
+
+const SignInButton = styled.button`
+margin-left: 1rem;
+display: flex;
+width: 7.4375rem;
+padding: 2rem;
+justify-content: center;
+align-items: center;
+gap: 0.5rem;
+flex-shrink: 0;
+border: 1px solid #D9D9D9;
+background: #FFF;
+
+font-family: Pretendard;
+font-size: 1rem;
+font-style: normal;
+font-weight: 500;
+line-height: normal;
+&:hover {
+    cursor: pointer;
+    }
+    `;
+
+const SignUpDiv = styled.div`
+    display: flex;
+    margin-top: 2.13rem;
+    margin-left: 18rem;
+    `;
+
+    const SignUpText = styled.p`    
+    color: var(--B1B1B1, #B1B1B1);
+/* 16 Medium */
+font-family: Pretendard;
+font-size: 1rem;
+font-style: normal;
+font-weight: 500;
+line-height: normal;
+margin-right: 0.75rem;
+    `;
+
+    const SignUpLink = styled.p`
+    color: #000;
+/* 16 Medium */
+font-family: Pretendard;
+font-size: 1rem;
+font-style: normal;
+font-weight: 500;
+line-height: normal;
+&:hover {
+    cursor: pointer;
+    }
+    `;
+
+    const KakaoSignInButton = styled.button`
+    width:20rem;
+display: inline-flex;
+height: 3rem;
+padding: 0.875rem 7.25rem 0.875rem 0.9375rem;
+align-items: flex-start;
+gap: 5.125rem;
+flex-shrink: 0;
+border: 1px solid #D9D9D9;
+background: #FFF;
+margin: 4rem 26rem 9.5rem 26rem;
+&:hover {
+    cursor: pointer;
+    }
+    `;
+
+const KakaoLogo = styled.div`
+width: var(--line-height-2xs, 1.25rem);
+height: var(--line-height-2xs, 1.25rem);
+    background: url(<path-to-image>) lightgray 50% / cover no-repeat;
+    `;
+
+export function SignIn() {
+    const navigate = useNavigate();
+
+    let isLoginAvailable = false;
+
+    const handleSignIn = () => {
+        if (isLoginAvailable) {
+            alert('로그인 성공');
+        }
+    }
+
+    return (
+        <Container>
+            <Logo></Logo>
+            <SignInBox>
+            <InputBox>
+            <EmailInput placeholder='이메일을 입력해주세요.' />
+            <PasswordInput type='password' placeholder='비밀번호를 입력해주세요.' />
+            </InputBox>
+            <SignInButton onClick={()=>handleSignIn()}>로그인</SignInButton>
+            </SignInBox>
+
+            <SignUpDiv>
+                <SignUpText>아직 계정이 없으신가요?</SignUpText>
+                <SignUpLink onClick={()=>navigate('/signup')}>회원가입</SignUpLink>
+            </SignUpDiv>
+
+            <KakaoSignInButton> <KakaoLogo></KakaoLogo>
+                카카오 로그인</KakaoSignInButton>
+        </Container>
+    )
+}
