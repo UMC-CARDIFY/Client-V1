@@ -5,8 +5,9 @@ const TopBarContainer = styled.div`
   width: 100%;
   display:flex;
   justify-content: space-between; 
-  background: gray;
   align-items:center;
+  border-bottom: 1px solid var(--B1B1B1, #B1B1B1); 
+
 
 `;
 
