@@ -1,11 +1,12 @@
-
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { Desktop, Tablet } from '../../styles/MediaQuery';
 
 const Body = styled.div`
 display: flex;
-padding: var(--UI-Component-None, 10rem) var(--UI-Component-None, 24rem);
+width: 100vw;
+height: 100vh;
+
 justify-content: center;
 align-items: center;
 background: #EDEDED;
@@ -13,7 +14,8 @@ background: #EDEDED;
 
 const TabletBody = styled.div`
 display: flex;
-padding: var(--UI-Component-None, 5rem) var(--UI-Component-None, 7rem);
+width: 100vw;
+height: 100vh;
 justify-content: center;
 align-items: center;
 background: #EDEDED;
@@ -195,7 +197,8 @@ height: var(--line-height-2xs, 1.25rem);
     background: url(<path-to-image>) lightgray 50% / cover no-repeat;
     `;
 
-export function SignIn() {
+    export const SignIn = () => {
+
     const navigate = useNavigate();
 
     let isLoginAvailable = false;
@@ -257,4 +260,4 @@ export function SignIn() {
     )
 }
 
-export default SignIn
+export default SignIn;
