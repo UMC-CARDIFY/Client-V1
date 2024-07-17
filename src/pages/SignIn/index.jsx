@@ -1,11 +1,12 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { Desktop, Tablet } from '../styles/MediaQuery';
+import { Desktop, Tablet } from '../../styles/MediaQuery';
 
 const Body = styled.div`
 display: flex;
-padding: var(--UI-Component-None, 10rem) var(--UI-Component-None, 24rem);
+width: 100vw;
+height: 100vh;
 justify-content: center;
 align-items: center;
 background: #EDEDED;
@@ -13,7 +14,8 @@ background: #EDEDED;
 
 const TabletBody = styled.div`
 display: flex;
-padding: var(--UI-Component-None, 5rem) var(--UI-Component-None, 7rem);
+width: 100vw;
+height: 100vh;
 justify-content: center;
 align-items: center;
 background: #EDEDED;
