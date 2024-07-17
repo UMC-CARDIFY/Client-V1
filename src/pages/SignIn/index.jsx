@@ -6,6 +6,7 @@ const Body = styled.div`
 display: flex;
 width: 100vw;
 height: 100vh;
+
 justify-content: center;
 align-items: center;
 background: #EDEDED;
@@ -197,6 +198,7 @@ height: var(--line-height-2xs, 1.25rem);
     `;
 
     export const SignIn = () => {
+
     const navigate = useNavigate();
 
     let isLoginAvailable = false;

@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { SignIn, SignUp, VerifyEmail, CompleteSignUp } from "../pages";
+import { SignIn, SignUp, VerifyEmail, CompleteSignUp, MyPage, Archive } from "../pages";
 
 const Router = () => {
   return (
@@ -9,7 +9,9 @@ const Router = () => {
         <Route path='/signup' element={<SignUp />} />
         <Route path='/signup/verify' element={<VerifyEmail />} />
         <Route path='/signup/complete' element={<CompleteSignUp />} />
-      </Routes>
+         <Route path='/mypage' element={<MyPage />} />
+         <Route path='/archive' element={<Archive />} />
+       </Routes>
     </BrowserRouter>
   );
 };
