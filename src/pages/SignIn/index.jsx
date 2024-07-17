@@ -1,4 +1,3 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { Desktop, Tablet } from '../../styles/MediaQuery';
@@ -197,7 +196,7 @@ height: var(--line-height-2xs, 1.25rem);
     background: url(<path-to-image>) lightgray 50% / cover no-repeat;
     `;
 
-export function SignIn() {
+    export const SignIn = () => {
     const navigate = useNavigate();
 
     let isLoginAvailable = false;
@@ -258,3 +257,5 @@ export function SignIn() {
         </>
     )
 }
+
+export default SignIn;

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import {useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { Desktop, Laptop, Tablet } from '../../styles/MediaQuery';
@@ -86,7 +86,7 @@ border: none;
         }
         `;
 
-export function CompleteSignUp() {
+        export const CompleteSignUp = () => {
     const navigate = useNavigate();
     
     const startStudy = () => {
@@ -163,3 +163,5 @@ export function CompleteSignUp() {
         </>
     )
 }
+
+export default CompleteSignUp;
