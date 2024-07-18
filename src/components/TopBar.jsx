@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 
 const TopBarContainer = styled.div`
   height: 8.25rem;
@@ -25,12 +26,12 @@ const TopBarRight = styled.div`
 `;
 
 
-const TopBar = () => {
+const TopBar = ({ title, subtitle }) => {
   return (
     <TopBarContainer>
       <TopBarLeft>
-        <div style={{fontSize:'1.875rem'}}>대시보드</div>
-        <div>카디파이 한 눈에 보기</div>
+        <div style={{fontSize:'1.875rem'}}>{title}</div>
+        <div>{subtitle}</div>
       </TopBarLeft>
       <TopBarRight>
         <div>로고</div>
@@ -39,5 +40,10 @@ const TopBar = () => {
     </TopBarContainer>
   )
 }
+
+TopBar.propTypes = {
+  title: PropTypes.string.isRequired, 
+  subtitle: PropTypes.string.isRequired,
+};
 
 export default TopBar

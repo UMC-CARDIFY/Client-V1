@@ -23,7 +23,7 @@ export const Archive = () => {
     <Container>
       <MenuBar />
       <Vcontainer>
-        <TopBar />
+        <TopBar title='아카이브' subtitle='노트 작성 및 관리'/>
         <Frame />
       </Vcontainer>
     </Container>
