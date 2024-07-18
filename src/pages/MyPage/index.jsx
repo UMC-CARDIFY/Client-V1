@@ -8,7 +8,7 @@ const MyPageContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px;
+  padding: 6rem 0;
 `;
 
 const Header = styled.header`
@@ -16,11 +16,10 @@ const Header = styled.header`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 6rem;
   position: relative;
 `;
 
-const BackIcon = styled.div`
+const BackButton = styled.div`
   position: absolute;
   left: 28rem;
   width: 3rem;
@@ -73,10 +72,14 @@ const Section = styled.section`
 const InfoBox = styled.div`
   display: flex;
   width: 29.75rem;
-  padding: 1rem 0.5rem;
+  padding: 1rem;
   justify-content: space-between;
   align-items: center;
   border: 1px solid #D9D9D9;
+
+  &.clickable {
+    cursor: pointer;
+  }
 `;
 
 const IconPlaceholder = styled.div`
@@ -133,7 +136,7 @@ const SectionTitle = styled.p`
   font-family: Pretendard;
   font-size: 1rem;
   font-style: normal;
-  font-weight: 400;
+  font-weight: 300;
   line-height: normal;
   align-self: flex-start;
 `;
@@ -144,7 +147,7 @@ const Nickname = styled.span`
   font-family: Pretendard;
   font-size: 1.5rem;
   font-style: normal;
-  font-weight: 400;
+  font-weight: 300;
   line-height: normal;
 `;
 
@@ -161,10 +164,10 @@ const Text = styled.span`
   font-family: Pretendard;
   font-size: 1rem;
   font-style: normal;
-  font-weight: 400;
+  font-weight: 300;
   line-height: normal;
   flex: 1;
-  margin-left: 0.5rem;
+  margin-left: 1rem;
 `;
 
 const Text2 = styled.span`
@@ -172,10 +175,21 @@ const Text2 = styled.span`
   font-family: Pretendard;
   font-size: 1rem;
   font-style: normal;
-  font-weight: 400;
+  font-weight: 300;
   line-height: normal;
   justify-content: flex-end;
   margin-right: 0.5rem;
+`;
+
+const LogoutButton = styled.button`
+  display: flex;
+  width: 31.75rem;
+  padding: 1rem;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #D9D9D9;
+  cursor: pointer;
+  margin-top: 1rem;
 `;
 
 export const MyPage = () => {
@@ -183,10 +197,14 @@ export const MyPage = () => {
   const [isNotificationOn, setIsNotificationOn] = useState(true);
   const [isDarkMode, setIsDarkMode] = useState(false);
 
+  const handleLogout = () => {
+    console.log("Logout clicked");
+  };
+
   return (
     <MyPageContainer>
       <Header>
-        <BackIcon />
+        <BackButton onClick={() => navigate(-1)} />
         <ProfileImageContainer>
           <ProfileImage />
           <EditIcon />
@@ -198,20 +216,19 @@ export const MyPage = () => {
       </Header>
       <ContentDiv>
         <Section>
-          <InfoBox onClick={() => navigate('/mypage/subscription')}>
+          <InfoBox className="clickable" onClick={() => navigate('/mypage/subscription')}>
             <IconPlaceholder />
             <Text>요금제</Text>
             <Text2>등급</Text2>
             <IconPlaceholder />
           </InfoBox>
-          <InfoBox onClick={() => navigate('/mypage/point')}>
+          <InfoBox className="clickable" onClick={() => navigate('/mypage/point')}>
             <IconPlaceholder />
             <Text>내 포인트</Text>
             <Text2>XXXX P</Text2>
             <IconPlaceholder />
           </InfoBox>
         </Section>
-        
         <Section>
          <SectionTitle>환경설정</SectionTitle>
           <InfoBox>
@@ -241,25 +258,22 @@ export const MyPage = () => {
             </Switch>
           </InfoBox>
         </Section>
-        
         <Section>
         <SectionTitle>기타 정보</SectionTitle>
-          <InfoBox>
+          <InfoBox className="clickable">
             <IconPlaceholder />
             <Text>이용약관</Text>
             <IconPlaceholder />
           </InfoBox>
-          <InfoBox>
+          <InfoBox className="clickable"> 
             <IconPlaceholder />
             <Text>개인정보처리방침</Text>
             <IconPlaceholder />
           </InfoBox>
         </Section>
-        <InfoBox>
-          <IconPlaceholder />
+        <LogoutButton onClick={handleLogout}>
           <Text>로그아웃</Text>
-          <IconPlaceholder />
-        </InfoBox>
+        </LogoutButton>
       </ContentDiv>
     </MyPageContainer>
   );
