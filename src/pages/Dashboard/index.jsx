@@ -1,8 +1,8 @@
 import MenuBar from '../../components/MenuBar';
 import TopBar from '../../components/TopBar';
-import RecentNotes from '../Dashboard/components/RecentNotes';
-import WeeklyStudyResults from '../Dashboard/components/WeeklyStudyResults';
-import StudySuggestions from '../Dashboard/components/StudySuggestions';
+import RecentNotes from './components/RecentNote/RecentNotes';
+import WeeklyStudyResults from './components/WeeklyStudy/WeeklyStudyResults';
+import StudySuggestions from './components/StudySuggestion/StudySuggestions';
 
 import styled from 'styled-components';
 
