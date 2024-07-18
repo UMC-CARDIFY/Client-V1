@@ -1,25 +1,15 @@
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { Desktop, Tablet } from '../../styles/MediaQuery';
+import { Desktop, Laptop, Tablet } from '../../styles/MediaQuery';
 
 const Body = styled.div`
 display: flex;
 width: 100vw;
 height: 100vh;
-
 justify-content: center;
 align-items: center;
 background: #EDEDED;
     `;
-
-const TabletBody = styled.div`
-display: flex;
-width: 100vw;
-height: 100vh;
-justify-content: center;
-align-items: center;
-background: #EDEDED;
-`
 
 const Container = styled.div`
 width: 72rem;
@@ -29,12 +19,14 @@ background: #FFF;
 box-shadow: 0px 4px 26.7px 0px rgba(0, 0, 0, 0.02), 0px 10px 60px 0px rgba(0, 74, 162, 0.03);
 `
 
-const TabletContainer = styled.div`
+const LaptopContainer = styled(Container)`
+width: 65rem;
+height: 45rem;
+`;
+
+const TabletContainer = styled(Container)`
 width: 61rem;
 height: 42.5rem;
-flex-shrink: 0;
-background: #FFF;
-box-shadow: 0px 4px 26.7px 0px rgba(0, 0, 0, 0.02), 0px 10px 60px 0px rgba(0, 74, 162, 0.03);
 `
 
 const Logo = styled.div`
@@ -43,7 +35,11 @@ height: 3.25rem;
 flex-shrink: 0;
 border: 2px solid #000;
 background: url(<path-to-image>) lightgray 50% / cover no-repeat;
-margin: 11.81rem 26.44rem 0 26.44rem;
+margin: 11.81rem 26.25rem 0 26.25rem;
+    `;
+
+    const LaptopLogo = styled(Logo)`
+    margin: 13rem 22rem 0 22rem;
     `;
 
 const TabletLogo = styled(Logo)`
@@ -57,8 +53,12 @@ const SignInBox = styled.div`
     margin-left: 18rem;
     `
 
-const TabletSignInBox = styled(SignInBox)`
+const LaptopSignInBox = styled(SignInBox)`
 margin-top: 2.5rem;
+margin-left: 14rem; 
+`;
+
+const TabletSignInBox = styled(LaptopSignInBox)`
 margin-left: 12rem;
 `;
 
@@ -142,6 +142,11 @@ const SignUpDiv = styled.div`
     margin-left: 18rem;
     `;
 
+const LaptopSignUpDiv = styled(SignUpDiv)`
+margin-top: 2rem;
+margin-left: 14rem;
+`;
+
 const TabletSignUpDiv = styled(SignUpDiv)`
 margin-top: 2.12rem;
 margin-left: 12rem;
@@ -185,6 +190,10 @@ margin: 4rem 26rem 9.5rem 26rem;
 &:hover {
     cursor: pointer;
     }
+    `;
+
+    const LaptopKakaoSignInButton = styled(KakaoSignInButton)`
+    margin: 2.5rem 22.5rem 9.5rem 22.5rem;
     `;
 
 const TabletKakaoSignInButton = styled(KakaoSignInButton)`
@@ -234,8 +243,31 @@ height: var(--line-height-2xs, 1.25rem);
         </Body>
         </Desktop>
 
+        <Laptop>
+        <Body>
+        <LaptopContainer>
+            <LaptopLogo></LaptopLogo>
+            <LaptopSignInBox>
+            <InputBox>
+            <TabletInput placeholder='이메일을 입력해주세요.' />
+            <TabletPasswordInput type='password' placeholder='비밀번호를 입력해주세요.' />
+            </InputBox>
+            <SignInButton onClick={()=>handleSignIn()}>로그인</SignInButton>
+            </LaptopSignInBox>
+
+            <LaptopSignUpDiv>
+                <SignUpText>아직 계정이 없으신가요?</SignUpText>
+                <SignUpLink onClick={()=>navigate('/signup')}>회원가입</SignUpLink>
+            </LaptopSignUpDiv>
+
+            <LaptopKakaoSignInButton> <KakaoLogo></KakaoLogo>
+                카카오 로그인</LaptopKakaoSignInButton>
+        </LaptopContainer>
+        </Body>
+        </Laptop>
+
         <Tablet>
-        <TabletBody>
+        <Body>
         <TabletContainer>
             <TabletLogo></TabletLogo>
             <TabletSignInBox>
@@ -254,7 +286,7 @@ height: var(--line-height-2xs, 1.25rem);
             <TabletKakaoSignInButton> <KakaoLogo></KakaoLogo>
                 카카오 로그인</TabletKakaoSignInButton>
         </TabletContainer>
-        </TabletBody>
+        </Body>
         </Tablet>
         </>
     )
