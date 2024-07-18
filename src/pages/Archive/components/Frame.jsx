@@ -1,7 +1,8 @@
   import { useState } from 'react';
   import styled from 'styled-components'
   import DummyData from '../../../api/archive/dummyData';
-  import ReactPaginate from 'react-paginate'; 
+  import ReactPaginate from 'react-paginate';
+  import PropTypes from 'prop-types';
 
 
   const FrameContainer = styled.div`
@@ -82,68 +83,112 @@
     flex-grow: 1;
   `;
 
+  const NoteData = styled.div`
+  display: flex;
+  flex-direction: row;
+  min-width: 37.75rem;
+  padding: 1.25rem 0.5rem;
+  align-items: center;
+  gap: 1.5rem;
+  width: 100%;
+`;
 
 
-  const Frame = () => {
+
+  const Frame = ({ selectedTab }) => {
 
     const Data = DummyData();
 
-    // 상태 관리
-    const [currentPage, setCurrentPage] = useState(0);
-    const itemsPerPage = 6;
-    
-    // 현재 페이지에 표시할 데이터 계산
-    const currentData = Data.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
-    
+   // 상태 관리
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 6;
+
+  // 필터링된 데이터 계산
+  const filteredData = Data.filter((item) => {
+    if (selectedTab === '폴더') {
+      return item.type === 'folder';
+    } else if (selectedTab === '노트') {
+      return item.type === 'note';
+    }
+    return false;
+  });
+
+  // 현재 페이지에 표시할 데이터 계산
+  const currentData = filteredData.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
+  
     // 페이지 변경 핸들러
     const handlePageChange = ({ selected }) => {
       setCurrentPage(selected);
     };
 
+    console.log(selectedTab )
+
 
 
     return (
       <FrameContainer>
-        <div style={{ paddingTop: '3rem' }}>모든 폴더</div>
+        <div style={{ paddingTop: '3rem' }}>{selectedTab === '폴더' ? '모든 폴더' : '모든 노트'}</div>
         <div>
           <div>정렬 드롭다운</div>
           <div>필터링 드롭다운</div>
           <div>폴더 추가 드롭다운</div>
         </div>
         <div>
-          {currentData.map((item, index) => (
-              <FolderData key={index}>
-                <LeftData>
-                  <div>즐겨찾기</div>
-                  <div>아이콘</div>
-                  <Line></Line>
-                  <div style={{display:'flex',flexDirection:'column'}}>
-                    <div>{item.folderName}</div>
-                    <div>폴더 이름</div>
-                  </div>
-                  
-                </LeftData>
-
-                <FlexSpacer />
-
-                <RightData>
-                  <Line />
-                  <div>
-                    <div>{item.noteCount}</div>
-                    <div>포함된 노트 개수</div>
-                  </div>
-                  
-                  <Line />
-                  <div>
-                    <div>{item.modifiedDate}</div>
-                    <div>최근 수정일</div>
-                  </div>
-                  <div>더보기</div>
-                </RightData>
-
-              
+        {currentData.map((item, index) => (
+          selectedTab === '폴더' ? (
+            <FolderData key={index}>
+              <LeftData>
+                <div>즐겨찾기</div>
+                <div>아이콘</div>
+                <Line />
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <div>{item.folderName}</div>
+                  <div>폴더 이름</div>
+                </div>
+              </LeftData>
+              <FlexSpacer />
+              <RightData>
+                <Line />
+                <div>
+                  <div>{item.noteCount}</div>
+                  <div>포함된 노트 개수</div>
+                </div>
+                <Line />
+                <div>
+                  <div>{item.modifiedDate}</div>
+                  <div>최근 수정일</div>
+                </div>
+                <div>더보기</div>
+              </RightData>
             </FolderData>
-          ))}
+          ) : (
+            <NoteData key={index}>
+              <LeftData>
+                <div>즐겨찾기</div>
+                <div>아이콘</div>
+                <Line />
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <div>{item.noteTitle}</div>
+                  <div>노트 제목</div>
+                </div>
+              </LeftData>
+              <FlexSpacer />
+              <RightData>
+                <Line />
+                <div>
+                  <div>{item.category}</div>
+                  <div>카테고리</div>
+                </div>
+                <Line />
+                <div>
+                  <div>{item.modifiedDate}</div>
+                  <div>최근 수정일</div>
+                </div>
+                <div>더보기</div>
+              </RightData>
+            </NoteData>
+          )
+        ))}
         </div>
         <PaginationContainer>
           <ReactPaginate
@@ -151,7 +196,7 @@
             nextLabel={'>'}
             breakLabel={'...'}
             breakClassName={'break-me'}
-            pageCount={Math.ceil(Data.length / itemsPerPage)}
+            pageCount={Math.ceil(filteredData.length / itemsPerPage)}
             marginPagesDisplayed={2}
             pageRangeDisplayed={5}
             onPageChange={handlePageChange}
@@ -173,5 +218,9 @@
       </FrameContainer>
     )
   }
+
+  Frame.propTypes = {
+    selectedTab: PropTypes.string.isRequired,
+  };
 
   export default Frame

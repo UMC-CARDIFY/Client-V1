@@ -2,6 +2,7 @@ import MenuBar from '../../components/MenuBar'
 import TopBar from '../../components/TopBar'
 import styled from 'styled-components'
 import Frame from './components/Frame'
+import { useState } from 'react'
 
 const Container = styled.div`
   display:flex;
@@ -18,13 +19,18 @@ const Vcontainer = styled.div`
 
 
 export const Archive = () => {
+
+  const [selectedTab, setSelectedTab] = useState('폴더');
+
+  console.log(selectedTab)
+
   return (
     <>
     <Container>
       <MenuBar />
       <Vcontainer>
-        <TopBar title='아카이브' subtitle='노트 작성 및 관리'/>
-        <Frame />
+        <TopBar title='아카이브' subtitle='노트 작성 및 관리' setSelectedTab={setSelectedTab} selectedTab={selectedTab} />
+        <Frame selectedTab={selectedTab} />
       </Vcontainer>
     </Container>
     
