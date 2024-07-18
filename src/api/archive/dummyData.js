@@ -1,17 +1,15 @@
-
-
 const DummyData = () => {
   return [
-    { folderName: 'Folder 1', createdDate: '2024-07-01', modifiedDate: '2024-07-02' },
-    { folderName: 'Folder 2', createdDate: '2024-07-02', modifiedDate: '2024-07-03' },
-    { folderName: 'Folder 3', createdDate: '2024-07-03', modifiedDate: '2024-07-04' },
-    { folderName: 'Folder 4', createdDate: '2024-07-04', modifiedDate: '2024-07-05' },
-    { folderName: 'Folder 5', createdDate: '2024-07-05', modifiedDate: '2024-07-06' },
-    { folderName: 'Folder 6', createdDate: '2024-07-06', modifiedDate: '2024-07-07' },
-    { folderName: 'Folder 7', createdDate: '2024-07-07', modifiedDate: '2024-07-08' },
-    { folderName: 'Folder 8', createdDate: '2024-07-08', modifiedDate: '2024-07-09' },
-    { folderName: 'Folder 9', createdDate: '2024-07-09', modifiedDate: '2024-07-10' },
-    { folderName: 'Folder 10', createdDate: '2024-07-10', modifiedDate: '2024-07-11' },
+    { folderName: 'Folder 1', modifiedDate: '2024-07-02', noteCount: '0개' },
+    { folderName: 'Folder 2', modifiedDate: '2024-07-03', noteCount: '2개' },
+    { folderName: 'Folder 3', modifiedDate: '2024-07-04', noteCount: '1개' },
+    { folderName: 'Folder 4', modifiedDate: '2024-07-05', noteCount: '3개' },
+    { folderName: 'Folder 5', modifiedDate: '2024-07-06', noteCount: '5개' },
+    { folderName: 'Folder 6', modifiedDate: '2024-07-07', noteCount: '4개' },
+    { folderName: 'Folder 7', modifiedDate: '2024-07-08', noteCount: '0개' },
+    { folderName: 'Folder 8', modifiedDate: '2024-07-09', noteCount: '2개' },
+    { folderName: 'Folder 9', modifiedDate: '2024-07-10', noteCount: '1개' },
+    { folderName: 'Folder 10', modifiedDate: '2024-07-11', noteCount: '0개' },
   ];
 };
 
