@@ -38,7 +38,7 @@ const NoteInfo = styled.div`
   font-family: Pretendard;
   font-size: 0.875rem;
   font-style: normal;
-  font-weight: 600;
+  font-weight: 500;
   line-height: normal;
 `;
 
@@ -47,7 +47,7 @@ const SubText = styled.div`
   font-family: Pretendard;
   font-size: 0.75rem;
   font-style: normal;
-  font-weight: 500;
+  font-weight: 400;
   line-height: normal;
 `;
 
@@ -58,7 +58,7 @@ const LastModified = styled.div`
   font-family: Pretendard;
   font-size: 0.875rem;
   font-style: normal;
-  font-weight: 600;
+  font-weight: 500;
   line-height: normal;
 `;
 
