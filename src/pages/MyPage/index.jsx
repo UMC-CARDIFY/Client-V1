@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 const MyPageContainer = styled.div`
@@ -178,6 +179,7 @@ const Text2 = styled.span`
 `;
 
 export const MyPage = () => {
+  const navigate = useNavigate();
   const [isNotificationOn, setIsNotificationOn] = useState(true);
   const [isDarkMode, setIsDarkMode] = useState(false);
 
@@ -196,13 +198,13 @@ export const MyPage = () => {
       </Header>
       <ContentDiv>
         <Section>
-          <InfoBox>
+          <InfoBox onClick={() => navigate('/mypage/subscription')}>
             <IconPlaceholder />
             <Text>요금제</Text>
             <Text2>등급</Text2>
             <IconPlaceholder />
           </InfoBox>
-          <InfoBox>
+          <InfoBox onClick={() => navigate('/mypage/point')}>
             <IconPlaceholder />
             <Text>내 포인트</Text>
             <Text2>XXXX P</Text2>
