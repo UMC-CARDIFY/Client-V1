@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Switch from './components/Switch';
+import LogoutButton from './components/LogoutButton';
 
 const MyPageContainer = styled.div`
   width: 100%;
@@ -146,25 +147,10 @@ const Text2 = styled.span`
   margin-right: 0.5rem;
 `;
 
-const LogoutButton = styled.button`
-  display: flex;
-  width: 42.25rem;
-  padding: 1rem;
-  justify-content: space-between;
-  align-items: center;
-  border: 1px solid #D9D9D9;
-  cursor: pointer;
-  margin-top: 1rem;
-`;
-
 export const MyPage = () => {
   const navigate = useNavigate();
   const [isNotificationOn, setIsNotificationOn] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
-
-  const handleLogout = () => {
-    console.log("Logout clicked");
-  };
 
   return (
     <MyPageContainer>
@@ -226,9 +212,7 @@ export const MyPage = () => {
             <IconPlaceholder />
           </LastInfoBox>
         </Section>
-        <LogoutButton onClick={handleLogout}>
-          <Text>로그아웃</Text>
-        </LogoutButton>
+        <LogoutButton />
       </ContentDiv>
     </MyPageContainer>
   );
