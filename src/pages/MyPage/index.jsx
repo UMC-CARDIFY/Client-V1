@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import Switch from './components/Switch';
 
 const MyPageContainer = styled.div`
   width: 100%;
@@ -96,49 +97,6 @@ const IconPlaceholder = styled.div`
   cursor: pointer;
 `;
 
-const Switch = styled.label`
-  position: relative;
-  display: inline-block;
-  width: 2.75rem;
-  height: 1.5rem;
-
-  input {
-    display: none;
-  }
-
-  .slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #C8C8C8;
-    transition: 0.4s;
-    border-radius: 14px;
-  }
-
-  .slider:before {
-    position: absolute;
-    content: "";
-    height: 1.5rem;
-    width: 1.5rem;
-    left: 0;
-    bottom: 0;
-    background-color: white;
-    transition: 0.4s;
-    border-radius: 50%;
-  }
-
-  input:checked + .slider {
-    background-color: #2196F3;
-  }
-
-  input:checked + .slider:before {
-    transform: translateX(20px);
-  }
-`;
-
 const SectionTitle = styled.p`
   font-family: Pretendard;
   font-size: 1rem;
@@ -201,7 +159,7 @@ const LogoutButton = styled.button`
 
 export const MyPage = () => {
   const navigate = useNavigate();
-  const [isNotificationOn, setIsNotificationOn] = useState(true);
+  const [isNotificationOn, setIsNotificationOn] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   const handleLogout = () => {
@@ -242,27 +200,17 @@ export const MyPage = () => {
             <IconPlaceholder />
             <Text>알림</Text>
             <Text2>{isNotificationOn ? "ON" : "OFF"}</Text2>
-            <Switch>
-              <input 
-                type="checkbox" 
-                checked={isNotificationOn}
-                onChange={() => setIsNotificationOn(!isNotificationOn)}
-              />
-              <span className="slider"></span>
-            </Switch>
+            <Switch 
+              onChange={(checked) => setIsNotificationOn(checked)} 
+            />
           </InfoBox>
           <LastInfoBox>
             <IconPlaceholder />
             <Text>테마</Text>
             <Text2>{isDarkMode ? "다크모드" : "라이트모드"}</Text2>
-            <Switch>
-              <input 
-                type="checkbox" 
-                checked={isDarkMode}
-                onChange={() => setIsDarkMode(!isDarkMode)}
-              />
-              <span className="slider"></span>
-            </Switch>
+            <Switch 
+              onChange={(checked) => setIsDarkMode(checked)} 
+            />
           </LastInfoBox>
         </Section>
         <Section>
@@ -286,4 +234,4 @@ export const MyPage = () => {
   );
 };
 
-export default MyPage
+export default MyPage;
