@@ -67,19 +67,26 @@ const Section = styled.section`
   display: flex;
   flex-direction: column;
   align-items: center;
-`;
+`;  
 
 const InfoBox = styled.div`
   display: flex;
-  width: 29.75rem;
+  width: 40rem;
+  height: 2.69rem;
   padding: 1rem;
   justify-content: space-between;
   align-items: center;
+  flex-shrink: 0;
   border: 1px solid #D9D9D9;
+  border-bottom: 1px solid transparent;
 
   &.clickable {
     cursor: pointer;
   }
+`;
+
+const LastInfoBox = styled(InfoBox)`
+  border-bottom: 1px solid #D9D9D9;
 `;
 
 const IconPlaceholder = styled.div`
@@ -183,7 +190,7 @@ const Text2 = styled.span`
 
 const LogoutButton = styled.button`
   display: flex;
-  width: 31.75rem;
+  width: 42.25rem;
   padding: 1rem;
   justify-content: space-between;
   align-items: center;
@@ -222,12 +229,12 @@ export const MyPage = () => {
             <Text2>등급</Text2>
             <IconPlaceholder />
           </InfoBox>
-          <InfoBox className="clickable" onClick={() => navigate('/mypage/point')}>
+          <LastInfoBox className="clickable" onClick={() => navigate('/mypage/point')}>
             <IconPlaceholder />
             <Text>내 포인트</Text>
             <Text2>XXXX P</Text2>
             <IconPlaceholder />
-          </InfoBox>
+          </LastInfoBox>
         </Section>
         <Section>
          <SectionTitle>환경설정</SectionTitle>
@@ -244,7 +251,7 @@ export const MyPage = () => {
               <span className="slider"></span>
             </Switch>
           </InfoBox>
-          <InfoBox>
+          <LastInfoBox>
             <IconPlaceholder />
             <Text>테마</Text>
             <Text2>{isDarkMode ? "다크모드" : "라이트모드"}</Text2>
@@ -256,7 +263,7 @@ export const MyPage = () => {
               />
               <span className="slider"></span>
             </Switch>
-          </InfoBox>
+          </LastInfoBox>
         </Section>
         <Section>
         <SectionTitle>기타 정보</SectionTitle>
@@ -265,11 +272,11 @@ export const MyPage = () => {
             <Text>이용약관</Text>
             <IconPlaceholder />
           </InfoBox>
-          <InfoBox className="clickable"> 
+          <LastInfoBox className="clickable"> 
             <IconPlaceholder />
             <Text>개인정보처리방침</Text>
             <IconPlaceholder />
-          </InfoBox>
+          </LastInfoBox>
         </Section>
         <LogoutButton onClick={handleLogout}>
           <Text>로그아웃</Text>
