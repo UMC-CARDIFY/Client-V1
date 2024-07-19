@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Switch from './components/Switch';
 import LogoutButton from './components/LogoutButton';
+import BackButton from './components/BackButton';
 
 const MyPageContainer = styled.div`
   width: 100%;
@@ -29,13 +30,11 @@ const Header = styled.header`
   position: relative;
 `;
 
-const BackButton = styled.div`
+const BackButtonWrapper = styled.div`
   position: absolute;
   left: 28rem;
   width: 3rem;
   height: 3rem;
-  background: #ccc;
-  cursor: pointer;
 
   @media screen and (max-width: 1440px) {
     left: 14rem;
@@ -196,7 +195,9 @@ export const MyPage = () => {
   return (
     <MyPageContainer>
       <Header>
-        <BackButton onClick={() => navigate(-1)} />
+        <BackButtonWrapper>
+          <BackButton />
+        </BackButtonWrapper>
         <ProfileImageContainer>
           <ProfileImage />
           <EditIcon />

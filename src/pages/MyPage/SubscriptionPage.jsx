@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
+import BackButton from './components/BackButton';
 
 const SubPageContainer = styled.div`
   width: 100%;
@@ -51,20 +51,6 @@ const Header = styled.header`
   @media screen and (max-width: 1024px) {
     margin-left: 0rem;
     margin-bottom: 1rem;
-  }
-`;
-
-const BackButton = styled.button`
-  width: 3rem;
-  height: 3rem;
-  background: #ccc;
-  cursor: pointer;
-  border: none;
-  margin-right: 1rem;
-
-  @media screen and (max-width: 1024px) {
-    width: 2.5rem;
-    height: 2.5rem;
   }
 `;
 
@@ -250,16 +236,12 @@ const StartButton = styled.button`
 `;
 
 const SubscriptionPage = () => {
-    const navigate = useNavigate();
-    const handleBackClick = () => {
-      navigate(-1);
-    };
 
  return (
   <SubPageContainer>
     <InnerContainer>
       <Header>
-        <BackButton onClick={handleBackClick} />
+        <BackButton />
         <Title>요금제</Title>
       </Header>
       <PlansWrapper>

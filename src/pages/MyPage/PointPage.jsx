@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
+import BackButton from './components/BackButton';
 
 const OuterContainer = styled.div`
   display: flex;
@@ -38,22 +38,6 @@ const Header = styled.div`
   gap: 0.5rem;
   align-self: flex-start;
   margin-left: -4.5rem;
-`;
-
-const BackButton = styled.button`
-  width: 3rem;
-  height: 3rem;
-  background: #ccc;
-  cursor: pointer;
-  border: none;
-  margin-right: 1rem;
-
-  @media screen and (max-width: 1024px) {
-    width: 2.5rem;
-    height: 2.5rem;
-    margin-right: 1.5rem;
-  }
-
 `;
 
 const ContentContainer = styled.div`
@@ -176,16 +160,12 @@ const ChargeText = styled.p`
 `;
 
 const PointPage = () => {
-  const navigate = useNavigate();
-  const handleBackClick = () => {
-    navigate(-1);
-  };
 
   return (
     <OuterContainer>
       <InnerContainer>
         <Header>
-          <BackButton onClick={handleBackClick} />
+          <BackButton />
           <Username>이름</Username>
           <Text>님의 포인트</Text>
         </Header>
