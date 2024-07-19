@@ -11,6 +11,14 @@ const MyPageContainer = styled.div`
   flex-direction: column;
   align-items: center;
   padding: 6rem 0;
+
+  @media screen and (max-width: 1440px) {
+    padding: 5.5rem 0;
+  }
+
+  @media screen and (max-width: 1024px) {
+     padding: 4rem 0;
+  }
 `;
 
 const Header = styled.header`
@@ -28,13 +36,27 @@ const BackButton = styled.div`
   height: 3rem;
   background: #ccc;
   cursor: pointer;
+
+  @media screen and (max-width: 1440px) {
+    left: 14rem;
+  }
+
+  @media screen and (max-width: 1024px) {
+     left: 11rem;
+  }
 `;
 
 const ProfileImageContainer = styled.div`
   position: relative;
-  width: 8rem;
-  height: 8rem;
+  width: 8.5rem;
+  height: 8.5rem;
   margin-bottom: 1rem;
+
+  @media screen and (max-width: 1440px) {
+    width: 8rem;
+    height: 8rem;
+    margin-bottom: 0.5rem;
+  }
 `;
 
 const ProfileImage = styled.div`
@@ -48,8 +70,8 @@ const EditIcon = styled.div`
   position: absolute;
   bottom: 0;
   right: 0;
-  width: var(--line-height-xl, 2.5rem);
-  height: var(--line-height-xl, 2.5rem);
+  width: 2.5rem;
+  height: 2.5rem;
   flex-shrink: 0;
   border-radius: var(--line-height-2xs, 1.25rem);
   border: 1px solid var(--B1B1B1, #B1B1B1);
@@ -63,6 +85,10 @@ const ContentDiv = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 20px;
+
+  @media screen and (max-width: 1024px) {
+    gap: 16px;
+  }
 `;
 
 const Section = styled.section`
@@ -73,7 +99,7 @@ const Section = styled.section`
 
 const InfoBox = styled.div`
   display: flex;
-  width: 40rem;
+  width: 38.125rem;
   height: 2.69rem;
   padding: 1rem;
   justify-content: space-between;
@@ -84,6 +110,18 @@ const InfoBox = styled.div`
 
   &.clickable {
     cursor: pointer;
+  }
+
+  @media screen and (max-width: 1440px) {
+    width: 28.25rem;
+    height: 2rem;
+    padding: 0.75rem;
+  }
+
+  @media screen and (max-width: 1024px) {
+   width: 28.5rem;
+   height: 1.875rem;
+   padding: 0.5rem;
   }
 `;
 
@@ -121,8 +159,11 @@ const NicknameContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin-top: 1rem;
   margin-bottom: 3.5rem;
+
+  @media screen and (max-width: 1440px) {
+    margin-bottom: 2.5rem;
+  }
 `;
 
 const Text = styled.span`

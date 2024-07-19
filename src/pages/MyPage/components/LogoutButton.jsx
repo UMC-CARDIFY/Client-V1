@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 const LogoutButtonContainer = styled.button`
   display: flex;
-  width: 42.25rem;
+  width: 40.25rem;
   padding: 1rem;
   justify-content: space-between;
   align-items: center;
@@ -10,6 +10,18 @@ const LogoutButtonContainer = styled.button`
   border: 1px solid #D9D9D9;
   cursor: pointer;
   margin-top: 1rem;
+
+  @media screen and (max-width: 1440px) {
+    width: 30rem;
+    padding: 0.75rem;
+    margin-top: 3rem;
+  }
+
+  @media screen and (max-width: 1024px) {
+   width: 29.625rem;  
+   padding: 0.5rem;
+   margin-top: 1rem;
+  }
 `;
 
 const Text = styled.span`
