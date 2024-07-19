@@ -18,7 +18,7 @@ const MyPageContainer = styled.div`
   }
 
   @media screen and (max-width: 1024px) {
-     padding: 4rem 0;
+     padding: 3.25rem 0;
   }
 `;
 
@@ -41,7 +41,7 @@ const BackButtonWrapper = styled.div`
   }
 
   @media screen and (max-width: 1024px) {
-     left: 11rem;
+    left: 11rem;
   }
 `;
 
@@ -54,8 +54,14 @@ const ProfileImageContainer = styled.div`
   @media screen and (max-width: 1440px) {
     width: 8rem;
     height: 8rem;
+  }
+
+  @media screen and (max-width: 1024px) {
+    width: 6.5rem;
+    height: 6.5rem;
     margin-bottom: 0.5rem;
   }
+
 `;
 
 const ProfileImage = styled.div`
@@ -76,6 +82,11 @@ const EditIcon = styled.div`
   border: 1px solid var(--B1B1B1, #B1B1B1);
   background: #ccc;
   cursor: pointer;
+
+  @media screen and (max-width: 1024px) {
+    width: 2rem;
+    height: 2rem;
+  }
 `;
 
 const ContentDiv = styled.div`
@@ -86,7 +97,7 @@ const ContentDiv = styled.div`
   gap: 20px;
 
   @media screen and (max-width: 1024px) {
-    gap: 16px;
+    gap: 12px;
   }
 `;
 
@@ -133,6 +144,11 @@ const IconPlaceholder = styled.div`
   height: 2rem;
   background: #ccc;
   cursor: pointer;
+
+  @media screen and (max-width: 1024px) {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
 `;
 
 const SectionTitle = styled.p`
@@ -152,6 +168,10 @@ const Nickname = styled.span`
   font-style: normal;
   font-weight: 300;
   line-height: normal;
+
+  @media screen and (max-width: 1024px) {
+    font-size: 1.25rem;
+  }
 `;
 
 const NicknameContainer = styled.div`
@@ -174,6 +194,10 @@ const Text = styled.span`
   line-height: normal;
   flex: 1;
   margin-left: 1rem;
+
+  @media screen and (max-width: 1024px) {
+    font-size: 0.9rem;
+  }
 `;
 
 const Text2 = styled.span`
@@ -185,6 +209,10 @@ const Text2 = styled.span`
   line-height: normal;
   justify-content: flex-end;
   margin-right: 0.5rem;
+
+  @media screen and (max-width: 1024px) {
+    font-size: 0.9rem;
+  }
 `;
 
 export const MyPage = () => {
