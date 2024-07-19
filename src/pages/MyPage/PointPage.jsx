@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
@@ -7,14 +6,30 @@ const OuterContainer = styled.div`
   justify-content: center;
   width: 100%;
   padding: 10rem 0;
+  
+  @media screen and (max-width: 1440px) {
+    padding: 9.37rem 0;
+  }
+
+  @media screen and (max-width: 1024px) {
+    padding: 7.37rem 0;
+  }
 `;
 
 const InnerContainer = styled.div`
   width: 100%;
-  max-width: 58rem;
+  max-width: 60rem;
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  @media screen and (max-width: 1440px) {
+    max-width: 55rem;
+  }
+
+  @media screen and (max-width: 1024px) {
+    max-width: 36rem;
+  }
 `;
 
 const Header = styled.div`
@@ -22,7 +37,7 @@ const Header = styled.div`
   align-items: center;
   gap: 0.5rem;
   align-self: flex-start;
-  margin-left: -2rem;
+  margin-left: -4.5rem;
 `;
 
 const BackButton = styled.button`
@@ -32,11 +47,17 @@ const BackButton = styled.button`
   cursor: pointer;
   border: none;
   margin-right: 1rem;
+
+  @media screen and (max-width: 1024px) {
+    width: 2.5rem;
+    height: 2.5rem;
+    margin-right: 1.5rem;
+  }
+
 `;
 
 const ContentContainer = styled.div`
   width: 100%;
-  max-width: 53rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -68,6 +89,14 @@ const PointOption = styled.button`
   border: 1px solid var(--B1B1B1, #B1B1B1);
   background: #FFF;
   cursor: pointer;
+
+  @media screen and (max-width: 1440px) {
+    padding: 1.75rem 2rem; 
+  }
+
+  @media screen and (max-width: 1024px) {
+    padding: 1.25rem 2rem; 
+  }
 `;
 
 const Username = styled.span`
@@ -77,6 +106,10 @@ const Username = styled.span`
   font-style: normal;
   font-weight: 300;
   line-height: normal;
+
+  @media screen and (max-width: 1024px) {
+    font-size: 1rem;
+  }
 `;
 
 const UserPoint = styled.span`
@@ -87,6 +120,10 @@ const UserPoint = styled.span`
   font-weight: 500;
   line-height: normal;
   align-self: flex-start;
+
+  @media screen and (max-width: 1024px) {
+    font-size: 2rem;
+  }
 `;
 
 const Divider = styled.div`
@@ -103,6 +140,10 @@ const Text = styled.span`
   font-style: normal;
   font-weight: 300;
   line-height: normal;
+
+  @media screen and (max-width: 1024px) {
+    font-size: 1rem;
+  }
 `;
 
 const Text2 = styled.span`
@@ -112,6 +153,10 @@ const Text2 = styled.span`
   font-style: normal;
   font-weight: 600;
   line-height: normal;
+
+  @media screen and (max-width: 1024px) {
+    font-size: 1rem;
+  }
 `;
 
 const ChargeText = styled.p`
@@ -123,6 +168,11 @@ const ChargeText = styled.p`
   line-height: normal;
   align-self: flex-start;
   margin: 1rem 0 2rem 0;
+
+  @media screen and (max-width: 1024px) {
+    margin: 1rem 0;
+  }
+
 `;
 
 const PointPage = () => {

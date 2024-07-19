@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
@@ -8,7 +7,16 @@ const SubPageContainer = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
-  padding: 10rem 0;
+  padding: 9rem 0;
+
+  @media screen and (max-width: 1440px) {
+    padding: 7.5rem 0;
+  }
+
+  @media screen and (max-width: 1024px) {
+    padding: 4.5rem 0;
+  }
+
 `;
 
 const InnerContainer = styled.div`
@@ -17,16 +25,33 @@ const InnerContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  @media screen and (max-width: 1440px) {
+    max-width: 57.5rem;
+  }
+
+  @media screen and (max-width: 1024px) {
+    max-width: 52.5rem;
+  }
 `;
 
 const Header = styled.header`
   display: flex;
   gap: 0.5rem;
   justify-content: flex-start;
-   align-items: center;
+  align-items: center;
   width: 100%;
   margin-left: -13rem;
   margin-bottom: 2rem;
+
+  @media screen and (max-width: 1440px) {
+    margin-left: -10rem;
+  }
+
+  @media screen and (max-width: 1024px) {
+    margin-left: 0rem;
+    margin-bottom: 1rem;
+  }
 `;
 
 const BackButton = styled.button`
@@ -36,6 +61,11 @@ const BackButton = styled.button`
   cursor: pointer;
   border: none;
   margin-right: 1rem;
+
+  @media screen and (max-width: 1024px) {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
 `;
 
 const Title = styled.p`
@@ -52,6 +82,16 @@ const PlansWrapper = styled.div`
   display: flex;
   gap: 4rem;
   justify-content: center;
+
+  @media screen and (max-width: 1440px) {
+    max-width: 53rem; 
+    gap: 3rem;
+  }
+
+  @media screen and (max-width: 1024px) {
+    max-width: 46rem; 
+    gap: 2.5rem;
+  }
 `;
 
 const PlanContainer = styled.div`
@@ -66,9 +106,20 @@ const PlanContainer = styled.div`
   background: #FFF;
   padding: 2rem;
   position: relative;
+
+  @media screen and (max-width: 1440px) {
+    width: 25rem;
+  }
+
+  @media screen and (max-width: 1024px) {
+    width: 18rem;
+    height: 28rem;
+    padding: 1.25rem;
+  }
+
 `;
 
-const PlanTitle = styled.h3`
+const PlanTitle = styled.p`
   color: #1F1F1F;
   text-align: center;
   font-family: Pretendard;
@@ -77,6 +128,12 @@ const PlanTitle = styled.h3`
   font-weight: 600;
   line-height: normal;
   margin-bottom: 1.5rem;
+
+  @media screen and (max-width: 1024px) {
+    font-size: 1.5rem;
+    margin-bottom: 0.75rem;
+  }
+
 `;
 
 const PlanPriceDiv = styled.div`
@@ -84,6 +141,10 @@ const PlanPriceDiv = styled.div`
   align-items: center;
   justify-content: center;
   margin-bottom: 4rem;
+
+  @media screen and (max-width: 1024px) {
+    margin-bottom: 1.75rem;
+  }
 `;
 
 const PlanPriceValue = styled.span`
@@ -94,6 +155,10 @@ const PlanPriceValue = styled.span`
   font-style: normal;
   font-weight: 500;
   line-height: normal;
+
+  @media screen and (max-width: 1024px) {
+    font-size: 2rem;
+  }
 `;
 
 const PlanPricePerMonth = styled.span`
@@ -103,6 +168,10 @@ const PlanPricePerMonth = styled.span`
   font-style: normal;
   font-weight: 300;
   line-height: normal;
+
+  @media screen and (max-width: 1024px) {
+    font-size: 1.25rem;
+  }
 `;
 
 const PlanList = styled.div`
@@ -120,6 +189,12 @@ const CheckIcon = styled.div`
   flex-shrink: 0;
   background: #ccc;
   margin-right: 0.5rem;
+
+  @media screen and (max-width: 1024px) {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
 `;
 
 const Text = styled.p`
@@ -144,6 +219,11 @@ const PlanItem = styled.div`
   font-style: normal;
   font-weight: 400;
   line-height: normal;
+
+  @media screen and (max-width: 1024px) {
+    font-size: 0.75rem;
+  }
+
 `;
 
 const StartButton = styled.button`
