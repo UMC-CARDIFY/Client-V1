@@ -1,5 +1,9 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import Switch from './components/Switch';
+import LogoutButton from './components/LogoutButton';
+import BackButton from './components/BackButton';
 
 const MyPageContainer = styled.div`
   width: 100%;
@@ -7,7 +11,15 @@ const MyPageContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px;
+  padding: 6rem 0;
+
+  @media screen and (max-width: 1440px) {
+    padding: 5.5rem 0;
+  }
+
+  @media screen and (max-width: 1024px) {
+     padding: 3.25rem 0;
+  }
 `;
 
 const Header = styled.header`
@@ -15,24 +27,41 @@ const Header = styled.header`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 6rem;
   position: relative;
 `;
 
-const BackIcon = styled.div`
+const BackButtonWrapper = styled.div`
   position: absolute;
   left: 28rem;
   width: 3rem;
   height: 3rem;
-  background: #ccc;
-  cursor: pointer;
+
+  @media screen and (max-width: 1440px) {
+    left: 14rem;
+  }
+
+  @media screen and (max-width: 1024px) {
+    left: 11rem;
+  }
 `;
 
 const ProfileImageContainer = styled.div`
   position: relative;
-  width: 8rem;
-  height: 8rem;
+  width: 8.5rem;
+  height: 8.5rem;
   margin-bottom: 1rem;
+
+  @media screen and (max-width: 1440px) {
+    width: 8rem;
+    height: 8rem;
+  }
+
+  @media screen and (max-width: 1024px) {
+    width: 6.5rem;
+    height: 6.5rem;
+    margin-bottom: 0.5rem;
+  }
+
 `;
 
 const ProfileImage = styled.div`
@@ -46,13 +75,18 @@ const EditIcon = styled.div`
   position: absolute;
   bottom: 0;
   right: 0;
-  width: var(--line-height-xl, 2.5rem);
-  height: var(--line-height-xl, 2.5rem);
+  width: 2.5rem;
+  height: 2.5rem;
   flex-shrink: 0;
   border-radius: var(--line-height-2xs, 1.25rem);
   border: 1px solid var(--B1B1B1, #B1B1B1);
   background: #ccc;
   cursor: pointer;
+
+  @media screen and (max-width: 1024px) {
+    width: 2rem;
+    height: 2rem;
+  }
 `;
 
 const ContentDiv = styled.div`
@@ -61,21 +95,48 @@ const ContentDiv = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 20px;
+
+  @media screen and (max-width: 1024px) {
+    gap: 12px;
+  }
 `;
 
 const Section = styled.section`
   display: flex;
   flex-direction: column;
   align-items: center;
-`;
+`;  
 
 const InfoBox = styled.div`
   display: flex;
-  width: 29.75rem;
-  padding: 1rem 0.5rem;
+  width: 38.125rem;
+  height: 2.69rem;
+  padding: 1rem;
   justify-content: space-between;
   align-items: center;
+  flex-shrink: 0;
   border: 1px solid #D9D9D9;
+  border-bottom: 1px solid transparent;
+
+  &.clickable {
+    cursor: pointer;
+  }
+
+  @media screen and (max-width: 1440px) {
+    width: 28.25rem;
+    height: 2rem;
+    padding: 0.75rem;
+  }
+
+  @media screen and (max-width: 1024px) {
+   width: 28.5rem;
+   height: 1.875rem;
+   padding: 0.5rem;
+  }
+`;
+
+const LastInfoBox = styled(InfoBox)`
+  border-bottom: 1px solid #D9D9D9;
 `;
 
 const IconPlaceholder = styled.div`
@@ -83,48 +144,10 @@ const IconPlaceholder = styled.div`
   height: 2rem;
   background: #ccc;
   cursor: pointer;
-`;
 
-const Switch = styled.label`
-  position: relative;
-  display: inline-block;
-  width: 2.75rem;
-  height: 1.5rem;
-
-  input {
-    display: none;
-  }
-
-  .slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #C8C8C8;
-    transition: 0.4s;
-    border-radius: 14px;
-  }
-
-  .slider:before {
-    position: absolute;
-    content: "";
-    height: 1.5rem;
+  @media screen and (max-width: 1024px) {
     width: 1.5rem;
-    left: 0;
-    bottom: 0;
-    background-color: white;
-    transition: 0.4s;
-    border-radius: 50%;
-  }
-
-  input:checked + .slider {
-    background-color: #2196F3;
-  }
-
-  input:checked + .slider:before {
-    transform: translateX(20px);
+    height: 1.5rem;
   }
 `;
 
@@ -132,7 +155,7 @@ const SectionTitle = styled.p`
   font-family: Pretendard;
   font-size: 1rem;
   font-style: normal;
-  font-weight: 400;
+  font-weight: 300;
   line-height: normal;
   align-self: flex-start;
 `;
@@ -143,16 +166,23 @@ const Nickname = styled.span`
   font-family: Pretendard;
   font-size: 1.5rem;
   font-style: normal;
-  font-weight: 400;
+  font-weight: 300;
   line-height: normal;
+
+  @media screen and (max-width: 1024px) {
+    font-size: 1.25rem;
+  }
 `;
 
 const NicknameContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin-top: 1rem;
   margin-bottom: 3.5rem;
+
+  @media screen and (max-width: 1440px) {
+    margin-bottom: 2.5rem;
+  }
 `;
 
 const Text = styled.span`
@@ -160,10 +190,14 @@ const Text = styled.span`
   font-family: Pretendard;
   font-size: 1rem;
   font-style: normal;
-  font-weight: 400;
+  font-weight: 300;
   line-height: normal;
   flex: 1;
-  margin-left: 0.5rem;
+  margin-left: 1rem;
+
+  @media screen and (max-width: 1024px) {
+    font-size: 0.9rem;
+  }
 `;
 
 const Text2 = styled.span`
@@ -171,20 +205,27 @@ const Text2 = styled.span`
   font-family: Pretendard;
   font-size: 1rem;
   font-style: normal;
-  font-weight: 400;
+  font-weight: 300;
   line-height: normal;
   justify-content: flex-end;
   margin-right: 0.5rem;
+
+  @media screen and (max-width: 1024px) {
+    font-size: 0.9rem;
+  }
 `;
 
 export const MyPage = () => {
-  const [isNotificationOn, setIsNotificationOn] = useState(true);
+  const navigate = useNavigate();
+  const [isNotificationOn, setIsNotificationOn] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   return (
     <MyPageContainer>
       <Header>
-        <BackIcon />
+        <BackButtonWrapper>
+          <BackButton />
+        </BackButtonWrapper>
         <ProfileImageContainer>
           <ProfileImage />
           <EditIcon />
@@ -196,71 +237,55 @@ export const MyPage = () => {
       </Header>
       <ContentDiv>
         <Section>
-          <InfoBox>
+          <InfoBox className="clickable" onClick={() => navigate('/mypage/subscription')}>
             <IconPlaceholder />
             <Text>요금제</Text>
             <Text2>등급</Text2>
             <IconPlaceholder />
           </InfoBox>
-          <InfoBox>
+          <LastInfoBox className="clickable" onClick={() => navigate('/mypage/point')}>
             <IconPlaceholder />
             <Text>내 포인트</Text>
             <Text2>XXXX P</Text2>
             <IconPlaceholder />
-          </InfoBox>
+          </LastInfoBox>
         </Section>
-        
         <Section>
          <SectionTitle>환경설정</SectionTitle>
           <InfoBox>
             <IconPlaceholder />
             <Text>알림</Text>
             <Text2>{isNotificationOn ? "ON" : "OFF"}</Text2>
-            <Switch>
-              <input 
-                type="checkbox" 
-                checked={isNotificationOn}
-                onChange={() => setIsNotificationOn(!isNotificationOn)}
-              />
-              <span className="slider"></span>
-            </Switch>
+            <Switch 
+              onChange={(checked) => setIsNotificationOn(checked)} 
+            />
           </InfoBox>
-          <InfoBox>
+          <LastInfoBox>
             <IconPlaceholder />
             <Text>테마</Text>
             <Text2>{isDarkMode ? "다크모드" : "라이트모드"}</Text2>
-            <Switch>
-              <input 
-                type="checkbox" 
-                checked={isDarkMode}
-                onChange={() => setIsDarkMode(!isDarkMode)}
-              />
-              <span className="slider"></span>
-            </Switch>
-          </InfoBox>
+            <Switch 
+              onChange={(checked) => setIsDarkMode(checked)} 
+            />
+          </LastInfoBox>
         </Section>
-        
         <Section>
         <SectionTitle>기타 정보</SectionTitle>
-          <InfoBox>
+          <InfoBox className="clickable">
             <IconPlaceholder />
             <Text>이용약관</Text>
             <IconPlaceholder />
           </InfoBox>
-          <InfoBox>
+          <LastInfoBox className="clickable"> 
             <IconPlaceholder />
             <Text>개인정보처리방침</Text>
             <IconPlaceholder />
-          </InfoBox>
+          </LastInfoBox>
         </Section>
-        <InfoBox>
-          <IconPlaceholder />
-          <Text>로그아웃</Text>
-          <IconPlaceholder />
-        </InfoBox>
+        <LogoutButton />
       </ContentDiv>
     </MyPageContainer>
   );
 };
 
-export default MyPage
+export default MyPage;
