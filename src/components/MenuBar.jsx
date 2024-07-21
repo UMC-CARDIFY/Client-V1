@@ -2,13 +2,13 @@ import styled from 'styled-components';
 
 const MenuBarContainer = styled.div`
   width: 15rem;
+  height: 100%; 
   border-right: 1px solid var(--B1B1B1, #B1B1B1);
   flex-shrink: 0;
   display:flex;
   flex-direction:column;
   justify-content:center;
   align-items: center;
-  height: 100%; 
     `;
 
 const MenuContainer = styled.div`
