@@ -4,6 +4,8 @@
   import ReactPaginate from 'react-paginate';
   import PropTypes from 'prop-types';
 
+  import { Desktop, Laptop, Tablet } from '../../../styles/MediaQuery';
+
 
   const FrameContainer = styled.div`
     width: 89rem;
@@ -13,6 +15,15 @@
     padding: 0 5.5rem;
     display: flex;
   flex-direction: column; 
+
+  @media (max-width: 1440px) {
+    width: 67.625rem;
+  }
+
+  @media (max-width: 1024px) {
+    width: 60rem;
+  }
+
   `
 
   const PaginationContainer = styled.div`
