@@ -8,8 +8,8 @@ import styled from 'styled-components';
 
 const Container = styled.div`
   display: flex;
-  width: 1920px;
-  height: 1080px;
+  width: 100%;
+  height: 100vh;
 `;
 
 const MainContent = styled.div`

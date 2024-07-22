@@ -1,11 +1,13 @@
 
 import styled from 'styled-components';
+import StudyCalendar from './StudyCalendar';
 
 const Container = styled.div`
   width: 28.3125rem;
   height: 46.75rem;
   flex-shrink: 0;
   background: #fff;
+  overflow: hidden;
 `;
 
 const Title = styled.div`
@@ -19,11 +21,13 @@ const Title = styled.div`
   margin-bottom: 1rem;
 `;
 
+
 const StudySuggestions = () => {
   return (
     <>
       <Title>학습 제안</Title>
       <Container>
+      <StudyCalendar />
       </Container>
     </>
   );
