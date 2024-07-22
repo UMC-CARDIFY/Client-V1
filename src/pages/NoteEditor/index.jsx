@@ -1,12 +1,11 @@
+import Editor from './components/Editor';
 
-
-export const NoteEditor = () => {
+const NoteEditor = () => {
     return (
         <div>
-
+            <Editor />
         </div>
     );
 };
-
 
 export default NoteEditor;
