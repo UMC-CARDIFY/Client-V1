@@ -37,10 +37,8 @@ position: relative;
 `;
 
 const LaptopSignUpBox = styled(SignUpBox)`
-margin:  6rem 16rem 0 16rem;
+margin: 6rem 16rem 0 16rem;
 `;
-
-
 const TabletSignUpBox = styled(SignUpBox)`
 margin: 4rem 16rem 0 16rem;
 `;
@@ -111,13 +109,13 @@ const PWeye = styled.div`
     display: flex;
     position: absolute;
     right: 1rem;
-    top: 17.7rem;
+    top: 17.5rem;
     `;
 const PWCheckeye = styled.div`
     display: flex;
     position: absolute;
     right: 1rem;
-    top: 24.9rem;
+    top: 24.6rem;
     `;
 
 const ShowEye = styled(AiFillEye)`
@@ -261,13 +259,13 @@ export const SignUp = () => {
             <InputText>비밀번호 *</InputText>
             <LaptopPasswordInput type={passwordVisible? "text" : "password"} placeholder="비밀번호 입력">
             </LaptopPasswordInput>
-            {passwordVisible? <PWeye><ShowEye onClick={()=>clickPasswordVisible()}/></PWeye> : 
+            {passwordVisible? <PWeye><ShowEye onClick={()=>clickPasswordVisible()}/></PWeye> :
             <PWeye><HiddenEye onClick={()=>clickPasswordVisible()}/></PWeye>
             }
             <InputText>비밀번호 확인 *</InputText>
             <LaptopPasswordCheckInput type={passwordCheckVisible? "text" : "password"} placeholder="비밀번호 확인">
             </LaptopPasswordCheckInput>
-            {passwordCheckVisible? <PWCheckeye><ShowEye onClick={()=>clickPasswordCheckVisible()}/></PWCheckeye> :
+            {passwordCheckVisible?  <PWCheckeye><ShowEye onClick={()=>clickPasswordCheckVisible()}/></PWCheckeye> :
             <PWCheckeye><HiddenEye onClick={()=>clickPasswordCheckVisible()}/></PWCheckeye>
             }
                         <SignUpDiv>
@@ -296,7 +294,7 @@ export const SignUp = () => {
             <InputText>비밀번호 *</InputText>
             <TabletPasswordInput type={passwordVisible? "text" : "password"} placeholder="비밀번호 입력">
             </TabletPasswordInput>
-            {passwordVisible? <PWeye><ShowEye onClick={()=>clickPasswordVisible()}/></PWeye> : 
+            {passwordVisible? <PWeye><ShowEye onClick={()=>clickPasswordVisible()}/></PWeye> :
             <PWeye><HiddenEye onClick={()=>clickPasswordVisible()}/></PWeye>
             }
             <InputText>비밀번호 확인 *</InputText>
