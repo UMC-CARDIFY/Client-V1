@@ -1,39 +1,42 @@
 import styled from 'styled-components';
 import DayBar from './DayBar';
 
+const WeeklyDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  border-radius: 0.75rem;
+  margin-top: 2rem;
+  margin-left:4rem;
+    padding: 1.5rem 1.5rem 1rem 1.5rem;
+background: var(--Grays-White, #FFF);
+box-shadow: 0px 4px 26.7px 0px rgba(0, 0, 0, 0.02), 0px 10px 60px 0px rgba(0, 74, 162, 0.03);
+
+width: 58.6875rem;
+@media (max-width: 1440px) {
+width: 41.575rem;
+@media (max-width: 1024px) {
+width: 39.5rem; 
+height: 18.375rem;
+}
+box-sizing: border-box;
+  `;
+
 const Container = styled.div`
   display: flex;
-  width: 55em;
-  height: auto;
-  padding: var(--font-size-md, 1rem) 2rem;
   flex-direction: column;
   align-items: flex-start;
-  gap: 3.5625rem;
+  gap: 1.69rem;
   background: #FFF;
-  margin-left: 8rem;  
 `;
 
 const Title = styled.div`
-  color: var(--Black, #1F1F1F);
-  font-family: Pretendard;
-  font-size: 1.25rem;
-  font-style: normal;
-  font-weight: 600;
-  line-height: normal;
-  margin-top: 4rem;  
-  margin-left: 8rem; 
+color: var(--Grays-Black, #1A1A1A);
+font-family: Pretendard;
+font-size: 1.125rem;
+font-style: normal;
+font-weight: 500;
+line-height: normal;
   margin-bottom: 0.44rem;
-`;
-
-const Description = styled.div`
-  color: #565656;
-  font-family: Pretendard;
-  font-size: 0.875rem;
-  font-style: normal;
-  font-weight: 500;
-  line-height: normal;
-  margin-left: 8rem; 
-  margin-bottom: 1rem;
 `;
 
 const Header = styled.div`
@@ -43,12 +46,12 @@ const Header = styled.div`
 `;
 
 const GraphTitle = styled.div`
-  color: #565656;
-  font-family: Pretendard;
-  font-size: 0.875rem;
-  font-style: normal;
-  font-weight: 500;
-  line-height: normal;
+color: var(--Grays-Gray1, #646464);
+font-family: Pretendard;
+font-size: 0.75rem;
+font-style: normal;
+font-weight: 400;
+line-height: normal;
 `;
 
 const Legend = styled.div`
@@ -66,16 +69,17 @@ const LegendBox = styled.div`
   width: var(--font-size-md, 1rem);
   height: var(--font-size-md, 1rem);
   flex-shrink: 0;
+  border-radius: 0.125rem;
   background: ${props => props.color};
 `;
 
 const LegendLabel = styled.div`
-  color: #565656;
-  font-family: Pretendard;
-  font-size: 0.75rem;
-  font-style: normal;
-  font-weight: 600;
-  line-height: normal;
+color: var(--Grays-Gray1, #646464);
+font-family: Pretendard;
+font-size: 0.75rem;
+font-style: normal;
+font-weight: 400;
+line-height: normal;
 `;
 
 const BarGraphContainer = styled.div`
@@ -97,19 +101,18 @@ const WeeklyStudyResults = () => {
   ];
 
   return (
-    <>
+    <WeeklyDiv>
       <Title>주간 학습 결과</Title>
-      <Description>몇 개의 플래시 카드를 학습하셨나요?</Description>
       <Container>
         <Header>
           <GraphTitle>이번 주에 XX개의 카드를 학습했습니다.</GraphTitle>
           <Legend>
             <LegendItem>
-              <LegendBox color="#D0D0D0" />
+              <LegendBox color="#E3EAF6" />
               <LegendLabel>저번주</LegendLabel>
             </LegendItem>
             <LegendItem>
-              <LegendBox color="#8E8E8E" />
+              <LegendBox color="#6A9CFC" />
               <LegendLabel>이번주</LegendLabel>
             </LegendItem>
           </Legend>
@@ -124,7 +127,7 @@ const WeeklyStudyResults = () => {
           ))}
         </BarGraphContainer>
       </Container>
-    </>
+    </WeeklyDiv>
   );
 };
 

@@ -23,13 +23,19 @@ const ContentArea = styled.div`
   display: flex;
   flex-direction: row; 
   height: 100%; 
-  background-color: #F0F0F0; 
+  background: var(--Main-BackGround, #F2F4F8);
 `;
 
 const NotesAndResults = styled.div`
-  flex: 2;
   display: flex;
   flex-direction: column;
+  margin-right: 2rem;
+  @media (max-width: 1440px) {
+    margin-right: 3.25rem;
+  }
+  @media (max-width: 1024px) {
+    margin-right: 1.5rem;
+  }
 `;
 
 const StudySuggestionsArea = styled.div`
