@@ -7,3 +7,4 @@ export { default as PointPage } from './MyPage/PointPage';
 export { default as SubscriptionPage } from './MyPage/SubscriptionPage';
 export { default as Archive } from './Archive/index';
 
+export { default as Dashboard } from './Dashboard';
