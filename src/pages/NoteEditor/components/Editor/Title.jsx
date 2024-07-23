@@ -47,7 +47,7 @@ const Title = () => {
     return (
         <TitleInput 
             contentEditable="true" 
-            data-placeholder="제목을 입력하세요"
+            data-placeholder="제목"
             ref={titleRef}
             className="empty"
         ></TitleInput>
