@@ -8,13 +8,13 @@ const EditorContainer = styled.div`
     flex: 1;
     overflow-y: auto;
     border-radius: 0.5rem;
-    padding: 3rem;
+    padding: 10rem;
     width: 100%;
     height: 100vh;
     box-sizing: border-box;
 
     @media (max-width: 48rem) {
-        padding: 0.625rem;
+        padding: 8rem;
     }
 `;
 

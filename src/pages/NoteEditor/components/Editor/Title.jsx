@@ -6,6 +6,11 @@ const TitleInput = styled.div`
     border: none;
     outline: none;
     width: 100%;
+    font-family: Pretendard;
+    font-size: 2.5rem;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
     box-sizing: border-box;
     &:focus {
         border: none;
