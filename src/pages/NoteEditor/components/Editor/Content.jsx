@@ -2,120 +2,129 @@ import { useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { EditorState } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
-import { Schema } from 'prosemirror-model';
+import { schema } from 'prosemirror-schema-basic';
 import { keymap } from 'prosemirror-keymap';
 import { baseKeymap } from 'prosemirror-commands';
 import { history } from 'prosemirror-history';
-import { defaultMarkdownParser, defaultMarkdownSerializer } from 'prosemirror-markdown';
-import { inputRules, smartQuotes, emDash, ellipsis, InputRule } from 'prosemirror-inputrules';
+import { dropCursor } from 'prosemirror-dropcursor';
+import { gapCursor } from 'prosemirror-gapcursor';
+import { inputRules, wrappingInputRule, textblockTypeInputRule } from 'prosemirror-inputrules';
+import 'prosemirror-view/style/prosemirror.css';
+import 'prosemirror-menu/style/menu.css';
+
 
 const ContentArea = styled.div`
-    flex: 1;
+  flex: 1;
+  border: none;
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+  resize: none;
+  height: calc(100vh - 8.5rem);
+  overflow-y: auto;
+
+  .ProseMirror {
     border: none;
     outline: none;
-    width: 100%;
-    box-sizing: border-box;
-    resize: none;
-    height: calc(100vh - 8.5rem);
-    overflow-y: auto;
+    border-radius: 4px;
+    min-height: 20rem;
+  }
 
-    .ProseMirror {
-        border: none;
-        outline: none;
-        border-radius: 4px;
-        min-height: 20rem;
-    }
-
-    @media (max-width: 48rem) {
-        height: calc(100vh - 6rem);
-    }
+  @media (max-width: 48rem) {
+    height: calc(100vh - 6rem);
+  }
 `;
 
-const nodes = {
-  doc: {
-    content: 'block+'
-  },
-  paragraph: {
-    group: 'block',
-    content: 'inline*',
-    toDOM: () => ['p', 0],
-    parseDOM: [{ tag: 'p' }]
-  },
-  text: {
-    group: 'inline'
-  },
-  list_item: {
-    group: 'block',
-    content: 'paragraph block*',
-    toDOM: () => ['li', 0],
-    parseDOM: [{ tag: 'li' }]
-  },
-  bullet_list: {
-    group: 'block',
-    content: 'list_item+',
-    toDOM: () => ['ul', 0],
-    parseDOM: [{ tag: 'ul' }]
-  }
-};
-
-const marks = {
-  strong: {
-    parseDOM: [{ tag: 'strong' }],
-    toDOM: () => ['strong', 0]
-  },
-  em: {
-    parseDOM: [{ tag: 'em' }],
-    toDOM: () => ['em', 0]
-  }
-};
-
-const mySchema = new Schema({ nodes, marks });
-
-function markInputRule(regexp, markType) {
-  return new InputRule(regexp, (state, match, start, end) => {
+// Define a custom markInputRule function
+function customMarkInputRule(regexp, markType) {
+  return (state, match, start) => {
     const tr = state.tr;
-    if (match[1]) {
+    if (match && match[1]) {
+      const mark = markType.create();
       const textStart = start + match[0].indexOf(match[1]);
       const textEnd = textStart + match[1].length;
-      tr.addMark(textStart, textEnd, markType.create());
-      tr.replaceWith(start, end, state.schema.text(match[1]));
+      tr.addMark(textStart, textEnd, mark);
+      tr.removeStoredMark(markType);
     }
     return tr;
-  });
+  };
 }
 
-const markRules = [
-  markInputRule(/(?:\*\*|__)([^*_]+)(?:\*\*|__)/, mySchema.marks.strong),
-  markInputRule(/(?:\*|_)([^*_]+)(?:\*|_)/, mySchema.marks.em)
-];
+// Define input rules for markdown syntax
+const headingRule = textblockTypeInputRule(
+  /^#{1,6}\s$/,
+  schema.nodes.heading,
+  match => ({ level: match[0].length })
+);
+
+const bulletListRule = wrappingInputRule(
+  /^\s*([-+*])\s$/,
+  schema.nodes.bullet_list
+);
+
+const orderedListRule = wrappingInputRule(
+  /^\s*(\d+)\.\s$/,
+  schema.nodes.ordered_list
+);
+
+const blockquoteRule = wrappingInputRule(
+  /^\s*>\s$/,
+  schema.nodes.blockquote
+);
+
+const codeBlockRule = textblockTypeInputRule(
+  /^```$/,
+  schema.nodes.code_block
+);
+
+//이거 2개가 제대로 적용이 안되어서 일단 주석처리 해두었습니다..
+//const boldRule = customMarkInputRule(/\*\*(.+)\*\*$/, schema.marks.strong);
+//const italicRule = customMarkInputRule(/\*(.+)\*$/, schema.marks.em);
 
 const Content = () => {
   const contentRef = useRef(null);
-  const viewRef = useRef(null);
 
   useEffect(() => {
     if (contentRef.current) {
       const state = EditorState.create({
-        schema: mySchema,
-        doc: defaultMarkdownParser.parse(''),
+        schema,
+        doc: schema.nodeFromJSON({
+          type: "doc",
+          content: [
+            { type: "heading", attrs: { level: 1 }, content: [{ type: "text", text: "Title 1" }] },
+            { type: "heading", attrs: { level: 2 }, content: [{ type: "text", text: "Title 2" }] },
+            { type: "heading", attrs: { level: 3 }, content: [{ type: "text", text: "Title 3" }] },
+            { type: "paragraph", content: [{ type: "text", text: "Italic text", marks: [{ type: "em" }] }, { type: "text", text: " and " }, { type: "text", text: "bold text", marks: [{ type: "strong" }] }] }
+          ]
+        }),
         plugins: [
           keymap(baseKeymap),
           history(),
-          inputRules({ rules: markRules.concat(smartQuotes, emDash, ellipsis) })
+          dropCursor(),
+          gapCursor(),
+          inputRules({
+            rules: [
+              headingRule,
+              bulletListRule,
+              orderedListRule,
+              blockquoteRule,
+              codeBlockRule,
+              {
+                match: /\*\*(.+)\*\*$/,
+                handler: customMarkInputRule(/\*\*(.+)\*\*$/, schema.marks.strong)
+              },
+              {
+                match: /\*(.+)\*$/,
+                handler: customMarkInputRule(/\*(.+)\*$/, schema.marks.em)
+              }
+            ]
+          })
         ]
       });
 
       const view = new EditorView(contentRef.current, {
         state,
-        dispatchTransaction(transaction) {
-          const newState = view.state.apply(transaction);
-          view.updateState(newState);
-          const markdown = defaultMarkdownSerializer.serialize(newState.doc);
-          console.log(markdown);
-        }
       });
-
-      viewRef.current = view;
 
       return () => {
         view.destroy();
@@ -123,7 +132,11 @@ const Content = () => {
     }
   }, []);
 
-  return <ContentArea ref={contentRef}></ContentArea>;
+  return (
+  <ContentArea>
+      <div ref={contentRef}></div>
+    </ContentArea>
+  );
 };
 
 export default Content;
