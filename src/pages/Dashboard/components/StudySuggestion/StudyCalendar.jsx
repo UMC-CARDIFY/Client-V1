@@ -3,12 +3,13 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css'; 
 import styled from 'styled-components';
 import StudyCard from './StudyCard'; 
+
 const Container = styled.div`
   flex-shrink: 0;
   background: #fff;
-  padding-left: 1.94rem;
-  padding-right: 1.94rem;
-  padding-top: 2rem;
+  padding-left: 1.5rem;
+  padding-right: 1.4rem;
+  padding-top: 1.69rem;
 `;
 
 const CalendarHeader = styled.div`
@@ -19,10 +20,12 @@ const CalendarHeader = styled.div`
 `;
 
 const CalendarTitle = styled.div`
-  color: #000;
-  font-family: Pretendard;
-  font-size: 0.9375rem;
-  font-weight: 600;
+color: var(--Grays-Black, #1A1A1A);
+font-family: Pretendard;
+font-size: 0.9375rem;
+font-style: normal;
+font-weight: 500;
+line-height: normal;
   margin-right: auto; 
 `;
 
@@ -32,31 +35,15 @@ const NavigationContainer = styled.div`
   gap: 0.5rem;
 `;
 
-const NavigationButton = styled.button`
+const NavigationButton = styled.div`
   width: 1.5rem;
   height: 1.5rem;
   flex-shrink: 0;
-  background: #F1F1F1;
   border: none;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-
-  svg {
-    width: 24px;
-    height: 24px;
-  }
-
-  rect {
-    fill: #F1F1F1;
-  }
-
-  path {
-    stroke: black;
-    strokeLinecap: round;
-    strokeLinejoin: round;
-  }
 `;
 
 const TodayButton = styled.button`
@@ -71,12 +58,14 @@ const TodayButton = styled.button`
   background: #F1F1F1;
   border: none;
   cursor: pointer;
-  color: #000;
-  text-align: center;
-  font-family: Pretendard;
-  font-size: 0.75rem;
-  font-weight: 500;
-  line-height: normal;
+  color: var(--Grays-Black, #1A1A1A);
+text-align: center;
+font-family: Pretendard;
+font-size: 0.75rem;
+font-style: normal;
+font-weight: 400;
+line-height: normal;
+border-radius: 1.3125rem;
 `;
 
 const StyledCalendar = styled(Calendar)`
@@ -88,6 +77,7 @@ const StyledCalendar = styled(Calendar)`
   .react-calendar__month-view__weekdays {
     display: flex;
     justify-content: space-between;
+    height: 2rem;
   }
   .react-calendar__month-view__weekdays__weekday {
     display: flex;
@@ -106,8 +96,8 @@ const StyledCalendar = styled(Calendar)`
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    width: 2.75rem;
-    height: 2.75rem;
+width: 2rem;
+height: 2rem;
     color: var(--Grays-Black, #1A1A1A);
     font-family: Pretendard;
     font-size: 0.75rem;
@@ -115,7 +105,6 @@ const StyledCalendar = styled(Calendar)`
     margin-top: 0.75rem;
   }
   .react-calendar__tile {
-    display: flex;
     align-items: center;
     justify-content: center;
     background: none; 
@@ -130,16 +119,21 @@ const StyledCalendar = styled(Calendar)`
     background: none; 
   }
   .react-calendar__tile--hasCards {
-    background: var(--Grays-Gray2, #B1B1B1);
-    color: black;
-    &:hover {
-      background: var(--Grays-Gray2, #B1B1B1); 
-    }
+   color: var(--Grays-Black, #1A1A1A);
+font-family: Pretendard;
+font-size: 0.75rem;
+font-style: normal;
+font-weight: 300;
+line-height: normal;
+    border-radius: 1rem;
+background: var(--Etc-Blue-Gradiant, linear-gradient(90deg, #DCE8FF 0%, #C0D6FF 100%));
   }
-  .react-calendar__tile--hasCards.react-calendar__tile--active {
-    background: var(--Grays-Gray2, #B1B1B1);
-    color: white;
+  .react-calendar__tile--hasCards.react-calendar__tile--active { /*표시된 날짜*/
+  border-radius: 1rem;
+background: var(--Main-Primary, #0F62FE);
+color: var(--Grays-White, #FFFFFF);
   }
+
   .react-calendar__month-view__days__day--neighboringMonth {
     visibility: hidden;
   }
@@ -156,7 +150,7 @@ const Divider = styled.div`
 
 const CardsContainer = styled.div`
   max-height: 21rem; 
-  overflow-y: auto; 
+  overflow-y: scroll;
 `;
 
 const formatShortWeekday = (locale, date) => {
@@ -247,23 +241,24 @@ const StudyCalendar = () => {
         <CalendarTitle>{`${viewDate.getFullYear()}년 ${viewDate.getMonth() + 1}월`}</CalendarTitle>
         <NavigationContainer>
           <NavigationButton onClick={handlePrevMonth}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <rect width="24" height="24" fill="#F1F1F1"/>
-              <path d="M14 8L10 12L14 16" stroke="black" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+  <rect width="24" height="24" rx="12" fill="#F1F1F1"/>
+  <path d="M14 8L10 12L14 16" stroke="#1A1A1A" strokeLinecap="round" strokeLinejoin="round"/>
+</svg>
           </NavigationButton>
           <TodayButton onClick={handleToday}>오늘</TodayButton>
           <NavigationButton onClick={handleNextMonth}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <rect width="24" height="24" fill="#F1F1F1"/>
-              <path d="M10 8L14 12L10 16" stroke="black" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+  <rect width="24" height="24" rx="12" fill="#F1F1F1"/>
+  <path d="M10 8L14 12L10 16" stroke="#1A1A1A" strokeLinecap="round" strokeLinejoin="round"/>
+</svg>
           </NavigationButton>
         </NavigationContainer>
       </CalendarHeader>
       <StyledCalendar
         onChange={setDate}
         value={date}
+        calendarType="gregory"
         activeStartDate={viewDate}
         onActiveStartDateChange={({ activeStartDate }) => setViewDate(activeStartDate)}
         onClickDay={handleClickDay}
