@@ -26,6 +26,8 @@ const ModalContent = styled.div`
 `;
 
 const FormField = styled.div`
+  display:flex;
+  flex-direction:column;
 `;
 
 const Input = styled.input`
@@ -35,6 +37,7 @@ const Input = styled.input`
   padding: 0 15px;
   box-sizing: border-box;
   margin-top: 7px;
+  margin-bottom: 15px;
 `;
 
 const Button = styled.button`
@@ -66,7 +69,6 @@ const Label = styled.label`
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: flex-end;
-  align-items: flex-end; 
   gap: 7px;
 `;
 
