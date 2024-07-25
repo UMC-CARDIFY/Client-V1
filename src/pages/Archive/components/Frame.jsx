@@ -3,8 +3,8 @@
   import DummyData from '../../../api/archive/dummyData';
   import ReactPaginate from 'react-paginate';
   import PropTypes from 'prop-types';
-
-  import { Desktop, Laptop, Tablet } from '../../../styles/MediaQuery';
+  
+  import FolderModal from './FolderModal';
 
 
   const FrameContainer = styled.div`
@@ -114,6 +114,11 @@
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 6;
 
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false); 
+  const [initialData, setInitialData] = useState(null); 
+
+
   // 필터링된 데이터 계산
   const filteredData = Data.filter((item) => {
     if (selectedTab === '폴더') {
@@ -127,12 +132,40 @@
   // 현재 페이지에 표시할 데이터 계산
   const currentData = filteredData.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
   
-    // 페이지 변경 핸들러
     const handlePageChange = ({ selected }) => {
       setCurrentPage(selected);
     };
 
-    console.log(selectedTab )
+const openAddModal = () => {
+  setIsEditMode(false);
+  setInitialData({ folderName: '', folderDescription: '' });
+  setModalOpen(true);
+};
+
+console.log(selectedTab);
+
+//Modal
+
+const openEditModal = (data) => {
+  setIsEditMode(true);
+  setInitialData(data);
+  setModalOpen(true);
+};
+
+const closeModal = () => {
+  setModalOpen(false);
+};
+
+
+    const handleFormSubmit = (formData) => {
+      if (isEditMode) {
+        // 폴더 수정 로직
+        console.log('폴더 수정:', formData);
+      } else {
+        // 폴더 추가 로직
+        console.log('폴더 추가:', formData);
+      }
+    };
 
 
 
@@ -142,7 +175,7 @@
         <div>
           <div>정렬 드롭다운</div>
           <div>필터링 드롭다운</div>
-          <div>폴더 추가 드롭다운</div>
+          <button onClick={openAddModal}>폴더 추가</button>
         </div>
         <div>
         {currentData.map((item, index) => (
@@ -170,6 +203,7 @@
                   <div>최근 수정일</div>
                 </div>
                 <div>더보기</div>
+                <button onClick={() => openEditModal(item)}>수정</button>
               </RightData>
             </FolderData>
           ) : (
@@ -225,6 +259,13 @@
             pageClassName={'page-item'}
           />
         </PaginationContainer>
+        <FolderModal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        onSubmit={handleFormSubmit}
+        initialData={initialData}
+        isEditMode={isEditMode}
+      />
 
       </FrameContainer>
     )
