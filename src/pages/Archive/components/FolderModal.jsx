@@ -71,13 +71,16 @@ const Label = styled.label`
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: flex-end;
+  align-items: flex-end; 
   gap: 7px;
 `;
 
 
 const ColorContainer = styled.div`
-  display:flex;
+  display: flex;
   flex-direction: row;
+  justify-content: center;
+  align-items: center;     
 `;
 
 const Color = styled.div`
@@ -85,8 +88,8 @@ const Color = styled.div`
   grid-template-columns: repeat(5, 1fr); 
   grid-template-rows: repeat(2, 1fr); 
   gap: 20px;
-  width: 100%;
   height: 100%;
+  margin-top: 11px;
 `;
 
 const Circle = styled.div`
@@ -100,6 +103,7 @@ const Line= styled.div`
   width: 1px;
   height: 50px;
   background: #E9E9E9;
+  margin: 0 24px 0 20px;
 `;
 
 const FolderModal = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => {
