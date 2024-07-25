@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import FolderIcon from './FolderIcon';
 import Circle from './Circle';
+import PropTypes from 'prop-types';
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -156,6 +157,17 @@ const FolderModal = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => 
       </ModalContent>
     </ModalOverlay>
   );
+};
+
+FolderModal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  initialData: PropTypes.shape({
+    folderName: PropTypes.string,
+    selectedColor: PropTypes.string,
+  }),
+  isEditMode: PropTypes.bool.isRequired,
 };
 
 export default FolderModal;
