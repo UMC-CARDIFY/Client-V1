@@ -5,6 +5,7 @@ import WeeklyStudyResults from './components/WeeklyStudy/WeeklyStudyResults';
 import StudySuggestions from './components/StudySuggestion/StudySuggestions';
 
 import styled from 'styled-components';
+import { useState } from 'react';
 
 const Container = styled.div`
   display: flex;
@@ -21,7 +22,7 @@ const MainContent = styled.div`
 
 const ContentArea = styled.div`
   display: flex;
-  flex-direction: row; 
+  flex-direction: row;
   height: 100%; 
   background: var(--Main-BackGround, #F2F4F8);
 `;
@@ -43,11 +44,18 @@ const StudySuggestionsArea = styled.div`
 `;
 
 export const Dashboard = () => {
+  const [selectedTab, setSelectedTab] = useState('폴더'); // 초기 선택된 탭 설정
+
   return (
     <Container>
       <MenuBar />
       <MainContent>
-        <TopBar />
+        <TopBar 
+          title="대시보드" 
+          subtitle="카디파이 한눈에 보기"
+          selectedTab={selectedTab}
+          setSelectedTab={setSelectedTab}
+        />
         <ContentArea>
           <NotesAndResults>
             <RecentNotes />
