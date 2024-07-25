@@ -62,7 +62,7 @@ const mySchema = new Schema({
 });
 
 // Custom mark input rule function
-function markInputRule(regexp, markType) {
+function markInputRule(regexp, markType, leadingLength, trailingLength) {
   return new InputRule(regexp, (state, match, start, end) => {
     const { tr } = state;
     if (match && match[1] && markType) {
@@ -70,21 +70,16 @@ function markInputRule(regexp, markType) {
       const textEnd = textStart + match[1].length;
       const text = match[1];
 
-      // Ensure the original __, *, or ~ are removed
-      const isBold = regexp.source.includes('__');
-      const isItalic = regexp.source.includes('*');
-      const isStrikethrough = regexp.source.includes('~');
-      const offset = isBold ? 2 : isItalic || isStrikethrough ? 1 : 0;
+      // Ensure the original __, *, ~~, or ~ are removed
+      tr.delete(end - trailingLength+1, end); // Remove trailing syntax
+      tr.delete(start, start + leadingLength); // Remove leading syntax
 
-      console.log(textStart, text)
+      // Adjust the start and end positions after deletion
+      const adjustedTextStart = textStart - leadingLength;
+      const adjustedTextEnd = textEnd - leadingLength;
 
-      // Remove the matched text from the document
-      tr.delete(start, start + offset);
-      tr.delete(end - offset, end);
-
-      // Replace the match with the inner text and add the mark
-      //tr.insertText(text, textStart, textEnd);
-      tr.addMark(textStart-offset, textEnd-offset, markType.create());
+      // Add the mark to the inner text
+      tr.addMark(adjustedTextStart, adjustedTextEnd, markType.create());
 
       return tr;
     }
@@ -119,11 +114,11 @@ const codeBlockRule = textblockTypeInputRule(
   mySchema.nodes.code_block
 );
 
-// Updated regex for bold, italic, and strikethrough rules
-const boldRule = markInputRule(/__(.+)__$/, mySchema.marks.strong);
-const italicRule = markInputRule(/\*(.+)\*$/, mySchema.marks.em);
-const strikethroughRule = markInputRule(/~~(.+)~~/g, mySchema.marks.strikethrough);
-const underlineRule = markInputRule(/~(.+)~$/, mySchema.marks.underline);
+// Updated regex for bold, italic, strikethrough, and underline rules
+const boldRule = markInputRule(/__(.+)__/g, mySchema.marks.strong, 2, 2);
+const italicRule = markInputRule(/\*(.+)\*/g, mySchema.marks.em, 1, 1);
+const strikethroughRule = markInputRule(/~~(.+)~~/g, mySchema.marks.strikethrough, 2, 2);
+const underlineRule = markInputRule(/~(.+)~/g, mySchema.marks.underline, 1, 1);
 
 const Content = () => {
   const contentRef = useRef(null);
