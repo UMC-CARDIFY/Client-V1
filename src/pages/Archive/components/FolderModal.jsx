@@ -24,48 +24,42 @@ const ModalContent = styled.div`
   box-sizing: border-box;
 `;
 
-
 const FormField = styled.div`
 `;
 
 const Input = styled.input`
   width: 270px;
-  height: 100%;
+  height: 39px;
   border: 1px solid #E7E7E7; 
   padding: 0 15px;
   box-sizing: border-box;
-  margin-bottom: 15px;
   margin-top: 7px;
-
 `;
 
 const Button = styled.button`
   cursor: pointer;
-  padding: 6px var(--font-size-sm, 14px);
+  padding: 6px 14px;
   border: 1px solid #DDD;
-  justify-content: center;
-  align-items: center;
-  background:white;
+  background: white;
   font-size: 12px;
   font-weight: 500; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const Title = styled.div`
-  color: var(--Grays-Black, #1A1A1A);
+  color: #1A1A1A;
   font-size: 14px;
-  font-style: normal;
   font-weight: 600;
-  line-height: normal;
   margin-bottom: 16px;
 `;
 
 const Label = styled.label`
-  color: var(--Grays-Black, #1A1A1A);
+  color: #1A1A1A;
   font-family: Pretendard;
   font-size: 12px;
-  font-style: normal;
   font-weight: 400;
-  line-height: normal;
 `;
 
 const ButtonContainer = styled.div`
@@ -74,7 +68,6 @@ const ButtonContainer = styled.div`
   align-items: flex-end; 
   gap: 7px;
 `;
-
 
 const ColorContainer = styled.div`
   display: flex;
@@ -90,16 +83,32 @@ const Color = styled.div`
   grid-template-columns: repeat(5, 1fr); 
   grid-template-rows: repeat(2, 1fr); 
   gap: 12px 20px;
+  flex: 1;
 `;
 
 const Circle = styled.div`
-  width:18px;
-  height:18px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
   background-color: ${props => props.bgColor || 'gray'};
+  position: relative;
+  cursor: pointer;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 8px;
+    height: 8px;
+    background-color: ${props => props.isSelected ? 'white' : 'transparent'};
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+  }
 `;
 
-const Line= styled.div`
+const Line = styled.div`
   width: 1px;
   height: 50px;
   background: #E9E9E9;
@@ -109,6 +118,7 @@ const Line= styled.div`
 const FolderModal = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => {
   const [folderName, setFolderName] = useState(initialData?.folderName || '');
   const [folderDescription, setFolderDescription] = useState(initialData?.folderDescription || '');
+  const [selectedColor, setSelectedColor] = useState(null);
 
   useEffect(() => {
     if (initialData) {
@@ -118,8 +128,12 @@ const FolderModal = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => 
   }, [initialData]);
 
   const handleSubmit = () => {
-    onSubmit({ folderName, folderDescription });
+    onSubmit({ folderName, folderDescription, selectedColor });
     onClose();
+  };
+
+  const handleCircleClick = (color) => {
+    setSelectedColor(color);
   };
 
   if (!isOpen) return null;
@@ -140,21 +154,20 @@ const FolderModal = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => 
           <Label>색상</Label>
           <ColorContainer>
             <Color>
-              <Circle bgColor="#6698F5" />
-              <Circle bgColor="#5AA6C7" />
-              <Circle bgColor="#949AEC" />
-              <Circle bgColor="#A9A9A9" />
-              <Circle bgColor="#77CEC6" />
-              <Circle bgColor="#AECA99" />
-              <Circle bgColor="#FDB456" />
-              <Circle bgColor="#D49AE9" />
-              <Circle bgColor="#FD855F" />
-              <Circle bgColor="#ED83B1" />
+              <Circle bgColor="#6698F5" isSelected={selectedColor === "#6698F5"} onClick={() => handleCircleClick("#6698F5")} />
+              <Circle bgColor="#5AA6C7" isSelected={selectedColor === "#5AA6C7"} onClick={() => handleCircleClick("#5AA6C7")} />
+              <Circle bgColor="#949AEC" isSelected={selectedColor === "#949AEC"} onClick={() => handleCircleClick("#949AEC")} />
+              <Circle bgColor="#A9A9A9" isSelected={selectedColor === "#A9A9A9"} onClick={() => handleCircleClick("#A9A9A9")} />
+              <Circle bgColor="#77CEC6" isSelected={selectedColor === "#77CEC6"} onClick={() => handleCircleClick("#77CEC6")} />
+              <Circle bgColor="#AECA99" isSelected={selectedColor === "#AECA99"} onClick={() => handleCircleClick("#AECA99")} />
+              <Circle bgColor="#FDB456" isSelected={selectedColor === "#FDB456"} onClick={() => handleCircleClick("#FDB456")} />
+              <Circle bgColor="#D49AE9" isSelected={selectedColor === "#D49AE9"} onClick={() => handleCircleClick("#D49AE9")} />
+              <Circle bgColor="#FD855F" isSelected={selectedColor === "#FD855F"} onClick={() => handleCircleClick("#FD855F")} />
+              <Circle bgColor="#ED83B1" isSelected={selectedColor === "#ED83B1"} onClick={() => handleCircleClick("#ED83B1")} />
             </Color>
             <Line />
             <FolderIcon />
           </ColorContainer>
-
         </FormField>
         <ButtonContainer>
           <Button onClick={onClose}>취소</Button>
