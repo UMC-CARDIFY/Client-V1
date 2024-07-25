@@ -19,7 +19,7 @@ const ModalContent = styled.div`
   background: white;
   padding: 32px 24px;
   width: 318px;
-  height: 296px;
+  height: 296px;  
   position: relative;
   box-sizing: border-box;
 `;
@@ -30,7 +30,7 @@ const FormField = styled.div`
 
 const Input = styled.input`
   width: 270px;
-  height: 39px;
+  height: 100%;
   border: 1px solid #E7E7E7; 
   padding: 0 15px;
   box-sizing: border-box;
@@ -81,15 +81,15 @@ const ColorContainer = styled.div`
   flex-direction: row;
   justify-content: center;
   align-items: center;     
+  margin-top: 11px;
+  margin-bottom: 25px;
 `;
 
 const Color = styled.div`
   display: grid;
   grid-template-columns: repeat(5, 1fr); 
   grid-template-rows: repeat(2, 1fr); 
-  gap: 20px;
-  height: 100%;
-  margin-top: 11px;
+  gap: 12px 20px;
 `;
 
 const Circle = styled.div`
