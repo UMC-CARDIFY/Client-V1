@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import Title from './Title';
 import Content from './Content';
+import ToolBar from './ToolBar';
 
 const EditorContainer = styled.div`
     display: flex;
@@ -19,6 +20,7 @@ const EditorContainer = styled.div`
     @media (max-width: 48rem) {
         padding: 0.625rem;
     }
+        position: relative;
 `;
 
 const Divider = styled.div`
@@ -36,6 +38,7 @@ const Editor = () => {
             <Title />
             <Divider />
             <Content />
+            <ToolBar />
         </EditorContainer>
     );
 };
