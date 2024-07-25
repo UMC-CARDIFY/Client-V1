@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import FolderIcon from './FolderIcon';
+import Circle from './Circle';
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -86,28 +87,6 @@ const Color = styled.div`
   flex: 1;
 `;
 
-const Circle = styled.div`
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background-color: ${props => props.bgColor || 'gray'};
-  position: relative;
-  cursor: pointer;
-
-  &::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 8px;
-    height: 8px;
-    background-color: ${props => props.isSelected ? 'white' : 'transparent'};
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 1;
-  }
-`;
-
 const Line = styled.div`
   width: 1px;
   height: 50px;
@@ -117,18 +96,17 @@ const Line = styled.div`
 
 const FolderModal = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => {
   const [folderName, setFolderName] = useState(initialData?.folderName || '');
-  const [folderDescription, setFolderDescription] = useState(initialData?.folderDescription || '');
-  const [selectedColor, setSelectedColor] = useState(null);
+  const [selectedColor, setSelectedColor] = useState(initialData?.selectedColor || '#6698F5');
 
   useEffect(() => {
     if (initialData) {
       setFolderName(initialData.folderName || '');
-      setFolderDescription(initialData.folderDescription || '');
+      setSelectedColor(initialData.selectedColor || '#6698F5');
     }
   }, [initialData]);
 
   const handleSubmit = () => {
-    onSubmit({ folderName, folderDescription, selectedColor });
+    onSubmit({ folderName, selectedColor });
     onClose();
   };
 
@@ -166,7 +144,7 @@ const FolderModal = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => 
               <Circle bgColor="#ED83B1" isSelected={selectedColor === "#ED83B1"} onClick={() => handleCircleClick("#ED83B1")} />
             </Color>
             <Line />
-            <FolderIcon />
+            <FolderIcon fill={selectedColor} />
           </ColorContainer>
         </FormField>
         <ButtonContainer>

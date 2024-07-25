@@ -138,9 +138,10 @@
 
 const openAddModal = () => {
   setIsEditMode(false);
-  setInitialData({ folderName: '', folderDescription: '' });
+  setInitialData({ folderName: '', selectedColor: '#6698F5'});
   setModalOpen(true);
 };
+
 
 console.log(selectedTab);
 
