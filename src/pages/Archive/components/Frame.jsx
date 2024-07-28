@@ -301,19 +301,23 @@ const Frame = ({ selectedTab }) => {
     <FrameBackground>
       <FrameContainer>
         <TitleAll style={{ paddingTop: '3rem' }}>{selectedTab === '폴더' ? '모든 폴더' : '모든 노트'}</TitleAll>
-        <SelectFilterDiv>
+          <SelectFilterDiv>
           <SortDiv>
             <SortIcon />
             <div>정렬</div>
           </SortDiv>
-          <FiteringDiv>
-            <FilteringIcon />
-            <div>필터링 </div>
-          </FiteringDiv>
-          <AddFolderDiv onClick={openAddModal}>
-            <AddFolderIcon />
-            <div>폴더 추가</div>
-          </AddFolderDiv>
+          {selectedTab === '폴더' && (
+            <>
+            <FiteringDiv>
+                <FilteringIcon />
+                <div>필터링</div>
+              </FiteringDiv>
+              <AddFolderDiv onClick={openAddModal}>
+                <AddFolderIcon />
+                <div>폴더 추가</div>
+              </AddFolderDiv>
+            </>
+          )}
         </SelectFilterDiv>
         <Contour />
 
@@ -436,7 +440,7 @@ const Frame = ({ selectedTab }) => {
           onClose={closeDeleteModal}
           onConfirm={handleDeleteConfirm}
           type={deleteItem ? deleteItem.type : ''}
-          itemName={deleteItem ? deleteItem.folderName || deleteItem.noteTitle : ''}
+          itemName={deleteItem ? (deleteItem.type === 'folder' ? deleteItem.folderName : deleteItem.noteTitle) : ''}
         />
       </FrameContainer>
     </FrameBackground>
