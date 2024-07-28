@@ -30,9 +30,12 @@ align-items: center;
 `;
 
 const DeleteIcon = styled.div`
-width: 1.5rem;
-height: 1.5rem;
-background: url(<path-to-image>) lightgray 50% / cover no-repeat;
+width: var(--line-height-2xs, 1.25rem);
+height: var(--line-height-2xs, 1.25rem);
+flex-shrink: 0;
+stroke-width: 2px;
+stroke: var(--Semantic-Alert, #EA1215);
+
 `;
 
 const ModalTitle = styled.h2`
@@ -86,7 +89,9 @@ const DeleteConfirmModal = ({ isOpen, onClose, onConfirm, type, itemName }) => {
         {type === 'folder' && (
           <>
             <ModalTitleDiv>
-            <DeleteIcon />
+            <DeleteIcon><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22" fill="none">
+  <path d="M11 13V5M11 17V15M11 1C5.477 1 1 5.477 1 11C1 16.523 5.477 21 11 21C16.523 21 21 16.523 21 11C21 5.477 16.523 1 11 1Z" stroke="#EA1215" strokeWidth="2"/>
+</svg></DeleteIcon>
             <ModalTitle>폴더 삭제</ModalTitle>
             </ModalTitleDiv>
             <ModalMessage>
@@ -98,7 +103,9 @@ const DeleteConfirmModal = ({ isOpen, onClose, onConfirm, type, itemName }) => {
         {type === 'note' && (
           <>
           <ModalTitleDiv>
-            <DeleteIcon />
+          <DeleteIcon><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22" fill="none">
+  <path d="M11 13V5M11 17V15M11 1C5.477 1 1 5.477 1 11C1 16.523 5.477 21 11 21C16.523 21 21 16.523 21 11C21 5.477 16.523 1 11 1Z" stroke="#EA1215" strokeWidth="2"/>
+</svg></DeleteIcon>
             <ModalTitle>노트 삭제</ModalTitle>
             </ModalTitleDiv>
             <ModalMessage>
