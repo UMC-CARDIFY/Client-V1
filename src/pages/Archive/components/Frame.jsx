@@ -6,22 +6,47 @@
   
   import FolderModal from './FolderModal';
 
+  const FrameBackground = styled.div`
+    background: #F9F9F9;
+    display: flex;
+width: 105rem;
+height: 55.75rem;
+padding: var(--UI-Component-None, 5rem) var(--UI-Component-None, 8rem);
+justify-content: center;
+align-items: center;
+flex-shrink: 0;
+background: #F0F0F0;
+
+@media (max-width: 1440px) {
+width: 77.625rem;
+height: 53.375rem;
+padding: var(--UI-Component-None, 5.5rem) var(--UI-Component-None, 5rem);
+}
+
+@media (max-width: 1200px) {
+width: 68rem;
+height: 41.8125rem;
+padding: var(--UI-Component-None, 3.5rem) var(--UI-Component-None, 4rem);
+}
+  `;
 
   const FrameContainer = styled.div`
     width: 89rem;
-    height: 45.75rem;
-    background: gray;
+    height: 50.75rem;
     margin: 5rem auto;
     padding: 0 5.5rem;
     display: flex;
   flex-direction: column; 
+  background: #FFF;
+box-shadow: 0px 4px 26.7px 0px rgba(0, 0, 0, 0.02), 0px 10px 60px 0px rgba(0, 74, 162, 0.03);
 
   @media (max-width: 1440px) {
     width: 67.625rem;
   }
 
-  @media (max-width: 1024px) {
+  @media (max-width: 1200px) {
     width: 60rem;
+    height: 39.8125rem;
   }
 
   `
@@ -31,8 +56,8 @@
     justify-content: center;
     margin-bottom: 1rem;
     margin-top: auto; 
-    align-self: flex-end; /* 하단에 정렬 */
-    width: 100%;
+    align-items: center;
+    gap: 0.5rem;
 
     .pagination {
       display: flex;
@@ -44,21 +69,38 @@
       margin: 0 5px;
 
       .page-link {
+        display: flex;
+        width: 1.5rem;
+        height: 1.5rem;
+        justify-content: center;
+        align-items: center;
+        flex-shrink: 0;
+
         cursor: pointer;
         padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        color: #007bff;
         text-decoration: none;
+
+        color: var(--Grays-Gray3, #B1B1B1);
+        font-family: Pretendard;
+        font-size: 0.9375rem;
+        font-style: normal;
+        font-weight: 600;
+        line-height: normal;
       }
 
       &.active .page-link {
-        background-color: #007bff;
-        color: white;
-        border-color: #007bff;
+      background: #EAEAEA;
+      color: var(--Grays-Black, #1A1A1A);
       }
     }
+
   `;
+
+  const PreviousBtn = styled.div`
+  width: 1.5rem;
+height: 1.5rem;
+flex-shrink: 0;
+`;
 
   const FolderData = styled.div`
     display: flex;
@@ -102,6 +144,15 @@
   align-items: center;
   gap: 1.5rem;
   width: 100%;
+`;
+
+const TitleAll = styled.div`
+color: var(--Grays-Black, #1A1A1A);
+font-family: Pretendard;
+font-size: 1.25rem;
+font-style: normal;
+font-weight: 600;
+line-height: normal;
 `;
 
 
@@ -171,8 +222,9 @@ const closeModal = () => {
 
 
     return (
+      <FrameBackground>
       <FrameContainer>
-        <div style={{ paddingTop: '3rem' }}>{selectedTab === '폴더' ? '모든 폴더' : '모든 노트'}</div>
+        <TitleAll style={{ paddingTop: '3rem' }}>{selectedTab === '폴더' ? '모든 폴더' : '모든 노트'}</TitleAll>
         <div>
           <div>정렬 드롭다운</div>
           <div>필터링 드롭다운</div>
@@ -238,8 +290,14 @@ const closeModal = () => {
         </div>
         <PaginationContainer>
           <ReactPaginate
-            previousLabel={'<'}
-            nextLabel={'>'}
+            previousLabel={<PreviousBtn>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+  <path d="M14 8L10 12.5L14 17" stroke="#B1B1B1" strokeWidth="1.5" strokeLinecap="square"/>
+</svg>
+            </PreviousBtn>}
+            nextLabel={<PreviousBtn><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M10 8L14 12.5L10 17" stroke="#B1B1B1" strokeWidth="1.5" strokeLinecap="square"/>
+            </svg></PreviousBtn>}
             breakLabel={'...'}
             breakClassName={'break-me'}
             pageCount={Math.ceil(filteredData.length / itemsPerPage)}
@@ -269,6 +327,7 @@ const closeModal = () => {
       />
 
       </FrameContainer>
+      </FrameBackground>
     )
   }
 
