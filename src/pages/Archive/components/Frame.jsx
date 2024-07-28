@@ -6,6 +6,7 @@
   
   import FolderModal from './FolderModal';
   import MoreDiv from './MoreDiv';
+  import DeleteConfirmModal from './DeleteConfirmModal';
 
   const FrameBackground = styled.div`
     background: #F9F9F9;
@@ -213,7 +214,6 @@ magin-bottom: 1rem;
 `;
 
 
-
 const Frame = ({ selectedTab }) => {
   const Data = DummyData();
   const [currentPage, setCurrentPage] = useState(0);
@@ -222,6 +222,8 @@ const Frame = ({ selectedTab }) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [initialData, setInitialData] = useState(null);
   const [activeMoreDiv, setActiveMoreDiv] = useState(null);
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [deleteItem, setDeleteItem] = useState(null);
 
   const filteredData = Data.filter((item) => {
     if (selectedTab === '폴더') {
@@ -260,6 +262,21 @@ const Frame = ({ selectedTab }) => {
     } else {
       console.log('폴더 추가:', formData);
     }
+  };
+
+  const openDeleteModal = (item) => {
+    setDeleteItem(item);
+    setDeleteModalOpen(true);
+  };
+
+  const closeDeleteModal = () => {
+    setDeleteModalOpen(false);
+    setDeleteItem(null);
+  };
+
+  const handleDeleteConfirm = () => {
+    console.log('삭제:', deleteItem);
+    closeDeleteModal();
   };
 
   return (
@@ -311,7 +328,7 @@ const Frame = ({ selectedTab }) => {
                   <MoreDiv
                     type="folder"
                     onEditClick={() => openEditModal(item)}
-                    onDeleteClick={() => alert('Delete folder functionality will be implemented here.')}
+                    onDeleteClick={() => openDeleteModal({ ...item, type: 'folder' })}
                     isActive={activeMoreDiv === index}
                     onMoreClick={() => setActiveMoreDiv(activeMoreDiv === index ? null : index)}
                   />
@@ -342,7 +359,7 @@ const Frame = ({ selectedTab }) => {
                   </div>
                   <MoreDiv
                     type="note"
-                    onDeleteClick={() => alert('Delete note functionality will be implemented here.')}
+                    onDeleteClick={() => openDeleteModal({ ...item, type: 'note' })}
                     isActive={activeMoreDiv === index}
                     onMoreClick={() => setActiveMoreDiv(activeMoreDiv === index ? null : index)}
                   />
@@ -393,6 +410,13 @@ const Frame = ({ selectedTab }) => {
           onSubmit={handleFormSubmit}
           initialData={initialData}
           isEditMode={isEditMode}
+        />
+        <DeleteConfirmModal
+          isOpen={isDeleteModalOpen}
+          onClose={closeDeleteModal}
+          onConfirm={handleDeleteConfirm}
+          type={deleteItem ? deleteItem.type : ''}
+          itemName={deleteItem ? deleteItem.folderName || deleteItem.noteTitle : ''}
         />
       </FrameContainer>
     </FrameBackground>

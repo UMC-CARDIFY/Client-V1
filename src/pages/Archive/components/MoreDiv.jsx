@@ -1,4 +1,3 @@
-// src/components/MoreDiv.js
 import React from 'react';
 import styled from 'styled-components';
 
