@@ -18,10 +18,21 @@ width: 29.5rem;
 padding: 2rem 2rem 1.5rem 2rem;
 flex-direction: column;
 align-items: flex-start;
-gap: 1rem;
 background: var(--Grays-White, #FFF);
 box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.04), 0px 4px 20px 0px rgba(0, 0, 0, 0.06);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+`;
+
+const ModalTitleDiv = styled.div`
+display: flex;
+gap: 0.75rem;
+align-items: center;
+`;
+
+const DeleteIcon = styled.div`
+width: 1.5rem;
+height: 1.5rem;
+background: url(<path-to-image>) lightgray 50% / cover no-repeat;
 `;
 
 const ModalTitle = styled.h2`
@@ -35,7 +46,6 @@ line-height: normal;
 
 const ModalMessage = styled.p`
 width: 25.5rem;
-  margin-bottom: 1.5rem;
   color: var(--Grays-Black, #1A1A1A);
 font-family: Pretendard;
 font-size: 1rem;
@@ -46,9 +56,10 @@ line-height: normal;
 
 const ModalButtonDiv = styled.div`
 display: flex;
-width: 25.5rem;
+width: 100%;
 justify-content: flex-end;
 align-items: center;
+  margin-top: 1.5rem;
 `;
 
 const ModalButton = styled.button`
@@ -74,7 +85,10 @@ const DeleteConfirmModal = ({ isOpen, onClose, onConfirm, type, itemName }) => {
       <ModalContainer>
         {type === 'folder' && (
           <>
+            <ModalTitleDiv>
+            <DeleteIcon />
             <ModalTitle>폴더 삭제</ModalTitle>
+            </ModalTitleDiv>
             <ModalMessage>
               '{itemName}'을 삭제하시겠습니까?<br />
               이 폴더 안의 노트도 함께 삭제됩니다.
@@ -83,7 +97,10 @@ const DeleteConfirmModal = ({ isOpen, onClose, onConfirm, type, itemName }) => {
         )}
         {type === 'note' && (
           <>
+          <ModalTitleDiv>
+            <DeleteIcon />
             <ModalTitle>노트 삭제</ModalTitle>
+            </ModalTitleDiv>
             <ModalMessage>
               '{itemName}'을 삭제하시겠습니까?<br />
               이 노트 안의 플래시카드도 함께 삭제됩니다.

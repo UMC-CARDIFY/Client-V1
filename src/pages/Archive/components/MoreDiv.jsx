@@ -44,6 +44,7 @@ const MoreButton = styled.div`
   cursor: pointer;
 `;
 
+// eslint-disable-next-line react/display-name
 const MoreDiv = forwardRef(({ type, onEditClick, onDeleteClick, isActive, onMoreClick }, ref) => {
   return (
     <MoreDivContainer ref={ref}>
