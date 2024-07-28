@@ -1,4 +1,5 @@
-import React from 'react';
+// src/components/MoreDiv.js
+import React, { forwardRef } from 'react';
 import styled from 'styled-components';
 
 const MoreDivContainer = styled.div`
@@ -43,9 +44,9 @@ const MoreButton = styled.div`
   cursor: pointer;
 `;
 
-const MoreDiv = ({ type, onEditClick, onDeleteClick, isActive, onMoreClick }) => {
+const MoreDiv = forwardRef(({ type, onEditClick, onDeleteClick, isActive, onMoreClick }, ref) => {
   return (
-    <MoreDivContainer>
+    <MoreDivContainer ref={ref}>
       <MoreButton onClick={onMoreClick}>
         <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none">
           <path
@@ -64,6 +65,6 @@ const MoreDiv = ({ type, onEditClick, onDeleteClick, isActive, onMoreClick }) =>
       )}
     </MoreDivContainer>
   );
-};
+});
 
 export default MoreDiv;

@@ -1,4 +1,4 @@
-  import { useState } from 'react';
+  import { useState, useEffect, useRef } from 'react';
   import styled from 'styled-components'
   import DummyData from '../../../api/archive/dummyData';
   import ReactPaginate from 'react-paginate';
@@ -214,6 +214,7 @@ magin-bottom: 1rem;
 `;
 
 
+
 const Frame = ({ selectedTab }) => {
   const Data = DummyData();
   const [currentPage, setCurrentPage] = useState(0);
@@ -224,6 +225,21 @@ const Frame = ({ selectedTab }) => {
   const [activeMoreDiv, setActiveMoreDiv] = useState(null);
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [deleteItem, setDeleteItem] = useState(null);
+
+  const moreDivRefs = useRef([]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (moreDivRefs.current.every(ref => ref && !ref.contains(event.target))) {
+        setActiveMoreDiv(null);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const filteredData = Data.filter((item) => {
     if (selectedTab === '폴더') {
@@ -250,6 +266,7 @@ const Frame = ({ selectedTab }) => {
     setIsEditMode(true);
     setInitialData(data);
     setModalOpen(true);
+    setActiveMoreDiv(null);  // MoreDiv를 비활성화
   };
 
   const closeModal = () => {
@@ -267,6 +284,7 @@ const Frame = ({ selectedTab }) => {
   const openDeleteModal = (item) => {
     setDeleteItem(item);
     setDeleteModalOpen(true);
+    setActiveMoreDiv(null);  // MoreDiv를 비활성화
   };
 
   const closeDeleteModal = () => {
@@ -326,6 +344,7 @@ const Frame = ({ selectedTab }) => {
                   </div>
 
                   <MoreDiv
+                    ref={el => moreDivRefs.current[index] = el}
                     type="folder"
                     onEditClick={() => openEditModal(item)}
                     onDeleteClick={() => openDeleteModal({ ...item, type: 'folder' })}
@@ -358,6 +377,7 @@ const Frame = ({ selectedTab }) => {
                     <div>최근 수정일</div>
                   </div>
                   <MoreDiv
+                    ref={el => moreDivRefs.current[index] = el}
                     type="note"
                     onDeleteClick={() => openDeleteModal({ ...item, type: 'note' })}
                     isActive={activeMoreDiv === index}
