@@ -12,9 +12,8 @@ const ToolBarContainer = styled.div`
     border: 1.25px solid #D9D9D9;
     background: #FFF;
     box-shadow: 0px 5px 6px 0px rgba(0, 0, 0, 0.05);
-    position: absolute;
-    bottom: 2rem;
-    left: 25%;
+    position: fixed;
+    bottom: 1.5rem;
     `;
 
 const ToolBarItem = styled.div`
@@ -24,7 +23,8 @@ const ToolBarItem = styled.div`
     cursor: pointer;
 `;
 
-const ToolBar = () => {
+
+const ToolBar = ({ onAddCoverPanel }) => {
     const [showMoreOptions, setShowMoreOptions] = useState(false);
     const moreOptionsRef = useRef(null);
 
@@ -36,7 +36,13 @@ const ToolBar = () => {
         console.log('boldText');
     }
 
-    const toggleMoreOptions = () => {
+    const onItemClick = (item) => {
+        if (item === '가림판') {
+            onAddCoverPanel();
+        }
+    };
+  
+      const toggleMoreOptions = () => {
         setShowMoreOptions(!showMoreOptions);
     }
 
@@ -53,21 +59,24 @@ const ToolBar = () => {
         };
     }, []);
 
+
+
     return (
-        <>
-            <ToolBarContainer>
-                <ToolBarItem onClick={createWordCard}>단어</ToolBarItem>
-                <ToolBarItem>빈칸</ToolBarItem>
-                <ToolBarItem>멀티</ToolBarItem>
-                <ToolBarItem>가림판</ToolBarItem>
-                <ToolBarItem>제목 1</ToolBarItem>
-                <ToolBarItem onClick={boldText}>굵게</ToolBarItem>
-                <ToolBarItem>글씨 색</ToolBarItem>
-                <ToolBarItem>형광펜 색</ToolBarItem>
-                <ToolBarItem onClick={toggleMoreOptions}>더보기</ToolBarItem>
+      <>
+        <ToolBarContainer>
+            <ToolBarItem onClick={()=>createWordCard()}>단어</ToolBarItem>
+            <ToolBarItem>빈칸</ToolBarItem>
+            <ToolBarItem>멀티</ToolBarItem>
+            <ToolBarItem onClick={() => onItemClick('가림판')}>가림판</ToolBarItem>
+            <ToolBarItem>제목 1</ToolBarItem>
+            <ToolBarItem onClick={()=>boldText()}>굵게</ToolBarItem>   
+            <ToolBarItem>글씨 색</ToolBarItem>
+            <ToolBarItem>형광펜 색</ToolBarItem>
+             <ToolBarItem onClick={toggleMoreOptions}>더보기</ToolBarItem>
             </ToolBarContainer>
             {showMoreOptions && <MoreOptions ref={moreOptionsRef} />}
-        </>
+             </>
+
     );
 }
 

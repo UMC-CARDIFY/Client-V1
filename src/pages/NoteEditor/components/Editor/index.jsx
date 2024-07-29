@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import styled from 'styled-components';
 import ToolBar from './ToolBar';
 import CombinedEditor from './CombinedEditor';
@@ -37,15 +38,35 @@ const ToolBarContainer = styled.div`
     }
 `;
 
+const ToolBarWrapper = styled.div`
+    display: flex;
+    justify-content: center;
+    width: 100%;
+`;
+
 const Editor = () => {
+
+    const [coverPanels, setCoverPanels] = useState([]);
+
+    const addCoverPanel = () => {
+        setCoverPanels(prevPanels => [
+            ...prevPanels,
+            { id: new Date().getTime() } // Unique ID based on timestamp
+        ]);
+    };
+
+
+    
     return (
         <EditorContainer>
+//             <Content coverPanels={coverPanels} />
             <CombinedEditor />
             <ToolBarContainer>
-                <ToolBar />
+                <ToolBar onAddCoverPanel={addCoverPanel} />
             </ToolBarContainer>
         </EditorContainer>
     );
 };
+
 
 export default Editor;

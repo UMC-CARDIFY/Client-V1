@@ -37,6 +37,16 @@ const ContentArea = styled.div`
   }
 `;
 
+const CoverPanel = styled.div`
+  width: 100px;
+  height: 100px;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  pointer-events: none;
+`;
+
+
+
 // Extend basic schema with list support and custom marks
 const mySchema = new Schema({
   nodes: addListNodes(basicSchema.spec.nodes, 'paragraph block*', 'block'),
@@ -130,7 +140,7 @@ const strikethroughRule = markInputRule(/~~(.+)~~/g, mySchema.marks.strikethroug
 const underlineRule = markInputRule(/~(.+)~/g, mySchema.marks.underline, 1, 1);
 const codeRule = markInputRule(/`(.+)`/g, mySchema.marks.code, 1, 1);
 
-const Content = () => {
+const Content = ({ coverPanels }) => {
   const contentRef = useRef(null);
 
   useEffect(() => {
@@ -173,6 +183,9 @@ const Content = () => {
   return (
     <ContentArea>
       <div ref={contentRef}></div>
+      {coverPanels.map(panel => (
+        <CoverPanel key={panel.id} />
+      ))}
     </ContentArea>
   );
 };
