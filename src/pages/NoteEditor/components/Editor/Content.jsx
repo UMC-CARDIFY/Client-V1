@@ -58,6 +58,12 @@ const mySchema = new Schema({
       parseDOM: [{ tag: 'u' }, { style: 'text-decoration=underline' }],
       toDOM: () => ['u', 0],
     },
+    code: {
+      parseDOM: [{ tag: 'code' }],
+      toDOM: () => ['code', 0],
+    },
+
+
   },
 });
 
@@ -104,21 +110,25 @@ const orderedListRule = wrappingInputRule(
   mySchema.nodes.ordered_list
 );
 
-const blockquoteRule = wrappingInputRule(
-  /^\s*>\s$/,
-  mySchema.nodes.blockquote
-);
-
 const codeBlockRule = textblockTypeInputRule(
   /^```$/,
   mySchema.nodes.code_block
 );
+
+const horizontalRuleInputRule = new InputRule(/^---$/, (state, match, start, end) => {
+  const { tr } = state;
+  if (match) {
+    tr.replaceWith(start, end, mySchema.nodes.horizontal_rule.create());
+  }
+  return tr;
+});
 
 // Updated regex for bold, italic, strikethrough, and underline rules
 const boldRule = markInputRule(/__(.+)__/g, mySchema.marks.strong, 2, 2);
 const italicRule = markInputRule(/\*(.+)\*/g, mySchema.marks.em, 1, 1);
 const strikethroughRule = markInputRule(/~~(.+)~~/g, mySchema.marks.strikethrough, 2, 2);
 const underlineRule = markInputRule(/~(.+)~/g, mySchema.marks.underline, 1, 1);
+const codeRule = markInputRule(/`(.+)`/g, mySchema.marks.code, 1, 1);
 
 const Content = () => {
   const contentRef = useRef(null);
@@ -138,12 +148,13 @@ const Content = () => {
               headingRule,
               bulletListRule,
               orderedListRule,
-              blockquoteRule,
+              codeRule,
               codeBlockRule,
               boldRule,
               italicRule,
               strikethroughRule,
-              underlineRule
+              underlineRule,
+              horizontalRuleInputRule
             ]
           })
         ]
