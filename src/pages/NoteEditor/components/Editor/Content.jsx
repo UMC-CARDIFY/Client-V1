@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import { useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { EditorState } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
@@ -71,7 +71,7 @@ function markInputRule(regexp, markType, leadingLength, trailingLength) {
       const text = match[1];
 
       // Ensure the original __, *, ~~, or ~ are removed
-      tr.delete(end - trailingLength+1, end); // Remove trailing syntax
+      tr.delete(end - trailingLength+2, end); // Remove trailing syntax
       tr.delete(start, start + leadingLength); // Remove leading syntax
 
       // Adjust the start and end positions after deletion
