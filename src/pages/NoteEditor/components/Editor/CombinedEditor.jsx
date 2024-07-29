@@ -22,8 +22,13 @@ const ContentArea = styled.div`
   width: 100%;
   box-sizing: border-box;
   resize: none;
-  height: calc(100vh - 8.5rem);
-  overflow-y: auto;
+  height: auto;
+  color: var(--Grays-Black, #1A1A1A);
+  font-family: Pretendard;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
 
   .ProseMirror {
     border: none;
@@ -35,6 +40,36 @@ const ContentArea = styled.div`
   @media (max-width: 48rem) {
     height: calc(100vh - 6rem);
   }
+`;
+
+const TitleInput = styled.div`
+  font-size: 1.5rem;
+  border: none;
+  outline: none;
+  width: 100%;
+  font-family: Pretendard;
+  font-size: 2.5rem;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  box-sizing: border-box;
+  &:focus {
+    border: none;
+    outline: none;
+  }
+  &.empty::before {
+    content: attr(data-placeholder);
+    color: #aaa;
+  }
+`;
+
+const Divider = styled.div`
+  height: 0.0625rem;
+  background: #B1B1B1;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  width: 100%;
+  box-sizing: border-box;
 `;
 
 // Extend basic schema with list support and custom marks
@@ -58,12 +93,6 @@ const mySchema = new Schema({
       parseDOM: [{ tag: 'u' }, { style: 'text-decoration=underline' }],
       toDOM: () => ['u', 0],
     },
-    code: {
-      parseDOM: [{ tag: 'code' }],
-      toDOM: () => ['code', 0],
-    },
-
-
   },
 });
 
@@ -77,7 +106,7 @@ function markInputRule(regexp, markType, leadingLength, trailingLength) {
       const text = match[1];
 
       // Ensure the original __, *, ~~, or ~ are removed
-      tr.delete(end - trailingLength+2, end); // Remove trailing syntax
+      tr.delete(end - trailingLength + 1, end); // Remove trailing syntax
       tr.delete(start, start + leadingLength); // Remove leading syntax
 
       // Adjust the start and end positions after deletion
@@ -97,7 +126,7 @@ function markInputRule(regexp, markType, leadingLength, trailingLength) {
 const headingRule = textblockTypeInputRule(
   /^#{1,6}\s$/,
   mySchema.nodes.heading,
-  match => ({ level: match[0].length })
+  (match) => ({ level: match[0].length })
 );
 
 const bulletListRule = wrappingInputRule(
@@ -110,28 +139,25 @@ const orderedListRule = wrappingInputRule(
   mySchema.nodes.ordered_list
 );
 
+const blockquoteRule = wrappingInputRule(
+  /^\s*>\s$/,
+  mySchema.nodes.blockquote
+);
+
 const codeBlockRule = textblockTypeInputRule(
   /^```$/,
   mySchema.nodes.code_block
 );
-
-const horizontalRuleInputRule = new InputRule(/^---$/, (state, match, start, end) => {
-  const { tr } = state;
-  if (match) {
-    tr.replaceWith(start, end, mySchema.nodes.horizontal_rule.create());
-  }
-  return tr;
-});
 
 // Updated regex for bold, italic, strikethrough, and underline rules
 const boldRule = markInputRule(/__(.+)__/g, mySchema.marks.strong, 2, 2);
 const italicRule = markInputRule(/\*(.+)\*/g, mySchema.marks.em, 1, 1);
 const strikethroughRule = markInputRule(/~~(.+)~~/g, mySchema.marks.strikethrough, 2, 2);
 const underlineRule = markInputRule(/~(.+)~/g, mySchema.marks.underline, 1, 1);
-const codeRule = markInputRule(/`(.+)`/g, mySchema.marks.code, 1, 1);
 
-const Content = () => {
+const CombinedEditor = () => {
   const contentRef = useRef(null);
+  const titleRef = useRef(null);
 
   useEffect(() => {
     if (contentRef.current) {
@@ -148,16 +174,15 @@ const Content = () => {
               headingRule,
               bulletListRule,
               orderedListRule,
-              codeRule,
+              blockquoteRule,
               codeBlockRule,
               boldRule,
               italicRule,
               strikethroughRule,
               underlineRule,
-              horizontalRuleInputRule
-            ]
-          })
-        ]
+            ],
+          }),
+        ],
       });
 
       const view = new EditorView(contentRef.current, {
@@ -170,11 +195,48 @@ const Content = () => {
     }
   }, []);
 
+  useEffect(() => {
+    const node = titleRef.current;
+
+    const handleInput = () => {
+      if (node.innerText === '') {
+        node.classList.add('empty');
+      } else {
+        node.classList.remove('empty');
+      }
+    };
+
+    const handleKeyDown = (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        contentRef.current.querySelector('.ProseMirror').focus();
+      }
+    };
+
+    node.addEventListener('input', handleInput);
+    node.addEventListener('keydown', handleKeyDown);
+    handleInput(); // 초기 상태 설정
+
+    return () => {
+      node.removeEventListener('input', handleInput);
+      node.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
   return (
-    <ContentArea>
-      <div ref={contentRef}></div>
-    </ContentArea>
+    <>
+      <TitleInput
+        contentEditable="true"
+        data-placeholder="제목"
+        ref={titleRef}
+        className="empty"
+      ></TitleInput>
+      <Divider />
+      <ContentArea>
+        <div ref={contentRef}></div>
+      </ContentArea>
+    </>
   );
 };
 
-export default Content;
+export default CombinedEditor;

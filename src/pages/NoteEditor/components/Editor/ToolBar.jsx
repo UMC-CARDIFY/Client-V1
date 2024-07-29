@@ -13,9 +13,9 @@ const ToolBarContainer = styled.div`
     background: #FFF;
     box-shadow: 0px 5px 6px 0px rgba(0, 0, 0, 0.05);
     position: absolute;
-    bottom: 9.5rem;
+    bottom: 2rem;
     left: 25%;
-`;
+    `;
 
 const ToolBarItem = styled.div`
     width: var(--line-height-xl, 2.5rem);
