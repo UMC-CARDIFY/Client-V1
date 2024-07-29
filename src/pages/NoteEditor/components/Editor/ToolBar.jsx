@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import MoreOptions from './MoreOptions'; // MoreOptions 컴포넌트 임포트
+import PropTypes from 'prop-types';
 
 const ToolBarContainer = styled.div`
     width: auto;
@@ -23,14 +24,9 @@ const ToolBarItem = styled.div`
     cursor: pointer;
 `;
 
-
-const ToolBar = ({ onAddCoverPanel }) => {
+const ToolBar = ({ onAddCoverPanel, addCard }) => {
     const [showMoreOptions, setShowMoreOptions] = useState(false);
     const moreOptionsRef = useRef(null);
-
-    const createWordCard = () => {
-        console.log('createWordCard');
-    }
 
     const boldText = () => {
         console.log('boldText');
@@ -59,25 +55,26 @@ const ToolBar = ({ onAddCoverPanel }) => {
         };
     }, []);
 
-
-
     return (
       <>
         <ToolBarContainer>
-            <ToolBarItem onClick={()=>createWordCard()}>단어</ToolBarItem>
-            <ToolBarItem>빈칸</ToolBarItem>
-            <ToolBarItem>멀티</ToolBarItem>
+            <ToolBarItem onClick={() => addCard('word')}>단어</ToolBarItem>
+            <ToolBarItem onClick={() => addCard('blank')}>빈칸</ToolBarItem>
+            <ToolBarItem onClick={() => addCard('multi')}>멀티</ToolBarItem>
             <ToolBarItem onClick={() => onItemClick('가림판')}>가림판</ToolBarItem>
             <ToolBarItem>제목 1</ToolBarItem>
             <ToolBarItem onClick={()=>boldText()}>굵게</ToolBarItem>   
             <ToolBarItem>글씨 색</ToolBarItem>
             <ToolBarItem>형광펜 색</ToolBarItem>
-             <ToolBarItem onClick={toggleMoreOptions}>더보기</ToolBarItem>
-            </ToolBarContainer>
+            <ToolBarItem onClick={toggleMoreOptions}>더보기</ToolBarItem>
+        </ToolBarContainer>
             {showMoreOptions && <MoreOptions ref={moreOptionsRef} />}
-             </>
-
+      </>
     );
-}
+};
+
+ToolBar.propTypes = {
+    addCard: PropTypes.func.isRequired,
+  };
 
 export default ToolBar;

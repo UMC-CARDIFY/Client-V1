@@ -13,6 +13,9 @@ import { gapCursor } from 'prosemirror-gapcursor';
 import { inputRules, wrappingInputRule, textblockTypeInputRule, InputRule } from 'prosemirror-inputrules';
 import 'prosemirror-view/style/prosemirror.css';
 import 'prosemirror-menu/style/menu.css';
+import WordCard from '../Cards/WordCard';
+import BlankCard from '../Cards/BlankCard';
+import MultiCard from '../Cards/MultiCard';
 
 // styled-components for the editor area
 const ContentArea = styled.div`
@@ -173,7 +176,7 @@ const strikethroughRule = markInputRule(/~~(.+)~~/g, mySchema.marks.strikethroug
 const underlineRule = markInputRule(/~(.+)~/g, mySchema.marks.underline, 1, 1);
 const codeRule = markInputRule(/`(.+)`/g, mySchema.marks.code, 1, 1);
 
-const CombinedEditor = ({ coverPanels }) => {
+const CombinedEditor = ({ coverPanels, cards }) => {
   const contentRef = useRef(null);
   const titleRef = useRef(null);
 
@@ -252,6 +255,18 @@ const CombinedEditor = ({ coverPanels }) => {
       ></TitleInput>
       <Divider />
       <ContentArea>
+        {cards.map((card, index) => {
+          switch (card.type) {
+            case 'word':
+              return <WordCard key={index} />;
+            case 'blank':
+              return <BlankCard key={index} />;
+            case 'multi':
+              return <MultiCard key={index} />;
+            default:
+              return null;
+          }
+        })}
         <div ref={contentRef}></div>
         {coverPanels.map(panel => (
         <CoverPanel key={panel.id} />

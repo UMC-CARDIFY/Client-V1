@@ -45,8 +45,8 @@ const ToolBarWrapper = styled.div`
 `;
 
 const Editor = () => {
-
     const [coverPanels, setCoverPanels] = useState([]);
+    const [cards, setCards] = useState([]);
 
     const addCoverPanel = () => {
         setCoverPanels(prevPanels => [
@@ -55,14 +55,16 @@ const Editor = () => {
         ]);
     };
 
-
+    const addCard = (type) => {
+      setCards([...cards, { type }]);
+    };
     
     return (
         <EditorContainer>
                  {/* <Content coverPanels={coverPanels} /> */}
-            <CombinedEditor coverPanels={coverPanels} />
+            <CombinedEditor coverPanels={coverPanels} cards={cards}/>
             <ToolBarWrapper>
-                <ToolBar onAddCoverPanel={addCoverPanel} />
+                <ToolBar onAddCoverPanel={addCoverPanel} addCard={addCard} />
             </ToolBarWrapper>
         </EditorContainer>
     );
