@@ -1,4 +1,5 @@
-import  { useState } from 'react';
+import { useState } from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 const HeaderWrapper = styled.header`
@@ -11,6 +12,8 @@ const HeaderWrapper = styled.header`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  width: 100%;
+  
 
   @media (max-width: 768px) {
     flex-direction: column;
@@ -171,8 +174,22 @@ const SaveButton = styled.button`
   }
 `;
 
-const Header = () => {
+const ToggleMenuButton = styled.button`
+  width: 3rem;
+  height: 3rem;
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-right: 0.5rem;
 
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+`;
+
+const Header = ({ isMenuCollapsed, toggleMenuBar }) => {
   const data = [
     'Document 1',
     'Document 2',
@@ -205,7 +222,16 @@ const Header = () => {
   return (
     <HeaderWrapper>
       <LeftSection>
-        <KebabIcon>
+       
+        {isMenuCollapsed && (
+          <ToggleMenuButton onClick={toggleMenuBar}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" fill="none">
+              <path d="M21 14L26 19.5L21 25" stroke="#B1B1B1" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M14 14L19 19.5L14 25" stroke="#B1B1B1" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </ToggleMenuButton>
+        )}
+         <KebabIcon>
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" fill="none">
             <path fillRule="evenodd" clipRule="evenodd" d="M18.25 11.8333C18.25 11.3691 18.4344 10.924 18.7626 10.5958C19.0908 10.2676 19.5359 10.0833 20 10.0833H20.0117C20.4758 10.0833 20.9209 10.2676 21.2491 10.5958C21.5773 10.924 21.7617 11.3691 21.7617 11.8333V11.8449C21.7617 12.309 21.5773 12.7542 21.2491 13.0824C20.9209 13.4105 20.4758 13.5949 20.0117 13.5949H20C19.5359 13.5949 19.0908 13.4105 18.7626 13.0824C18.4344 12.7542 18.25 12.309 18.25 11.8449V11.8333ZM18.25 19.9999C18.25 19.5358 18.4344 19.0907 18.7626 18.7625C19.0908 18.4343 19.5359 18.2499 20 18.2499H20.0117C20.4758 18.2499 20.9209 18.4343 21.2491 18.7625C21.5773 19.0907 21.7617 19.5358 21.7617 19.9999V20.0116C21.7617 20.4757 21.5773 20.9208 21.2491 21.249C20.9209 21.5772 20.4758 21.7616 20.0117 21.7616H20C19.5359 21.7616 19.0908 21.5772 18.7626 21.249C18.4344 20.9208 18.25 20.4757 18.25 20.0116V19.9999ZM20 26.4166C19.5359 26.4166 19.0908 26.601 18.7626 26.9291C18.4344 27.2573 18.25 27.7025 18.25 28.1666V28.1783C18.25 28.6424 18.4344 29.0875 18.7626 29.4157C19.0908 29.7439 19.5359 29.9283 20 29.9283H20.0117C20.4758 29.9283 20.9209 29.7439 21.2491 29.4157C21.5773 29.0875 21.7617 28.6424 21.7617 28.1783V28.1666C21.7617 27.7025 21.5773 27.2573 21.2491 26.9291C20.9209 26.601 20.4758 26.4166 20.0117 26.4166H20Z" fill="#B1B1B1"/>
           </svg>
@@ -248,6 +274,11 @@ const Header = () => {
       </RightSection>
     </HeaderWrapper>
   );
+};
+
+Header.propTypes = {
+  isMenuCollapsed: PropTypes.bool.isRequired,
+  toggleMenuBar: PropTypes.func.isRequired,
 };
 
 export default Header;
