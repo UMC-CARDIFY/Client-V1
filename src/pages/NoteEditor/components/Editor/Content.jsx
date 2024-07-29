@@ -183,9 +183,9 @@ const Content = ({ coverPanels }) => {
   return (
     <ContentArea>
       <div ref={contentRef}></div>
-      {coverPanels.map(panel => (
+      {/* {coverPanels.map(panel => (
         <CoverPanel key={panel.id} />
-      ))}
+      ))} */}
     </ContentArea>
   );
 };

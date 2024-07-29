@@ -72,6 +72,14 @@ const Divider = styled.div`
   box-sizing: border-box;
 `;
 
+const CoverPanel = styled.div`
+  width: 100px;
+  height: 100px;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  pointer-events: none;
+`;
+
 // Extend basic schema with list support and custom marks
 const mySchema = new Schema({
   nodes: addListNodes(basicSchema.spec.nodes, 'paragraph block*', 'block'),
@@ -155,7 +163,7 @@ const italicRule = markInputRule(/\*(.+)\*/g, mySchema.marks.em, 1, 1);
 const strikethroughRule = markInputRule(/~~(.+)~~/g, mySchema.marks.strikethrough, 2, 2);
 const underlineRule = markInputRule(/~(.+)~/g, mySchema.marks.underline, 1, 1);
 
-const CombinedEditor = () => {
+const CombinedEditor = ({ coverPanels }) => {
   const contentRef = useRef(null);
   const titleRef = useRef(null);
 
@@ -234,6 +242,9 @@ const CombinedEditor = () => {
       <Divider />
       <ContentArea>
         <div ref={contentRef}></div>
+        {coverPanels.map(panel => (
+        <CoverPanel key={panel.id} />
+      ))}
       </ContentArea>
     </>
   );

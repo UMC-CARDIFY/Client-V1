@@ -59,11 +59,11 @@ const Editor = () => {
     
     return (
         <EditorContainer>
-//             <Content coverPanels={coverPanels} />
-            <CombinedEditor />
-            <ToolBarContainer>
+                 {/* <Content coverPanels={coverPanels} /> */}
+            <CombinedEditor coverPanels={coverPanels} />
+            <ToolBarWrapper>
                 <ToolBar onAddCoverPanel={addCoverPanel} />
-            </ToolBarContainer>
+            </ToolBarWrapper>
         </EditorContainer>
     );
 };
