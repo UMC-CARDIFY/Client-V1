@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import styled from 'styled-components';
 import Title from './Title';
 import Content from './Content';
@@ -39,13 +40,25 @@ const ToolBarWrapper = styled.div`
 `;
 
 const Editor = () => {
+
+    const [coverPanels, setCoverPanels] = useState([]);
+
+    const addCoverPanel = () => {
+        setCoverPanels(prevPanels => [
+            ...prevPanels,
+            { id: new Date().getTime() } // Unique ID based on timestamp
+        ]);
+    };
+
+
+    
     return (
         <EditorContainer>
             <Title />
             <Divider />
-            <Content />
+            <Content coverPanels={coverPanels} />
             <ToolBarWrapper>
-                <ToolBar />
+            <ToolBar onAddCoverPanel={addCoverPanel} />
             </ToolBarWrapper>
         </EditorContainer>
     );
