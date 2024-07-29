@@ -32,15 +32,24 @@ const Divider = styled.div`
     box-sizing: border-box;
 `;
 
+const ToolBarWrapper = styled.div`
+    display: flex;
+    justify-content: center;
+    width: 100%;
+`;
+
 const Editor = () => {
     return (
         <EditorContainer>
             <Title />
             <Divider />
             <Content />
-            <ToolBar />
+            <ToolBarWrapper>
+                <ToolBar />
+            </ToolBarWrapper>
         </EditorContainer>
     );
 };
+
 
 export default Editor;

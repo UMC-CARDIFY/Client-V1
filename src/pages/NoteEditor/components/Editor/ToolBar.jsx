@@ -4,16 +4,15 @@ import styled from 'styled-components';
 const ToolBarContainer = styled.div`
     width: auto;
     display: inline-flex;
-padding: 0.625rem 1.25rem;
-justify-content: center;
-align-items: center;
-gap: 0.9375rem;
-border: 1.25px solid #D9D9D9;
-background: #FFF;
-box-shadow: 0px 5px 6px 0px rgba(0, 0, 0, 0.05);
-position: absolute;
-bottom: 9.5rem;
-left: 25%;
+    padding: 0.625rem 1.25rem;
+    justify-content: center;
+    align-items: center;
+    gap: 0.9375rem;
+    border: 1.25px solid #D9D9D9;
+    background: #FFF;
+    box-shadow: 0px 5px 6px 0px rgba(0, 0, 0, 0.05);
+    position: fixed;
+    bottom: 1.5rem;
     `;
 
 const ToolBarItem = styled.div`
