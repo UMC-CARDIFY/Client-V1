@@ -40,12 +40,31 @@ const TabBar = styled.div`
   display: flex;
   flex-direction: row;
   margin: 0 2rem;
+  width: 100%;
+  height: 3.5rem;
+  padding: 0rem 52.875rem 0rem 0rem;
+align-items: flex-start;
+gap: 0.5rem;
 `;
 
 const Tab = styled.div`
-  padding: 1rem 2.06rem;
-  background-color: ${({ active }) => (active ? 'lightblue' : 'transparent')};
-  cursor: pointer;
+display: flex;
+width: 6.3125rem;
+padding: var(--UI-Component-None, 1rem) var(--UI-Component-None, 0.5rem) var(--UI-Component-None, 0.765rem) var(--UI-Component-None, 0.5rem);
+flex-direction: column;
+justify-content: flex-end;
+align-items: center;
+gap: var(--UI-Component-None, 0.875rem);
+flex-shrink: 0;
+cursor: pointer;
+
+color: ${({ active }) => (active ? 'var(--Main-Primary, #0F62FE);' : 'var(--Grays-Black, #1A1A1A)')};
+border-bottom: ${({ active }) => (active ? '0.125rem solid var(--Main-Primary, #0F62FE);' : 'none')};
+font-family: Pretendard;
+font-size: 1.25rem;
+font-style: normal;
+font-weight: 600;
+line-height: normal;
 `;
 
 const Title = styled.div`

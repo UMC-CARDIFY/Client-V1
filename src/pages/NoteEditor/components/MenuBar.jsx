@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import styled from 'styled-components';
+import PropTypes from 'prop-types';
+import styled, { css } from 'styled-components';
 
 const MenuBarContainer = styled.div`
   width: 15rem;
@@ -8,6 +9,13 @@ const MenuBarContainer = styled.div`
   background: var(--Main-BackGround, #F2F4F8);
   padding: 5rem 2rem 0 2rem;
   position: relative;
+  transition: transform 0.3s ease-in-out;
+
+  ${({ isCollapsed }) =>
+    isCollapsed &&
+    css`
+      transform: translateX(-100%);
+    `}
 `;
 
 const NowFolderContainer = styled.div`
@@ -130,7 +138,17 @@ const BackButton = styled.div`
   cursor: pointer;
 `;
 
-const MenuBar = () => {
+const PushButton = styled.div`
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  cursor: pointer;
+  flex-shrink: 0;
+`;
+
+const MenuBar = ({ isCollapsed, toggleMenuBar }) => {
   const [selectedItem, setSelectedItem] = useState('');
 
   const menuItems = [
@@ -152,7 +170,21 @@ const MenuBar = () => {
   };
 
   return (
-    <MenuBarContainer>
+    <MenuBarContainer isCollapsed={isCollapsed}>
+      <PushButton onClick={toggleMenuBar}>
+        {isCollapsed ? (
+          <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" fill="none">
+            <path d="M21 14L26 19.5L21 25" stroke="#B1B1B1" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M14 14L19 19.5L14 25" stroke="#B1B1B1" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        ) : (
+          <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" fill="none">
+            <path d="M26 25L21 19.5L26 14" stroke="#B1B1B1" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M19 25L14 19.5L19 14" stroke="#B1B1B1" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        )}
+      </PushButton>
+
       <NowFolderContainer>
         <FolderIcon /> 폴더 이름
       </NowFolderContainer>
@@ -195,6 +227,11 @@ const MenuBar = () => {
       </BackButtonDiv>
     </MenuBarContainer>
   );
-}
+};
+
+MenuBar.propTypes = {
+  isCollapsed: PropTypes.bool.isRequired,
+  toggleMenuBar: PropTypes.func.isRequired,
+};
 
 export default MenuBar;

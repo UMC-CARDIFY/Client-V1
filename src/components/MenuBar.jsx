@@ -11,7 +11,11 @@ const MenuBarContainer = styled.div`
   align-items: center;
   background: var(--Grays-White, #FFF);
   box-shadow: 4px 0px 26px 0px rgba(0, 0, 0, 0.02), 4px 0px 60px 0px rgba(0, 74, 162, 0.02);
-  
+
+  @media (max-width: 1440px) {
+    width: 14rem;
+}
+
   @media (max-width: 1200px) {
     width: 7rem;
   }

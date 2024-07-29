@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
+import MoreOptions from './MoreOptions'; // MoreOptions 컴포넌트 임포트
 
 const ToolBarContainer = styled.div`
     width: auto;
@@ -16,13 +17,17 @@ const ToolBarContainer = styled.div`
     `;
 
 const ToolBarItem = styled.div`
-width: var(--line-height-xl, 2.5rem);
-height: var(--line-height-xl, 2.5rem);
-background: #D9D9D9;
-cursor: pointer;
-    `
+    width: var(--line-height-xl, 2.5rem);
+    height: var(--line-height-xl, 2.5rem);
+    background: #D9D9D9;
+    cursor: pointer;
+`;
+
 
 const ToolBar = ({ onAddCoverPanel }) => {
+    const [showMoreOptions, setShowMoreOptions] = useState(false);
+    const moreOptionsRef = useRef(null);
+
     const createWordCard = () => {
         console.log('createWordCard');
     }
@@ -36,10 +41,28 @@ const ToolBar = ({ onAddCoverPanel }) => {
             onAddCoverPanel();
         }
     };
+  
+      const toggleMoreOptions = () => {
+        setShowMoreOptions(!showMoreOptions);
+    }
+
+    const handleClickOutside = (event) => {
+        if (moreOptionsRef.current && !moreOptionsRef.current.contains(event.target)) {
+            setShowMoreOptions(false);
+        }
+    }
+
+    useEffect(() => {
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
 
 
 
     return (
+      <>
         <ToolBarContainer>
             <ToolBarItem onClick={()=>createWordCard()}>단어</ToolBarItem>
             <ToolBarItem>빈칸</ToolBarItem>
@@ -49,8 +72,11 @@ const ToolBar = ({ onAddCoverPanel }) => {
             <ToolBarItem onClick={()=>boldText()}>굵게</ToolBarItem>   
             <ToolBarItem>글씨 색</ToolBarItem>
             <ToolBarItem>형광펜 색</ToolBarItem>
-            <ToolBarItem>더보기</ToolBarItem>
-        </ToolBarContainer>
+             <ToolBarItem onClick={toggleMoreOptions}>더보기</ToolBarItem>
+            </ToolBarContainer>
+            {showMoreOptions && <MoreOptions ref={moreOptionsRef} />}
+             </>
+
     );
 }
 
