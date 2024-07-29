@@ -101,6 +101,12 @@ const mySchema = new Schema({
       parseDOM: [{ tag: 'u' }, { style: 'text-decoration=underline' }],
       toDOM: () => ['u', 0],
     },
+    code: {
+      parseDOM: [{ tag: 'code' }],
+      toDOM: () => ['code', 0],
+    },
+
+
   },
 });
 
@@ -114,7 +120,7 @@ function markInputRule(regexp, markType, leadingLength, trailingLength) {
       const text = match[1];
 
       // Ensure the original __, *, ~~, or ~ are removed
-      tr.delete(end - trailingLength + 1, end); // Remove trailing syntax
+      tr.delete(end - trailingLength+2, end); // Remove trailing syntax
       tr.delete(start, start + leadingLength); // Remove leading syntax
 
       // Adjust the start and end positions after deletion
@@ -134,7 +140,7 @@ function markInputRule(regexp, markType, leadingLength, trailingLength) {
 const headingRule = textblockTypeInputRule(
   /^#{1,6}\s$/,
   mySchema.nodes.heading,
-  (match) => ({ level: match[0].length })
+  match => ({ level: match[0].length })
 );
 
 const bulletListRule = wrappingInputRule(
@@ -147,21 +153,25 @@ const orderedListRule = wrappingInputRule(
   mySchema.nodes.ordered_list
 );
 
-const blockquoteRule = wrappingInputRule(
-  /^\s*>\s$/,
-  mySchema.nodes.blockquote
-);
-
 const codeBlockRule = textblockTypeInputRule(
   /^```$/,
   mySchema.nodes.code_block
 );
+
+const horizontalRuleInputRule = new InputRule(/^---$/, (state, match, start, end) => {
+  const { tr } = state;
+  if (match) {
+    tr.replaceWith(start, end, mySchema.nodes.horizontal_rule.create());
+  }
+  return tr;
+});
 
 // Updated regex for bold, italic, strikethrough, and underline rules
 const boldRule = markInputRule(/__(.+)__/g, mySchema.marks.strong, 2, 2);
 const italicRule = markInputRule(/\*(.+)\*/g, mySchema.marks.em, 1, 1);
 const strikethroughRule = markInputRule(/~~(.+)~~/g, mySchema.marks.strikethrough, 2, 2);
 const underlineRule = markInputRule(/~(.+)~/g, mySchema.marks.underline, 1, 1);
+const codeRule = markInputRule(/`(.+)`/g, mySchema.marks.code, 1, 1);
 
 const CombinedEditor = ({ coverPanels }) => {
   const contentRef = useRef(null);
@@ -182,15 +192,16 @@ const CombinedEditor = ({ coverPanels }) => {
               headingRule,
               bulletListRule,
               orderedListRule,
-              blockquoteRule,
+              codeRule,
               codeBlockRule,
               boldRule,
               italicRule,
               strikethroughRule,
               underlineRule,
-            ],
-          }),
-        ],
+              horizontalRuleInputRule
+            ]
+          })
+        ]
       });
 
       const view = new EditorView(contentRef.current, {
