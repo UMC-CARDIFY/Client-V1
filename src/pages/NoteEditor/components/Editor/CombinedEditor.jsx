@@ -15,7 +15,7 @@ import BlankCard from '../Cards/BlankCard';
 import MultiCard from '../Cards/MultiCard';
 import ImageCard from '../Cards/ImageCard';
 import mySchema from './Markdown/schema';
-import myInputRules from './Markdown/inputRules';
+import { myInputRules } from './Markdown/inputRules';
 import PropTypes from 'prop-types';
 
 const ContentArea = styled.div`
@@ -38,6 +38,7 @@ const ContentArea = styled.div`
     outline: none;
     border-radius: 4px;
     min-height: 20rem;
+    max-height: 33rem;
   }
 
   @media (max-width: 48rem) {
@@ -67,7 +68,7 @@ const TitleInput = styled.div`
 `;
 
 const Divider = styled.div`
-  height: 0.0625rem;
+  height: 1px;
   background: #B1B1B1;
   margin-top: 1rem;
   margin-bottom: 1rem;

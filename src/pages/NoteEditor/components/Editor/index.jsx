@@ -91,7 +91,7 @@ const Editor = () => {
         viewRef={viewRef} // viewRef 전달
       />
       <ToolBarWrapper>
-        <ToolBar addCard={addCard} addHeading1={addHeading1} toggleBold={toggleBold} onSelectColor={onSelectColor} />
+        <ToolBar viewRef={viewRef} addCard={addCard} addHeading1={addHeading1} toggleBold={toggleBold} onSelectColor={onSelectColor} />
       </ToolBarWrapper>
     </EditorContainer>
   );

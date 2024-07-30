@@ -25,6 +25,7 @@ const ToolBarItem = styled.div`
   cursor: pointer;
 `;
 
+// eslint-disable-next-line react/prop-types
 const ToolBar = ({ addCard, addHeading1, toggleBold, onSelectColor }) => {
   const [showMoreOptions, setShowMoreOptions] = useState(false);
   const [showPalette, setShowPalette] = useState(false);
@@ -63,9 +64,10 @@ const ToolBar = ({ addCard, addHeading1, toggleBold, onSelectColor }) => {
         <ToolBarItem onClick={toggleColorPalette}>글씨 색</ToolBarItem>
         {showPalette && <ColorPalette onSelectColor={onSelectColor} />}
         <ToolBarItem>형광펜 색</ToolBarItem>
-        <ToolBarItem onClick={toggleMoreOptions}>더보기</ToolBarItem>
-      </ToolBarContainer>
-      {showMoreOptions && <MoreOptions ref={moreOptionsRef} />}
+        <ToolBarItem onMouseDown={(e) => e.preventDefault()} onClick={toggleMoreOptions}>더보기</ToolBarItem>
+            
+        </ToolBarContainer>
+        {showMoreOptions && <MoreOptions ref={moreOptionsRef} />}
     </>
   );
 };

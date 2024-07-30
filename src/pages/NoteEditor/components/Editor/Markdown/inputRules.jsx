@@ -1,4 +1,5 @@
 import { inputRules, wrappingInputRule, textblockTypeInputRule, InputRule } from 'prosemirror-inputrules';
+import { Plugin } from 'prosemirror-state';
 import mySchema from './schema';
 
 // Custom mark input rule function
@@ -44,10 +45,13 @@ const orderedListRule = wrappingInputRule(
   mySchema.nodes.ordered_list
 );
 
-const codeBlockRule = textblockTypeInputRule(
-  /^```$/,
-  mySchema.nodes.code_block
-);
+const codeBlockRule = new InputRule(/^```$/, (state, match, start, end) => {
+    const { tr } = state;
+    if (match) {
+      tr.replaceWith(start, end, mySchema.nodes.code_block.create());
+    }
+    return tr;
+  });
 
 const horizontalRuleInputRule = new InputRule(/^---$/, (state, match, start, end) => {
   const { tr } = state;
@@ -62,21 +66,40 @@ const boldRule = markInputRule(/__(.+)__/g, mySchema.marks.strong, 2, 2);
 const italicRule = markInputRule(/\*(.+)\*/g, mySchema.marks.em, 1, 1);
 const strikethroughRule = markInputRule(/~~(.+)~~/g, mySchema.marks.strikethrough, 2, 2);
 const underlineRule = markInputRule(/~(.+)~/g, mySchema.marks.underline, 1, 1);
-const codeRule = markInputRule(/`(.+)`/g, mySchema.marks.code, 1, 1);
+//const codeRule = markInputRule(/`(.+)`/g, mySchema.marks.code, 1, 1);
+const codeRule = markInputRule(/`([^`]+)`/, mySchema.marks.code, 1, 1);
 
 const myInputRules = (schema) => inputRules({
-  rules: [
-    headingRule,
-    bulletListRule,
-    orderedListRule,
-    codeRule,
-    codeBlockRule,
-    boldRule,
-    italicRule,
-    strikethroughRule,
-    underlineRule,
-    horizontalRuleInputRule
-  ]
-});
-
-export default myInputRules;
+    rules: [
+      headingRule,
+      bulletListRule,
+      orderedListRule,
+      codeRule,
+      codeBlockRule,
+      boldRule,
+      italicRule,
+      strikethroughRule,
+      underlineRule,
+      horizontalRuleInputRule
+    ]
+  });
+  
+  const exitCodeBlockPlugin = new Plugin({
+    props: {
+      handleTextInput(view, from, to, text) {
+        if (text === '```') {
+          const { state, dispatch } = view;
+          const $pos = state.doc.resolve(from);
+          const parent = $pos.parent;
+          if (parent.type === mySchema.nodes.code_block) {
+            const tr = state.tr.insert(from, mySchema.nodes.paragraph.create());
+            dispatch(tr);
+            return true;
+          }
+        }
+        return false;
+      }
+    }
+  });
+  
+  export { myInputRules, exitCodeBlockPlugin };

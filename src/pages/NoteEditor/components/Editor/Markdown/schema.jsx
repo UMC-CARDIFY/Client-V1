@@ -4,7 +4,17 @@ import { addListNodes } from 'prosemirror-schema-list';
 
 // Extend basic schema with list support and custom marks
 const mySchema = new Schema({
-    nodes: addListNodes(basicSchema.spec.nodes, 'paragraph block*', 'block'),
+    nodes: addListNodes(basicSchema.spec.nodes, 'paragraph block*', 'block').append({
+        code_block: {
+            content: 'text*',
+            marks: '',
+            group: 'block',
+            code: true,
+            defining: true,
+            parseDOM: [{ tag: 'pre', preserveWhitespace: 'full' }],
+            toDOM() { return ['pre', ['code', 0]]; }
+        },
+        }),
     marks: {
       ...basicSchema.spec.marks,
       strong: {
@@ -27,7 +37,6 @@ const mySchema = new Schema({
         parseDOM: [{ tag: 'code' }],
         toDOM: () => ['code', 0],
       },
-
     },
   });
 

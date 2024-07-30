@@ -1,5 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
+import { toggleMark } from 'prosemirror-commands'; 
+import mySchema from './Markdown/schema';
 
 const MoreOptionsContainer = styled.div`
     width: auto;
@@ -11,8 +13,8 @@ const MoreOptionsContainer = styled.div`
     background: #FFF;
     box-shadow: 0px 5px 6px 0px rgba(0, 0, 0, 0.05);
     position: absolute;
-    bottom: 1rem;
-    left: calc(50% + 15rem);
+    bottom: 10rem;
+    left: 58%;
     z-index: 1;
 `;
 
@@ -25,8 +27,9 @@ const MoreOptionsItem = styled.div`
 
 // eslint-disable-next-line react/display-name
 const MoreOptions = React.forwardRef((props, ref) => {
+
     return (
-        <MoreOptionsContainer ref={ref}>
+        <MoreOptionsContainer ref={ref} onMouseDown={e => e.preventDefault()}>
             <MoreOptionsItem>
                 <strong>H1</strong> # 제목 1
             </MoreOptionsItem>
@@ -71,12 +74,6 @@ const MoreOptions = React.forwardRef((props, ref) => {
             </MoreOptionsItem>
             <MoreOptionsItem>
                 <mark>Mark</mark> ==Mark==
-            </MoreOptionsItem>
-            <MoreOptionsItem>
-                <span> $수식$</span>
-            </MoreOptionsItem>
-            <MoreOptionsItem>
-                <span>$$수식 블록$$</span> 
             </MoreOptionsItem>
         </MoreOptionsContainer>
     );
