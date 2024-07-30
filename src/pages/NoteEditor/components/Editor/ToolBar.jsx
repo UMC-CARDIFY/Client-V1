@@ -24,19 +24,13 @@ const ToolBarItem = styled.div`
     cursor: pointer;
 `;
 
-const ToolBar = ({ onAddCoverPanel, addCard }) => {
+const ToolBar = ({ addCard }) => {
     const [showMoreOptions, setShowMoreOptions] = useState(false);
     const moreOptionsRef = useRef(null);
 
     const boldText = () => {
         console.log('boldText');
     }
-
-    const onItemClick = (item) => {
-        if (item === '가림판') {
-            onAddCoverPanel();
-        }
-    };
   
       const toggleMoreOptions = () => {
         setShowMoreOptions(!showMoreOptions);
@@ -61,7 +55,7 @@ const ToolBar = ({ onAddCoverPanel, addCard }) => {
             <ToolBarItem onClick={() => addCard('word')}>단어</ToolBarItem>
             <ToolBarItem onClick={() => addCard('blank')}>빈칸</ToolBarItem>
             <ToolBarItem onClick={() => addCard('multi')}>멀티</ToolBarItem>
-            <ToolBarItem onClick={() => onItemClick('가림판')}>가림판</ToolBarItem>
+            <ToolBarItem onClick={() => addCard('image')}>가림판</ToolBarItem>
             <ToolBarItem>제목 1</ToolBarItem>
             <ToolBarItem onClick={()=>boldText()}>굵게</ToolBarItem>   
             <ToolBarItem>글씨 색</ToolBarItem>

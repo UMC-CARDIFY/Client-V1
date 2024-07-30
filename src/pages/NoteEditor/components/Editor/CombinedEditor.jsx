@@ -18,6 +18,7 @@ import BlankCard from '../Cards/BlankCard';
 import MultiCard from '../Cards/MultiCard';
 import mySchema from './Markdown/schema';
 import myInputRules from './Markdown/inputRules';
+import ImageCard from '../Cards/ImageCard';
 
 // styled-components for the editor area
 const ContentArea = styled.div`
@@ -77,15 +78,7 @@ const Divider = styled.div`
   box-sizing: border-box;
 `;
 
-const CoverPanel = styled.div`
-  width: 100px;
-  height: 100px;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 1000;
-  pointer-events: none;
-`;
-
-const CombinedEditor = ({ coverPanels, cards }) => {
+const CombinedEditor = ({ cards }) => {
   const contentRef = useRef(null);
   const titleRef = useRef(null);
 
@@ -159,14 +152,13 @@ const CombinedEditor = ({ coverPanels, cards }) => {
               return <BlankCard key={index} />;
             case 'multi':
               return <MultiCard key={index} />;
+            case 'image':
+              return <ImageCard key={index} />;
             default:
               return null;
           }
         })}
         <div ref={contentRef}></div>
-        {coverPanels.map(panel => (
-        <CoverPanel key={panel.id} />
-      ))}
       </ContentArea>
     </>
   );

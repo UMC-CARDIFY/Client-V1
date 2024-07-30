@@ -23,20 +23,20 @@ const EditorContainer = styled.div`
     position: relative;
 `;
 
-const ToolBarContainer = styled.div`
-    position: fixed;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 60%; // Adjust the width of the toolbar to match editor width
-    max-width: 800px;
-    border-top: 1px solid black;
-    background-color: white;
+// const ToolBarContainer = styled.div`
+//     position: fixed;
+//     bottom: 0;
+//     left: 50%;
+//     transform: translateX(-50%);
+//     width: 60%; // Adjust the width of the toolbar to match editor width
+//     max-width: 800px;
+//     border-top: 1px solid black;
+//     background-color: white;
 
-    @media (max-width: 48rem) {
-        width: 90%;
-    }
-`;
+//     @media (max-width: 48rem) {
+//         width: 90%;
+//     }
+// `;
 
 const ToolBarWrapper = styled.div`
     display: flex;
@@ -45,15 +45,8 @@ const ToolBarWrapper = styled.div`
 `;
 
 const Editor = () => {
-    const [coverPanels, setCoverPanels] = useState([]);
     const [cards, setCards] = useState([]);
 
-    const addCoverPanel = () => {
-        setCoverPanels(prevPanels => [
-            ...prevPanels,
-            { id: new Date().getTime() } // Unique ID based on timestamp
-        ]);
-    };
 
     const addCard = (type) => {
       setCards([...cards, { type }]);
@@ -61,10 +54,9 @@ const Editor = () => {
     
     return (
         <EditorContainer>
-                 {/* <Content coverPanels={coverPanels} /> */}
-            <CombinedEditor coverPanels={coverPanels} cards={cards}/>
+            <CombinedEditor cards={cards}/>
             <ToolBarWrapper>
-                <ToolBar onAddCoverPanel={addCoverPanel} addCard={addCard} />
+                <ToolBar  addCard={addCard} />
             </ToolBarWrapper>
         </EditorContainer>
     );
