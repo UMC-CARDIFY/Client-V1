@@ -2,15 +2,12 @@ import { useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { EditorState } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
-import { Schema, DOMParser as ProseMirrorDOMParser } from 'prosemirror-model';
-import { schema as basicSchema } from 'prosemirror-schema-basic';
-import { addListNodes } from 'prosemirror-schema-list';
+import { DOMParser as ProseMirrorDOMParser } from 'prosemirror-model';
 import { keymap } from 'prosemirror-keymap';
 import { baseKeymap } from 'prosemirror-commands';
 import { history } from 'prosemirror-history';
 import { dropCursor } from 'prosemirror-dropcursor';
 import { gapCursor } from 'prosemirror-gapcursor';
-import { inputRules, wrappingInputRule, textblockTypeInputRule, InputRule } from 'prosemirror-inputrules';
 import 'prosemirror-view/style/prosemirror.css';
 import 'prosemirror-menu/style/menu.css';
 import WordCard from '../Cards/WordCard';
@@ -19,6 +16,8 @@ import MultiCard from '../Cards/MultiCard';
 import mySchema from './Markdown/schema';
 import myInputRules from './Markdown/inputRules';
 import ImageCard from '../Cards/ImageCard';
+
+import PropTypes from 'prop-types';
 
 // styled-components for the editor area
 const ContentArea = styled.div`
@@ -162,6 +161,10 @@ const CombinedEditor = ({ cards }) => {
       </ContentArea>
     </>
   );
+};
+
+CombinedEditor.propTypes = {
+  cards: PropTypes.func.isRequired,
 };
 
 export default CombinedEditor;
