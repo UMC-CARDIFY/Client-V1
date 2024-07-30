@@ -11,8 +11,8 @@ const MoreOptionsContainer = styled.div`
     background: #FFF;
     box-shadow: 0px 5px 6px 0px rgba(0, 0, 0, 0.05);
     position: absolute;
-    bottom: 10rem;
-    left: 58%;
+    bottom: 1rem;
+    left: calc(50% + 15rem);
     z-index: 1;
 `;
 
