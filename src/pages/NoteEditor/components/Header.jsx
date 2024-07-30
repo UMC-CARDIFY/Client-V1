@@ -6,12 +6,12 @@ const HeaderWrapper = styled.header`
   background: var(--Grays-White, #FFF);
   box-shadow: 0px 4px 26px 0px rgba(0, 0, 0, 0.02), 0px 10px 60px 0px rgba(0, 74, 162, 0.03);
   padding-left: 1rem;
-  padding-right: 1rem;
+  padding-right: 1rem !important;
   padding-top: 0.75rem;
   padding-bottom: 0.75rem;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-between;H
   width: 100%;
   
 
@@ -129,8 +129,6 @@ const StarButton = styled.button`
 const NotificationText = styled.span`
   color: var(--Grays-Gray3, #B1B1B1);
   margin-left: 1rem;
-
-  /* Typo/Body 2 */
   font-family: Pretendard;
   font-size: 0.9375rem;
   font-style: normal;
@@ -181,7 +179,7 @@ const ToggleMenuButton = styled.button`
   background: none;
   border: none;
   cursor: pointer;
-  margin-right: 0.5rem;
+  margin-right: -0.5rem;
 
   svg {
     width: 100%;
