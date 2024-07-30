@@ -12,14 +12,9 @@ const EditorContainer = styled.div`
   flex: 1;
   overflow-y: auto;
   border-radius: 0.5rem;
-  padding-top: 2.5rem;
-  padding-bottom: 6rem; // Leave space for the toolbar
-  padding-left: 6.5rem;
-  padding-right: 6.5rem;
+  padding: 2.5rem 6.5rem 6rem 6.5rem;
   width: 100%;
-  height: 85vh;
   box-sizing: border-box;
-
   @media (max-width: 48rem) {
     padding: 0.625rem;
   }

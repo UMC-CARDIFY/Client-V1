@@ -97,6 +97,21 @@ const MultiCard = () => {
   const handleInput = (key, index, e) => {
     const value = e.target.innerText;
     handleTextChange(key, index, value);
+    if (value === '') {
+      e.target.classList.add('empty');
+    } else {
+      e.target.classList.remove('empty');
+    }
+  };
+
+  const handleKeyDown = (key, index, e) => {
+    if (key === 'backs' && e.key === 'Enter') {
+      e.preventDefault();
+      setMultiCard(prevState => ({
+        ...prevState,
+        backs: [...prevState.backs.slice(0, index + 1), '카드 뒷면', ...prevState.backs.slice(index + 1)]
+      }));
+    }
   };
 
   useEffect(() => {
@@ -104,7 +119,12 @@ const MultiCard = () => {
       frontRef.current.innerText = multiCard.front;
     }
     backRefs.current.forEach((ref, index) => {
-      if (ref) ref.innerText = multiCard.backs[index];
+      if (ref) {
+        ref.innerText = multiCard.backs[index];
+        if (multiCard.backs[index] === '카드 뒷면') {
+          ref.classList.add('empty');
+        }
+      }
     });
   }, [multiCard.front, multiCard.backs]);
 
@@ -132,7 +152,10 @@ const MultiCard = () => {
               contentEditable
               suppressContentEditableWarning={true}
               onInput={(e) => handleInput('backs', index, e)}
-              onBlur={(e) => handleTextChange('backs', index, e.target.innerText)}            
+              onBlur={(e) => handleTextChange('backs', index, e.target.innerText)}
+              onKeyDown={(e) => handleKeyDown('backs', index, e)}
+              data-placeholder="카드 뒷면"
+              className={back === '카드 뒷면' ? 'empty' : ''}
             />
           </LineContainer>
         ))}
