@@ -13,13 +13,11 @@ import 'prosemirror-menu/style/menu.css';
 import WordCard from '../Cards/WordCard';
 import BlankCard from '../Cards/BlankCard';
 import MultiCard from '../Cards/MultiCard';
+import ImageCard from '../Cards/ImageCard';
 import mySchema from './Markdown/schema';
 import myInputRules from './Markdown/inputRules';
-import ImageCard from '../Cards/ImageCard';
-
 import PropTypes from 'prop-types';
 
-// styled-components for the editor area
 const ContentArea = styled.div`
   flex: 1;
   border: none;
@@ -77,7 +75,7 @@ const Divider = styled.div`
   box-sizing: border-box;
 `;
 
-const CombinedEditor = ({ cards }) => {
+const CombinedEditor = ({ cards, viewRef }) => {
   const contentRef = useRef(null);
   const titleRef = useRef(null);
 
@@ -91,19 +89,20 @@ const CombinedEditor = ({ cards }) => {
           history(),
           dropCursor(),
           gapCursor(),
-          myInputRules
+          myInputRules(mySchema) // schema 매개변수 전달
         ]
       });
 
       const view = new EditorView(contentRef.current, {
         state,
       });
+      viewRef.current = view; // view를 ref에 저장
 
       return () => {
         view.destroy();
       };
     }
-  }, []);
+  }, [viewRef]);
 
   useEffect(() => {
     const node = titleRef.current;
@@ -137,7 +136,7 @@ const CombinedEditor = ({ cards }) => {
     <>
       <TitleInput
         contentEditable="true"
-        data-placeholder="제목"
+        data-placeholder="제목 없음"
         ref={titleRef}
         className="empty"
       ></TitleInput>
@@ -164,7 +163,8 @@ const CombinedEditor = ({ cards }) => {
 };
 
 CombinedEditor.propTypes = {
-  cards: PropTypes.func.isRequired,
+  cards: PropTypes.array.isRequired,
+  viewRef: PropTypes.object.isRequired, // viewRef prop 추가
 };
 
 export default CombinedEditor;

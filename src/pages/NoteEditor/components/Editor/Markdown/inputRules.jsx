@@ -64,7 +64,7 @@ const strikethroughRule = markInputRule(/~~(.+)~~/g, mySchema.marks.strikethroug
 const underlineRule = markInputRule(/~(.+)~/g, mySchema.marks.underline, 1, 1);
 const codeRule = markInputRule(/`(.+)`/g, mySchema.marks.code, 1, 1);
 
-const myInputRules = inputRules({
+const myInputRules = (schema) => inputRules({
   rules: [
     headingRule,
     bulletListRule,
