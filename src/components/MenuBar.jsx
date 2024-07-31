@@ -310,7 +310,7 @@ const MenuBar = () => {
           <Text>자료실</Text>
         </Menu>
       </MenuContainer>
-      <NoteAdd onClick={() => navigateTo('/noteeditor')}>
+      <NoteAdd onClick={() => navigateTo('/note-editor')}>
         <NoteAddIcon>
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
             <path fillRule="evenodd" clipRule="evenodd" d="M0 8.00012C0 7.44784 0.255837 7.00012 0.571429 7.00012L15.4286 7.00012C15.7442 7.00012 16 7.44784 16 8.00012C16 8.55241 15.7442 9.00012 15.4286 9.00012L0.571429 9.00012C0.255837 9.00012 0 8.55241 0 8.00012Z" fill="white"/>
