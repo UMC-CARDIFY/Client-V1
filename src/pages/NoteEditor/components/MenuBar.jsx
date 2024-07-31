@@ -18,6 +18,10 @@ const MenuBarContainer = styled.div`
     css`
       transform: translateX(-100%);
     `}
+
+      @media screen and (max-width: 1024px) {
+     width: 13rem;
+  }
 `;
 
 const NowFolderContainer = styled.div`

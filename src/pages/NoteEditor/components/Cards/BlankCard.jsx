@@ -56,7 +56,7 @@ const PreviewIcon = styled.div`
   position: absolute;
   top: 0.5rem;
   right: 0.5rem;
-  display: flex;
+  display: ${({ active }) => (active ? 'flex' : 'none')};
   width: 1rem;
   height: 1rem;
   padding: 0.25rem;
@@ -65,13 +65,13 @@ const PreviewIcon = styled.div`
   align-items: center;
   gap: 0.5rem;
   flex-shrink: 0;
-  background: #ccc;
   cursor: pointer;
 `;
 
 const BlankCard = () => {
   const [blankCard, setBlankCard] = useState({ front: '빈칸 카드', back: '빈칸' });
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isActive, setIsActive] = useState(false);
   const editableDivRef = useRef(null);
 
   const handleContentChange = (e) => {
@@ -131,7 +131,12 @@ const BlankCard = () => {
   const handleCloseModal = () => { setIsModalOpen(false); };
 
   return (
-    <BlankCardContainer>
+    <BlankCardContainer
+      onMouseEnter={() => setIsActive(true)}
+      onMouseLeave={() => setIsActive(false)}
+      onFocus={() => setIsActive(true)}
+      onBlur={() => setIsActive(false)}
+    >
       <ContentContainer>
         <BulletIcon />
         <EditableDiv
@@ -141,7 +146,12 @@ const BlankCard = () => {
           suppressContentEditableWarning={true} // React 경고 억제
         />
       </ContentContainer>
-      <PreviewIcon onClick={handlePreviewClick} />
+      <PreviewIcon active={isActive} onClick={handlePreviewClick}>
+        <svg xmlns="http://www.w3.org/2000/svg" width="23" height="17" viewBox="0 0 23 17" fill="none">
+          <path d="M11.2841 3.6369L10.842 3.1948L9.07361 1.42639L2 8.5L9.07361 15.5736L10.842 13.8052L11.2841 13.3631" stroke="#6A9CFC" strokeWidth="1.5"/>
+          <rect x="6.85352" y="8.5" width="10.0036" height="10.0036" transform="rotate(-45 6.85352 8.5)" stroke="#0F62FE" strokeWidth="1.5"/>
+        </svg>
+      </PreviewIcon>
       {isModalOpen && <PreviewModal onClose={handleCloseModal} cardContent={blankCard} />}
     </BlankCardContainer>
   );

@@ -11,7 +11,7 @@ const HeaderWrapper = styled.header`
   padding-bottom: 0.75rem;
   display: flex;
   align-items: center;
-  justify-content: space-between;H
+  justify-content: space-between;
   width: 100%;
   
 
