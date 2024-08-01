@@ -72,7 +72,6 @@ const PreviewIcon = styled.div`
   display: flex;
   width: 1.6875rem;
   height: 1.6875rem;
-  background-color: gray;
   justify-content: center;
   align-items: center;
   margin-right: 0.5rem; /* Add some space between the icon and the text */
@@ -88,7 +87,11 @@ const PreviewModal = ({ onClose, cardContent }) => {
       <ModalContainer>
         <ModalHeader>
           <div style={{ display: 'flex', alignItems: 'center' }}>
-            <PreviewIcon />
+          <PreviewIcon><svg xmlns="http://www.w3.org/2000/svg" width="23" height="17" viewBox="0 0 23 17" fill="none">
+  <path d="M11.2841 3.6369L10.842 3.1948L9.07361 1.42639L2 8.5L9.07361 15.5736L10.842 13.8052L11.2841 13.3631" stroke="#6A9CFC" strokeWidth="1.5"/>
+  <rect x="6.85352" y="8.5" width="10.0036" height="10.0036" transform="rotate(-45 6.85352 8.5)" stroke="#0F62FE" strokeWidth="1.5"/>
+</svg>
+</PreviewIcon>
             <PreviewTitle>미리보기</PreviewTitle>
           </div>
           <CloseButton onClick={handleClose} />

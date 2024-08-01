@@ -65,7 +65,6 @@ const PreviewIcon = styled.div`
   position: absolute;
   top: 0.5rem;
   right: 0.5rem;
-  display: flex;
   width: 1rem;
   height: 1rem;
   padding: 0.25rem;
@@ -74,13 +73,14 @@ const PreviewIcon = styled.div`
   align-items: center;
   gap: 0.5rem;
   flex-shrink: 0;
-  background: #ccc;
   cursor: pointer;
+    display: ${({ active }) => (active ? 'flex' : 'none')};
 `;
 
 const WordCard = () => {
   const [wordCard, setWordCard] = useState({ front: '카드 앞면', back: '카드 뒷면' });
   const [isModalOpen, setIsModalOpen] = useState(false); 
+  const [isActive, setIsActive] = useState(false);
 
   const handleTextChange = (key, value) => {
     setWordCard(prevState => ({
@@ -106,7 +106,12 @@ const WordCard = () => {
   const handleCloseModal = () => { setIsModalOpen(false); };
 
   return (
-    <WordCardContainer>
+    <WordCardContainer
+    onMouseEnter={() => setIsActive(true)}
+    onMouseLeave={() => setIsActive(false)}
+    onFocus={() => setIsActive(true)}
+    onBlur={() => setIsActive(false)}
+    >
       <ContentContainer>
         <BulletIcon />
         <TextArea
@@ -121,7 +126,11 @@ const WordCard = () => {
           onChange={(e) => handleTextChange('back', e.target.value)}
         />      
       </ContentContainer>
-      <PreviewIcon onClick={handlePreviewClick} />
+      <PreviewIcon active={isActive} onClick={handlePreviewClick}><svg xmlns="http://www.w3.org/2000/svg" width="23" height="17" viewBox="0 0 23 17" fill="none">
+  <path d="M11.2841 3.6369L10.842 3.1948L9.07361 1.42639L2 8.5L9.07361 15.5736L10.842 13.8052L11.2841 13.3631" stroke="#6A9CFC" strokeWidth="1.5"/>
+  <rect x="6.85352" y="8.5" width="10.0036" height="10.0036" transform="rotate(-45 6.85352 8.5)" stroke="#0F62FE" strokeWidth="1.5"/>
+</svg>
+</PreviewIcon>
       {isModalOpen && <PreviewModal onClose={handleCloseModal} cardContent={wordCard} />}
     </WordCardContainer>
   );

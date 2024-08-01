@@ -46,11 +46,16 @@ const ContentArea = styled.div`
   }
 `;
 
+const TitleDiv = styled.div`
+  display: flex;
+  align-items: center;
+  `;
+
 const TitleInput = styled.div`
   font-size: 1.5rem;
+  width: 100%;
   border: none;
   outline: none;
-  width: 100%;
   font-family: Pretendard;
   font-size: 2.5rem;
   font-style: normal;
@@ -65,6 +70,18 @@ const TitleInput = styled.div`
     content: attr(data-placeholder);
     color: #aaa;
   }
+`;
+
+const TransformFlashcard = styled.div`
+display: flex;
+width: 4rem;
+padding: 1.25rem 1.0625rem 1.25rem 0;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+gap: 0.5rem;
+flex-shrink: 0;
+cursor: pointer;
 `;
 
 const Divider = styled.div`
@@ -135,12 +152,22 @@ const CombinedEditor = ({ cards, viewRef }) => {
 
   return (
     <>
+      <TitleDiv>
       <TitleInput
         contentEditable="true"
         data-placeholder="제목 없음"
         ref={titleRef}
         className="empty"
       ></TitleInput>
+      <TransformFlashcard>
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="26" viewBox="0 0 32 26" fill="none">
+  <path d="M7.81846 6.2672L7.99227 5.35878L8.6875 1.7251L30.3901 5.65605L27.6092 20.1908L24.8964 19.6994L24.2182 19.5766" stroke="#B1B1B1" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+  <rect x="1.61035" y="7.2749" width="22" height="17" stroke="#B1B1B1" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+  <line x1="6.71035" y1="14.1749" x2="18.5104" y2="14.1749" stroke="#B1B1B1" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+  <line x1="6.71035" y1="18.1749" x2="14.5104" y2="18.1749" stroke="#B1B1B1" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+</svg>
+      </TransformFlashcard>
+      </TitleDiv>
       <Divider />
       <ContentArea>
         {cards.map((card, index) => {

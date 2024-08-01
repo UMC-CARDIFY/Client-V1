@@ -12,7 +12,7 @@ const EditorContainer = styled.div`
   flex: 1;
   overflow-y: auto;
   border-radius: 0.5rem;
-  padding: 2.5rem 6.5rem 6rem 6.5rem;
+  padding: 2rem 6rem 6rem 4rem;
   width: 100%;
   box-sizing: border-box;
   @media (max-width: 48rem) {

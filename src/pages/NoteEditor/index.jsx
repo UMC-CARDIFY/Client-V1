@@ -22,7 +22,7 @@ const ContentWrapper = styled.div`
   flex-grow: 1;
   overflow: hidden;
   transition: margin-left 0.3s ease-in-out;
-  margin-left: ${({ isMenuCollapsed }) => (isMenuCollapsed ? '-15rem' : '4rem')};
+  margin-left: ${({ isMenuCollapsed }) => (isMenuCollapsed ? '-15rem' : '3rem')};
 `;
 
 const EditorWrapper = styled.div`
