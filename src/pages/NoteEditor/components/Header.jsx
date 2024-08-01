@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import KebabMenu from './KebabMenu/KebabMenu';
@@ -8,7 +8,7 @@ const HeaderWrapper = styled.header`
   background: var(--Grays-White, #FFF);
   box-shadow: 0px 4px 26px 0px rgba(0, 0, 0, 0.02), 0px 10px 60px 0px rgba(0, 74, 162, 0.03);
   padding-left: 1rem;
-  padding-right: 1rem !important;
+  padding-right: 1rem; 
   padding-top: 0.75rem;
   padding-bottom: 0.75rem;
   display: flex;
@@ -44,6 +44,7 @@ const CloseButton = styled.button`
   border: none;
   cursor: pointer;
   margin-left: 0.5rem;
+  margin-right: 1.5rem;
 
   svg {
     width: 100%;
@@ -126,6 +127,11 @@ const StarButton = styled.button`
     fill: ${(props) => (props.active ? 'rgba(255, 211, 56, 1)' : 'none')};
   }
 `;
+
+StarButton.propTypes = {
+  active: PropTypes.bool.isRequired,
+};
+
 
 const NotificationText = styled.span`
   color: var(--Grays-Gray3, #B1B1B1);
@@ -336,6 +342,7 @@ const Header = ({ isMenuCollapsed, toggleMenuBar }) => {
 Header.propTypes = {
   isMenuCollapsed: PropTypes.bool.isRequired,
   toggleMenuBar: PropTypes.func.isRequired,
+  active: PropTypes.bool,
 };
 
 export default Header;
