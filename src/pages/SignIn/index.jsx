@@ -86,7 +86,6 @@ const SignInBox = styled.div`
 const InputBox = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 1rem;
 `;
 
 const Input = styled.input`
@@ -98,7 +97,7 @@ const Input = styled.input`
   gap: 0.5rem;
   flex-shrink: 0;
   border-radius: 0.375rem;
-  border: 1px solid var(--Grays-Gray4, #CACACA);
+  border: ${(props) => (props.hasError ? '1px solid #EA1215' : '1px solid var(--Grays-Gray4, #CACACA)')};
   background: var(--Grays-White, #FFF);
 
   /* 16 Medium */
@@ -119,12 +118,23 @@ const Input = styled.input`
   }
 `;
 
-const EmailInput = styled(Input)``;
+const EmailInput = styled(Input)`
+  margin-bottom: 1rem
+`;
 
 const PasswordInput = styled(Input).attrs({
-    maxLength: 20
+    maxLength: 20,
   })``;
-  
+
+const ErrorMessage = styled.div`
+  color: var(--Semantic-Alert, #EA1215);
+  margin-top: 0.44rem;
+  font-family: Pretendard;
+  font-size: 0.75rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+`;
 
 const SignUpDiv = styled.div`
   display: flex;
@@ -259,19 +269,56 @@ const ShowEye = styled.div`
   }
 `;
 
-
 export const SignIn = () => {
-  const navigate = useNavigate();
-  const [passwordVisible, setPasswordVisible] = useState(true);
+    const navigate = useNavigate();
+    const [passwordVisible, setPasswordVisible] = useState(true);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
+    const [emailError, setEmailError] = useState(false);
+    const [passwordError, setPasswordError] = useState(false);
+  
+    const togglePasswordVisibility = () => {
+      setPasswordVisible(!passwordVisible);
+    };
+  
+    const validateEmail = (email) => {
+      const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return re.test(String(email).toLowerCase());
+    };
+  
+    const handleSignIn = () => {
+        let valid = true;
+        setEmailError(false);
+        setPasswordError(false);
+    
+        if (!email && !password) {
+            setError('이메일과 비밀번호를 입력해 주세요.');
+            setEmailError(true);
+            setPasswordError(true);
+            valid = false;
+        } else if (!email) {
+            setError('이메일을 입력해 주세요.');
+            setEmailError(true);
+            valid = false;
+        } else if (!validateEmail(email)) {
+            setError('이메일을 올바르게 입력해 주세요.');
+            setEmailError(true);
+            valid = false;
+        } else if (!password) {
+            setError('비밀번호를 입력해 주세요.');
+            setPasswordError(true);
+            valid = false;
+        }
+    
+        if (valid) {
+            setError('');
+            // 로그인 처리 로직
+            alert('로그인 성공');
+        }
+    };
+    
 
-  const togglePasswordVisibility = () => {
-    setPasswordVisible(!passwordVisible);
-  };
-
-  const handleSignIn = () => {
-    // 로그인 처리 로직 ...
-    alert('로그인 성공');
-  };
 
   return (
     <Body>
@@ -297,9 +344,20 @@ export const SignIn = () => {
         </LogoContainer>
         <SignInBox>
           <InputBox>
-            <EmailInput placeholder='이메일을 입력하세요.' />
+            <EmailInput
+              placeholder='이메일을 입력하세요.'
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              hasError={emailError}
+            />
             <PasswordWrapper>
-              <PasswordInput type={passwordVisible ? 'password' : 'text'} placeholder='비밀번호를 입력해주세요.' />
+              <PasswordInput
+                type={passwordVisible ? 'password' : 'text'}
+                placeholder='비밀번호를 입력하세요.'
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                hasError={passwordError}
+              />
               <ShowEye onClick={togglePasswordVisibility}>
                 {passwordVisible ? (
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -318,6 +376,7 @@ export const SignIn = () => {
                 )}
               </ShowEye>
             </PasswordWrapper>
+            {error && <ErrorMessage>{error}</ErrorMessage>}
           </InputBox>
         </SignInBox>
         <SignUpDiv>
