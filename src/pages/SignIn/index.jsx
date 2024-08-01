@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -120,12 +121,23 @@ const Input = styled.input`
 
 const EmailInput = styled(Input)``;
 
-const PasswordInput = styled(Input)``;
+const PasswordInput = styled(Input).attrs({
+    maxLength: 20
+  })``;
+  
 
 const SignUpDiv = styled.div`
   display: flex;
   justify-content: center;
   margin-top: 3.13rem;
+
+  @media (max-width: 1440px) {
+    margin-top: 2rem;
+  }
+
+  @media (max-width: 1200px) {
+    margin-top: 2.12rem;
+  }
 `;
 
 const SignUpText = styled.div`
@@ -156,14 +168,6 @@ const ButtonContainer = styled.div`
   flex-direction: column;
   align-items: center;
   margin-top: 4.25rem;
-
-  @media (max-width: 1440px) {
-    margin-top: 3.25rem;
-  }
-
-  @media (max-width: 1200px) {
-    margin-top: 2.75rem;
-  }
 `;
 
 const LoginButton = styled.button`
@@ -202,7 +206,7 @@ const KakaoSignInButton = styled.button`
   border: none;
   border-radius: 0.375rem;
   background: var(--kakao-bg, #FEE500);
-  margin-top: 0.62rem;
+  margin-top: 0.67rem;
   position: relative;
 
   &:hover {
@@ -233,14 +237,40 @@ const KakaoButtonText = styled.span`
   line-height: 150%; /* 1.40625rem */
 `;
 
+const PasswordWrapper = styled.div`
+  position: relative;
+  width: 100%;
+`;
+
+const ShowEye = styled.div`
+  width: 1.5rem;
+  height: 1.5rem;
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+`;
+
+
 export const SignIn = () => {
   const navigate = useNavigate();
-  let isLoginAvailable = false;
+  const [passwordVisible, setPasswordVisible] = useState(true);
+
+  const togglePasswordVisibility = () => {
+    setPasswordVisible(!passwordVisible);
+  };
 
   const handleSignIn = () => {
-    if (isLoginAvailable) {
-      alert('로그인 성공');
-    }
+    // 로그인 처리 로직 ...
+    alert('로그인 성공');
   };
 
   return (
@@ -267,27 +297,49 @@ export const SignIn = () => {
         </LogoContainer>
         <SignInBox>
           <InputBox>
-            <EmailInput placeholder='이메일을 입력해주세요.' />
-            <PasswordInput type='password' placeholder='비밀번호를 입력해주세요.' />
+            <EmailInput placeholder='이메일을 입력하세요.' />
+            <PasswordWrapper>
+              <PasswordInput type={passwordVisible ? 'password' : 'text'} placeholder='비밀번호를 입력해주세요.' />
+              <ShowEye onClick={togglePasswordVisibility}>
+                {passwordVisible ? (
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path
+                      d="M11.83 9L15 12.16V12C15 11.2044 14.6839 10.4413 14.1213 9.87868C13.5587 9.31607 12.7956 9 12 9H11.83ZM7.53 9.8L9.08 11.35C9.03 11.56 9 11.77 9 12C9 12.7956 9.31607 13.5587 9.87868 14.1213C10.4413 14.6839 11.2044 15 12 15C12.22 15 12.44 14.97 12.65 14.92L14.2 16.47C13.53 16.8 12.79 17 12 17C10.6739 17 9.40215 16.4732 8.46447 15.5355C7.52678 14.5979 7 13.3261 7 12C7 11.21 7.2 10.47 7.53 9.8ZM2 4.27L4.28 6.55L4.73 7C3.08 8.3 1.78 10 1 12C2.73 16.39 7 19.5 12 19.5C13.55 19.5 15.03 19.2 16.38 18.66L16.81 19.08L19.73 22L21 20.73L3.27 3M12 7C13.3261 7 14.5979 7.52678 15.5355 8.46447C16.4732 9.40215 17 10.6739 17 12C17 12.64 16.87 13.26 16.64 13.82L19.57 16.75C21.07 15.5 22.27 13.86 23 12C21.27 7.61 17 4.5 12 4.5C10.6 4.5 9.26 4.75 8 5.2L10.17 7.35C10.74 7.13 11.35 7 12 7Z"
+                      fill="#1A1A1A"
+                    />
+                  </svg>
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
+                    <path
+                      d="M12 9.5C11.2044 9.5 10.4413 9.81607 9.87868 10.3787C9.31607 10.9413 9 11.7044 9 12.5C9 13.2956 9.31607 14.0587 9.87868 14.6213C10.4413 15.1839 11.2044 15.5 12 15.5C12.7956 15.5 13.5587 15.1839 14.1213 14.6213C14.6839 14.0587 15 13.2956 15 12.5C15 11.7044 14.6839 10.9413 14.1213 10.3787C13.5587 9.81607 12.7956 9.5 12 9.5ZM12 17.5C10.6739 17.5 9.40215 16.9732 8.46447 16.0355C7.52678 15.0979 7 13.8261 7 12.5C7 11.1739 7.52678 9.90215 8.46447 8.96447C9.40215 8.02678 10.6739 7.5 12 7.5C13.3261 7.5 14.5979 8.02678 15.5355 8.96447C16.4732 9.90215 17 11.1739 17 12.5C17 13.8261 16.4732 15.0979 15.5355 16.0355C14.5979 16.9732 13.3261 17.5 12 17.5ZM12 5C7 5 2.73 8.11 1 12.5C2.73 16.89 7 20 12 20C17 20 21.27 16.89 23 12.5C21.27 8.11 17 5 12 5Z"
+                      fill="#1A1A1A"
+                    />
+                  </svg>
+                )}
+              </ShowEye>
+            </PasswordWrapper>
           </InputBox>
         </SignInBox>
-
         <SignUpDiv>
           <SignUpText>아직 계정이 없으신가요?</SignUpText>
-          <SignUpLink onClick={() => navigate('/signup')}>회원가입</SignUpLink>
+          <SignUpLink onClick={() => navigate('/sign-up')}>회원가입</SignUpLink>
         </SignUpDiv>
-
         <ButtonContainer>
           <LoginButton onClick={handleSignIn}>로그인</LoginButton>
           <KakaoSignInButton>
             <KakaoLogo>
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="19" viewBox="0 0 18 19" fill="none">
                 <g clipPath="url(#clip0_1850_13627)">
-                  <path fillRule="evenodd" clipRule="evenodd" d="M9.00002 1.1001C4.02917 1.1001 0 4.21306 0 8.05238C0 10.4401 1.5584 12.5451 3.93152 13.7971L2.93303 17.4446C2.84481 17.7669 3.21341 18.0238 3.49646 17.837L7.87334 14.9483C8.2427 14.9839 8.61808 15.0047 9.00002 15.0047C13.9705 15.0047 17.9999 11.8919 17.9999 8.05238C17.9999 4.21306 13.9705 1.1001 9.00002 1.1001Z" fill="#1A1A1A"/>
+                  <path
+                    fillRule="evenodd"
+                    clipRule="evenodd"
+                    d="M9.00002 1.1001C4.02917 1.1001 0 4.21306 0 8.05238C0 10.4401 1.5584 12.5451 3.93152 13.7971L2.93303 17.4446C2.84481 17.7669 3.21341 18.0238 3.49646 17.837L7.87334 14.9483C8.2427 14.9839 8.61808 15.0047 9.00002 15.0047C13.9705 15.0047 17.9999 11.8919 17.9999 8.05238C17.9999 4.21306 13.9705 1.1001 9.00002 1.1001Z"
+                    fill="#1A1A1A"
+                  />
                 </g>
                 <defs>
                   <clipPath id="clip0_1850_13627">
-                    <rect width="17.9999" height="18" fill="white" transform="translate(0 0.5)"/>
+                    <rect width="17.9999" height="18" fill="white" transform="translate(0 0.5)" />
                   </clipPath>
                 </defs>
               </svg>
