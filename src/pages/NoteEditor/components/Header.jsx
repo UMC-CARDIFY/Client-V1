@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import KebabMenu from './KebabMenu/KebabMenu';
 import ExportMenu from './KebabMenu/ExportMenu';
+import ShareMenu from './KebabMenu/ShareMenu';
 
 const HeaderWrapper = styled.header`
   background: var(--Grays-White, #FFF);
@@ -204,8 +205,10 @@ const Header = ({ isMenuCollapsed, toggleMenuBar }) => {
   const [results, setResults] = useState([]);
   const [isKebabMenuOpen, setIsKebabMenuOpen] = useState(false);
   const [isExportMenuOpen, setIsExportMenuOpen] = useState(false);
+  const [isShareMenuOpen, setIsShareMenuOpen] = useState(false);
   const kebabMenuRef = useRef(null);
   const exportMenuRef = useRef(null);
+  const shareMenuRef = useRef(null);
 
   const toggleStar = () => {
     setIsStarActive(!isStarActive);
@@ -226,11 +229,17 @@ const Header = ({ isMenuCollapsed, toggleMenuBar }) => {
   const handleKebabClick = () => {
     setIsKebabMenuOpen(!isKebabMenuOpen);
     setIsExportMenuOpen(false); // Hide export menu if it's open
+    setIsShareMenuOpen(false); // Hide share menu if it's open
   };
 
   const handleExportClick = () => {
     setIsKebabMenuOpen(false);
     setIsExportMenuOpen(true);
+  };
+
+  const handleShareClick = () => {
+    setIsKebabMenuOpen(false);
+    setIsShareMenuOpen(true);
   };
 
   const handleClickOutside = (event) => {
@@ -240,10 +249,13 @@ const Header = ({ isMenuCollapsed, toggleMenuBar }) => {
     if (exportMenuRef.current && !exportMenuRef.current.contains(event.target)) {
       setIsExportMenuOpen(false);
     }
+    if (shareMenuRef.current && !shareMenuRef.current.contains(event.target)) {
+      setIsShareMenuOpen(false);
+    }
   };
 
   useEffect(() => {
-    if (isKebabMenuOpen || isExportMenuOpen) {
+    if (isKebabMenuOpen || isExportMenuOpen || isShareMenuOpen) {
       document.addEventListener('mousedown', handleClickOutside);
     } else {
       document.removeEventListener('mousedown', handleClickOutside);
@@ -252,7 +264,7 @@ const Header = ({ isMenuCollapsed, toggleMenuBar }) => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isKebabMenuOpen, isExportMenuOpen]);
+  }, [isKebabMenuOpen, isExportMenuOpen, isShareMenuOpen]);
 
   const handleExportPDF = () => {
     alert('PDF로 내보내기');
@@ -260,6 +272,14 @@ const Header = ({ isMenuCollapsed, toggleMenuBar }) => {
 
   const handleExportCSV = () => {
     alert('CSV로 내보내기');
+  };
+
+  const handleCopyLink = () => {
+    alert('링크가 복사되었습니다.');
+  };
+
+  const handleShareToLibrary = () => {
+    alert('자료실에 공유되었습니다.');
   };
 
   return (
@@ -281,7 +301,7 @@ const Header = ({ isMenuCollapsed, toggleMenuBar }) => {
         {isKebabMenuOpen && (
           <KebabMenu
             ref={kebabMenuRef}
-            onShare={() => alert('공유하기 기능')}
+            onShare={handleShareClick}
             onExport={handleExportClick}
             onDelete={() => alert('삭제 기능')}
           />
@@ -291,6 +311,13 @@ const Header = ({ isMenuCollapsed, toggleMenuBar }) => {
             ref={exportMenuRef}
             onExportPDF={handleExportPDF}
             onExportCSV={handleExportCSV}
+          />
+        )}
+        {isShareMenuOpen && (
+          <ShareMenu
+            ref={shareMenuRef}
+            onCopyLink={handleCopyLink}
+            onShareToLibrary={handleShareToLibrary}
           />
         )}
         <StarButton active={isStarActive} onClick={toggleStar}>
