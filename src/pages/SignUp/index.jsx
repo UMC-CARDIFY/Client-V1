@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
 import { IoChevronBack } from 'react-icons/io5';
+import { useFormValidation } from './useFormValidation';
+import axios from 'axios';
 
 const Body = styled.div`
   display: flex;
@@ -83,11 +85,11 @@ const InputWrapper = styled.div`
   margin: 0.25rem 0 3rem 0;
 
   @media screen and (max-width: 1440px) {
-    margin-bottom: 2rem;
+    margin-bottom: 2.5rem;
   }
 
   @media screen and (max-width: 1200px) {
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
   }
 `;
 
@@ -99,7 +101,8 @@ const Input = styled.input`
   align-items: center;
   flex-shrink: 0;
   border-radius: 0.375rem;
-  border: 1px solid var(--Grays-Gray4, #CACACA);
+  border: 1px solid;
+  border-color: ${(props) => props.hasError ? '#EA1215' : '#CACACA'};  
   background: var(--Grays-White, #FFF);
 
   font-family: Pretendard;
@@ -115,9 +118,23 @@ const Input = styled.input`
 
   &:focus {
     outline: none;
-    border: 1px solid #699BF7;
-    background: #FFF;
+    border: 1px solid;
+    border-color: ${(props) => props.hasError ? '#EA1215' : '#699BF7'};  
   }
+`;
+
+const ErrorMessage = styled.p`
+  position: absolute;
+  top: 100%;
+  left: 0;
+  color: #EA1215;
+  font-family: Pretendard;
+  font-size: 0.75rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  margin: 0.25rem 0 0 0;
+  align-self: flex-start;
 `;
 
 const PWeye = styled.div`
@@ -248,9 +265,16 @@ const VerifyButton = styled.button`
 
 export const SignUp = () => {
     const navigate = useNavigate();
+    const { errors, validateField } = useFormValidation();
     const [passwordVisible, setPasswordVisible] = useState(false);
     const [passwordCheckVisible, setPasswordCheckVisible] = useState(false);
     const [emailSent, setEmailSent] = useState(false);
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [verificationCode, setVerificationCode] = useState('');
+    const [password, setPassword] = useState('');
+    const [passwordCheck, setPasswordCheck] = useState('');
+
 
     const clickPasswordVisible = () => {
         setPasswordVisible(!passwordVisible);
@@ -264,68 +288,170 @@ export const SignUp = () => {
         // 이메일 인증 요청 로직 추가하기
     };
 
+    const handleSignUp = async () => {
+      try {
+          const response = await axios.post('http://3.37.13.40:8080/api/v1/users/signup', {
+              name,
+              email,
+              password
+          });
+          if (response.status === 200) {
+              alert('회원가입에 성공했습니다.');
+              navigate('/signup/verify');
+          }
+      } catch (error) {
+          alert('회원가입에 실패했습니다.');
+          console.error(error);
+      }
+  };
+
     const clickVerify = () => {
-        // 입력 정보 유효성 검사하기
-
-        navigate('/signup/verify');
-        // 인증하기 버튼 클릭
-    }
-
+      if (
+        !errors.name &&
+        !errors.email &&
+        !errors.verificationCode &&
+        !errors.password &&
+        !errors.passwordCheck &&
+        name &&
+        email &&
+        verificationCode &&
+        password &&
+        passwordCheck === password
+      ) {
+        handleSignUp();
+      }
+    };
+  
     return (
       <Body>
         <Container>
-          <Header> 
+          <Header>
             <BackButton onClick={() => navigate(-1)} />
             <Title>회원가입</Title>
           </Header>
-            <SignUpBox>
-                <InputText>이름 <span style={{ color: '#699BF7' }}>*</span></InputText>
-                <InputWrapper>
-                  <Input id="name" type="text" placeholder="이름을 입력하세요." />
-                </InputWrapper>
-
-                <InputText>이메일 <span style={{ color: '#699BF7' }}>*</span></InputText>
-                <InputWrapper>
-                  <Input id="email" type="email" placeholder="이메일을 입력하세요." />
-                  <SendMailButton onClick={sendVerificationEmail} sent={emailSent}>
-                    {emailSent ? '메일 발송 완료' : '인증 메일 발송'}
-                  </SendMailButton>
-                </InputWrapper>
-                
-                <InputText>인증번호 <span style={{ color: '#699BF7' }}>*</span></InputText>
-                <InputWrapper>
-                  <Input id="verification" type="text" placeholder="이메일로 발송된 인증번호 6자리를 입력하세요" />
-                  <VerifyCodeButton>인증 완료</VerifyCodeButton>
-                </InputWrapper>
-
-                <InputText>비밀번호 <span style={{ color: '#699BF7' }}>*</span></InputText>
-                <InputWrapper>
-                    <Input type={passwordVisible? "text" : "password"} placeholder="1~20자 이내, 영문/숫자 조합" />
-                    {passwordVisible? <PWeye><ShowEye onClick={()=>clickPasswordVisible()}/></PWeye> : 
-                    <PWeye><HiddenEye onClick={()=>clickPasswordVisible()}/></PWeye>
-                    }
-                </InputWrapper>
-
-                <InputText>비밀번호 확인 <span style={{ color: '#699BF7' }}>*</span></InputText>
-                <InputWrapper>
-                    <Input type={passwordCheckVisible? "text" : "password"} placeholder="비밀번호 확인" />
-                    {passwordCheckVisible? <PWCheckeye><ShowEye onClick={()=>clickPasswordCheckVisible()}/></PWCheckeye> :
-                    <PWCheckeye><HiddenEye onClick={()=>clickPasswordCheckVisible()}/></PWCheckeye>
-                    }
-                </InputWrapper>
-
-                <AgreeText>
-                    <AgreeContent onClick={()=>navigate('/signup')}>이용약관</AgreeContent>
-                    <p>과 &nbsp;</p>
-                    <AgreeContent onClick={()=>navigate('/signup')}>개인정보취급방침</AgreeContent>
-                    <p>을 확인하고, 동의합니다.</p>
-                </AgreeText>
-
-                <VerifyButton onClick={()=>clickVerify()}>동의하고 회원가입 하기</VerifyButton>
-            </SignUpBox>
+          <SignUpBox>
+            <InputText>
+              이름 <span style={{ color: '#699BF7' }}>*</span>
+            </InputText>
+            <InputWrapper>
+              <Input
+                id="name"
+                type="text"
+                placeholder="이름을 입력하세요."
+                value={name}
+                onChange={(e) => {
+                  setName(e.target.value);
+                  validateField('name', e.target.value);
+                }}
+                hasError={!!errors.name}
+              />
+              {errors.name && <ErrorMessage>{errors.name}</ErrorMessage>}
+            </InputWrapper>
+  
+            <InputText>
+              이메일 <span style={{ color: '#699BF7' }}>*</span>
+            </InputText>
+            <InputWrapper>
+              <Input
+                id="email"
+                type="email"
+                placeholder="이메일을 입력하세요."
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  validateField('email', e.target.value);
+                }}
+                hasError={!!errors.email}
+              />
+              <SendMailButton onClick={sendVerificationEmail} sent={emailSent}>
+                {emailSent ? '메일 발송 완료' : '인증 메일 발송'}
+              </SendMailButton>
+              {errors.email && <ErrorMessage>{errors.email}</ErrorMessage>}
+            </InputWrapper>
+  
+            <InputText>
+              인증번호 <span style={{ color: '#699BF7' }}>*</span>
+            </InputText>
+            <InputWrapper>
+              <Input
+                id="verification"
+                type="text"
+                placeholder="이메일로 발송된 인증번호 6자리를 입력하세요"
+                value={verificationCode}
+                onChange={(e) => {
+                  setVerificationCode(e.target.value);
+                  validateField('verificationCode', e.target.value);
+                }}
+                hasError={!!errors.verificationCode}
+              />
+              <VerifyCodeButton>인증 완료</VerifyCodeButton>
+              {errors.verificationCode && <ErrorMessage>{errors.verificationCode}</ErrorMessage>}
+            </InputWrapper>
+  
+            <InputText>
+              비밀번호 <span style={{ color: '#699BF7' }}>*</span>
+            </InputText>
+            <InputWrapper>
+              <Input
+                type={passwordVisible ? 'text' : 'password'}
+                placeholder="1~20자 이내, 영문/숫자 조합"
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  validateField('password', e.target.value);
+                }}
+                hasError={!!errors.password}
+              />
+              {passwordVisible ? (
+                <PWeye>
+                  <ShowEye onClick={clickPasswordVisible} />
+                </PWeye>
+              ) : (
+                <PWeye>
+                  <HiddenEye onClick={clickPasswordVisible} />
+                </PWeye>
+              )}
+              {errors.password && <ErrorMessage>{errors.password}</ErrorMessage>}
+            </InputWrapper>
+  
+            <InputText>
+              비밀번호 확인 <span style={{ color: '#699BF7' }}>*</span>
+            </InputText>
+            <InputWrapper>
+              <Input
+                type={passwordCheckVisible ? 'text' : 'password'}
+                placeholder="비밀번호 확인"
+                value={passwordCheck}
+                onChange={(e) => {
+                  setPasswordCheck(e.target.value);
+                  validateField('passwordCheck', e.target.value, password);
+                }}
+                hasError={!!errors.passwordCheck}
+              />
+              {passwordCheckVisible ? (
+                <PWCheckeye>
+                  <ShowEye onClick={clickPasswordCheckVisible} />
+                </PWCheckeye>
+              ) : (
+                <PWCheckeye>
+                  <HiddenEye onClick={clickPasswordCheckVisible} />
+                </PWCheckeye>
+              )}
+              {errors.passwordCheck && <ErrorMessage>{errors.passwordCheck}</ErrorMessage>}
+            </InputWrapper>
+  
+            <AgreeText>
+              <AgreeContent onClick={() => navigate('/signup')}>이용약관</AgreeContent>
+              <p>과 &nbsp;</p>
+              <AgreeContent onClick={() => navigate('/signup')}>개인정보취급방침</AgreeContent>
+              <p>을 확인하고, 동의합니다.</p>
+            </AgreeText>
+  
+            <VerifyButton onClick={clickVerify}>동의하고 회원가입 하기</VerifyButton>
+          </SignUpBox>
         </Container>
       </Body>
-    )
-}
-
-export default SignUp;
+    );
+  };
+  
+  export default SignUp;
