@@ -5,16 +5,16 @@ const Router = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/signin' element={<SignIn />} />
-        <Route path='/signup' element={<SignUp />} />
-        <Route path='/signup/verify' element={<VerifyEmail />} />
-        <Route path='/signup/complete' element={<CompleteSignUp />} />
+        <Route path='/sign-in' element={<SignIn />} />
+        <Route path='/sign-up' element={<SignUp />} />
+        <Route path='/sign-up/verify' element={<VerifyEmail />} />
+        <Route path='/sign-up/complete' element={<CompleteSignUp />} />
         <Route path='/mypage' element={<MyPage />} />
         <Route path='/mypage/point' element={<PointPage />} />
         <Route path='/mypage/subscription' element={<SubscriptionPage />} />
         <Route path='/archive' element={<Archive />} />
         <Route path='/dashboard' element={<Dashboard />} /> 
-        <Route path='/noteeditor' element={<NoteEditor />} /> 
+        <Route path='/note-editor' element={<NoteEditor />} /> 
        </Routes>
     </BrowserRouter>
   );
