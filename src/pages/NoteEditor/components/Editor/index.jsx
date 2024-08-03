@@ -42,7 +42,7 @@ const Editor = () => {
     const { tr } = state;
 
     // 헤딩1 노드 생성 및 삽입
-    const headingNode = mySchema.nodes.heading.create({ level: 1 }, mySchema.text("제목1"));
+    const headingNode = mySchema.nodes.heading.create({ level: 1 }, mySchema.text("헤딩1"));
     tr.replaceSelectionWith(headingNode);
 
     // 커서를 헤딩1 내부로 이동시키고 placeholder 설정
