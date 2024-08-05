@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
 import { IoChevronBack } from 'react-icons/io5';
 import { useFormValidation } from './useFormValidation';
-import axios from 'axios';
+import { signUp } from '../../api/signup/signup';
 
 const Body = styled.div`
   display: flex;
@@ -241,13 +241,10 @@ export const SignUp = () => {
 
     const handleSignUp = async () => {
       try {
-          const response = await axios.post('http://3.37.13.40:8080/api/v1/users/signup', {
-              name,
-              email,
-              password
-          });
-          if (response.status === 200) {
-              alert('회원가입에 성공했습니다.');
+          const data = await signUp(name, email, password);
+          alert('회원가입에 성공했습니다.');
+          console.log(data);
+          if (data) {
               navigate('/signup/verify');
           }
       } catch (error) {
