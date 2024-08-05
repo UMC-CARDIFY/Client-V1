@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
@@ -8,27 +8,35 @@ import axios from 'axios';
 
 const Body = styled.div`
   display: flex;
-  width: 100%;
+  width: 100vw;
   height: 100vh;
   justify-content: center;
   align-items: center;
+  background: var(--Main-BackGround, #F2F4F8);
 `;
 
 const Container = styled.div`
+  width: 72rem;
+  height: 47.5rem;
+  flex-shrink: 0;
+  border-radius: 0.75rem;
+  background: var(--Grays-White, #FFF);
+  box-shadow: 0px 4px 26.7px 0px rgba(0, 0, 0, 0.02), 0px 10px 60px 0px rgba(0, 74, 162, 0.03);
+
+  @media (max-width: 1440px) {
+    width: 65rem;
+    height: 45rem;
+  }
+
+  @media (max-width: 1200px) {
+    width: 61rem;
+    height: 42.5rem;
+  }
+
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 72rem;
-  height: auto;
-  flex-shrink: 0;
-
-  @media screen and (max-width: 1440px) {
-    width: 65rem;
-  }
-
-  @media screen and (max-width: 1200px) {
-    width: 53rem;
-  }
+  justify-content: center;
 `;
 
 const Header = styled.div`
@@ -36,6 +44,8 @@ const Header = styled.div`
   width: 100%;
   align-items: center;
   margin-bottom: 1.5rem;
+  margin-left: 7.87rem;
+  margin-top: -2rem;
 `;
 
 const BackButton = styled(IoChevronBack)`
@@ -82,10 +92,10 @@ const InputText = styled.p`
 const InputWrapper = styled.div`
   position: relative;
   width: 100%;
-  margin: 0.25rem 0 3rem 0;
+  margin: 0 0 2rem 0;
 
   @media screen and (max-width: 1440px) {
-    margin-bottom: 2.5rem;
+    margin-bottom: 2rem;
   }
 
   @media screen and (max-width: 1200px) {
@@ -178,7 +188,6 @@ const AgreeText = styled.div`
   font-style: normal;
   font-weight: 400;
   line-height: normal;
-  margin-top: 1rem;
   align-self: flex-start;
 `;
 
@@ -197,7 +206,7 @@ const VerifyButton = styled.button`
     box-sizing: border-box;
     justify-content: center;
     align-items: center;
-    border: 1px solid #D9D9D9;
+    border: none;
     border-radius: 0.375rem;
     background: var(--Main-Primary, #0F62FE);
     color: var(--Grays-White, #FFF);
