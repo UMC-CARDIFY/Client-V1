@@ -1,5 +1,5 @@
 import axios from 'axios';
-import config from './config';
+import config from '../config';
 
 export const signUp = async (name, email, password) => {
   try {
