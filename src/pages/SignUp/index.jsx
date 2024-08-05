@@ -49,7 +49,7 @@ const Title = styled.p`
   font-family: Pretendard;
   font-size: 1.125rem;
   font-style: normal;
-  font-weight: 500;
+  font-weight: 600;
   line-height: normal;
 `;
 
@@ -73,7 +73,7 @@ const InputText = styled.p`
   font-family: Pretendard;
   font-size: 1rem;
   font-style: normal;
-  font-weight: 400;
+  font-weight: 500;
   line-height: normal;
   align-self: flex-start;
   margin: 0;
@@ -108,7 +108,7 @@ const Input = styled.input`
   font-family: Pretendard;
   font-size: 1rem;
   font-style: normal;
-  font-weight: 400;
+  font-weight: 500;
   line-height: normal;
   box-sizing: border-box;
 
@@ -131,7 +131,7 @@ const ErrorMessage = styled.p`
   font-family: Pretendard;
   font-size: 0.75rem;
   font-style: normal;
-  font-weight: 400;
+  font-weight: 500;
   line-height: normal;
   margin: 0.25rem 0 0 0;
   align-self: flex-start;
@@ -170,63 +170,13 @@ const HiddenEye = styled(AiFillEyeInvisible)`
             }
 `;
 
-const SendMailButton = styled.button`
-  position: absolute;
-  right: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
-  justify-content: center;
-  align-items: center;
-  padding: 0.25rem 0.75rem;
-  background-color: ${(props) => (props.sent ? '#F0F0F0' : '#F2F4F8')};
-  color: ${(props) => (props.sent ? '#767676' : '#0F62FE')};
-  border: none;
-  border-radius: 0.25rem;
-  cursor: pointer;
-
-  font-family: Pretendard;
-  font-size: 0.875rem;
-  font-style: normal;
-  font-weight: 500;
-  line-height: normal;
-
-  &:hover {
-    background-color: #EBEEF1;
-  }
-`;
-
-const VerifyCodeButton = styled.button`
-  position: absolute;
-  right: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
-  justify-content: center;
-  align-items: center;
-  padding: 0.25rem 0.75rem;
-  background-color: #F2F4F8;
-  color: #0F62FE;
-  border: none;
-  border-radius: 0.25rem;
-  cursor: pointer;
-
-  font-family: Pretendard;
-  font-size: 0.875rem;
-  font-style: normal;
-  font-weight: 500;
-  line-height: normal;
-
-  &:hover {
-    background-color: #EBEEF1;
-  }
-`;
-
 const AgreeText = styled.div`
   display: flex;
   color: var(--B1B1B1, #B1B1B1);
   font-family: Pretendard;
   font-size: 1rem;
   font-style: normal;
-  font-weight: 400;
+  font-weight: 500;
   line-height: normal;
   margin-top: 1rem;
   align-self: flex-start;
@@ -254,7 +204,7 @@ const VerifyButton = styled.button`
     font-family: Pretendard;
     font-size: 1rem;
     font-style: normal;
-    font-weight: 400;
+    font-weight: 500;
     line-height: normal;
 
       &:hover {
@@ -268,13 +218,10 @@ export const SignUp = () => {
     const { errors, validateField } = useFormValidation();
     const [passwordVisible, setPasswordVisible] = useState(false);
     const [passwordCheckVisible, setPasswordCheckVisible] = useState(false);
-    const [emailSent, setEmailSent] = useState(false);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
-    const [verificationCode, setVerificationCode] = useState('');
     const [password, setPassword] = useState('');
     const [passwordCheck, setPasswordCheck] = useState('');
-
 
     const clickPasswordVisible = () => {
         setPasswordVisible(!passwordVisible);
@@ -282,11 +229,6 @@ export const SignUp = () => {
     const clickPasswordCheckVisible = () => {
         setPasswordCheckVisible(!passwordCheckVisible);
     }
-
-    const sendVerificationEmail = () => {
-        setEmailSent(true);
-        // 이메일 인증 요청 로직 추가하기
-    };
 
     const handleSignUp = async () => {
       try {
@@ -314,7 +256,6 @@ export const SignUp = () => {
         !errors.passwordCheck &&
         name &&
         email &&
-        verificationCode &&
         password &&
         passwordCheck === password
       ) {
@@ -363,29 +304,7 @@ export const SignUp = () => {
                 }}
                 hasError={!!errors.email}
               />
-              <SendMailButton onClick={sendVerificationEmail} sent={emailSent}>
-                {emailSent ? '메일 발송 완료' : '인증 메일 발송'}
-              </SendMailButton>
               {errors.email && <ErrorMessage>{errors.email}</ErrorMessage>}
-            </InputWrapper>
-  
-            <InputText>
-              인증번호 <span style={{ color: '#699BF7' }}>*</span>
-            </InputText>
-            <InputWrapper>
-              <Input
-                id="verification"
-                type="text"
-                placeholder="이메일로 발송된 인증번호 6자리를 입력하세요"
-                value={verificationCode}
-                onChange={(e) => {
-                  setVerificationCode(e.target.value);
-                  validateField('verificationCode', e.target.value);
-                }}
-                hasError={!!errors.verificationCode}
-              />
-              <VerifyCodeButton>인증 완료</VerifyCodeButton>
-              {errors.verificationCode && <ErrorMessage>{errors.verificationCode}</ErrorMessage>}
             </InputWrapper>
   
             <InputText>
