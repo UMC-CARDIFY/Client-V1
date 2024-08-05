@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { login } from '../../api/signin/signin'; 
 
 const Body = styled.div`
   display: flex;
@@ -269,55 +270,61 @@ const ShowEye = styled.div`
   }
 `;
 
-export const SignIn = () => {
-    const navigate = useNavigate();
-    const [passwordVisible, setPasswordVisible] = useState(true);
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
-    const [emailError, setEmailError] = useState(false);
-    const [passwordError, setPasswordError] = useState(false);
-  
-    const togglePasswordVisibility = () => {
-      setPasswordVisible(!passwordVisible);
-    };
-  
-    const validateEmail = (email) => {
-      const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      return re.test(String(email).toLowerCase());
-    };
-  
-    const handleSignIn = () => {
-        let valid = true;
-        setEmailError(false);
-        setPasswordError(false);
-    
-        if (!email && !password) {
-            setError('이메일과 비밀번호를 입력해 주세요.');
-            setEmailError(true);
-            setPasswordError(true);
-            valid = false;
-        } else if (!email) {
-            setError('이메일을 입력해 주세요.');
-            setEmailError(true);
-            valid = false;
-        } else if (!validateEmail(email)) {
-            setError('이메일을 올바르게 입력해 주세요.');
-            setEmailError(true);
-            valid = false;
-        } else if (!password) {
-            setError('비밀번호를 입력해 주세요.');
-            setPasswordError(true);
-            valid = false;
-        }
-    
-        if (valid) {
-            setError('');
-            // 로그인 처리 로직
-            alert('로그인 성공');
-        }
-    };
-    
+const SignIn = () => {
+  const navigate = useNavigate();
+  const [passwordVisible, setPasswordVisible] = useState(true);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [emailError, setEmailError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setPasswordVisible(!passwordVisible);
+  };
+
+  const validateEmail = (email) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(String(email).toLowerCase());
+  };
+
+  const handleSignIn = async () => {  // 변경된 부분: async 함수로 수정
+    let valid = true;
+    setEmailError(false);
+    setPasswordError(false);
+
+    if (!email && !password) {
+      setError('이메일과 비밀번호를 입력해 주세요.');
+      setEmailError(true);
+      setPasswordError(true);
+      valid = false;
+    } else if (!email) {
+      setError('이메일을 입력해 주세요.');
+      setEmailError(true);
+      valid = false;
+    } else if (!validateEmail(email)) {
+      setError('이메일을 올바르게 입력해 주세요.');
+      setEmailError(true);
+      valid = false;
+    } else if (!password) {
+      setError('비밀번호를 입력해 주세요.');
+      setPasswordError(true);
+      valid = false;
+    }
+
+    if (valid) {
+      setError('');
+      try {
+        const data = await login(email, password);  // 변경된 부분: API 호출
+        alert('로그인 성공');
+        // 로그인 성공 후 처리
+        console.log(data);  // 추가된 부분: API 응답 데이터 사용 (임시)
+      } catch (error) {
+        setError(error.message);  // 변경된 부분: 오류 메시지 설정
+      }
+    }
+  };
+
 
 
   return (
