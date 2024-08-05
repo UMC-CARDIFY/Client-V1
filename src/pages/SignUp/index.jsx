@@ -49,7 +49,7 @@ const Title = styled.p`
   font-family: Pretendard;
   font-size: 1.125rem;
   font-style: normal;
-  font-weight: 600;
+  font-weight: 500;
   line-height: normal;
 `;
 
@@ -73,7 +73,7 @@ const InputText = styled.p`
   font-family: Pretendard;
   font-size: 1rem;
   font-style: normal;
-  font-weight: 500;
+  font-weight: 400;
   line-height: normal;
   align-self: flex-start;
   margin: 0;
@@ -108,7 +108,7 @@ const Input = styled.input`
   font-family: Pretendard;
   font-size: 1rem;
   font-style: normal;
-  font-weight: 500;
+  font-weight: 400;
   line-height: normal;
   box-sizing: border-box;
 
@@ -131,7 +131,7 @@ const ErrorMessage = styled.p`
   font-family: Pretendard;
   font-size: 0.75rem;
   font-style: normal;
-  font-weight: 500;
+  font-weight: 400;
   line-height: normal;
   margin: 0.25rem 0 0 0;
   align-self: flex-start;
@@ -176,7 +176,7 @@ const AgreeText = styled.div`
   font-family: Pretendard;
   font-size: 1rem;
   font-style: normal;
-  font-weight: 500;
+  font-weight: 400;
   line-height: normal;
   margin-top: 1rem;
   align-self: flex-start;
@@ -204,7 +204,7 @@ const VerifyButton = styled.button`
     font-family: Pretendard;
     font-size: 1rem;
     font-style: normal;
-    font-weight: 500;
+    font-weight: 400;
     line-height: normal;
 
       &:hover {
