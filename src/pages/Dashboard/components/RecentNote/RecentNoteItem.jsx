@@ -25,13 +25,13 @@ const NoteInfoContainer = styled.div`
   flex-direction: column;
   width: 15.90625rem;
 
-  @media (max-width: 1440px) {
+  @media (min-width: 1440px) and (max-width: 1680px) {
     width: 7.21875rem;
   }
-
-  @media (max-width: 1024px) {
+  @media (max-width: 1440px) and (min-width: 1200px){
     width: 6.3125rem;
   }
+  box-sizing: border-box;
 `;
 
 const DateInfoContainer = styled.div`

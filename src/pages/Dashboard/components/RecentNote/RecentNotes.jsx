@@ -8,15 +8,17 @@ const RecentNotesDiv = styled.div`
   border-radius: 0.75rem;
   background: var(--Grays-White, #FFF);
   padding: 2rem 2rem 1.5rem 2rem;
-  min-width: 32.8125rem;
+  width: 32.8125rem;
   /* default */
   box-shadow: 0px 4px 26px 0px rgba(0, 0, 0, 0.02), 0px 10px 60px 0px rgba(0, 74, 162, 0.03);
-  width: 58.6875rem;
-  @media (max-width: 1440px) {
-  width: 41.575rem;
-  @media (max-width: 1024px) {
-  width: 39.5rem; 
-  height: 18.875rem;
+  width: 100%;
+  @media (min-width: 1440px) and (max-width: 1680px) {
+  width: 41.5em;
+}
+  @media (max-width: 1440px) and (min-width: 1200px){
+  width: 38.8125rem;
+  height: 18.4625rem;
+  padding: 1.5rem;
   }
   box-sizing: border-box;
 `;
@@ -53,7 +55,7 @@ const RecentNotesContainer = styled.div`
 `;
 
 const RecentNotes = () => {
-  const isTablet = useMediaQuery({ maxWidth: 1024 });
+  const isLaptop = useMediaQuery({ minWidth: 1440, maxWidth: 1680 });
 
   return (
     <RecentNotesDiv>
@@ -62,7 +64,7 @@ const RecentNotes = () => {
         <RecentNoteItem folderName="폴더 이름 1" noteName="노트 이름 1" lastModified="YYYY-MM-DD" />
         <RecentNoteItem folderName="폴더 이름 2" noteName="노트 이름 2" lastModified="YYYY-MM-DD" />
         <RecentNoteItem folderName="폴더 이름 3" noteName="노트 이름 3" lastModified="YYYY-MM-DD" />
-        {!isTablet && (
+        {isLaptop && (
           <RecentNoteItem folderName="폴더 이름 4" noteName="노트 이름 4" lastModified="YYYY-MM-DD" />
         )}
       </RecentNotesContainer>
