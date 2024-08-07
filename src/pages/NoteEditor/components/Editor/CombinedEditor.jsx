@@ -14,8 +14,9 @@ import WordCard from '../Cards/WordCard';
 import BlankCard from '../Cards/BlankCard';
 import MultiCard from '../Cards/MultiCard';
 import ImageCard from '../Cards/ImageCard';
-import mySchema from './Markdown/schema';
+import mySchema from './schema';
 import { myInputRules } from './Markdown/inputRules';
+import { splitListItem, liftListItem, sinkListItem, wrapInList } from 'prosemirror-schema-list';
 import PropTypes from 'prop-types';
 
 const ContentArea = styled.div`
@@ -39,6 +40,10 @@ const ContentArea = styled.div`
     border-radius: 4px;
     min-height: 20rem;
     max-height: 33rem;
+    ul {
+      list-style-type: disc;
+      padding-left: 20px;
+    }
   }
 
   @media (max-width: 48rem) {
@@ -49,7 +54,7 @@ const ContentArea = styled.div`
 const TitleDiv = styled.div`
   display: flex;
   align-items: center;
-  `;
+`;
 
 const TitleInput = styled.div`
   font-size: 1.5rem;
@@ -73,15 +78,15 @@ const TitleInput = styled.div`
 `;
 
 const TransformFlashcard = styled.div`
-display: flex;
-width: 4rem;
-padding: 1.25rem 1.0625rem 1.25rem 0;
-flex-direction: column;
-justify-content: center;
-align-items: center;
-gap: 0.5rem;
-flex-shrink: 0;
-cursor: pointer;
+  display: flex;
+  width: 4rem;
+  padding: 1.25rem 1.0625rem 1.25rem 0;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+  cursor: pointer;
 `;
 
 const Divider = styled.div`
@@ -103,18 +108,41 @@ const CombinedEditor = ({ cards, viewRef }) => {
         schema: mySchema,
         doc: ProseMirrorDOMParser.fromSchema(mySchema).parse(contentRef.current),
         plugins: [
+          keymap({
+            'Enter': (state, dispatch) => {
+              return splitListItem(mySchema.nodes.list_item)(state, dispatch);
+            },
+            'Tab': (state, dispatch) => {
+              return sinkListItem(mySchema.nodes.list_item)(state, dispatch);
+            },
+            'Shift-Tab': (state, dispatch) => {
+              return liftListItem(mySchema.nodes.list_item)(state, dispatch);
+            },
+            'Mod-l': (state, dispatch) => {
+              return wrapInList(mySchema.nodes.bullet_list)(state, dispatch);
+            }
+          }),
           keymap(baseKeymap),
           history(),
           dropCursor(),
           gapCursor(),
-          myInputRules(mySchema) // schema 매개변수 전달
+          myInputRules(mySchema)
         ]
       });
 
       const view = new EditorView(contentRef.current, {
         state,
+        dispatchTransaction(transaction) {
+          const newState = view.state.apply(transaction);
+          view.updateState(newState);
+        }
       });
-      viewRef.current = view; // view를 ref에 저장
+      viewRef.current = view;
+
+      // 문서 전체를 불렛 리스트로 감싸기
+      const tr = view.state.tr;
+      tr.setSelection(view.state.selection);
+      wrapInList(mySchema.nodes.bullet_list)(view.state, tr => view.dispatch(tr));
 
       return () => {
         view.destroy();
@@ -142,7 +170,7 @@ const CombinedEditor = ({ cards, viewRef }) => {
 
     node.addEventListener('input', handleInput);
     node.addEventListener('keydown', handleKeyDown);
-    handleInput(); // 초기 상태 설정
+    handleInput();
 
     return () => {
       node.removeEventListener('input', handleInput);
@@ -153,23 +181,24 @@ const CombinedEditor = ({ cards, viewRef }) => {
   return (
     <>
       <TitleDiv>
-      <TitleInput
-        contentEditable="true"
-        data-placeholder="제목 없음"
-        ref={titleRef}
-        className="empty"
-      ></TitleInput>
-      <TransformFlashcard>
-      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="26" viewBox="0 0 32 26" fill="none">
-  <path d="M7.81846 6.2672L7.99227 5.35878L8.6875 1.7251L30.3901 5.65605L27.6092 20.1908L24.8964 19.6994L24.2182 19.5766" stroke="#B1B1B1" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
-  <rect x="1.61035" y="7.2749" width="22" height="17" stroke="#B1B1B1" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
-  <line x1="6.71035" y1="14.1749" x2="18.5104" y2="14.1749" stroke="#B1B1B1" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
-  <line x1="6.71035" y1="18.1749" x2="14.5104" y2="18.1749" stroke="#B1B1B1" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
-</svg>
-      </TransformFlashcard>
+        <TitleInput
+          contentEditable="true"
+          data-placeholder="제목 없음"
+          ref={titleRef}
+          className="empty"
+        ></TitleInput>
+        <TransformFlashcard>
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="26" viewBox="0 0 32 26" fill="none">
+            <path d="M7.81846 6.2672L7.99227 5.35878L8.6875 1.7251L30.3901 5.65605L27.6092 20.1908L24.8964 19.6994L24.2182 19.5766" stroke="#B1B1B1" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+            <rect x="1.61035" y="7.2749" width="22" height="17" stroke="#B1B1B1" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+            <line x1="6.71035" y1="14.1749" x2="18.5104" y2="14.1749" stroke="#B1B1B1" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+            <line x1="6.71035" y1="18.1749" x2="14.5104" y2="18.1749" stroke="#B1B1B1" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </TransformFlashcard>
       </TitleDiv>
       <Divider />
       <ContentArea>
+        <div ref={contentRef}></div>
         {cards.map((card, index) => {
           switch (card.type) {
             case 'word':
@@ -184,7 +213,6 @@ const CombinedEditor = ({ cards, viewRef }) => {
               return null;
           }
         })}
-        <div ref={contentRef}></div>
       </ContentArea>
     </>
   );
@@ -192,7 +220,7 @@ const CombinedEditor = ({ cards, viewRef }) => {
 
 CombinedEditor.propTypes = {
   cards: PropTypes.array.isRequired,
-  viewRef: PropTypes.object.isRequired, // viewRef prop 추가
+  viewRef: PropTypes.object.isRequired,
 };
 
 export default CombinedEditor;

@@ -28,21 +28,6 @@ function markInputRule(regexp, markType, leadingLength, trailingLength) {
   });
 }
 
-// 카드 생성 
-function cardInputRule(regexp, nodeType) {
-  return new InputRule(regexp, (state, match, start, end) => {
-    const { tr } = state;
-    if (match) {
-      const node = nodeType.createAndFill();
-      if (node) {
-        tr.replaceWith(start, end, node);
-      }
-      return tr;
-    }
-    return null;
-  });
-}
-
 // Define input rules for markdown syntax
 const headingRule = textblockTypeInputRule(/^#{1,6}\s$/, mySchema.nodes.heading, match => ({ level: match[0].length }));
 const bulletListRule = wrappingInputRule(/^\s*([-+*])\s$/, mySchema.nodes.bullet_list);
@@ -71,11 +56,6 @@ const underlineRule = markInputRule(/~(.+)~/g, mySchema.marks.underline, 1, 1);
 //const codeRule = markInputRule(/`(.+)`/g, mySchema.marks.code, 1, 1);
 const codeRule = markInputRule(/`([^`]+)`/, mySchema.marks.code, 1, 1);
 
-// 카드 생성 단축키
-const wordCardRule = cardInputRule(/>>$/, mySchema.nodes.wordCard);
-const blankCardRule = cardInputRule(/{{$/, mySchema.nodes.blankCard);
-const multiCardRule = cardInputRule(/==$/, mySchema.nodes.multiCard);
-
 const myInputRules = (schema) => inputRules({
     rules: [
         headingRule,
@@ -88,9 +68,6 @@ const myInputRules = (schema) => inputRules({
         strikethroughRule,
         underlineRule,
         horizontalRuleInputRule,
-        wordCardRule,
-        blankCardRule,
-        multiCardRule
       ]
     });
   
