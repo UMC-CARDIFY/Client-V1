@@ -92,7 +92,7 @@ const InputText = styled.p`
 const InputWrapper = styled.div`
   position: relative;
   width: 100%;
-  margin: 0 0 2rem 0;
+  margin: 0.5rem 0 2rem 0;
 
   @media screen and (max-width: 1440px) {
     margin-bottom: 2rem;
