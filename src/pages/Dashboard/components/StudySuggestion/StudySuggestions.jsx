@@ -15,8 +15,6 @@ const Container = styled.div`
   width: 19rem;
 height: 39.25rem;
 }
-margin-right: 4rem;
-margin-top: 2.5rem;
 border-radius: 0.75rem;
 background: var(--Grays-White, #FFF);
 box-shadow: 0px 4px 26.7px 0px rgba(0, 0, 0, 0.02), 0px 10px 60px 0px rgba(0, 74, 162, 0.03);
