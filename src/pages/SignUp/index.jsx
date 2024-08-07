@@ -245,7 +245,7 @@ export const SignUp = () => {
           alert('회원가입에 성공했습니다.');
           console.log(data);
           if (data) {
-              navigate('/signup/verify');
+              navigate('/sign-in');
           }
       } catch (error) {
           alert('회원가입에 실패했습니다.');
