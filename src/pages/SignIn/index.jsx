@@ -317,6 +317,7 @@ const SignIn = () => {
       try {
         const data = await login(email, password);  // 변경된 부분: API 호출
         alert('로그인 성공');
+        navigate('/dashboard');
         // 로그인 성공 후 처리
         console.log(data);  // 추가된 부분: API 응답 데이터 사용 (임시)
       } catch (error) {
