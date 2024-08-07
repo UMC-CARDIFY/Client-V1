@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 
 const DayBarContainer = styled.div`
   display: flex;
-  width: 5rem;
   height: 13.125rem;
   flex-direction: column;
   align-items: center;
@@ -15,7 +14,6 @@ const DayBarContainer = styled.div`
 `;
 
 const SvgContainer = styled.div`
-  width: 5rem;
   height: 11.25rem;
       @media (max-width: 1024px) {
     width: 3.5rem;
@@ -37,8 +35,8 @@ const DayBar = ({ day, currentWeekHeight }) => (
   <DayBarContainer>
     <SvgContainer>
       <svg xmlns="http://www.w3.org/2000/svg" width="3.5rem" height="180" viewBox="0 0 80 180" fill="none">
-        <rect width="1.5rem" height="100" fill="#E3EAF6" rx="0.375rem " ry="0.375rem"/>
-        <rect width="1.5rem" height={currentWeekHeight} transform="matrix(1 0 0 -1 45.7144 180)" fill="#6A9CFC" rx="0.375rem" ry="0.375rem"/>
+        <rect width="2rem" height="100" fill="#E3EAF6" rx="0.375rem " ry="0.375rem"/>
+        <rect width="2rem" height={currentWeekHeight} transform="matrix(1 0 0 -1 45.7144 180)" fill="#6A9CFC" rx="0.375rem" ry="0.375rem"/>
       </svg>
     </SvgContainer>
     <DayLabel>{day}</DayLabel>

@@ -1,34 +1,42 @@
-import {useState} from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
 import { IoChevronBack } from 'react-icons/io5';
 import { useFormValidation } from './useFormValidation';
-import axios from 'axios';
+import { signUp } from '../../api/signup/signup';
 
 const Body = styled.div`
   display: flex;
-  width: 100%;
+  width: 100vw;
   height: 100vh;
   justify-content: center;
   align-items: center;
+  background: var(--Main-BackGround, #F2F4F8);
 `;
 
 const Container = styled.div`
+  width: 72rem;
+  height: 47.5rem;
+  flex-shrink: 0;
+  border-radius: 0.75rem;
+  background: var(--Grays-White, #FFF);
+  box-shadow: 0px 4px 26.7px 0px rgba(0, 0, 0, 0.02), 0px 10px 60px 0px rgba(0, 74, 162, 0.03);
+
+  @media (max-width: 1440px) {
+    width: 65rem;
+    height: 45rem;
+  }
+
+  @media (max-width: 1200px) {
+    width: 61rem;
+    height: 42.5rem;
+  }
+
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 72rem;
-  height: auto;
-  flex-shrink: 0;
-
-  @media screen and (max-width: 1440px) {
-    width: 65rem;
-  }
-
-  @media screen and (max-width: 1200px) {
-    width: 53rem;
-  }
+  justify-content: center;
 `;
 
 const Header = styled.div`
@@ -36,6 +44,8 @@ const Header = styled.div`
   width: 100%;
   align-items: center;
   margin-bottom: 1.5rem;
+  margin-left: 7.87rem;
+  margin-top: -2rem;
 `;
 
 const BackButton = styled(IoChevronBack)`
@@ -82,10 +92,10 @@ const InputText = styled.p`
 const InputWrapper = styled.div`
   position: relative;
   width: 100%;
-  margin: 0.25rem 0 3rem 0;
+  margin: 0.5rem 0 2rem 0;
 
   @media screen and (max-width: 1440px) {
-    margin-bottom: 2.5rem;
+    margin-bottom: 2rem;
   }
 
   @media screen and (max-width: 1200px) {
@@ -170,56 +180,6 @@ const HiddenEye = styled(AiFillEyeInvisible)`
             }
 `;
 
-const SendMailButton = styled.button`
-  position: absolute;
-  right: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
-  justify-content: center;
-  align-items: center;
-  padding: 0.25rem 0.75rem;
-  background-color: ${(props) => (props.sent ? '#F0F0F0' : '#F2F4F8')};
-  color: ${(props) => (props.sent ? '#767676' : '#0F62FE')};
-  border: none;
-  border-radius: 0.25rem;
-  cursor: pointer;
-
-  font-family: Pretendard;
-  font-size: 0.875rem;
-  font-style: normal;
-  font-weight: 500;
-  line-height: normal;
-
-  &:hover {
-    background-color: #EBEEF1;
-  }
-`;
-
-const VerifyCodeButton = styled.button`
-  position: absolute;
-  right: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
-  justify-content: center;
-  align-items: center;
-  padding: 0.25rem 0.75rem;
-  background-color: #F2F4F8;
-  color: #0F62FE;
-  border: none;
-  border-radius: 0.25rem;
-  cursor: pointer;
-
-  font-family: Pretendard;
-  font-size: 0.875rem;
-  font-style: normal;
-  font-weight: 500;
-  line-height: normal;
-
-  &:hover {
-    background-color: #EBEEF1;
-  }
-`;
-
 const AgreeText = styled.div`
   display: flex;
   color: var(--B1B1B1, #B1B1B1);
@@ -228,7 +188,6 @@ const AgreeText = styled.div`
   font-style: normal;
   font-weight: 400;
   line-height: normal;
-  margin-top: 1rem;
   align-self: flex-start;
 `;
 
@@ -247,7 +206,7 @@ const VerifyButton = styled.button`
     box-sizing: border-box;
     justify-content: center;
     align-items: center;
-    border: 1px solid #D9D9D9;
+    border: none;
     border-radius: 0.375rem;
     background: var(--Main-Primary, #0F62FE);
     color: var(--Grays-White, #FFF);
@@ -268,13 +227,10 @@ export const SignUp = () => {
     const { errors, validateField } = useFormValidation();
     const [passwordVisible, setPasswordVisible] = useState(false);
     const [passwordCheckVisible, setPasswordCheckVisible] = useState(false);
-    const [emailSent, setEmailSent] = useState(false);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
-    const [verificationCode, setVerificationCode] = useState('');
     const [password, setPassword] = useState('');
     const [passwordCheck, setPasswordCheck] = useState('');
-
 
     const clickPasswordVisible = () => {
         setPasswordVisible(!passwordVisible);
@@ -283,20 +239,12 @@ export const SignUp = () => {
         setPasswordCheckVisible(!passwordCheckVisible);
     }
 
-    const sendVerificationEmail = () => {
-        setEmailSent(true);
-        // 이메일 인증 요청 로직 추가하기
-    };
-
     const handleSignUp = async () => {
       try {
-          const response = await axios.post('http://3.37.13.40:8080/api/v1/users/signup', {
-              name,
-              email,
-              password
-          });
-          if (response.status === 200) {
-              alert('회원가입에 성공했습니다.');
+          const data = await signUp(name, email, password);
+          alert('회원가입에 성공했습니다.');
+          console.log(data);
+          if (data) {
               navigate('/signup/verify');
           }
       } catch (error) {
@@ -314,7 +262,6 @@ export const SignUp = () => {
         !errors.passwordCheck &&
         name &&
         email &&
-        verificationCode &&
         password &&
         passwordCheck === password
       ) {
@@ -343,7 +290,7 @@ export const SignUp = () => {
                   setName(e.target.value);
                   validateField('name', e.target.value);
                 }}
-                hasError={!!errors.name}
+                $hasError={!!errors.name}
               />
               {errors.name && <ErrorMessage>{errors.name}</ErrorMessage>}
             </InputWrapper>
@@ -361,31 +308,9 @@ export const SignUp = () => {
                   setEmail(e.target.value);
                   validateField('email', e.target.value);
                 }}
-                hasError={!!errors.email}
+                $hasError={!!errors.email}
               />
-              <SendMailButton onClick={sendVerificationEmail} sent={emailSent}>
-                {emailSent ? '메일 발송 완료' : '인증 메일 발송'}
-              </SendMailButton>
               {errors.email && <ErrorMessage>{errors.email}</ErrorMessage>}
-            </InputWrapper>
-  
-            <InputText>
-              인증번호 <span style={{ color: '#699BF7' }}>*</span>
-            </InputText>
-            <InputWrapper>
-              <Input
-                id="verification"
-                type="text"
-                placeholder="이메일로 발송된 인증번호 6자리를 입력하세요"
-                value={verificationCode}
-                onChange={(e) => {
-                  setVerificationCode(e.target.value);
-                  validateField('verificationCode', e.target.value);
-                }}
-                hasError={!!errors.verificationCode}
-              />
-              <VerifyCodeButton>인증 완료</VerifyCodeButton>
-              {errors.verificationCode && <ErrorMessage>{errors.verificationCode}</ErrorMessage>}
             </InputWrapper>
   
             <InputText>
@@ -394,13 +319,13 @@ export const SignUp = () => {
             <InputWrapper>
               <Input
                 type={passwordVisible ? 'text' : 'password'}
-                placeholder="1~20자 이내, 영문/숫자 조합"
+                placeholder="8~20자 이내, 영문/숫자 조합"
                 value={password}
                 onChange={(e) => {
                   setPassword(e.target.value);
                   validateField('password', e.target.value);
                 }}
-                hasError={!!errors.password}
+                $hasError={!!errors.password}
               />
               {passwordVisible ? (
                 <PWeye>
@@ -426,7 +351,7 @@ export const SignUp = () => {
                   setPasswordCheck(e.target.value);
                   validateField('passwordCheck', e.target.value, password);
                 }}
-                hasError={!!errors.passwordCheck}
+                $hasError={!!errors.passwordCheck}
               />
               {passwordCheckVisible ? (
                 <PWCheckeye>

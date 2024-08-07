@@ -6,21 +6,19 @@ const RecentNotesDiv = styled.div`
   display: flex;
   flex-direction: column;
   border-radius: 0.75rem;
-background: var(--Grays-White, #FFF);
-  margin-top: 2.5rem;  
-  margin-left: 4rem; 
-  padding: 1.5rem 0rem 1rem 1rem;
+  background: var(--Grays-White, #FFF);
+  padding: 2rem 2rem 1.5rem 2rem;
   min-width: 32.8125rem;
-/* default */
-box-shadow: 0px 4px 26px 0px rgba(0, 0, 0, 0.02), 0px 10px 60px 0px rgba(0, 74, 162, 0.03);
-width: 58.6875rem;
-@media (max-width: 1440px) {
-width: 41.575rem;
-@media (max-width: 1024px) {
-width: 39.5rem; 
-height: 18.875rem;
-}
-box-sizing: border-box;
+  /* default */
+  box-shadow: 0px 4px 26px 0px rgba(0, 0, 0, 0.02), 0px 10px 60px 0px rgba(0, 74, 162, 0.03);
+  width: 58.6875rem;
+  @media (max-width: 1440px) {
+  width: 41.575rem;
+  @media (max-width: 1024px) {
+  width: 39.5rem; 
+  height: 18.875rem;
+  }
+  box-sizing: border-box;
 `;
 
 const Title = styled.h2`

@@ -2,7 +2,6 @@ import { useState } from 'react';
 import {
   validateName,
   validateEmail,
-  validateVerificationCode,
   validatePassword,
   validatePasswordCheck
 } from './validation';
@@ -18,9 +17,6 @@ export const useFormValidation = () => {
         break;
       case 'email':
         errorMessage = validateEmail(value);
-        break;
-      case 'verificationCode':
-        errorMessage = validateVerificationCode(value);
         break;
       case 'password':
         errorMessage = validatePassword(value);
