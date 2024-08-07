@@ -290,7 +290,7 @@ export const SignUp = () => {
                   setName(e.target.value);
                   validateField('name', e.target.value);
                 }}
-                hasError={!!errors.name}
+                $hasError={!!errors.name}
               />
               {errors.name && <ErrorMessage>{errors.name}</ErrorMessage>}
             </InputWrapper>
@@ -308,7 +308,7 @@ export const SignUp = () => {
                   setEmail(e.target.value);
                   validateField('email', e.target.value);
                 }}
-                hasError={!!errors.email}
+                $hasError={!!errors.email}
               />
               {errors.email && <ErrorMessage>{errors.email}</ErrorMessage>}
             </InputWrapper>
@@ -319,13 +319,13 @@ export const SignUp = () => {
             <InputWrapper>
               <Input
                 type={passwordVisible ? 'text' : 'password'}
-                placeholder="1~20자 이내, 영문/숫자 조합"
+                placeholder="8~20자 이내, 영문/숫자 조합"
                 value={password}
                 onChange={(e) => {
                   setPassword(e.target.value);
                   validateField('password', e.target.value);
                 }}
-                hasError={!!errors.password}
+                $hasError={!!errors.password}
               />
               {passwordVisible ? (
                 <PWeye>
@@ -351,7 +351,7 @@ export const SignUp = () => {
                   setPasswordCheck(e.target.value);
                   validateField('passwordCheck', e.target.value, password);
                 }}
-                hasError={!!errors.passwordCheck}
+                $hasError={!!errors.passwordCheck}
               />
               {passwordCheckVisible ? (
                 <PWCheckeye>
