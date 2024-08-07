@@ -9,11 +9,12 @@ const WeeklyDiv = styled.div`
   background: var(--Grays-White, #FFF);
   box-shadow: 0px 4px 26.7px 0px rgba(0, 0, 0, 0.02), 0px 10px 60px 0px rgba(0, 74, 162, 0.03);
   width: 58.6875rem;
-  @media (max-width: 1440px) {
-  width: 41.575rem;
-  @media (max-width: 1024px) {
-  width: 39.5rem; 
-  height: 18.375rem;
+  @media (max-width: 1680px) and (min-width: 1440px) {
+  width: 41.5rem;
+  }
+  @media (max-width: 1440px) and (min-width: 1200px) {
+  width: 38.8125rem; 
+  padding: 1.5rem;
   }
   box-sizing: border-box;
   `;

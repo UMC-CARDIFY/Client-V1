@@ -23,7 +23,7 @@ const Divider = styled.div`
 const NoteInfoContainer = styled.div`
   display: flex;
   flex-direction: column;
-  width: 15.90625rem;
+  width: 15rem;
 
   @media (min-width: 1440px) and (max-width: 1680px) {
     width: 7.21875rem;

@@ -8,7 +8,8 @@ const RecentNotesDiv = styled.div`
   border-radius: 0.75rem;
   background: var(--Grays-White, #FFF);
   padding: 2rem 2rem 1.5rem 2rem;
-  width: 32.8125rem;
+  width: 52rem;
+  box-sizing: border-box;
   /* default */
   box-shadow: 0px 4px 26px 0px rgba(0, 0, 0, 0.02), 0px 10px 60px 0px rgba(0, 74, 162, 0.03);
   width: 100%;
@@ -20,7 +21,6 @@ const RecentNotesDiv = styled.div`
   height: 18.4625rem;
   padding: 1.5rem;
   }
-  box-sizing: border-box;
 `;
 
 const Title = styled.h2`
@@ -36,22 +36,10 @@ margin-top: 0;
 
 const RecentNotesContainer = styled.div`
   display: flex;
-  width: 56.2rem; /* 피그마대로 하면 안 맞음 이유를 모르겠어요 */
   min-width: 32.8125rem;
   height: auto;
-  padding: 0.5rem 0 0.5rem 0.5rem;
   flex-direction: column;
   align-items: flex-start;
-
-  @media (max-width: 1440px) {
-    width: 38.825rem; /* 피그마랑 동일하게 하기 위해서 피그마 사이즈보다 - 0.2475 rem 함 */
-    min-width: 32.8125rem;
-  }
-
-  @media (max-width: 1024px) {
-    width: 36.5rem; /* 피그마랑 동일하게 하기 위해서 피그마 사이즈보다 - 0.2475 rem 함 */
-    min-width: 32.8125rem;
-  }
 `;
 
 const RecentNotes = () => {
