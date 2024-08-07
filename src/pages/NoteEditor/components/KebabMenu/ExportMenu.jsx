@@ -102,7 +102,6 @@ const ExportIcon = styled.div`
 // eslint-disable-next-line react/display-name
 const ExportMenu = forwardRef(({ onExportPDF, onExportCSV }, ref) => {
   const [selectedOption, setSelectedOption] = useState(null);
-  const [isCSVable, setIsCSVable] = useState(false);
 
   const handleExportClick = () => {
     if (selectedOption === 'pdf') {
