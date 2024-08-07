@@ -4,6 +4,8 @@ import styled from 'styled-components';
 import Switch from './components/Switch';
 import LogoutButton from './components/LogoutButton';
 import BackButton from './components/BackButton';
+import TermsModal from '../../components/Modal/TermsModal';
+import PrivacyModal from '../../components/Modal/PrivacyModal';
 
 const MyPageContainer = styled.div`
   width: 100%;
@@ -219,6 +221,8 @@ export const MyPage = () => {
   const navigate = useNavigate();
   const [isNotificationOn, setIsNotificationOn] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [showTermsModal, setShowTermsModal] = useState(false);
+  const [showPrivacyModal, setShowPrivacyModal] = useState(false);
 
   return (
     <MyPageContainer>
@@ -271,12 +275,12 @@ export const MyPage = () => {
         </Section>
         <Section>
         <SectionTitle>기타 정보</SectionTitle>
-          <InfoBox className="clickable">
-            <IconPlaceholder />
+        <InfoBox className="clickable" onClick={() => setShowTermsModal(true)}>
+        <IconPlaceholder />
             <Text>이용약관</Text>
             <IconPlaceholder />
           </InfoBox>
-          <LastInfoBox className="clickable"> 
+          <LastInfoBox className="clickable" onClick={() => setShowPrivacyModal(true)}>
             <IconPlaceholder />
             <Text>개인정보처리방침</Text>
             <IconPlaceholder />
@@ -284,6 +288,8 @@ export const MyPage = () => {
         </Section>
         <LogoutButton />
       </ContentDiv>
+      {showTermsModal && <TermsModal onClose={() => setShowTermsModal(false)} />}
+      {showPrivacyModal && <PrivacyModal onClose={() => setShowPrivacyModal(false)} />}
     </MyPageContainer>
   );
 };
