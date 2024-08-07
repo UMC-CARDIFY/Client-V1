@@ -4,6 +4,8 @@ import styled from 'styled-components';
 import { IoChevronBack } from 'react-icons/io5';
 import { useFormValidation } from './useFormValidation';
 import { signUp } from '../../api/signup/signup';
+import TermsModal from '../../components/Modal/TermsModal';
+import PrivacyModal from '../../components/Modal/PrivacyModal';
 
 const Body = styled.div`
   display: flex;
@@ -111,7 +113,7 @@ const Input = styled.input`
   flex-shrink: 0;
   border-radius: 0.375rem;
   border: 1px solid;
-  border-color: ${(props) => props.hasError ? '#EA1215' : '#CACACA'};  
+  border-color: ${(props) => props.$hasError ? '#EA1215' : '#CACACA'};  
   background: var(--Grays-White, #FFF);
 
   font-family: Pretendard;
@@ -128,7 +130,7 @@ const Input = styled.input`
   &:focus {
     outline: none;
     border: 1px solid;
-    border-color: ${(props) => props.hasError ? '#EA1215' : '#699BF7'};  
+    border-color: ${(props) => props.$hasError ? '#EA1215' : '#699BF7'};  
   }
 `;
 
@@ -216,6 +218,8 @@ export const SignUp = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordCheck, setPasswordCheck] = useState('');
+  const [showTermsModal, setShowTermsModal] = useState(false);
+  const [showPrivacyModal, setShowPrivacyModal] = useState(false);
 
   const clickPasswordVisible = () => {
     setPasswordVisible(!passwordVisible);
@@ -372,15 +376,18 @@ export const SignUp = () => {
           </InputWrapper>
 
           <AgreeText>
-            <AgreeContent onClick={() => navigate('/signup')}>이용약관</AgreeContent>
+            <AgreeContent onClick={() => setShowTermsModal(true)}>이용약관</AgreeContent>
             <p>과 &nbsp;</p>
-            <AgreeContent onClick={() => navigate('/signup')}>개인정보취급방침</AgreeContent>
+            <AgreeContent onClick={() => setShowPrivacyModal(true)}>개인정보취급방침</AgreeContent>
             <p>을 확인하고, 동의합니다.</p>
           </AgreeText>
 
           <VerifyButton onClick={clickVerify}>동의하고 회원가입 하기</VerifyButton>
         </SignUpBox>
       </Container>
+
+      {showTermsModal && <TermsModal onClose={() => setShowTermsModal(false)} />}
+      {showPrivacyModal && <PrivacyModal onClose={() => setShowPrivacyModal(false)} />}
     </Body>
   );
 };
