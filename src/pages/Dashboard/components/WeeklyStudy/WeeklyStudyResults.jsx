@@ -5,20 +5,17 @@ const WeeklyDiv = styled.div`
   display: flex;
   flex-direction: column;
   border-radius: 0.75rem;
-  margin-top: 2rem;
-  margin-left:4rem;
-    padding: 1.5rem 1.5rem 1rem 1.5rem;
-background: var(--Grays-White, #FFF);
-box-shadow: 0px 4px 26.7px 0px rgba(0, 0, 0, 0.02), 0px 10px 60px 0px rgba(0, 74, 162, 0.03);
-
-width: 58.6875rem;
-@media (max-width: 1440px) {
-width: 41.575rem;
-@media (max-width: 1024px) {
-width: 39.5rem; 
-height: 18.375rem;
-}
-box-sizing: border-box;
+  padding: 2rem;
+  background: var(--Grays-White, #FFF);
+  box-shadow: 0px 4px 26.7px 0px rgba(0, 0, 0, 0.02), 0px 10px 60px 0px rgba(0, 74, 162, 0.03);
+  width: 58.6875rem;
+  @media (max-width: 1440px) {
+  width: 41.575rem;
+  @media (max-width: 1024px) {
+  width: 39.5rem; 
+  height: 18.375rem;
+  }
+  box-sizing: border-box;
   `;
 
 const Container = styled.div`
