@@ -7,9 +7,6 @@ import StudyCard from './StudyCard';
 const Container = styled.div`
   flex-shrink: 0;
   background: #fff;
-  padding-left: 1.5rem;
-  padding-right: 1.4rem;
-  padding-top: 1.69rem;
 `;
 
 const CalendarHeader = styled.div`

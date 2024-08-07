@@ -9,16 +9,18 @@ const RecentNotesDiv = styled.div`
   background: var(--Grays-White, #FFF);
   padding: 2rem 2rem 1.5rem 2rem;
   width: 52rem;
+  height: 19.8125;
   box-sizing: border-box;
   /* default */
   box-shadow: 0px 4px 26px 0px rgba(0, 0, 0, 0.02), 0px 10px 60px 0px rgba(0, 74, 162, 0.03);
   width: 100%;
   @media (min-width: 1440px) and (max-width: 1680px) {
   width: 41.5em;
+  height: 24.3125rem;
 }
   @media (max-width: 1440px) and (min-width: 1200px){
   width: 38.8125rem;
-  height: 18.4625rem;
+  height: 18.5625rem;
   padding: 1.5rem;
   }
 `;
