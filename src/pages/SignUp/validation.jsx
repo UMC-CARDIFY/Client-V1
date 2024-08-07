@@ -14,13 +14,6 @@ export const validateName = (value) => {
     return '';
   };
   
-  export const validateVerificationCode = (value) => {
-    if (!value) {
-      return '인증번호를 입력해 주세요.';
-    }
-    return '';
-  };
-  
   export const validatePassword = (value) => {
     if (!value) {
       return '비밀번호를 입력해 주세요.';
