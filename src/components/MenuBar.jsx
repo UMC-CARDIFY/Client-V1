@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate, useLocation } from 'react-router-dom';
+import MainLogo from '../assets/logo.svg';
 
 const MenuBarContainer = styled.div`
   width: 15.5rem;
@@ -12,13 +13,22 @@ const MenuBarContainer = styled.div`
   background: var(--Grays-White, #FFF);
   box-shadow: 4px 0px 26px 0px rgba(0, 0, 0, 0.02), 4px 0px 60px 0px rgba(0, 74, 162, 0.02);
 
-  @media (max-width: 1440px) {
+  @media (min-width: 1440px) and (max-width: 1680px) {
     width: 14rem;
 }
 
-  @media (max-width: 1200px) {
+  @media(min-width: 1200px) and (max-width: 1440px) {
     width: 7rem;
   }
+
+  @media(max-width: 1200px)  {
+    width: 7rem;
+  }
+`;
+
+const Logo = styled.img`
+  margin-top: 4.5rem;
+
 `;
 
 const LogoContainer = styled.div`
@@ -36,6 +46,13 @@ const LogoContainer = styled.div`
     height: 2.58775rem;
     margin-top: 3rem;
   }
+
+  @media (max-width: 1200px) {
+    width: 3.07956rem;
+    height: 2.58775rem;
+    margin-top: 3rem;
+  }
+  
 `;
 
 const TextLogoContainer = styled.div`
@@ -216,23 +233,7 @@ const MenuBar = () => {
 
   return (  
     <MenuBarContainer>
-      <LogoContainer>
-        <svg xmlns="http://www.w3.org/2000/svg" width="79" height="65" viewBox="0 0 79 65" fill="none">
-          <path d="M46.3573 64.6941L13.4731 32.5086L46.0306 0.00012207L78.9147 32.1736L46.3573 64.6881V64.6941ZM16.6654 30.7692L36.6171 50.493L58.9422 32.2873L36.6171 11.8344L16.6654 30.7692Z" fill="#72A3FF"/>
-          <path d="M33.5883 64.694L0.704102 32.5086L33.2615 6.10352e-05L66.1457 32.1736L33.5883 64.6881V64.694ZM20.6645 32.4129L33.4854 44.964L46.1732 32.2872L33.3523 19.7361L20.6645 32.4129Z" fill="#0F62FE"/>
-        </svg>
-      </LogoContainer>  
-      <TextLogoContainer>
-        <svg xmlns="http://www.w3.org/2000/svg" width="100" height="17" viewBox="0 0 100 17" fill="none">
-          <path d="M100 0.835449L93.5305 11.3552V16.6447H91.4139V11.3552L85.144 0.835449H87.5202L92.5521 9.421L97.7437 0.835449H100Z" fill="#0F62FE"/>
-          <path d="M72.3606 0.835449H83.5426V2.69072H74.4572V8.07889L82.664 8.05916V9.91443H74.4572V16.6447H72.3606V0.835449Z" fill="#0F62FE"/>
-          <path d="M68.9194 0.835449V16.6447H66.8228V0.835449H68.9194Z" fill="#0F62FE"/>
-          <path d="M49.6824 0.835449H55.3532C60.8644 0.835449 64.0592 4.03283 64.0592 8.74995C64.0592 13.4671 60.8644 16.6447 55.3532 16.6447H49.6824V0.835449ZM55.4131 14.7697C59.4666 14.7697 61.9426 12.5986 61.9426 8.74995C61.9426 4.90125 59.4666 2.69072 55.4131 2.69072H51.779V14.7697H55.4131Z" fill="#0F62FE"/>
-          <path d="M47.4522 16.6447H44.9762L41.342 11.0197C41.0425 11.0394 40.743 11.0592 40.4435 11.0592H36.5497V16.6447H34.4531V0.835449H40.4435C44.477 0.835449 46.8531 2.82888 46.8531 5.94731C46.8531 8.17758 45.6351 9.83548 43.4386 10.6052L47.4522 16.6447ZM40.2837 9.2039C43.0593 9.2039 44.7565 8.0789 44.7565 5.94731C44.7565 3.81572 43.0593 2.69072 40.2837 2.69072H36.5497V9.2039H40.2837Z" fill="#0F62FE"/>
-          <path d="M30.0296 16.6447L28.4322 12.7368H20.7446L19.1471 16.6447H16.9507L23.5401 0.835449H25.7565L32.3259 16.6447H30.0296ZM21.4834 10.9013H27.6934L24.5984 3.26309L21.4834 10.9013Z" fill="#0F62FE"/>
-          <path d="M8.38648 17C3.55427 17 0 13.5065 0 8.73021C0 3.95388 3.55427 0.460449 8.38648 0.460449C12.5198 0.460449 15.3752 2.82888 16.2139 6.14468H14.0773C13.3984 3.91441 11.3417 2.37493 8.42642 2.37493C4.75234 2.37493 2.09662 5.01967 2.09662 8.73021C2.09662 12.421 4.77231 15.0855 8.42642 15.0855C11.4216 15.0855 13.658 13.3486 14.2371 11.0986H16.3736C15.6747 14.3947 12.6197 17 8.38648 17Z" fill="#0F62FE"/>
-        </svg>
-      </TextLogoContainer>
+      <Logo src={MainLogo} alt='logo'/>
       <MenuContainer>
         <Menu isActive={activePath === '/dashboard'} onClick={() => navigateTo('/dashboard')}>
           <DashboardIcon>
