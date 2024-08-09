@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import config from '../../api/config'; 
 
 const KakaoCallback = () => {
   const navigate = useNavigate();
@@ -12,8 +13,8 @@ const KakaoCallback = () => {
 
       if (code) {
         try {
-          // 인가 코드를 백엔드로 전달
-          const response = await axios.post('http://localhost:8080/oauth2/callback/kakao', { code });
+          // 인가 코드를 백엔드의 /api/v1/auth/kakao 엔드포인트로 전달
+          const response = await axios.post(`${config.apiBaseUrl}/auth/kakao`, { code });
           
           console.log(response.data); // 백엔드 응답 데이터를 로그로 출력
           alert('카카오 로그인 성공');
