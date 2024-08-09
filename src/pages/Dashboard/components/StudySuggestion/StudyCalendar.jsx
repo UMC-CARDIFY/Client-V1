@@ -47,7 +47,6 @@ const TodayButton = styled.button`
   display: flex;
   width: var(--line-height-xl, 2.5rem);
   height: 1.5rem;
-  padding: var(--UI-Component-xxxxxS, 0.25rem) 0.5rem;
   justify-content: center;
   align-items: center;
   gap: 0.5rem;
@@ -56,13 +55,13 @@ const TodayButton = styled.button`
   border: none;
   cursor: pointer;
   color: var(--Grays-Black, #1A1A1A);
-text-align: center;
-font-family: Pretendard;
-font-size: 0.75rem;
-font-style: normal;
-font-weight: 400;
-line-height: normal;
-border-radius: 1.3125rem;
+  text-align: center;
+  font-family: Pretendard;
+  font-size: 0.75rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  border-radius: 1.3125rem;
 `;
 
 const StyledCalendar = styled(Calendar)`
@@ -88,18 +87,22 @@ const StyledCalendar = styled(Calendar)`
     font-weight: 500;
     text-align: center;
   }
+  .react-calendar__month-view__days {
+    
+  }
   .react-calendar__month-view__days__day {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-width: 2rem;
-height: 2rem;
+    margin-top: 1rem;
+    padding:0;
+    width: 32px;
+    height: 32px;
     color: var(--Grays-Black, #1A1A1A);
     font-family: Pretendard;
     font-size: 0.75rem;
     font-weight: 400;
-    margin-top: 0.75rem;
   }
   .react-calendar__tile {
     align-items: center;
@@ -117,18 +120,18 @@ height: 2rem;
   }
   .react-calendar__tile--hasCards {
    color: var(--Grays-Black, #1A1A1A);
-font-family: Pretendard;
-font-size: 0.75rem;
-font-style: normal;
-font-weight: 300;
-line-height: normal;
-    border-radius: 1rem;
-background: var(--Etc-Blue-Gradiant, linear-gradient(90deg, #DCE8FF 0%, #C0D6FF 100%));
+    font-family: Pretendard;
+    font-size: 0.75rem;
+    font-style: normal;
+    font-weight: 300;
+    line-height: normal;
+    border-radius: 50%;
+    background: var(--Etc-Blue-Gradiant, linear-gradient(90deg, #DCE8FF 0%, #C0D6FF 100%));
   }
   .react-calendar__tile--hasCards.react-calendar__tile--active { /*표시된 날짜*/
-  border-radius: 1rem;
-background: var(--Main-Primary, #0F62FE);
-color: var(--Grays-White, #FFFFFF);
+    border-radius: 50%;
+    background: var(--Main-Primary, #0F62FE);
+    color: var(--Grays-White, #FFFFFF);
   }
 
   .react-calendar__month-view__days__day--neighboringMonth {
