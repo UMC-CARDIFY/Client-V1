@@ -1,8 +1,6 @@
-import { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import imageIcon from '../../../../assets/images.png';
-import axios from 'axios';
-import config from '../../../../api/config';
 
 const CardContainer = styled.div`
   width: 100%;
@@ -151,41 +149,31 @@ const ImageCard = () => {
       )
     );
   };
-  const handleSubmit = async () => {
-    if (!imageFile || rectangles.length === 0) return;
 
-    const imageCard = {
-      baseImageWidth: canvasRef.current.width,
-      baseImageHeight: canvasRef.current.height,
-      overlays: rectangles.map(rect => ({
-        positionOfX: rect.x,
-        positionOfY: rect.y,
-        width: rect.width,
-        height: rect.height,
-      })),
-    };
+  const handleSubmit = () => {
+    if (!imageFile || rectangles.length === 0) return;
 
     const formData = new FormData();
     formData.append('image', imageFile);
-    formData.append('imageCard', JSON.stringify(imageCard));
+    formData.append('rectangles', JSON.stringify(rectangles));
 
     console.log('FormData to be sent:');
     formData.forEach((value, key) => {
       console.log(key, value);
     });
 
-    try {
-      const response = await axios.post(`${config.apiBaseUrl}/cards/add/Image`, formData, {
-        headers: {
-          Authorization: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTYyNjIwNjIwN30.1',
-          'Content-Type': 'multipart/form-data',
-        },
+    fetch('YOUR_BACKEND_URL', {
+      method: 'POST',
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('Success:', data);
+        handleModalClose();
+      })
+      .catch((error) => {
+        console.error('Error:', error);
       });
-      console.log('Success:', response.data);
-      handleModalClose();
-    } catch (error) {
-      console.error('Error:', error);
-    }
   };
 
   useEffect(() => {
