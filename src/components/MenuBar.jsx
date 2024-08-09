@@ -17,59 +17,24 @@ const MenuBarContainer = styled.div`
     width: 14rem;
 }
 
-  @media(min-width: 1200px) and (max-width: 1440px) {
+  @media (max-width: 1440px) {
     width: 7rem;
   }
 
-  @media(max-width: 1200px)  {
-    width: 7rem;
-  }
 `;
 
 const Logo = styled.img`
   margin-top: 4.5rem;
 
-`;
-
-const LogoContainer = styled.div`
-  width: 4.88819rem;
-  height: 4.04338rem;
-  margin-top: 4.5rem;
-  flex-shrink: 0;
-  svg {
-    width: 100%;
-    height: 100%;
-  }
-
-  @media (max-width: 1200px) {
-    width: 3.07956rem;
-    height: 2.58775rem;
+  @media (max-width: 1440px) {
+    width: 4rem;
+    height: 4rem;
     margin-top: 3rem;
   }
 
-  @media (max-width: 1200px) {
-    width: 3.07956rem;
-    height: 2.58775rem;
-    margin-top: 3rem;
-  }
-  
+
 `;
 
-const TextLogoContainer = styled.div`
-  width: 6.25rem;
-  height: 1.03375rem;
-  flex-shrink: 0;
-  margin-top: 1rem;
-  svg {
-    width: 100%;
-    height: 100%;
-  }
-
-  @media (max-width: 1200px) {
-    width: 3.9375rem;
-    height: 0.66156rem; 
-  }
-`;
 
 const MenuContainer = styled.div`
   display: inline-flex;
@@ -78,7 +43,7 @@ const MenuContainer = styled.div`
   align-items: center;
   gap: var(--font-size-md, 1rem);
 
-  @media (max-width: 1200px) {
+  @media (max-width: 1440px) {
     align-items: center;
     margin-top: auto;
   }
@@ -111,7 +76,7 @@ const Menu = styled.div`
     }
   `}
 
-  @media (max-width: 1200px) {
+  @media (max-width: 1440px) {
     flex-direction: column;
     gap: 0;
     p {
@@ -181,7 +146,7 @@ const NoteAdd = styled.button`
   margin-top: auto;
   margin-bottom: 4rem;
 
-  @media (max-width: 1200px) {
+  @media (max-width: 1440px) {
     width: var(--line-height-xl, 2.5rem);
     height: var(--line-height-xl, 2.5rem);
     margin-top: auto;
@@ -201,7 +166,7 @@ const NoteAddIcon = styled.div`
     height: 100%;
   }
 
-  @media (max-width: 1200px) {
+  @media (max-width: 1440px) {
     width: 1rem;
     height: 1rem;
   }
@@ -215,7 +180,7 @@ const NoteAddText = styled.span`
   font-weight: 600;
   line-height: normal;
 
-  @media (max-width: 1200px) {
+  @media (max-width: 1440px) {
     display: none;
   }
 `;
