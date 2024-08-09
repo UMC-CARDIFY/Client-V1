@@ -8,13 +8,14 @@ import styled from 'styled-components';
 
 const Container = styled.div`
   display: flex;
+  width: 100%;
   height: 100vh;
 `;
 
 const MainContent = styled.div`
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  width: 100%;
 `;
 
 const ContentArea = styled.div`
@@ -24,18 +25,13 @@ const ContentArea = styled.div`
   height: 100%; 
   background: var(--Main-BackGround, #F2F4F8);
   gap: 2rem;
+
 `;
 
 const NotesAndResults = styled.div`
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  @media (max-width: 1440px) {
-    margin-right: 3.25rem;
-  }
-  @media (max-width: 1024px) {
-    margin-right: 1.5rem;
-  }
 `;
 
 const StudySuggestionsArea = styled.div`
