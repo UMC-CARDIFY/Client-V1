@@ -1,4 +1,3 @@
-import React from 'react';
 import ReactDOM from 'react-dom';
 import WordCard from '../Cards/WordCard';
 import BlankCard from '../Cards/BlankCard';
@@ -22,7 +21,7 @@ class ReactNodeView {
     console.log('Mounting component:', Component);
     if (Component) {
       this.root = ReactDOM.createRoot(this.dom);
-      this.root.render(<Component />);
+      this.root.render(Component);
     }
   }
 
