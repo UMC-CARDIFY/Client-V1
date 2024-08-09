@@ -14,7 +14,7 @@ import WordCard from '../Cards/WordCard';
 import BlankCard from '../Cards/BlankCard';
 import MultiCard from '../Cards/MultiCard';
 import ImageCard from '../Cards/ImageCard';
-import mySchema from './schema';
+import mySchema from './Markdown/schema';
 import { myInputRules } from './Markdown/inputRules';
 import { splitListItem, liftListItem, sinkListItem, wrapInList } from 'prosemirror-schema-list';
 import PropTypes from 'prop-types';
