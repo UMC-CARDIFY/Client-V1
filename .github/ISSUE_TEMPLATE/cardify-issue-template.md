@@ -1,5 +1,5 @@
 ---
-name: "[Feat] Home 화면 UI 구현"
+name: cardify issue template
 about: cardify issue template
 title: ''
 labels: ''
