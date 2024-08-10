@@ -9,7 +9,7 @@ import { history } from 'prosemirror-history';
 import { dropCursor } from 'prosemirror-dropcursor';
 import { gapCursor } from 'prosemirror-gapcursor';
 import { Schema } from 'prosemirror-model';
-import { addListNodes, splitListItem, wrapInList } from 'prosemirror-schema-list';
+import { addListNodes, splitListItem, wrapInList, liftListItem, sinkListItem } from 'prosemirror-schema-list';
 import { schema as basicSchema } from 'prosemirror-schema-basic';
 
 import WordCard from '../Cards/WordCard';
@@ -47,6 +47,10 @@ const ContentArea = styled.div`
     ul {
       list-style-type: disc;
       padding-left: 20px;
+      position: relative;
+
+      /* 연결선 관련 기능 - 추후 활성화 가능 */
+      /* position: relative; */
     }
 
     li {
@@ -54,7 +58,46 @@ const ContentArea = styled.div`
       padding: 8px;
       margin-bottom: 4px;
       border-radius: 4px;
+      position: relative;
+
+      /* 연결선 관련 기능 - 추후 활성화 가능 */
+      /* position: relative; */
     }
+
+    /* 연결선 관련 CSS - 추후 활성화 가능 */
+    /*
+    li:before {
+      content: '';
+      position: absolute;
+      left: -20px;  // 원하는 위치로 조정
+      top: 0;
+      bottom: 50%;
+      width: 1px;
+      background-color: #ddd;
+    }
+
+    li:after {
+      content: '';
+      position: absolute;
+      left: -20px;  // 원하는 위치로 조정
+      top: 50%;
+      width: 20px;  // 항목 사이에 수평선을 그리기 위해 추가
+      height: 1px;
+      background-color: #ddd;
+    }
+
+    li:last-child:before {
+      bottom: 0;
+    }
+
+    li:last-child:after {
+      display: none;
+    }
+
+    ul ul li:before {
+      top: -50%;
+    }
+    */
   }
 
   @media (max-width: 48rem) {
@@ -129,6 +172,19 @@ const CombinedEditor = ({ cards }) => {  // cards prop 추가
         doc,
         plugins: [
           keymap({
+            'Tab': (state, dispatch) => {
+              return sinkListItem(mySchema.nodes.list_item)(state, dispatch);
+            },
+            'Shift-Tab': (state, dispatch) => {
+              const { $from } = state.selection;
+              const depth = $from.depth;
+
+              // 현재 선택된 항목이 최상위 항목일 경우 liftListItem을 실행하지 않음
+              if (depth === 3) {  // depth가 3인 경우는 bullet_list 바로 아래 있는 항목
+                return false; // 최상위 항목에서는 아무 동작도 하지 않음
+              }
+              return liftListItem(mySchema.nodes.list_item)(state, dispatch);
+            },
             'Enter': (state, dispatch) => {
               const { $from } = state.selection;
               const parent = $from.node(-1);
