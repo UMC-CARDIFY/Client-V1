@@ -1,6 +1,7 @@
-import React, { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import imageIcon from '../../../../assets/images.png';
+import { uploadImageCard } from '../../../../api/editor/card/imagecard';
 
 const CardContainer = styled.div`
   width: 100%;
@@ -149,31 +150,37 @@ const ImageCard = () => {
       )
     );
   };
-
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!imageFile || rectangles.length === 0) return;
+
+    const imageCard = {
+      baseImageWidth: canvasRef.current.width,
+      baseImageHeight: canvasRef.current.height,
+      overlays: rectangles.map(rect => ({
+        positionOfX: rect.x,
+        positionOfY: rect.y,
+        width: rect.width,
+        height: rect.height,
+      })),
+    };
 
     const formData = new FormData();
     formData.append('image', imageFile);
-    formData.append('rectangles', JSON.stringify(rectangles));
+    formData.append('imageCard', JSON.stringify(imageCard));
 
     console.log('FormData to be sent:');
     formData.forEach((value, key) => {
       console.log(key, value);
     });
 
-    fetch('YOUR_BACKEND_URL', {
-      method: 'POST',
-      body: formData,
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log('Success:', data);
-        handleModalClose();
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-      });
+    try {
+      const upload = await uploadImageCard(imageFile, imageCard);
+      handleModalClose();
+      console.log(upload);
+    }
+    catch (error) {
+      alert('이미지 카드 저장에 실패했습니다.');
+    }
   };
 
   useEffect(() => {
