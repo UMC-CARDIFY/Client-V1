@@ -174,7 +174,6 @@ const CombinedEditor = ({ cards }) => {  // cards prop 추가
     const handleKeyDown = (event) => {
       if (event.key === 'Enter') {
         event.preventDefault();
-        contentRef.current.querySelector('.ProseMirror').focus();
       }
     };
 
