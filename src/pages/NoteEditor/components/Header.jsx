@@ -123,14 +123,14 @@ const StarButton = styled.button`
   svg {
     width: 100%;
     height: 100%;
-    stroke-width: ${(props) => (props.active ? '1.3px' : '1.3px')};
-    stroke: ${(props) => (props.active ? 'rgba(255, 211, 56, 1)' : 'var(--Grays-Gray3, #B1B1B1)')};
-    fill: ${(props) => (props.active ? 'rgba(255, 211, 56, 1)' : 'none')};
+    stroke-width: ${(props) => (props.$active ? '1.3px' : '1.3px')};
+    stroke: ${(props) => (props.$active ? 'rgba(255, 211, 56, 1)' : 'var(--Grays-Gray3, #B1B1B1)')};
+    fill: ${(props) => (props.$active ? 'rgba(255, 211, 56, 1)' : 'none')};
   }
 `;
 
 StarButton.propTypes = {
-  active: PropTypes.bool.isRequired,
+  $active: PropTypes.bool.isRequired,
 };
 
 
@@ -326,7 +326,7 @@ const Header = ({ isMenuCollapsed, toggleMenuBar }) => {
             onShareToLibrary={handleShareToLibrary}
           />
         )}
-        <StarButton active={isStarActive} onClick={toggleStar}>
+        <StarButton $active={isStarActive} onClick={toggleStar}>
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 20" fill="none">
             <path d="M11.3026 16.2009C11.1133 16.1014 10.8871 16.1014 10.6978 16.2009L5.17609 19.1035L6.23071 12.9547C6.26688 12.7438 6.19694 12.5286 6.04368 12.3793L1.57487 8.02497L7.74838 7.12784C7.96006 7.09708 8.14305 6.96414 8.23774 6.77233L11.0001 1.17687L13.7616 6.77226C13.8563 6.9641 14.0393 7.09707 14.251 7.12784L20.4247 8.025L15.9567 12.3793C15.8035 12.5287 15.7336 12.7439 15.7698 12.9548L16.8253 19.1035L11.3026 16.2009ZM4.7098 19.3487C4.70991 19.3486 4.71001 19.3485 4.71012 19.3485L4.7098 19.3487ZM20.802 7.65727L20.8016 7.6577L20.802 7.65727Z" stroke={`${(props) => (props.active ? 'rgba(255, 211, 56, 1)' : '#B1B1B1')}`} strokeWidth="1.3" strokeLinejoin="round"/>
           </svg>
