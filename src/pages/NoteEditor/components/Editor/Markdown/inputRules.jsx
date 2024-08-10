@@ -8,13 +8,16 @@ function markInputRule(regexp, markType, leadingLength, trailingLength) {
       const textStart = start + match[0].indexOf(match[1]);
       const textEnd = textStart + match[1].length;
 
-      tr.delete(end - trailingLength, end); // Remove trailing syntax
-      tr.delete(start, start + leadingLength); // Remove leading syntax
+      tr.delete(end - trailingLength, end); // 후행 문법 기호 삭제
+      tr.delete(start, start + leadingLength); // 선행 문법 기호 삭제
 
+      // 텍스트 위치를 다시 계산
       const adjustedTextStart = textStart - leadingLength;
       const adjustedTextEnd = textEnd - leadingLength;
 
+      // 마크를 텍스트에 추가
       tr.addMark(adjustedTextStart, adjustedTextEnd, markType.create());
+
       return tr;
     }
     return null;
@@ -49,11 +52,11 @@ const horizontalRuleInputRule = new InputRule(/^---$/, (state, match, start, end
 });
 
 // 마크다운 스타일 규칙
-const boldRule = markInputRule(/__(.+)__/g, mySchema.marks.strong, 2, 2);
-const italicRule = markInputRule(/\*(.+)\*/g, mySchema.marks.em, 1, 1);
-const strikethroughRule = markInputRule(/~~(.+)~~/g, mySchema.marks.strikethrough, 2, 2);
-const underlineRule = markInputRule(/~(.+)~/g, mySchema.marks.underline, 1, 1);
-const codeRule = markInputRule(/`([^`]+)`/, mySchema.marks.code, 1, 1);
+const boldRule = markInputRule(/__(.+)__/g, mySchema.marks.strong, 2, 2 - 1);
+const italicRule = markInputRule(/\*(.+)\*/g, mySchema.marks.em, 1, 1 - 1);
+const strikethroughRule = markInputRule(/~~(.+)~~/g, mySchema.marks.strikethrough, 2, 2 - 1);
+const underlineRule = markInputRule(/~(.+)~/g, mySchema.marks.underline, 1, 1 - 1);
+const codeRule = markInputRule(/`([^`]+)`/, mySchema.marks.code, 1, 1 - 1);
 
 const myInputRules = (schema) => inputRules({
   rules: [
