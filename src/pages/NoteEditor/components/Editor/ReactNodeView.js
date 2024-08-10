@@ -28,18 +28,18 @@ class ReactNodeView {
   getComponent() {
     switch (this.node.type.name) {
       case 'word_card':
-        return WordCard;
+        return <WordCard />;
       case 'blank_card':
-        return BlankCard;
+        return <BlankCard />;
       case 'multi_card':
-        return MultiCard;
+        return <MultiCard />;
       case 'image_card':
-        return ImageCard;
+        return <ImageCard />;
       default:
         return null;
     }
   }
-
+  
   update(node) {
     if (node.type !== this.node.type) {
       return false;
