@@ -34,6 +34,7 @@ const Canvas = styled.canvas`
   max-height: 40.5rem;
   width: 100%;
   height: auto;
+  border-radius: 0.5rem;
 `;
 
 const ModalOverlay = styled.div`
@@ -42,7 +43,7 @@ const ModalOverlay = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.8); /* 모달 전체 화면을 어둡게 */
+  background: var(--Main-Overlay, rgba(0, 0, 0, 0.30));
   display: flex;
   justify-content: center;
   align-items: center;
@@ -57,6 +58,7 @@ const ModalContent = styled.div`
   justify-content: center;
   align-items: center;
   background: none; /* 배경을 없앰 */
+  border-radius: 0.5rem;
 `;
 
 const BackButton = styled.button`
@@ -124,6 +126,8 @@ flex-shrink: 0;
   display: flex;
   justify-content: center;
   align-items: center;
+  border-radius: 0.5rem;
+border: 1px solid var(--grays-gray-5-divider, #E8E8E8);
 `;
 
 const ImageCardImage = styled.img`
@@ -134,6 +138,26 @@ const Rectangle = styled.div`
   position: absolute;
   background-color: #6A9CFC;
   z-index: 10;
+`;
+
+const EditButton = styled.div`
+position: absolute;
+top: 0.5rem;
+right: 0.5rem;
+display: inline-flex;
+padding: 0.4rem 0.725rem 0.4rem 0.475rem;
+align-items: center;
+gap: 0.375rem;
+border-radius: 0.25rem;
+border: 1px solid var(--grays-gray-5-divider, #E8E8E8);
+background: var(--Grays-White, #FFF);
+color: var(--Main-Primary, #0F62FE);
+font-family: Pretendard;
+font-size: 0.875rem;
+font-style: normal;
+font-weight: 600;
+line-height: normal;
+cursor: pointer;
 `;
 
 const ImageCard = () => {
@@ -335,6 +359,10 @@ const ImageCard = () => {
       {isCreated && image ? (
         <ImageCardContainer>
           <ImageCardImage src={image.src} alt="Image" />
+          <EditButton onClick={() => getImage(12)}><svg xmlns="http://www.w3.org/2000/svg" width="23" height="17" viewBox="0 0 23 17" fill="none">
+  <path d="M11.2841 3.6369L10.842 3.1948L9.07361 1.42639L2 8.5L9.07361 15.5736L10.842 13.8052L11.2841 13.3631" stroke="#6A9CFC" strokeWidth="1.5"/>
+  <rect x="6.85352" y="8.5" width="10.0036" height="10.0036" transform="rotate(-45 6.85352 8.5)" stroke="#0F62FE" strokeWidth="1.5"/>
+</svg>카드 편집</EditButton>
           {rectangles.map((rect, index) => (
             <Rectangle
               key={index}
