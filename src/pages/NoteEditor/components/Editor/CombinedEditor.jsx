@@ -11,7 +11,7 @@ import { gapCursor } from 'prosemirror-gapcursor';
 import { Schema } from 'prosemirror-model';
 import { addListNodes, splitListItem, wrapInList, liftListItem, sinkListItem } from 'prosemirror-schema-list';
 import { schema as basicSchema } from 'prosemirror-schema-basic';
-
+import 'prosemirror-view/style/prosemirror.css';
 import WordCard from '../Cards/WordCard';
 import BlankCard from '../Cards/BlankCard';
 import MultiCard from '../Cards/MultiCard';
@@ -43,7 +43,8 @@ const ContentArea = styled.div`
     border-radius: 4px;
     min-height: 20rem;
     max-height: 33rem;
-
+    white-space: pre-wrap; 
+    
     ul {
       list-style-type: disc;
       padding-left: 20px;
