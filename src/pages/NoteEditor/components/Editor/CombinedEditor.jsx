@@ -16,6 +16,7 @@ import WordCard from '../Cards/WordCard';
 import BlankCard from '../Cards/BlankCard';
 import MultiCard from '../Cards/MultiCard';
 import ImageCard from '../Cards/ImageCard';
+import { myInputRules } from './Markdown/inputRules';
 
 const mySchema = new Schema({
   nodes: addListNodes(basicSchema.spec.nodes, 'paragraph block*', 'block'),
@@ -200,6 +201,7 @@ const CombinedEditor = ({ cards }) => {  // cards prop 추가
           history(),
           dropCursor(),
           gapCursor(),
+          myInputRules(mySchema),
         ]
       });
 
