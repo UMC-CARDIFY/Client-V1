@@ -1,36 +1,36 @@
   import { useState, useEffect, useRef } from 'react';
   import styled from 'styled-components'
-  import DummyData from '../../../api/archive/dummyData';
   import ReactPaginate from 'react-paginate';
   import PropTypes from 'prop-types';
   
   import FolderModal from './FolderModal';
   import MoreDiv from './MoreDiv';
   import DeleteConfirmModal from './DeleteConfirmModal';
+import { getFolders } from '../../../api/archive/getFolders';
 
   const FrameBackground = styled.div`
     background: #F9F9F9;
     display: flex;
-width: 105rem;
-height: 55.75rem;
-padding: var(--UI-Component-None, 5rem) var(--UI-Component-None, 8rem);
-justify-content: center;
-align-items: center;
-flex-shrink: 0;
-background: #F0F0F0;
+    width: 105rem;
+    height: 55.75rem;
+    padding: var(--UI-Component-None, 5rem) var(--UI-Component-None, 8rem);
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    background: #F0F0F0;
 
-@media (max-width: 1440px) {
-width: 77.625rem;
-height: 53.375rem;
-padding: var(--UI-Component-None, 5.5rem) var(--UI-Component-None, 5rem);
-}
+    @media (max-width: 1440px) {
+    width: 77.625rem;
+    height: 53.375rem;
+    padding: var(--UI-Component-None, 5.5rem) var(--UI-Component-None, 5rem);
+    }
 
-@media (max-width: 1200px) {
-width: 68rem;
-height: 41.8125rem;
-padding: var(--UI-Component-None, 3.5rem) var(--UI-Component-None, 4rem);
-}
-  `;
+    @media (max-width: 1200px) {
+    width: 68rem;
+    height: 41.8125rem;
+    padding: var(--UI-Component-None, 3.5rem) var(--UI-Component-None, 4rem);
+    }
+      `;
 
   const FrameContainer = styled.div`
     width: 89rem;
@@ -38,9 +38,9 @@ padding: var(--UI-Component-None, 3.5rem) var(--UI-Component-None, 4rem);
     margin: 5rem auto;
     padding: 0 5.5rem;
     display: flex;
-  flex-direction: column; 
-  background: #FFF;
-box-shadow: 0px 4px 26.7px 0px rgba(0, 0, 0, 0.02), 0px 10px 60px 0px rgba(0, 74, 162, 0.03);
+    flex-direction: column; 
+    background: #FFF;
+    box-shadow: 0px 4px 26.7px 0px rgba(0, 0, 0, 0.02), 0px 10px 60px 0px rgba(0, 74, 162, 0.03);
 
   @media (max-width: 1440px) {
     width: 67.625rem;
@@ -99,10 +99,10 @@ box-shadow: 0px 4px 26.7px 0px rgba(0, 0, 0, 0.02), 0px 10px 60px 0px rgba(0, 74
   `;
 
   const PreviousBtn = styled.div`
-  width: 1.5rem;
-height: 1.5rem;
-flex-shrink: 0;
-`;
+    width: 1.5rem;
+    height: 1.5rem;
+    flex-shrink: 0;
+    `;
 
   const FolderData = styled.div`
     display: flex;
@@ -216,7 +216,8 @@ magin-bottom: 1rem;
 
 
 const Frame = ({ selectedTab }) => {
-  const Data = DummyData();
+  const [folders, setFolders] = useState([]);
+
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 6;
   const [isModalOpen, setModalOpen] = useState(false);
@@ -241,16 +242,20 @@ const Frame = ({ selectedTab }) => {
     };
   }, []);
 
-  const filteredData = Data.filter((item) => {
-    if (selectedTab === '폴더') {
-      return item.type === 'folder';
-    } else if (selectedTab === '노트') {
-      return item.type === 'note';
-    }
-    return false;
-  });
+  useEffect(() => {
+    const fetchFolders = async () => {
+      try {
+        const data = await getFolders();
+        setFolders(data.foldersList);
+      } catch (error) {
+        console.error('Failed to fetch folders:', error);
+      }
+    };
 
-  const currentData = filteredData.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
+    fetchFolders();
+  }, []);
+
+  const currentData = folders.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
 
   const handlePageChange = ({ selected }) => {
     setCurrentPage(selected);
@@ -330,7 +335,7 @@ const Frame = ({ selectedTab }) => {
                   <div>아이콘</div>
                   <Line />
                   <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <div>{item.folderName}</div>
+                    <div>{item.name}</div>
                     <div>폴더 이름</div>
                   </div>
                 </LeftData>
@@ -338,12 +343,12 @@ const Frame = ({ selectedTab }) => {
                 <RightData>
                   <Line />
                   <div>
-                    <div>{item.noteCount}</div>
+                    <div>{item.getNoteCount}</div>
                     <div>포함된 노트 개수</div>
                   </div>
                   <Line />
                   <div>
-                    <div>{item.modifiedDate}</div>
+                    <div>{item.editDate}</div>
                     <div>최근 수정일</div>
                   </div>
 
@@ -410,7 +415,7 @@ const Frame = ({ selectedTab }) => {
             }
             breakLabel={'...'}
             breakClassName={'break-me'}
-            pageCount={Math.ceil(filteredData.length / itemsPerPage)}
+            pageCount={Math.ceil(folders.length / itemsPerPage)}
             marginPagesDisplayed={2}
             pageRangeDisplayed={5}
             onPageChange={handlePageChange}
