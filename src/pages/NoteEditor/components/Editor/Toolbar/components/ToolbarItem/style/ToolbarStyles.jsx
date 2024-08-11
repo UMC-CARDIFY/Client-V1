@@ -125,10 +125,13 @@ export const Divider = styled.div`
 
 export const ColorPaletteItem = styled.div`
   display: flex;
+  width: auto;
   height: 2rem;
-  padding: var(--UI-Component-xxxxxS, 0.25rem) var(--UI-Component-None, 0rem) var(--UI-Component-xxxxxS, 0.25rem) 0.375rem;
   justify-content: center;
   align-items: center;
-  gap: 0.375rem;
   cursor: pointer;
+`;
+
+export const ColorDropDownButton = styled(DropDownButton)`
+  margin-left: 0.38rem;
 `;
