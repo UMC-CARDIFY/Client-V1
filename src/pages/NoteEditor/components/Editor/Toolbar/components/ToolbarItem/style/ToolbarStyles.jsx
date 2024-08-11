@@ -121,3 +121,16 @@ export const ColorPaletteItem = styled.div`
 export const ColorDropDownButton = styled(DropDownButton)`
   margin-left: 0.38rem;
 `;
+
+export const ColorDropDownMenu = styled.div`
+  position: absolute;
+  top: -1.5rem;
+  left: 3.8rem;
+  z-index: 10;
+  display: flex;  
+  flex-direction: column;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  background: transparent;
+`;

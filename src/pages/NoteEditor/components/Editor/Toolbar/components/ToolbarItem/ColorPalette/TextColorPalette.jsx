@@ -4,8 +4,6 @@ import PropTypes from 'prop-types';
 
 const PaletteContainer = styled.div`
   position: absolute;
-  top: -5rem;
-  left: -15.7rem;
   display: flex;
   padding: var(--UI-Component-None, 0.4375rem) var(--UI-Component-None, 0.5rem);
   justify-content: center;

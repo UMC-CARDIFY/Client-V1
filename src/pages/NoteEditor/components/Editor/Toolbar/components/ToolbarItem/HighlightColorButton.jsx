@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { ColorPaletteItem, ColorDropDownButton, DropDownMenu } from './style/ToolbarStyles';
+import { ColorPaletteItem, ColorDropDownButton, ColorDropDownMenu } from './style/ToolbarStyles';
 import HighlightColorPalette from './ColorPalette/HighlightColorPalette';
 
 const HighlightColorButton = ({ onSelectColor }) => {
@@ -37,9 +37,9 @@ const HighlightColorButton = ({ onSelectColor }) => {
         </svg>
       </ColorDropDownButton>
       {isDropDownOpen && (
-        <DropDownMenu ref={dropDownRef}>
+        <ColorDropDownMenu ref={dropDownRef}>
           <HighlightColorPalette onSelectColor={onSelectColor} />
-        </DropDownMenu>
+        </ColorDropDownMenu>
       )}
     </ColorPaletteItem>
   );
