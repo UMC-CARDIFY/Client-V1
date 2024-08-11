@@ -4,15 +4,17 @@ import PropTypes from 'prop-types';
 
 const PaletteContainer = styled.div`
   position: absolute;
+  top: -5rem;
+  left: -15.7rem;
   display: flex;
+  padding: var(--UI-Component-None, 0.4375rem) var(--UI-Component-None, 0.5rem);
   justify-content: center;
   align-items: flex-start;
   gap: var(--UI-Component-None, 0.5rem);
   border-radius: 0.25rem;
-  background: blue;
-  border-radius: 0.25rem;
+  background: var(--Grays-White, #FFF);
+  /* default */
   box-shadow: 0px 4px 26px 0px rgba(0, 0, 0, 0.02), 0px 10px 60px 0px rgba(0, 74, 162, 0.03);
-  
 `;
 
 const ColorCircle = styled.div`
