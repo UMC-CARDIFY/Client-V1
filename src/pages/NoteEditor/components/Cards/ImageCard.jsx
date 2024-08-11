@@ -2,6 +2,7 @@ import { useRef, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import imageIcon from '../../../../assets/images.png';
 import { getImageCard, uploadImageCard } from '../../../../api/editor/card/imagecard';
+import { useSaveContext } from '../SaveContext';
 
 const CardContainer = styled.div`
   width: 100%;
@@ -43,7 +44,7 @@ const ModalOverlay = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  background: var(--Main-Overlay, rgba(0, 0, 0, 0.30));
+  background: rgba(0, 0, 0, 0.8); /* 모달 전체 화면을 어둡게 */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -52,6 +53,8 @@ const ModalOverlay = styled.div`
 
 const ModalContent = styled.div`
   position: relative;
+  width: 100%;
+  height: 100%;
   max-width: 65rem;
   max-height: 40.5rem;
   display: flex;
@@ -122,16 +125,18 @@ const SubmitButton = styled.button`
 
 const ImageCardContainer = styled.div`
   position: relative;
-flex-shrink: 0;
   display: flex;
   justify-content: center;
   align-items: center;
   border-radius: 0.5rem;
-border: 1px solid var(--grays-gray-5-divider, #E8E8E8);
+  border: 1px solid var(--grays-gray-5-divider, #E8E8E8);
 `;
 
 const ImageCardImage = styled.img`
   pointer-events: none; /* 이미지 수정 불가 */
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
 `;
 
 const Rectangle = styled.div`
@@ -141,23 +146,23 @@ const Rectangle = styled.div`
 `;
 
 const EditButton = styled.div`
-position: absolute;
-top: 0.5rem;
-right: 0.5rem;
-display: inline-flex;
-padding: 0.4rem 0.725rem 0.4rem 0.475rem;
-align-items: center;
-gap: 0.375rem;
-border-radius: 0.25rem;
-border: 1px solid var(--grays-gray-5-divider, #E8E8E8);
-background: var(--Grays-White, #FFF);
-color: var(--Main-Primary, #0F62FE);
-font-family: Pretendard;
-font-size: 0.875rem;
-font-style: normal;
-font-weight: 600;
-line-height: normal;
-cursor: pointer;
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: inline-flex;
+  padding: 0.4rem 0.725rem 0.4rem 0.475rem;
+  align-items: center;
+  gap: 0.375rem;
+  border-radius: 0.25rem;
+  border: 1px solid var(--grays-gray-5-divider, #E8E8E8);
+  background: var(--Grays-White, #FFF);
+  color: var(--Main-Primary, #0F62FE);
+  font-family: Pretendard;
+  font-size: 0.875rem;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  cursor: pointer;
 `;
 
 const ImageCard = () => {
@@ -171,7 +176,10 @@ const ImageCard = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [imageFile, setImageFile] = useState(null);
   const [isCreated, setIsCreated] = useState(false);
-  const [isLoaded, setIsLoaded] = useState(false); // 이미지 불러오기 상태 추가
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [scale, setScale] = useState({ x: 1, y: 1 });
+
+  const { setSaveImageCard } = useSaveContext(); // Context에서 setSaveImageCard 함수 가져오기
 
   const handleCardClick = () => {
     fileInputRef.current.click();
@@ -179,8 +187,7 @@ const ImageCard = () => {
 
   const handleModalClose = () => {
     setIsModalOpen(false);
-    //setRectangles([]);
-    setIsLoaded(false); // 모달 닫을 때 상태 초기화
+    setIsLoaded(false);
   };
 
   const handleFileChange = (event) => {
@@ -203,31 +210,37 @@ const ImageCard = () => {
   const getCanvasCoordinates = (event) => {
     const canvas = canvasRef.current;
     const rect = canvas.getBoundingClientRect();
-    const scaleX = canvas.width / rect.width;
-    const scaleY = canvas.height / rect.height;
-    const x = (event.clientX - rect.left) * scaleX;
-    const y = (event.clientY - rect.top) * scaleY;
-    return { x, y };
-  };
 
-  const handleMouseDown = (event) => {
+    // 이미지 렌더링 위치 계산
+    const imageWidth = canvas.width;
+    const imageHeight = canvas.height;
+    const offsetX = (rect.width - imageWidth) / 2;  // 이미지 좌측 여백
+    const offsetY = (rect.height - imageHeight) / 2; // 이미지 상단 여백
+
+    // 마우스 클릭 위치에서 여백을 고려한 이미지 상의 좌표 계산
+    const x = (event.clientX - rect.left - offsetX) * (image.width / imageWidth);
+    const y = (event.clientY - rect.top - offsetY) * (image.height / imageHeight);
+    return { x, y };
+};
+
+const handleMouseDown = (event) => {
     if (!image) return;
     const { x, y } = getCanvasCoordinates(event);
     setIsDrawing(true);
     setIsDragging(false);
     setNewRect({ x, y, width: 0, height: 0 });
-  };
+};
 
-  const handleMouseMove = (event) => {
+const handleMouseMove = (event) => {
     if (!isDrawing || !newRect) return;
     const { x, y } = getCanvasCoordinates(event);
     setNewRect((prevRect) => ({
-      ...prevRect,
-      width: x - prevRect.x,
-      height: y - prevRect.y,
+        ...prevRect,
+        width: x - prevRect.x,
+        height: y - prevRect.y,
     }));
     setIsDragging(true);
-  };
+};
 
   const handleMouseUp = () => {
     if (newRect) {
@@ -258,16 +271,28 @@ const ImageCard = () => {
     if (!imageFile || rectangles.length === 0) return;
 
     const imageCard = {
-      baseImageWidth: canvasRef.current.width,
-      baseImageHeight: canvasRef.current.height,
+      baseImageWidth: image.width, // 저장시의 원본 이미지 크기
+      baseImageHeight: image.height,
       overlays: rectangles.map(rect => ({
-        positionOfX: rect.x,
-        positionOfY: rect.y,
-        width: rect.width,
-        height: rect.height,
+        positionOfX: rect.x / scale.x,
+        positionOfY: rect.y / scale.y,
+        width: rect.width / scale.x,
+        height: rect.height / scale.y,
       })),
     };
+    // 저장 기능을 Context에 등록
+    setSaveImageCard(() => async () => {
+      try {
+        const upload = await uploadImageCard(imageFile, imageCard);
+        console.log(upload);
+      } catch (error) {
+        alert('이미지 카드 저장에 실패했습니다.');
+      }
+    });
 
+    setIsModalOpen(false); // 모달 닫기
+
+    /*
     try {
       const upload = await uploadImageCard(imageFile, imageCard);
       handleModalClose();
@@ -277,59 +302,66 @@ const ImageCard = () => {
     catch (error) {
       alert('이미지 카드 저장에 실패했습니다.');
     }
+      */
   };
 
   // 이미지 카드 불러오기
   const getImage = async (cardId) => {
     try {
       const imageCard = await getImageCard(cardId);
-      console.log(imageCard);
       let img = new Image();
       img.src = imageCard.imgUrl;
       img.onload = () => {
-        setImage(img);
-        setRectangles(imageCard.overlays.map(overlay => ({
-          x: overlay.positionOfX,
-          y: overlay.positionOfY,
-          width: overlay.width,
-          height: overlay.height,
-        })));
-        setIsModalOpen(true);
-        setIsLoaded(true); // 이미지를 불러올 때 상태 설정
+          setImage(img);
+          const imageScale = {
+              x: img.width / imageCard.baseImageWidth,
+              y: img.height / imageCard.baseImageHeight,
+          };
+          setScale(imageScale);  // 이미지 스케일을 저장
+          setRectangles(imageCard.overlays.map(overlay => ({
+              x: overlay.positionOfX * imageScale.x,
+              y: overlay.positionOfY * imageScale.y,
+              width: overlay.width * imageScale.x,
+              height: overlay.height * imageScale.y,
+          })));
+          setIsModalOpen(false); // 모달 닫기
+          setIsLoaded(true);
       };
-    }
-    catch (error) {
+  } catch (error) {
       alert('이미지 카드 불러오기에 실패했습니다.');
-    }
   }
+};
 
   useEffect(() => {
     if (isModalOpen && canvasRef.current && image) {
-      const canvas = canvasRef.current;
-      const maxCanvasWidth = 1040; // 원하는 최대 너비
-      const maxCanvasHeight = 720; // 원하는 최대 높이
-      let canvasWidth = image.width;
-      let canvasHeight = image.height;
+        const canvas = canvasRef.current;
+        const maxCanvasWidth = 1040; // 원하는 최대 너비
+        const maxCanvasHeight = 720;  // 원하는 최대 높이
+        let canvasWidth = image.width;
+        let canvasHeight = image.height;
 
-      // 이미지 크기를 조절하여 캔버스 크기 설정
-      if (canvasWidth > maxCanvasWidth || canvasHeight > maxCanvasHeight) {
-        const scaleWidth = maxCanvasWidth / canvasWidth;
-        const scaleHeight = maxCanvasHeight / canvasHeight;
-        const scale = Math.min(scaleWidth, scaleHeight);
-        canvasWidth = canvasWidth * scale;
-        canvasHeight = canvasHeight * scale;
-      }
+        // 이미지 크기를 조절하여 캔버스 크기 설정
+        if (canvasWidth > maxCanvasWidth || canvasHeight > maxCanvasHeight) {
+            const scaleWidth = maxCanvasWidth / canvasWidth;
+            const scaleHeight = maxCanvasHeight / canvasHeight;
+            const scale = Math.min(scaleWidth, scaleHeight);
+            canvasWidth = canvasWidth * scale;
+            canvasHeight = canvasHeight * scale;
+        }
 
-      canvas.width = image.width; // 실제 해상도 유지
-      canvas.height = image.height; // 실제 해상도 유지
-      canvas.style.width = `${canvasWidth}px`; // CSS 크기 설정
-      canvas.style.height = `${canvasHeight}px`; // CSS 크기 설정
+        // 이 부분에서 이미지의 스케일을 설정하고, 이 값을 나중에 사용해야 함
+        setScale({ x: canvasWidth / image.width, y: canvasHeight / image.height });
 
-      const ctx = canvas.getContext('2d');
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+        canvas.width = image.width; // 캔버스 실제 크기
+        canvas.height = image.height;
+        canvas.style.width = `${canvasWidth}px`; // CSS 크기
+        canvas.style.height = `${canvasHeight}px`;
+
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
     }
-  }, [isModalOpen, image]);
+}, [isModalOpen, image]);
 
   useEffect(() => {
     if (canvasRef.current && image) {
@@ -352,6 +384,7 @@ const ImageCard = () => {
       drawCanvas();
     }
   }, [rectangles, newRect]);
+
 
   return (
     <>
