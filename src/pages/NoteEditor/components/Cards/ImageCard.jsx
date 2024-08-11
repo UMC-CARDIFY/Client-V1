@@ -325,7 +325,7 @@ const handleMouseMove = (event) => {
               width: overlay.width * imageScale.x,
               height: overlay.height * imageScale.y,
           })));
-          setIsModalOpen(false); // 모달 닫기
+          setIsModalOpen(true);
           setIsLoaded(true);
       };
   } catch (error) {
