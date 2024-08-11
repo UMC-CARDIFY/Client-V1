@@ -293,10 +293,10 @@ const Header = ({ isMenuCollapsed, toggleMenuBar }) => {
   const { saveImageCard } = useSaveContext(); // Context에서 saveImageCard 함수 가져오기
 
   const handleSave = () => {
-    if (saveImageCard) {
+    if (saveImageCard) { // 가림판카드가 저장되어야 하는 경우
       saveImageCard(); // ImageCard의 saveImageCard 함수 호출
     } else {
-      alert('저장할 데이터가 없습니다.');
+      //alert('저장할 데이터가 없습니다.');
     }
   };
 
