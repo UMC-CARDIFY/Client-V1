@@ -291,6 +291,7 @@ const handleMouseMove = (event) => {
     });
 
     setIsModalOpen(false); // 모달 닫기
+    setIsCreated(true); // 이미지 카드 생성
 
     /*
     try {
