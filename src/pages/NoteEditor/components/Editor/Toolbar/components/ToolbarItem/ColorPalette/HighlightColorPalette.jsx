@@ -6,6 +6,7 @@ const PaletteContainer = styled.div`
   flex-wrap: wrap;
   gap: 0.5rem;
   padding: 0.5rem;
+  border: 1px solid green;
 `;
 
 const ColorBox = styled.div`

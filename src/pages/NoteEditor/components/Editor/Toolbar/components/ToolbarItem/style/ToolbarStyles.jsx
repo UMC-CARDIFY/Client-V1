@@ -1,20 +1,5 @@
 import styled from 'styled-components';
 
-export const ToolBarContainer = styled.div`
-  width: auto;
-  display: inline-flex;
-  padding: 0.5rem 1rem;
-  justify-content: center;
-  align-items: center;
-  gap: 0.75rem;
-  border-radius: 0.625rem;
-  border: 1px solid var(--Grays-Gray8, #F4F4F4);
-  background: var(--Grays-White, #FFF);
-  box-shadow: 0px 4px 16px 0px rgba(0, 0, 0, 0.02), 0px 10px 24px 0px rgba(0, 74, 162, 0.03);
-  position: fixed;
-  bottom: 1.5rem;
-`;
-
 export const ToolBarItem = styled.div`
   display: flex;
   width: 2rem;
