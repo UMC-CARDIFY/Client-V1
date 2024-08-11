@@ -32,25 +32,24 @@ const Divider = styled.div`
   background: #E8E8E8;
 `;
 
-const ToolBar = ({ addCard, addHeading1, toggleBold, onSelectColor, onSelectHighlightColor }) => {
+const ToolBar = ({ addCard, addHeading1, toggleBold, onSelectColor, viewRef, onSelectHighlightColor }) => {
+  console.log("ToolBar received viewRef:", viewRef.current); // viewRef 로그 확인
 
   return (
-    <>
-      <ToolBarContainer>
-        <WordCardButton onClick={() => addCard('word')} />
-        <BlankCardButton onClick={() => addCard('blank')} />
-        <MultiCardButton onClick={() => addCard('multi')} />
-        <ImageCardButton onClick={() => addCard('image')} />
-        <Divider />
-        <HeadingButton onHeadingSelect={addHeading1} />
-        <BoldButton onClick={toggleBold} />
-        <Divider />
-        <TextColorButton onSelectColor={onSelectColor} />
-        <HighlightColorButton onSelectColor={onSelectHighlightColor} />
-        <Divider />
-        <MoreOptionsButton />
-      </ToolBarContainer>
-    </>
+    <ToolBarContainer>
+      <WordCardButton onClick={() => addCard('word')} />
+      <BlankCardButton onClick={() => addCard('blank')} />
+      <MultiCardButton onClick={() => addCard('multi')} />
+      <ImageCardButton onClick={() => addCard('image')} />
+      <Divider />
+      <HeadingButton onHeadingSelect={addHeading1} />
+      <BoldButton onClick={toggleBold} />
+      <Divider />
+      <TextColorButton onSelectColor={onSelectColor} editorView={viewRef.current} /> {/* editorView 전달 */}
+      <HighlightColorButton onSelectColor={onSelectHighlightColor} />
+      <Divider />
+      <MoreOptionsButton />
+    </ToolBarContainer>
   );
 };
 
@@ -59,7 +58,10 @@ ToolBar.propTypes = {
   addHeading1: PropTypes.func.isRequired,
   toggleBold: PropTypes.func.isRequired,
   onSelectColor: PropTypes.func.isRequired,
-  onSelectHighlightColor: PropTypes.func.isRequired,
+  onSelectHighlightColor: PropTypes.func.isRequired, // 추가된 부분
+  viewRef: PropTypes.shape({
+    current: PropTypes.object,
+  }).isRequired, // viewRef에 대한 유효성 검사 추가
 };
 
 export default ToolBar;

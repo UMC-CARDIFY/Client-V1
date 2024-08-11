@@ -44,62 +44,21 @@ const ContentArea = styled.div`
     border-radius: 4px;
     min-height: 20rem;
     max-height: 33rem;
-    white-space: pre-wrap; 
+    white-space: pre-wrap;
     
     ul {
       list-style-type: disc;
       padding-left: 20px;
       position: relative;
-
-      /* 연결선 관련 기능 - 추후 활성화 가능 */
-      /* position: relative; */
     }
 
     li {
-      border: 1px solid #ddd;  /* 각 리스트 아이템에 경계선 추가 */
+      border: 1px solid #ddd;
       padding: 8px;
       margin-bottom: 4px;
       border-radius: 4px;
       position: relative;
-
-      /* 연결선 관련 기능 - 추후 활성화 가능 */
-      /* position: relative; */
     }
-
-    /* 연결선 관련 CSS - 추후 활성화 가능 */
-    /*
-    li:before {
-      content: '';
-      position: absolute;
-      left: -20px;  // 원하는 위치로 조정
-      top: 0;
-      bottom: 50%;
-      width: 1px;
-      background-color: #ddd;
-    }
-
-    li:after {
-      content: '';
-      position: absolute;
-      left: -20px;  // 원하는 위치로 조정
-      top: 50%;
-      width: 20px;  // 항목 사이에 수평선을 그리기 위해 추가
-      height: 1px;
-      background-color: #ddd;
-    }
-
-    li:last-child:before {
-      bottom: 0;
-    }
-
-    li:last-child:after {
-      display: none;
-    }
-
-    ul ul li:before {
-      top: -50%;
-    }
-    */
   }
 
   @media (max-width: 48rem) {
@@ -154,17 +113,20 @@ const Divider = styled.div`
   box-sizing: border-box;
 `;
 
-const CombinedEditor = ({ cards }) => {  // cards prop 추가
+const CombinedEditor = ({ cards, viewRef }) => {  
   const contentRef = useRef(null);
   const titleRef = useRef(null);
 
   useEffect(() => {
+    console.log("CombinedEditor: useEffect started");
+
     if (contentRef.current) {
-      // 빈 리스트 아이템을 포함한 기본 문서 구조
+      console.log("contentRef is available:", contentRef.current);
+
       const doc = mySchema.node('doc', null, 
         mySchema.node('bullet_list', null, 
           mySchema.node('list_item', null, 
-            mySchema.node('paragraph', null)  // 빈 paragraph 노드 추가
+            mySchema.node('paragraph', null)
           )
         )
       );
@@ -181,9 +143,8 @@ const CombinedEditor = ({ cards }) => {  // cards prop 추가
               const { $from } = state.selection;
               const depth = $from.depth;
 
-              // 현재 선택된 항목이 최상위 항목일 경우 liftListItem을 실행하지 않음
-              if (depth === 3) {  // depth가 3인 경우는 bullet_list 바로 아래 있는 항목
-                return false; // 최상위 항목에서는 아무 동작도 하지 않음
+              if (depth === 3) {
+                return false;
               }
               return liftListItem(mySchema.nodes.list_item)(state, dispatch);
             },
@@ -213,11 +174,25 @@ const CombinedEditor = ({ cards }) => {  // cards prop 추가
         }
       });
 
+      if (view) {
+        console.log("Editor view successfully created:", view);
+        viewRef.current = view;
+      } else {
+        console.log("Failed to create editor view");
+      }
+
       return () => {
+        console.log("Cleaning up EditorView...");
         view.destroy();
       };
+    } else {
+      console.log("contentRef.current is null, cannot initialize EditorView.");
     }
-  }, []);
+  }, [contentRef]);
+
+  useEffect(() => {
+    console.log("viewRef after initialization:", viewRef.current);
+  }, [viewRef.current]);
 
   useEffect(() => {
     const node = titleRef.current;
@@ -290,7 +265,10 @@ CombinedEditor.propTypes = {
   cards: PropTypes.arrayOf(PropTypes.shape({
     type: PropTypes.string.isRequired,
     props: PropTypes.object
-  })).isRequired
+  })).isRequired,
+  viewRef: PropTypes.shape({
+    current: PropTypes.object,
+  }).isRequired, // viewRef에 대한 유효성 검사 추가
 };
 
 export default CombinedEditor;
