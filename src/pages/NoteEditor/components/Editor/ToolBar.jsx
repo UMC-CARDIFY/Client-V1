@@ -220,7 +220,7 @@ const ToolBar = ({ addCard, addHeading1, toggleBold, onSelectColor }) => {
           <path d="M0.272461 13.3633V0.636719H2.20605V6.15625H8.53418V0.636719H10.4678V13.3633H8.53418V7.80859H2.20605V13.3633H0.272461Z" fill="#1A1A1A"/>
         </svg>
       </ToolBarItem>
-      <DropDownButton onClick={toggleDropDown} isActive={isDropDownOpen}>
+      <DropDownButton onClick={toggleDropDown} $isActive={isDropDownOpen}>
           <svg xmlns="http://www.w3.org/2000/svg" width="12" height="32" viewBox="0 0 12 32" fill="none">
             <rect width="12" height="32" rx="4" fill={isDropDownOpen ? "#F2F4F8" : "transparent"}/>
             <path d="M2.79492 17.5L5.79492 14.5L8.79492 17.5" stroke={isDropDownOpen ? "#0F62FE" : "#CACACA"} strokeLinecap="round" strokeLinejoin="round"/>
