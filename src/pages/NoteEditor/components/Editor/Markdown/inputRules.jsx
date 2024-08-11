@@ -1,5 +1,5 @@
 import { inputRules, wrappingInputRule, textblockTypeInputRule, InputRule } from 'prosemirror-inputrules';
-import mySchema from './schema';
+import mySchema from '../setup/schema';
 
 function markInputRule(regexp, markType, leadingLength, trailingLength) {
   return new InputRule(regexp, (state, match, start, end) => {

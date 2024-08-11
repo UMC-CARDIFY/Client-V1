@@ -1,8 +1,8 @@
+// schema.js
 import { Schema } from 'prosemirror-model';
 import { schema as basicSchema } from 'prosemirror-schema-basic';
 import { addListNodes } from 'prosemirror-schema-list';
 
-// Combine both schemas
 const mySchema = new Schema({
   nodes: addListNodes(basicSchema.spec.nodes, 'paragraph block*', 'block').append({
     code_block: {
@@ -66,6 +66,20 @@ const mySchema = new Schema({
     code: {
       parseDOM: [{ tag: 'code' }],
       toDOM: () => ['code', 0],
+    },
+    text_color: {
+      attrs: { color: {} },
+      parseDOM: [
+        {
+          style: 'color',
+          getAttrs: (color) => ({ color }),
+        },
+      ],
+      toDOM: (mark) => [
+        'span',
+        { style: `color: ${mark.attrs.color}` },
+        0,
+      ],
     },
   },
 });

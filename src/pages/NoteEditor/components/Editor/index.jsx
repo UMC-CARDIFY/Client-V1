@@ -4,7 +4,7 @@ import ToolBar from './Toolbar/ToolBar';
 import CombinedEditor from './CombinedEditor';
 import { TextSelection } from 'prosemirror-state';
 import { toggleMark } from 'prosemirror-commands';
-import mySchema from './Markdown/schema';
+import mySchema from './setup/schema';
 
 const EditorContainer = styled.div`
   display: flex;
