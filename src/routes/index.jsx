@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { SignIn, SignUp, VerifyEmail, CompleteSignUp, MyPage, Archive, Dashboard, PointPage, SubscriptionPage, NoteEditor } from "../pages";
+import { SignIn, SignUp, VerifyEmail, CompleteSignUp, MyPage, Archive, Dashboard, PointPage, SubscriptionPage, NoteEditor, Flashcard } from "../pages";
 
 const Router = () => {
   return (
@@ -15,6 +15,7 @@ const Router = () => {
         <Route path='/archive' element={<Archive />} />
         <Route path='/dashboard' element={<Dashboard />} /> 
         <Route path='/note-editor' element={<NoteEditor />} /> 
+        <Route path='/flashcard' element={<Flashcard />} />
        </Routes>
     </BrowserRouter>
   );
