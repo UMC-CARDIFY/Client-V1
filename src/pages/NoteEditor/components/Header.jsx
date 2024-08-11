@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import KebabMenu from './KebabMenu/KebabMenu';
 import ExportMenu from './KebabMenu/ExportMenu';
 import ShareMenu from './KebabMenu/ShareMenu';
+import { useSaveContext } from './SaveContext';
 
 const HeaderWrapper = styled.header`
   background: var(--Grays-White, #FFF);
@@ -288,6 +289,17 @@ const Header = ({ isMenuCollapsed, toggleMenuBar }) => {
     alert('자료실에 공유되었습니다.');
   };
 
+  //저장
+  const { saveImageCard } = useSaveContext(); // Context에서 saveImageCard 함수 가져오기
+
+  const handleSave = () => {
+    if (saveImageCard) {
+      saveImageCard(); // ImageCard의 saveImageCard 함수 호출
+    } else {
+      alert('저장할 데이터가 없습니다.');
+    }
+  };
+
   return (
     <HeaderWrapper>
       <LeftSection>
@@ -332,7 +344,7 @@ const Header = ({ isMenuCollapsed, toggleMenuBar }) => {
           </svg>
         </StarButton>
         <NotificationText>저장되지 않은 변경 사항이 있습니다.</NotificationText>
-        <SaveButton>
+        <SaveButton onClick={()=>handleSave()}>
           <span>저장하기</span>
         </SaveButton>
       </LeftSection>
