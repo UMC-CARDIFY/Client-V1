@@ -8,12 +8,12 @@ const HighlightColorButton = ({ onSelectColor }) => {
   const dropDownRef = useRef(null);
 
   const toggleDropDown = () => {
-    setIsDropDownOpen(!isDropDownOpen);
+    setIsDropDownOpen(prevState => !prevState); // 드롭다운 상태를 토글
   };
 
   const handleClickOutside = (event) => {
     if (dropDownRef.current && !dropDownRef.current.contains(event.target)) {
-      setIsDropDownOpen(false);
+      setIsDropDownOpen(false); // 외부 클릭 시 드롭다운 닫기
     }
   };
 
@@ -25,8 +25,15 @@ const HighlightColorButton = ({ onSelectColor }) => {
   }, []);
 
   return (
-    <ColorPaletteItem>
-      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" onClick={toggleDropDown}>
+    <ColorPaletteItem ref={dropDownRef}>
+      <svg 
+        xmlns="http://www.w3.org/2000/svg" 
+        width="32" 
+        height="32" 
+        viewBox="0 0 32 32" 
+        fill="none" 
+        onClick={toggleDropDown} 
+      >
         <path d="M12.3906 22.5H10.334L14.9043 9.77344H17.1367L21.7246 22.5H19.668L18.5078 19.1426H13.5508L12.3906 22.5ZM14.1133 17.5254H17.9453L16.0645 12.0938H15.9766L14.1133 17.5254Z" fill="#1A1A1A"/>
         <rect x="4" y="6.5" width="24" height="19" rx="1.5" stroke="#CACACA"/>
       </svg>
@@ -37,7 +44,7 @@ const HighlightColorButton = ({ onSelectColor }) => {
         </svg>
       </ColorDropDownButton>
       {isDropDownOpen && (
-        <ColorDropDownMenu ref={dropDownRef}>
+        <ColorDropDownMenu>
           <HighlightColorPalette onSelectColor={onSelectColor} />
         </ColorDropDownMenu>
       )}
