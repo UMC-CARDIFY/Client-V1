@@ -210,7 +210,7 @@ const Contour = styled.div`
 width: 100%;
 height: 0.0625rem;
 background: #E9E9E9;
-magin-bottom: 1rem;
+margin-bottom: 1rem;
 `;
 
 
