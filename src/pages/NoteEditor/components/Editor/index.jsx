@@ -82,8 +82,20 @@ const Editor = () => {
   };
 
   const onSelectHighlightColor = (color) => {
-    console.log("onSelectHighlightColor called with color:", color);
-    // 이곳에서 하이라이트 색상을 적용하는 로직을 추가할 수 있습니다.
+    if (!viewRef.current) return;
+    const { state, dispatch } = viewRef.current;
+    const { tr, selection } = state;
+    const markType = mySchema.marks.highlight;
+
+    if (selection.empty) return;
+
+    let { from, to } = selection;
+    if (selection instanceof TextSelection) {
+      tr.addMark(from, to, markType.create({ backgroundColor: color }));
+    }
+
+    dispatch(tr.scrollIntoView());
+    viewRef.current.focus();
   };
 
   const handleAddTextBlock = () => {

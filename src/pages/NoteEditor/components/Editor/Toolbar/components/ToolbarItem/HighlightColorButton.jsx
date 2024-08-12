@@ -8,7 +8,7 @@ const HighlightColorButton = ({ onSelectColor }) => {
   const dropDownRef = useRef(null);
 
   const toggleDropDown = () => {
-    setIsDropDownOpen(prevState => !prevState); // 드롭다운 상태를 토글
+    setIsDropDownOpen(!isDropDownOpen);
   };
 
   const handleClickOutside = (event) => {
@@ -44,7 +44,7 @@ const HighlightColorButton = ({ onSelectColor }) => {
         </svg>
       </ColorDropDownButton>
       {isDropDownOpen && (
-        <ColorDropDownMenu>
+        <ColorDropDownMenu ref={dropDownRef}>
           <HighlightColorPalette onSelectColor={onSelectColor} />
         </ColorDropDownMenu>
       )}
