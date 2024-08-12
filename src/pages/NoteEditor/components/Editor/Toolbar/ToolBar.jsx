@@ -37,7 +37,7 @@ const ToolBar = ({ addCard, addHeading1, toggleBold, onSelectColor, viewRef, onS
 
   return (
     <ToolBarContainer>
-      <WordCardButton onClick={() => addCard('word')} />
+      <WordCardButton onClick={() => addCard('word_card')} /> {/* 수정된 부분 */}
       <BlankCardButton onClick={() => addCard('blank')} />
       <MultiCardButton onClick={() => addCard('multi')} />
       <ImageCardButton onClick={() => addCard('image')} />
@@ -45,7 +45,7 @@ const ToolBar = ({ addCard, addHeading1, toggleBold, onSelectColor, viewRef, onS
       <HeadingButton onHeadingSelect={addHeading1} />
       <BoldButton onClick={toggleBold} />
       <Divider />
-      <TextColorButton onSelectColor={onSelectColor} editorView={viewRef.current} /> {/* editorView 전달 */}
+      <TextColorButton onSelectColor={onSelectColor} editorView={viewRef.current} />
       <HighlightColorButton onSelectColor={onSelectHighlightColor} />
       <Divider />
       <MoreOptionsButton />
@@ -58,10 +58,10 @@ ToolBar.propTypes = {
   addHeading1: PropTypes.func.isRequired,
   toggleBold: PropTypes.func.isRequired,
   onSelectColor: PropTypes.func.isRequired,
-  onSelectHighlightColor: PropTypes.func.isRequired, // 추가된 부분
+  onSelectHighlightColor: PropTypes.func.isRequired,
   viewRef: PropTypes.shape({
     current: PropTypes.object,
-  }).isRequired, // viewRef에 대한 유효성 검사 추가
+  }).isRequired,
 };
 
 export default ToolBar;

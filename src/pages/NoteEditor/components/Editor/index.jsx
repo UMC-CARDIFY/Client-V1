@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import ToolBar from './Toolbar/ToolBar';
-import CombinedEditor from './CombinedEditor';
+import CombinedEditor, { addCard } from './CombinedEditor'; // addCard 가져오기
 import { TextSelection } from 'prosemirror-state';
-import { toggleMark } from 'prosemirror-commands';
+import { toggleMark } from 'prosemirror-commands';  // toggleMark 추가
 import mySchema from './setup/schema';
 
 const EditorContainer = styled.div`
@@ -28,12 +28,11 @@ const ToolBarWrapper = styled.div`
 `;
 
 const Editor = () => {
-  const [cards, setCards] = useState([]);
   const viewRef = useRef(null);
   const [isEditorInitialized, setIsEditorInitialized] = useState(false);
 
-  const addCard = (type) => {
-    setCards([...cards, { type }]);
+  const handleAddCard = (type) => {
+    addCard(viewRef, type);  // viewRef와 type을 전달하여 addCard 호출
   };
 
   const addHeading1 = () => {
@@ -87,7 +86,6 @@ const Editor = () => {
   };
 
   useEffect(() => {
-    // Editor가 초기화된 후에 isEditorInitialized 상태를 true로 설정
     if (viewRef.current) {
       setIsEditorInitialized(true);
     }
@@ -96,18 +94,17 @@ const Editor = () => {
   return (
     <EditorContainer>
       <CombinedEditor
-        cards={cards}
         viewRef={viewRef} // viewRef 전달
       />
       {isEditorInitialized && (
         <ToolBarWrapper>
           <ToolBar 
             viewRef={viewRef} 
-            addCard={addCard} 
+            addCard={handleAddCard} // 수정된 addCard 함수 전달
             addHeading1={addHeading1} 
             toggleBold={toggleBold} 
             onSelectColor={onSelectColor} 
-            onSelectHighlightColor={onSelectHighlightColor} // 추가된 부분
+            onSelectHighlightColor={onSelectHighlightColor} 
           />
         </ToolBarWrapper>
       )}

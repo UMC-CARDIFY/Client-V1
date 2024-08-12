@@ -1,27 +1,17 @@
 import { useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';  
-import { EditorState } from 'prosemirror-state';
+import { EditorState, TextSelection } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 import { keymap } from 'prosemirror-keymap';
 import { baseKeymap } from 'prosemirror-commands';
 import { history } from 'prosemirror-history';
 import { dropCursor } from 'prosemirror-dropcursor';
 import { gapCursor } from 'prosemirror-gapcursor';
-import { Schema } from 'prosemirror-model';
-import { addListNodes, splitListItem, wrapInList, liftListItem, sinkListItem } from 'prosemirror-schema-list';
-import { schema as basicSchema } from 'prosemirror-schema-basic';
+import { sinkListItem, liftListItem, splitListItem, wrapInList } from 'prosemirror-schema-list';
 import 'prosemirror-view/style/prosemirror.css';
-import WordCard from '../Cards/WordCard';
-import BlankCard from '../Cards/BlankCard';
-import MultiCard from '../Cards/MultiCard';
-import ImageCard from '../Cards/ImageCard';
 import { myInputRules } from './Markdown/inputRules';
-
-const mySchema = new Schema({
-  nodes: addListNodes(basicSchema.spec.nodes, 'paragraph block*', 'block'),
-  marks: basicSchema.spec.marks,
-});
+import mySchema from './setup/schema';  // schema.jsx에서 가져오기
 
 const ContentArea = styled.div`
   flex: 1;
@@ -53,7 +43,6 @@ const ContentArea = styled.div`
     }
 
     li {
-      border: 1px solid #ddd;
       padding: 8px;
       margin-bottom: 4px;
       border-radius: 4px;
@@ -113,16 +102,12 @@ const Divider = styled.div`
   box-sizing: border-box;
 `;
 
-const CombinedEditor = ({ cards, viewRef }) => {  
+const CombinedEditor = ({ viewRef }) => {  
   const contentRef = useRef(null);
   const titleRef = useRef(null);
 
   useEffect(() => {
-    console.log("CombinedEditor: useEffect started");
-
     if (contentRef.current) {
-      console.log("contentRef is available:", contentRef.current);
-
       const doc = mySchema.node('doc', null, 
         mySchema.node('bullet_list', null, 
           mySchema.node('list_item', null, 
@@ -171,28 +156,18 @@ const CombinedEditor = ({ cards, viewRef }) => {
         dispatchTransaction(transaction) {
           const newState = view.state.apply(transaction);
           view.updateState(newState);
+          console.log('New state:', JSON.stringify(newState.doc.toJSON(), null, 2));
         }
       });
 
-      if (view) {
-        console.log("Editor view successfully created:", view);
-        viewRef.current = view;
-      } else {
-        console.log("Failed to create editor view");
-      }
+      viewRef.current = view;
+      window.viewRef = viewRef; //데이터 값 들어오게 하려고 추가한 코드
 
       return () => {
-        console.log("Cleaning up EditorView...");
         view.destroy();
       };
-    } else {
-      console.log("contentRef.current is null, cannot initialize EditorView.");
     }
   }, [contentRef]);
-
-  useEffect(() => {
-    console.log("viewRef after initialization:", viewRef.current);
-  }, [viewRef.current]);
 
   useEffect(() => {
     const node = titleRef.current;
@@ -221,6 +196,13 @@ const CombinedEditor = ({ cards, viewRef }) => {
     };
   }, []);
 
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      handleEnterKey(viewRef);
+    }
+  };
+
   return (
     <>
       <TitleDiv>
@@ -240,35 +222,63 @@ const CombinedEditor = ({ cards, viewRef }) => {
         </TransformFlashcard>
       </TitleDiv>
       <Divider />
-      <ContentArea>
+      <ContentArea onKeyDown={handleKeyDown}>
         <div ref={contentRef}></div>
-        {cards.map((card, index) => {
-          switch (card.type) {
-            case 'word':
-              return <WordCard key={index} {...card.props} />;
-            case 'blank':
-              return <BlankCard key={index} {...card.props} />;
-            case 'multi':
-              return <MultiCard key={index} {...card.props} />;
-            case 'image':
-              return <ImageCard key={index} {...card.props} />;
-            default:
-              return null;
-          }
-        })}
       </ContentArea>
     </>
   );
 };
 
+export const handleEnterKey = (viewRef) => {
+  if (!viewRef.current) return;
+
+  const { state, dispatch } = viewRef.current;
+  const { tr, selection } = state;
+  const { $from } = selection;
+
+  // 현재 선택된 위치가 속한 리스트 아이템의 마지막 위치를 찾습니다.
+  const endOfListItem = $from.end($from.depth);
+
+  // 새로운 텍스트 노드를 만듭니다.
+  const paragraphNode = mySchema.nodes.paragraph.create();
+
+  // 새로운 텍스트 노드를 리스트 아이템의 끝 다음에 삽입합니다.
+  tr.insert(endOfListItem + 1, paragraphNode);
+
+  // 새로운 텍스트 블록 뒤에 커서를 이동합니다.
+  tr.setSelection(TextSelection.near(tr.doc.resolve(endOfListItem + 2)));
+
+  dispatch(tr.scrollIntoView());
+  viewRef.current.focus();
+};
+
+export const addCard = (viewRef) => {
+  if (!viewRef.current) return;
+
+  const { state, dispatch } = viewRef.current;
+  const { tr, selection } = state;
+  const { $from } = selection;
+
+  // 현재 리스트 아이템의 마지막 위치를 찾습니다.
+  const endOfListItem = $from.end($from.depth);
+
+  // 새 카드 노드를 만듭니다.
+  const node = mySchema.nodes.word_card.create();
+
+  // 새로운 카드를 리스트 아이템의 끝 다음에 삽입합니다.
+  tr.insert(endOfListItem + 1, node);
+
+  // 새로운 카드 뒤에 커서를 이동합니다.
+  tr.setSelection(TextSelection.near(tr.doc.resolve(endOfListItem + 2)));
+
+  dispatch(tr.scrollIntoView());
+  viewRef.current.focus();
+};
+
 CombinedEditor.propTypes = {
-  cards: PropTypes.arrayOf(PropTypes.shape({
-    type: PropTypes.string.isRequired,
-    props: PropTypes.object
-  })).isRequired,
   viewRef: PropTypes.shape({
     current: PropTypes.object,
-  }).isRequired, // viewRef에 대한 유효성 검사 추가
+  }).isRequired,
 };
 
 export default CombinedEditor;
