@@ -6,9 +6,10 @@
   import FolderModal from './FolderModal';
   import MoreDiv from './MoreDiv';
   import DeleteConfirmModal from './DeleteConfirmModal';
-import { getFolders } from '../../../api/archive/getFolders';
-import { getNotes } from '../../../api/archive/getNotes';
-import SortDropdown from './SortDropdown';
+  import { getFolders } from '../../../api/archive/getFolders';
+  import { getNotes } from '../../../api/archive/getNotes';
+  import { getFolderSort } from '../../../api/archive/getFolderSort';
+  import SortDropdown from './SortDropdown';
 
   const FrameBackground = styled.div`
     background: #F9F9F9;
@@ -248,18 +249,27 @@ const Frame = ({ selectedTab }) => {
     };
   }, []);
 
+
   useEffect(() => {
     const fetchFolders = async () => {
       try {
-        const data = await getFolders();
-        setFolders(data.foldersList);
+        let data;
+
+        if (sortOption) {
+          data = await getFolderSort(sortOption);
+          console.log(sortOption)
+          setFolders(data.sortFoldersList); 
+        } else {
+          data = await getFolders();
+          setFolders(data.foldersList);
+        }
       } catch (error) {
         console.error('Failed to fetch folders:', error);
       }
     };
 
     fetchFolders();
-  }, []);
+  }, [sortOption]); 
 
   useEffect(() => {
     const fetchNotes = async () => {
@@ -324,7 +334,6 @@ const Frame = ({ selectedTab }) => {
   const handleSortOptionClick = (option) => {
     console.log(`Selected sort option in ParentComponent: ${option}`);
     setSortOption(option);
-    // 정렬 옵션에 따라 데이터를 다시 가져오거나 정렬할 수 있습니다.
   };
 
   return (

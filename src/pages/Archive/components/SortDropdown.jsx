@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 
 const SortDiv = styled.div`
   display: flex;
@@ -51,7 +52,7 @@ const SortDropdown = ({ onSortOptionClick }) => {
     const handleSortOptionClick = (option) => {
       console.log(`Selected sort option: ${option}`);
       if (onSortOptionClick) {
-        onSortOptionClick(option); // 상위 컴포넌트로 전달
+        onSortOptionClick(option);
       }
       setIsOpen(false);
     };
@@ -64,12 +65,17 @@ const SortDropdown = ({ onSortOptionClick }) => {
           <Dropdown>
             <DropdownItem onClick={() => handleSortOptionClick('asc')}>오름차순</DropdownItem>
             <DropdownItem onClick={() => handleSortOptionClick('desc')}>내림차순</DropdownItem>
-            <DropdownItem onClick={() => handleSortOptionClick('newest')}>수정일 - 최신순</DropdownItem>
-            <DropdownItem onClick={() => handleSortOptionClick('oldest')}>수정일 - 오래된 순</DropdownItem>
+            <DropdownItem onClick={() => handleSortOptionClick('edit-newest')}>수정일 - 최신순</DropdownItem>
+            <DropdownItem onClick={() => handleSortOptionClick('edit-oldest')}>수정일 - 오래된 순</DropdownItem>
           </Dropdown>
         )}
       </SortDiv>
     );
   };
+
+  SortDropdown.propTypes = {
+    onSortOptionClick: PropTypes.func.isRequired,
+  };
+
 
 export default SortDropdown
