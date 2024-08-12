@@ -3,17 +3,19 @@ import styled from 'styled-components';
 import StudyCalendar from './StudyCalendar';
 
 const Container = styled.div`
-  width: 28.3125rem;
-  height: 46.75rem;
+  width: 22.5rem;
+  height: 44.5625rem;
+  padding: 2rem;
+  box-sizing: border-box;
   flex-shrink: 0;
   overflow: hidden;
-  @media (max-width: 1440px) {
-    width: 22.3125rem;
-    height: 46.75rem;
+  @media (min-width: 1440px) and (max-width: 1680px) {
+    width: 22.5rem;
+    height: 46.5625rem;
   }
-  @media (max-width: 1024px) {
-  width: 19rem;
-height: 39.25rem;
+  @media (min-width: 1024px)and (max-width: 1440px) {
+  width: 19.1875rem;
+height: 40.0625rem;
 }
 border-radius: 0.75rem;
 background: var(--Grays-White, #FFF);

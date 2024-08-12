@@ -10,13 +10,17 @@ const NoteEditorWrapper = styled.div`
   overflow: hidden;
 `;
 
-const MenuBarWrapper = styled.div`
+const MenuBarWrapper = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== 'isCollapsed',
+})`
   width: 15rem;
   transition: transform 0.3s ease-in-out;
   transform: ${({ isCollapsed }) => (isCollapsed ? 'translateX(-15rem)' : 'translateX(0)')};
 `;
 
-const ContentWrapper = styled.div`
+const ContentWrapper = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== 'isMenuCollapsed',
+})`
   display: flex;
   flex-direction: column;
   flex-grow: 1;

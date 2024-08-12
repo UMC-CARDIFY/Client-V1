@@ -2,7 +2,7 @@ import { Schema } from 'prosemirror-model';
 import { schema as basicSchema } from 'prosemirror-schema-basic';
 import { addListNodes } from 'prosemirror-schema-list';
 
-// Extend basic schema with list support and custom marks
+// Combine both schemas
 const mySchema = new Schema({
   nodes: addListNodes(basicSchema.spec.nodes, 'paragraph block*', 'block').append({
     code_block: {
@@ -13,7 +13,7 @@ const mySchema = new Schema({
       defining: true,
       parseDOM: [{ tag: 'pre', preserveWhitespace: 'full' }],
       toDOM() { return ['pre', ['code', 0]]; }
-  },
+    },
     word_card: {
       group: 'block',
       content: 'inline*',
@@ -31,6 +31,18 @@ const mySchema = new Schema({
       content: 'inline*',
       parseDOM: [{ tag: 'multiCard' }],
       toDOM: () => ['multiCard', 0]
+    },
+    bullet_list: {
+      content: 'list_item+',
+      group: 'block',
+      parseDOM: [{ tag: 'ul' }],
+      toDOM() { return ['ul', 0]; }
+    },
+    list_item: {
+      content: 'block+',  // 블록을 포함할 수 있도록 수정
+      group: 'block',
+      parseDOM: [{ tag: 'li' }],
+      toDOM() { return ['li', 0]; }
     },
   }),
   marks: {

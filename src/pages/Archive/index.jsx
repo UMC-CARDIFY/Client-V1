@@ -49,10 +49,6 @@ export const Archive = () => {
         <Frame selectedTab={selectedTab} />
       </Vcontainer>
       </Tablet>
-      {/* <Vcontainer>
-        <TopBar title='아카이브' subtitle='노트 작성 및 관리' setSelectedTab={setSelectedTab} selectedTab={selectedTab} />
-        <Frame selectedTab={selectedTab} />
-      </Vcontainer> */}
     </Container>
     
     
