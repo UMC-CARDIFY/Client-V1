@@ -32,25 +32,24 @@ const Divider = styled.div`
   background: #E8E8E8;
 `;
 
-const ToolBar = ({ addCard, addHeading1, toggleBold, onSelectColor, onSelectHighlightColor }) => {
+const ToolBar = ({ addCard, addHeading1, toggleBold, onSelectColor, viewRef, onSelectHighlightColor }) => {
+  console.log("ToolBar received viewRef:", viewRef.current); // viewRef 로그 확인
 
   return (
-    <>
-      <ToolBarContainer>
-        <WordCardButton onClick={() => addCard('word')} />
-        <BlankCardButton onClick={() => addCard('blank')} />
-        <MultiCardButton onClick={() => addCard('multi')} />
-        <ImageCardButton onClick={() => addCard('image')} />
-        <Divider />
-        <HeadingButton onHeadingSelect={addHeading1} />
-        <BoldButton onClick={toggleBold} />
-        <Divider />
-        <TextColorButton onSelectColor={onSelectColor} />
-        <HighlightColorButton onSelectColor={onSelectHighlightColor} />
-        <Divider />
-        <MoreOptionsButton />
-      </ToolBarContainer>
-    </>
+    <ToolBarContainer>
+      <WordCardButton onClick={() => addCard('word_card')} /> {/* 수정된 부분 */}
+      <BlankCardButton onClick={() => addCard('blank')} />
+      <MultiCardButton onClick={() => addCard('multi')} />
+      <ImageCardButton onClick={() => addCard('image')} />
+      <Divider />
+      <HeadingButton onHeadingSelect={addHeading1} />
+      <BoldButton onClick={toggleBold} />
+      <Divider />
+      <TextColorButton onSelectColor={onSelectColor} editorView={viewRef.current} />
+      <HighlightColorButton onSelectColor={onSelectHighlightColor} />
+      <Divider />
+      <MoreOptionsButton />
+    </ToolBarContainer>
   );
 };
 
@@ -60,6 +59,9 @@ ToolBar.propTypes = {
   toggleBold: PropTypes.func.isRequired,
   onSelectColor: PropTypes.func.isRequired,
   onSelectHighlightColor: PropTypes.func.isRequired,
+  viewRef: PropTypes.shape({
+    current: PropTypes.object,
+  }).isRequired,
 };
 
 export default ToolBar;
