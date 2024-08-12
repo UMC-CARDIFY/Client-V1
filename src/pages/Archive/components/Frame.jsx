@@ -151,48 +151,21 @@ display: flex;
 gap: 0.5rem;
 margin-bottom: 1rem;
 `;
-const SortDiv = styled.div`
-display: flex;
-width: 4.3125rem;
-height: 1.875rem;
-padding: 0.1875rem 0.4375rem;
-justify-content: center;
-align-items: center;
-gap: 0.375rem;
-background: #F3F3F3;
-color: var(--Grays-Black, #1A1A1A);
-font-family: Pretendard;
-font-size: 0.875rem;
-font-style: normal;
-font-weight: 500;
-line-height: normal;
-cursor: pointer;
-border-radius: 0.3125rem;
-`;
-// const FiteringDiv = styled(SortDiv)`
-// width: 4.875rem;
-// height: 1.875rem;
-// padding: 0.1875rem 0.4375rem 0.1875rem 0.3125rem;
-// gap: 0.3125rem;
-// `;
-const AddFolderDiv = styled(SortDiv)`
-width: 5.875rem;
+
+const AddFolderDiv = styled.div`  
 height: 1.875rem;
 padding: 0.1875rem 0.4375rem 0.1875rem 0.375rem;
 gap: 0.3125rem;
+display: flex;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+  border-radius: 0.5rem;
+  background-color: #ECEFF4;
+  box-shadow: 0px 4px 26px 0px rgba(0, 0, 0, 0.02), 0px 10px 60px 0px rgba(0, 74, 162, 0.03);
+  border-radius: 0.3125rem;
 `;
-// const SortIcon = styled.div`
-// width: 1.5rem;
-// height: 1.5rem;
-// flex-shrink: 0;
-// background: url(<path-to-image>) lightgray 50% / cover no-repeat;
-// `;
-// const FilteringIcon = styled(SortIcon)`
-// background: url(<path-to-image>) lightgray 50% / cover no-repeat;
-// `;
-// const AddFolderIcon = styled(SortIcon)`
-// background: url(<path-to-image>) lightgray 50% / cover no-repeat;
-// `;
+
 const Icon = styled.img`
 `;
 
@@ -262,7 +235,7 @@ const Frame = ({ selectedTab }) => {
     const fetchNotes = async () => {
       try {
         const data = await getNotes();
-        setNotes(data);
+        setNotes(data.notesList);
       } catch (error) {
         console.error('Failed to fetch notes:', error);
       }
@@ -271,7 +244,9 @@ const Frame = ({ selectedTab }) => {
     fetchNotes();
   }, []);
 
-  const currentData = folders.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
+  const currentData = selectedTab === '폴더'
+  ? folders && folders.length > 0 ? folders.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage) : []
+  : notes && notes.length > 0 ? notes.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage) : [];
 
   const handlePageChange = ({ selected }) => {
     setCurrentPage(selected);
@@ -334,10 +309,6 @@ const Frame = ({ selectedTab }) => {
           <SortDropdown onSortOptionClick={handleSortOptionClick} />
           {selectedTab === '폴더' && (
             <>
-            {/* <FiteringDiv>
-                <FilteringIcon />
-                <div>필터링</div>
-              </FiteringDiv> */}
               <FilteringDropdown />
 
               <AddFolderDiv onClick={openAddModal}>
@@ -397,7 +368,7 @@ const Frame = ({ selectedTab }) => {
                   alt='즐겨찾기'
                   onClick={() => handleClick(item)}
                 />
-                  <Icon src={Note}/>
+                  <Icon src={Note} alt='노트 아이콘'/>
                   <Line />
                   <div style={{ display: 'flex', flexDirection: 'column' }}>
                     <div>{item.name}</div>
@@ -408,8 +379,6 @@ const Frame = ({ selectedTab }) => {
                 <RightData>
                   <Line />
                   <div>
-                    {/* <div>{item.category}</div>
-                    <div>카테고리</div> */}
                     <div>{item.createdAt.split('T')[0]}</div>
                     <div>노트 생성일</div>
                   </div>
