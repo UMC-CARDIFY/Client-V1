@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
 const TopBarContainer = styled.div`
-  width: 100vw;
+  width: 100%;
   background: var(--Grays-White, #FFF);
 `;
 

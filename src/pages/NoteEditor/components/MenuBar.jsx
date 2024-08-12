@@ -2,7 +2,9 @@ import { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 
-const MenuBarContainer = styled.div`
+const MenuBarContainer = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== 'isCollapsed',
+})`
   display: flex;
   flex-direction: column;
   width: 15rem;
@@ -19,8 +21,8 @@ const MenuBarContainer = styled.div`
       transform: translateX(-100%);
     `}
 
-      @media screen and (max-width: 1024px) {
-     width: 13rem;
+  @media screen and (max-width: 1024px) {
+    width: 13rem;
   }
 `;
 

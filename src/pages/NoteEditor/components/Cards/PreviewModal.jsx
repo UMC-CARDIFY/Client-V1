@@ -87,18 +87,32 @@ const PreviewModal = ({ onClose, cardContent }) => {
       <ModalContainer>
         <ModalHeader>
           <div style={{ display: 'flex', alignItems: 'center' }}>
-          <PreviewIcon><svg xmlns="http://www.w3.org/2000/svg" width="23" height="17" viewBox="0 0 23 17" fill="none">
-  <path d="M11.2841 3.6369L10.842 3.1948L9.07361 1.42639L2 8.5L9.07361 15.5736L10.842 13.8052L11.2841 13.3631" stroke="#6A9CFC" strokeWidth="1.5"/>
-  <rect x="6.85352" y="8.5" width="10.0036" height="10.0036" transform="rotate(-45 6.85352 8.5)" stroke="#0F62FE" strokeWidth="1.5"/>
-</svg>
-</PreviewIcon>
+            <PreviewIcon>
+              <svg xmlns="http://www.w3.org/2000/svg" width="23" height="17" viewBox="0 0 23 17" fill="none">
+                <path d="M11.2841 3.6369L10.842 3.1948L9.07361 1.42639L2 8.5L9.07361 15.5736L10.842 13.8052L11.2841 13.3631" stroke="#6A9CFC" strokeWidth="1.5"/>
+                <rect x="6.85352" y="8.5" width="10.0036" height="10.0036" transform="rotate(-45 6.85352 8.5)" stroke="#0F62FE" strokeWidth="1.5"/>
+              </svg>
+            </PreviewIcon>
             <PreviewTitle>미리보기</PreviewTitle>
           </div>
           <CloseButton onClick={handleClose} />
         </ModalHeader>
         <ModalContent>
           <p><strong>앞면:</strong> {cardContent.front}</p>
-          <p><strong>뒷면:</strong> {cardContent.back}</p>
+          {Array.isArray(cardContent.backs) ? (
+            cardContent.backs.map((back, index) => (
+              <p
+                key={index}
+                style={{
+                  marginLeft: index === 0 ? '0' : '3.2rem', // 첫번째 요소 이후 margin-left 추가
+                }}
+              >
+                {index === 0 ? <strong>뒷면:</strong> : null} {back}
+              </p>
+            ))
+          ) : (
+            <p><strong>뒷면:</strong> {cardContent.back}</p>
+          )}
         </ModalContent>
       </ModalContainer>
     </Overlay>     
