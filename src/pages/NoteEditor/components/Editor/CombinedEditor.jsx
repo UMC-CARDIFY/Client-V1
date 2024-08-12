@@ -18,6 +18,7 @@ const ContentArea = styled.div`
   border: none;
   outline: none;
   width: 100%;
+  height: auto;
   box-sizing: border-box;
   resize: none;
   height: auto;
@@ -43,6 +44,7 @@ const ContentArea = styled.div`
     }
 
     li {
+      border: 1px solid green;
       padding: 8px;
       margin-bottom: 4px;
       border-radius: 4px;
@@ -138,6 +140,9 @@ const CombinedEditor = ({ viewRef }) => {
               const parent = $from.node(-1);
               if (parent.type === mySchema.nodes.list_item) {
                 return splitListItem(mySchema.nodes.list_item)(state, dispatch);
+              } else if (parent.type === mySchema.nodes.paragraph) {
+                handleEnterKey(viewRef);
+                return true;
               } else {
                 return wrapInList(mySchema.nodes.bullet_list)(state, dispatch);
               }
@@ -196,13 +201,6 @@ const CombinedEditor = ({ viewRef }) => {
     };
   }, []);
 
-  const handleKeyDown = (event) => {
-    if (event.key === 'Enter') {
-      event.preventDefault();
-      handleEnterKey(viewRef);
-    }
-  };
-
   return (
     <>
       <TitleDiv>
@@ -222,7 +220,7 @@ const CombinedEditor = ({ viewRef }) => {
         </TransformFlashcard>
       </TitleDiv>
       <Divider />
-      <ContentArea onKeyDown={handleKeyDown}>
+      <ContentArea>
         <div ref={contentRef}></div>
       </ContentArea>
     </>
