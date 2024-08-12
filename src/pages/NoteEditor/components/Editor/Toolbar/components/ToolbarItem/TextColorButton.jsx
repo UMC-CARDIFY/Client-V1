@@ -2,7 +2,6 @@ import { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { ColorPaletteItem, ColorDropDownButton, ColorDropDownMenu } from './style/ToolbarStyles';
 import ColorPalette from './ColorPalette/TextColorPalette';
-import ReactDOM from 'react-dom';
 
 const TextColorButton = ({ onSelectColor }) => {
   const [isColorPaletteOpen, setIsColorPaletteOpen] = useState(false);
