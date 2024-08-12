@@ -7,6 +7,10 @@
   import MoreDiv from './MoreDiv';
   import DeleteConfirmModal from './DeleteConfirmModal';
   import { getFolders } from '../../../api/archive/getFolders';
+  import sortIcon from '../../../assets/sortIcon.svg'
+  import filterIcon from '../../../assets/filterIcon.svg'
+  import addFolder from '../../../assets/addFolder.svg'
+
 
   const FrameContainer = styled.div`
     width: 89rem;
@@ -156,6 +160,7 @@ font-style: normal;
 font-weight: 500;
 line-height: normal;
 cursor: pointer;
+border-radius: 0.3125rem;
 `;
 const FiteringDiv = styled(SortDiv)`
 width: 4.875rem;
@@ -169,18 +174,9 @@ height: 1.875rem;
 padding: 0.1875rem 0.4375rem 0.1875rem 0.375rem;
 gap: 0.3125rem;
 `;
-const SortIcon = styled.div`
-width: 1.5rem;
-height: 1.5rem;
-flex-shrink: 0;
-background: url(<path-to-image>) lightgray 50% / cover no-repeat;
+const Icon = styled.img`
 `;
-const FilteringIcon = styled(SortIcon)`
-background: url(<path-to-image>) lightgray 50% / cover no-repeat;
-`;
-const AddFolderIcon = styled(SortIcon)`
-background: url(<path-to-image>) lightgray 50% / cover no-repeat;
-`;
+
 
 const Contour = styled.div`
 width: 100%;
@@ -283,17 +279,17 @@ const Frame = ({ selectedTab }) => {
         <TitleAll style={{ paddingTop: '3rem' }}>{selectedTab === '폴더' ? '모든 폴더' : '모든 노트'}</TitleAll>
           <SelectFilterDiv>
           <SortDiv>
-            <SortIcon />
+            <Icon src={sortIcon}/>
             <div>정렬</div>
           </SortDiv>
           {selectedTab === '폴더' && (
             <>
             <FiteringDiv>
-                <FilteringIcon />
+                <Icon src={filterIcon} />
                 <div>필터링</div>
               </FiteringDiv>
               <AddFolderDiv onClick={openAddModal}>
-                <AddFolderIcon />
+                <Icon src={addFolder} />
                 <div>폴더 추가</div>
               </AddFolderDiv>
             </>
