@@ -40,11 +40,10 @@ const TabBar = styled.div`
   display: flex;
   flex-direction: row;
   margin: 0 2rem;
-  width: 100%;
   height: 3.5rem;
   padding: 0rem 52.875rem 0rem 0rem;
-align-items: flex-start;
-gap: 0.5rem;
+  align-items: flex-start;
+  gap: 0.5rem;
 `;
 
 const Tab = styled.div`
