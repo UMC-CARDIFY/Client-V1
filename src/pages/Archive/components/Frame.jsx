@@ -11,7 +11,10 @@
   import filterIcon from '../../../assets/filterIcon.svg'
   import addFolder from '../../../assets/addFolder.svg'
   import MarkStateIcon from '../../../assets/markStateIcon.svg';
+  import MarkStateActive from '../../../assets/MarkStateActive.svg';
   import Folder from '../../../assets/folder.svg';
+  import Note from '../../../assets/note.svg';
+
 
 
   const FrameContainer = styled.div`
@@ -187,9 +190,6 @@ background: #E9E9E9;
 margin-bottom: 1rem;
 `;
 
-const FolderIcon = styled.img``
-
-const MarkState =styled.img``;
 
 const Frame = ({ selectedTab }) => {
   const [folders, setFolders] = useState([]);
@@ -278,6 +278,10 @@ const Frame = ({ selectedTab }) => {
     closeDeleteModal();
   };
 
+  const handleClick = () => {
+    // setIsFavorite(!isFavorite);
+  };
+
   return (
       <FrameContainer>
         <TitleAll style={{ paddingTop: '3rem' }}>{selectedTab === '폴더' ? '모든 폴더' : '모든 노트'}</TitleAll>
@@ -306,8 +310,12 @@ const Frame = ({ selectedTab }) => {
             selectedTab === '폴더' ? (
               <FolderData key={index}>
                 <LeftData>
-                  <MarkState src={MarkStateIcon} alt='즐겨찾기'/>
-                  <FolderIcon src={Folder} alt='폴더 아이콘'/>
+                <Icon
+                  src={item.markState === 'ACTIVE' ? MarkStateActive : MarkStateIcon}
+                  alt='즐겨찾기'
+                  onClick={() => handleClick(item)}
+                />
+                  <Icon src={Folder} alt='폴더 아이콘'/>
                   <Line />
                   <div style={{ display: 'flex', flexDirection: 'column' }}>
                     <div>{item.name}</div>
@@ -340,8 +348,12 @@ const Frame = ({ selectedTab }) => {
             ) : (
               <NoteData key={index}>
                 <LeftData>
-                <MarkState src={MarkStateIcon} alt='즐겨찾기'/>
-                  <div>아이콘</div>
+                <Icon
+                  src={item.markState === 'ACTIVE' ? MarkStateActive : MarkStateIcon}
+                  alt='즐겨찾기'
+                  onClick={() => handleClick(item)}
+                />
+                  <Icon src={Note}/>
                   <Line />
                   <div style={{ display: 'flex', flexDirection: 'column' }}>
                     <div>{item.noteTitle}</div>
