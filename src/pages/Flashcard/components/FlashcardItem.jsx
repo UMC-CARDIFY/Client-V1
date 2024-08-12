@@ -161,11 +161,12 @@ const Store = styled(Before)`
 
 const DeleteButton = styled.div`
   position: absolute;
-  top: 4rem;
-  right: 1.5rem;
+  top: 2.38rem;
+  right: 2.81rem;
   display: flex;
-width: 8.625rem;
+width: 9.1rem;
 height: 3.125rem;
+box-sizing: border-box;
 padding: var(--font-size-md, 1.03125rem) 4rem var(--font-size-md, 1.03125rem) 1.125rem;
 align-items: center;
 flex-shrink: 0;
@@ -174,6 +175,13 @@ background: #FFF;
   cursor: pointer;
   z-index: 10; /* 다른 요소 위에 표시되도록 설정 */
   display: ${(props) => (props.show ? 'block' : 'none')}; /* 표시 여부 결정 */
+
+  color: var(--kakao-logo, #000);
+font-family: Inter;
+font-size: 0.875rem;
+font-style: normal;
+font-weight: 500;
+line-height: normal;
 `;
 
 const FlashcardItem = ({ note, folder, recentDate, nextDate, status, color }) => {
@@ -251,7 +259,7 @@ const FlashcardItem = ({ note, folder, recentDate, nextDate, status, color }) =>
       </MoreOptions>    
 
       <DeleteButton show={showDeleteButton} onClick={handleDelete}>
-        삭제
+        카드 삭제
       </DeleteButton>
 
       {showModal && (
