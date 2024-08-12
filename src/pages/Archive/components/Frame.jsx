@@ -7,6 +7,7 @@
   import MoreDiv from './MoreDiv';
   import DeleteConfirmModal from './DeleteConfirmModal';
 import { getFolders } from '../../../api/archive/getFolders';
+import { getNotes } from '../../../api/archive/getNotes';
 
   const FrameBackground = styled.div`
     background: #F9F9F9;
@@ -217,6 +218,7 @@ margin-bottom: 1rem;
 
 const Frame = ({ selectedTab }) => {
   const [folders, setFolders] = useState([]);
+  const [notes, setNotes] = useState([]);
 
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 6;
@@ -253,6 +255,19 @@ const Frame = ({ selectedTab }) => {
     };
 
     fetchFolders();
+  }, []);
+
+  useEffect(() => {
+    const fetchNotes = async () => {
+      try {
+        const data = await getNotes();
+        setNotes(data);
+      } catch (error) {
+        console.error('Failed to fetch notes:', error);
+      }
+    };
+
+    fetchNotes();
   }, []);
 
   const currentData = folders.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
@@ -348,7 +363,7 @@ const Frame = ({ selectedTab }) => {
                   </div>
                   <Line />
                   <div>
-                    <div>{item.editDate}</div>
+                    <div>{item.editDate.split('T')[0]}</div>
                     <div>최근 수정일</div>
                   </div>
 
@@ -369,20 +384,22 @@ const Frame = ({ selectedTab }) => {
                   <div>아이콘</div>
                   <Line />
                   <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <div>{item.noteTitle}</div>
-                    <div>노트 제목</div>
+                    <div>{item.name}</div>
+                    <div>노트</div>
                   </div>
                 </LeftData>
                 <FlexSpacer />
                 <RightData>
                   <Line />
                   <div>
-                    <div>{item.category}</div>
-                    <div>카테고리</div>
+                    {/* <div>{item.category}</div>
+                    <div>카테고리</div> */}
+                    <div>{item.createdAt.split('T')[0]}</div>
+                    <div>노트 생성일</div>
                   </div>
                   <Line />
                   <div>
-                    <div>{item.modifiedDate}</div>
+                    <div>{item.editDate.split('T')[0]}</div>
                     <div>최근 수정일</div>
                   </div>
                   <MoreDiv
