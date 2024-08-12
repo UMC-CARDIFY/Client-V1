@@ -25,6 +25,8 @@ const ContentArea = styled.div`
   background: var(--Main-BackGround, #F2F4F8);
   gap: 2rem;
 
+
+
 `;
 
 

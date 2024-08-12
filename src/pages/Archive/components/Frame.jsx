@@ -8,14 +8,6 @@
   import DeleteConfirmModal from './DeleteConfirmModal';
   import { getFolders } from '../../../api/archive/getFolders';
 
-  // const FrameBackground = styled.div`
-  //   display: flex;
-  //   justify-content: center;
-  //   align-items: center;
-  //   flex-shrink: 0;
-  //   background: #F2F4F8;
-  //     `;
-
   const FrameContainer = styled.div`
     width: 89rem;
     height: 50.75rem;
@@ -24,6 +16,7 @@
     flex-direction: column; 
     background: #FFF;
     box-shadow: 0px 4px 26.7px 0px rgba(0, 0, 0, 0.02), 0px 10px 60px 0px rgba(0, 74, 162, 0.03);
+    border-radius: 0.75rem;
 
   @media (min-width: 1440px) and (max-width: 1680px){
     width: 67.625rem;
