@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 
-const Circle = styled.div.attrs(props => ({
-}))`
+const Circle = styled.div`
   width: 18px;
   height: 18px;
   border-radius: 50%;
