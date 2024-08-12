@@ -185,12 +185,12 @@ font-weight: 500;
 line-height: normal;
 cursor: pointer;
 `;
-const FiteringDiv = styled(SortDiv)`
-width: 4.875rem;
-height: 1.875rem;
-padding: 0.1875rem 0.4375rem 0.1875rem 0.3125rem;
-gap: 0.3125rem;
-`;
+// const FiteringDiv = styled(SortDiv)`
+// width: 4.875rem;
+// height: 1.875rem;
+// padding: 0.1875rem 0.4375rem 0.1875rem 0.3125rem;
+// gap: 0.3125rem;
+// `;
 const AddFolderDiv = styled(SortDiv)`
 width: 5.875rem;
 height: 1.875rem;
@@ -203,9 +203,9 @@ height: 1.5rem;
 flex-shrink: 0;
 background: url(<path-to-image>) lightgray 50% / cover no-repeat;
 `;
-const FilteringIcon = styled(SortIcon)`
-background: url(<path-to-image>) lightgray 50% / cover no-repeat;
-`;
+// const FilteringIcon = styled(SortIcon)`
+// background: url(<path-to-image>) lightgray 50% / cover no-repeat;
+// `;
 const AddFolderIcon = styled(SortIcon)`
 background: url(<path-to-image>) lightgray 50% / cover no-repeat;
 `;
