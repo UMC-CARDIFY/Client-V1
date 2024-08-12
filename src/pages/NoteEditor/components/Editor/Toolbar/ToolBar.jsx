@@ -32,12 +32,24 @@ const Divider = styled.div`
   background: #E8E8E8;
 `;
 
-const ToolBar = ({ addCard, addHeading1, toggleBold, onSelectColor, viewRef, onSelectHighlightColor }) => {
-  console.log("ToolBar received viewRef:", viewRef.current); // viewRef 로그 확인
+const AddTextBlockButton = styled.button`
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+
+  &:hover {
+    background: #f0f0f0;
+  }
+`;
+
+const ToolBar = ({ addCard, addHeading1, toggleBold, onSelectColor, viewRef, onSelectHighlightColor, isCardSelected, onAddTextBlock }) => {
+  console.log("ToolBar isCardSelected:", isCardSelected); // 상태 로그 출력
 
   return (
     <ToolBarContainer>
-      <WordCardButton onClick={() => addCard('word_card')} /> {/* 수정된 부분 */}
+      <WordCardButton onClick={() => addCard('word_card')} />
       <BlankCardButton onClick={() => addCard('blank')} />
       <MultiCardButton onClick={() => addCard('multi')} />
       <ImageCardButton onClick={() => addCard('image')} />
@@ -48,10 +60,16 @@ const ToolBar = ({ addCard, addHeading1, toggleBold, onSelectColor, viewRef, onS
       <TextColorButton onSelectColor={onSelectColor} editorView={viewRef.current} />
       <HighlightColorButton onSelectColor={onSelectHighlightColor} />
       <Divider />
+      {isCardSelected && (
+        <AddTextBlockButton onClick={onAddTextBlock}>
+          텍스트 블록 추가
+        </AddTextBlockButton>
+      )}
       <MoreOptionsButton />
     </ToolBarContainer>
   );
 };
+
 
 ToolBar.propTypes = {
   addCard: PropTypes.func.isRequired,
@@ -59,6 +77,8 @@ ToolBar.propTypes = {
   toggleBold: PropTypes.func.isRequired,
   onSelectColor: PropTypes.func.isRequired,
   onSelectHighlightColor: PropTypes.func.isRequired,
+  onAddTextBlock: PropTypes.func.isRequired,
+  isCardSelected: PropTypes.bool.isRequired,  // 새로운 prop 추가
   viewRef: PropTypes.shape({
     current: PropTypes.object,
   }).isRequired,
