@@ -10,6 +10,7 @@
   import { getNotes } from '../../../api/archive/getNotes';
   import { getFolderSort } from '../../../api/archive/getFolderSort';
   import SortDropdown from './SortDropdown';
+import FilteringDropdown from './FilteringDropdown';
 
   const FrameBackground = styled.div`
     background: #F9F9F9;
@@ -348,10 +349,12 @@ const Frame = ({ selectedTab }) => {
           <SortDropdown onSortOptionClick={handleSortOptionClick} />
           {selectedTab === '폴더' && (
             <>
-            <FiteringDiv>
+            {/* <FiteringDiv>
                 <FilteringIcon />
                 <div>필터링</div>
-              </FiteringDiv>
+              </FiteringDiv> */}
+              <FilteringDropdown />
+
               <AddFolderDiv onClick={openAddModal}>
                 <AddFolderIcon />
                 <div>폴더 추가</div>
