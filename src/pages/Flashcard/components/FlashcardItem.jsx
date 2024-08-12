@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import CardIcon from './CardIcon';
+import DeleteModal from './DeleteModal';
 import styled from 'styled-components';
 
 const CardContainer = styled.div`
@@ -157,7 +159,45 @@ const Store = styled(Before)`
 
 `;
 
+const DeleteButton = styled.div`
+  position: absolute;
+  top: 4rem;
+  right: 1.5rem;
+  display: flex;
+width: 8.625rem;
+height: 3.125rem;
+padding: var(--font-size-md, 1.03125rem) 4rem var(--font-size-md, 1.03125rem) 1.125rem;
+align-items: center;
+flex-shrink: 0;
+border: 1px solid #DEDEDE;
+background: #FFF;
+  cursor: pointer;
+  z-index: 10; /* 다른 요소 위에 표시되도록 설정 */
+  display: ${(props) => (props.show ? 'block' : 'none')}; /* 표시 여부 결정 */
+`;
+
 const FlashcardItem = ({ note, folder, recentDate, nextDate, status, color }) => {
+    const [showDeleteButton, setShowDeleteButton] = useState(false);
+    const [showModal, setShowModal] = useState(false);
+  
+    const toggleDeleteButton = () => {
+      setShowDeleteButton((prev) => !prev);
+    };
+  
+    const handleDelete = () => {
+      setShowModal(true);
+    };
+  
+    const confirmDelete = () => {
+      // 실제 삭제 처리 로직
+      console.log("카드가 삭제되었습니다.");
+      setShowModal(false);
+    };
+  
+    const cancelDelete = () => {
+      setShowModal(false);
+    };
+
   return (
     <CardContainer>
       <CardHeader>
@@ -205,11 +245,21 @@ const FlashcardItem = ({ note, folder, recentDate, nextDate, status, color }) =>
         {status === "영구 보관" &&
         <Store>{status}</Store> }
 
-      <MoreOptions><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none">
+      <MoreOptions onClick={toggleDeleteButton}><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none">
   <path fillRule="evenodd" clipRule="evenodd" d="M12.25 5.83301C12.25 5.36888 12.4344 4.92376 12.7626 4.59557C13.0908 4.26738 13.5359 4.08301 14 4.08301H14.0117C14.4758 4.08301 14.9209 4.26738 15.2491 4.59557C15.5773 4.92376 15.7617 5.36888 15.7617 5.83301V5.84467C15.7617 6.3088 15.5773 6.75392 15.2491 7.08211C14.9209 7.4103 14.4758 7.59468 14.0117 7.59468H14C13.5359 7.59468 13.0908 7.4103 12.7626 7.08211C12.4344 6.75392 12.25 6.3088 12.25 5.84467V5.83301ZM12.25 13.9997C12.25 13.5355 12.4344 13.0904 12.7626 12.7622C13.0908 12.434 13.5359 12.2497 14 12.2497H14.0117C14.4758 12.2497 14.9209 12.434 15.2491 12.7622C15.5773 13.0904 15.7617 13.5355 15.7617 13.9997V14.0113C15.7617 14.4755 15.5773 14.9206 15.2491 15.2488C14.9209 15.577 14.4758 15.7613 14.0117 15.7613H14C13.5359 15.7613 13.0908 15.577 12.7626 15.2488C12.4344 14.9206 12.25 14.4755 12.25 14.0113V13.9997ZM14 20.4163C13.5359 20.4163 13.0908 20.6007 12.7626 20.9289C12.4344 21.2571 12.25 21.7022 12.25 22.1663V22.178C12.25 22.6421 12.4344 23.0873 12.7626 23.4154C13.0908 23.7436 13.5359 23.928 14 23.928H14.0117C14.4758 23.928 14.9209 23.7436 15.2491 23.4154C15.5773 23.0873 15.7617 22.6421 15.7617 22.178V22.1663C15.7617 21.7022 15.5773 21.2571 15.2491 20.9289C14.9209 20.6007 14.4758 20.4163 14.0117 20.4163H14Z" fill="#B1B1B1"/>
 </svg>
       </MoreOptions>    
 
+      <DeleteButton show={showDeleteButton} onClick={handleDelete}>
+        삭제
+      </DeleteButton>
+
+      {showModal && (
+        <DeleteModal 
+          onClose={cancelDelete}
+          onConfirm={confirmDelete}
+        />
+      )}
     </CardContainer>
   );
 };
