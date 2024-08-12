@@ -1,10 +1,10 @@
 import { useState, useRef } from 'react';
 import styled from 'styled-components';
-import ToolBar from './ToolBar';
+import ToolBar from './Toolbar/ToolBar';
 import CombinedEditor from './CombinedEditor';
 import { TextSelection } from 'prosemirror-state';
 import { toggleMark } from 'prosemirror-commands';
-import mySchema from './schema';
+import mySchema from './Markdown/schema';
 
 const EditorContainer = styled.div`
   display: flex;

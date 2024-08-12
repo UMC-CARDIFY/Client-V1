@@ -1,7 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { toggleMark } from 'prosemirror-commands'; 
-import mySchema from './Markdown/schema';
 
 const MoreOptionsContainer = styled.div`
     width: auto;
@@ -12,10 +10,11 @@ const MoreOptionsContainer = styled.div`
     border: 1.25px solid #D9D9D9;
     background: #FFF;
     box-shadow: 0px 5px 6px 0px rgba(0, 0, 0, 0.05);
-    position: fixed;
+    position: absolute;
     z-index: 10;
-    bottom: 5.5rem;
-    right: 27rem;
+    top: 2.5rem;
+    right: 0;
+    top: -31.5rem;
 `;
 
 const MoreOptionsItem = styled.div`
@@ -25,9 +24,7 @@ const MoreOptionsItem = styled.div`
     cursor: pointer;
 `;
 
-// eslint-disable-next-line react/display-name
 const MoreOptions = React.forwardRef((props, ref) => {
-
     return (
         <MoreOptionsContainer ref={ref} onMouseDown={e => e.preventDefault()}>
             <MoreOptionsItem>
@@ -78,5 +75,8 @@ const MoreOptions = React.forwardRef((props, ref) => {
         </MoreOptionsContainer>
     );
 });
+
+// displayName 추가
+MoreOptions.displayName = 'MoreOptions';
 
 export default MoreOptions;

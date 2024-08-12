@@ -69,7 +69,7 @@ const PreviewIcon = styled.div`
 const MultiCard = () => {
   const [multiCard, setMultiCard] = useState({
     front: '카드 앞면',
-    backs: ['카드 뒷면', '카드 뒷면', '카드 뒷면']
+    backs: ['카드 뒷면']
   });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
