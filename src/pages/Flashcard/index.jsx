@@ -88,10 +88,10 @@ export const Flashcard = () => {
 </svg>필터링</OptionButton>
           </OptionDiv>
           <Flashcards>
-          <FlashcardItem title="1차시" subtitle="토익" date="2024-07-09" />
-          <FlashcardItem title="1장 음성학 기초" subtitle="국어 음운론" date="2024-07-09" />
-          <FlashcardItem title="프로세서" subtitle="운영체제" date="2024-07-09" />
-          <FlashcardItem title="스크럼 기법" subtitle="정보처리기사" date="2024-07-09" />
+          <FlashcardItem note="1차시" folder="토익" recentDate="2024-07-09" nextDate="-" status="학습 중" color="#77CEC6" />
+          <FlashcardItem note="1장 음성학 기초" folder="국어 음운론" recentDate="-" nextDate="-" status="학습 전" color="#FD855F"/>
+          <FlashcardItem note="프로세서" folder="운영체제" recentDate="2024-07-09" nextDate="-" status="영구 보관" color="#ED83B1" />
+          <FlashcardItem note="스크럼 기법" folder="정보처리기사" recentDate="2024-07-09" nextDate="2024-07-09" status="학습 중" color="#FD855F"/>
           </Flashcards>
         </ContentArea>
       </MainContent>

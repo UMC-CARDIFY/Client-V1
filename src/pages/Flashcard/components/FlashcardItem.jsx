@@ -1,3 +1,4 @@
+import CardIcon from './CardIcon';
 import styled from 'styled-components';
 
 const CardContainer = styled.div`
@@ -22,7 +23,7 @@ flex-direction: column;
 margin-bottom: 1.25rem;
 `;
 
-const CardIcon = styled.div`
+const CardIconDiv = styled.div`
 align-self: center;
 margin-bottom: 0.5rem;
 `;
@@ -129,7 +130,7 @@ top: 2.25rem;
 right: 1.5rem;
 `;
 
-const Status = styled.div`
+const Before = styled.div`
 position: absolute;
 top: 2rem;
 left: 2.5rem;
@@ -138,8 +139,8 @@ padding: 0.375rem var(--font-size-md, 1rem);
 align-items: center;
 gap: 0.5rem;
 border-radius: 0.375rem;
-background: var(--Main-PrimaryLight4, #E7EFFF);
-color: var(--Main-Primary, #0F62FE);
+background: var(--Grays-Gray6, #EDEDED);
+color: var(--Grays-Black, #1A1A1A);
 font-family: Pretendard;
 font-size: 0.75rem;
 font-style: normal;
@@ -147,35 +148,33 @@ font-weight: 500;
 line-height: normal;
 `;
 
-const FlashcardItem = ({ title, subtitle, date }) => {
+const Doing = styled(Before)`
+background: var(--Main-PrimaryLight4, #E7EFFF);
+color: var(--Main-Primary, #0F62FE);
+`;
+
+const Store = styled(Before)`
+
+`;
+
+const FlashcardItem = ({ note, folder, recentDate, nextDate, status, color }) => {
   return (
     <CardContainer>
       <CardHeader>
-        <CardIcon><svg xmlns="http://www.w3.org/2000/svg" width="34" height="27" viewBox="0 0 34 27" fill="none">
-  <g clipPath="url(#clip0_1372_7518)">
-    <path d="M8.30711 5.98555L8.49178 5.00445L9.23047 1.08008L32.2895 5.3255L29.3348 21.023L26.4524 20.4923L25.7318 20.3597" stroke="#77CEC6" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
-    <rect x="1.71094" y="7.07422" width="23.375" height="18.36" stroke="#77CEC6" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
-    <rect x="1.71094" y="7.07422" width="23.375" height="18.36" fill="#77CEC6"/>
-    <line x1="7.06094" y1="14.6139" x2="19.7359" y2="14.6139" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
-    <line x1="7.06094" y1="18.9342" x2="15.4859" y2="18.9342" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
-  </g>
-  <defs>
-    <clipPath id="clip0_1372_7518">
-      <rect width="34" height="27" fill="white"/>
-    </clipPath>
-  </defs>
-</svg></CardIcon>
-        <CardTitle>{title}</CardTitle>
-        <CardSubtitle>{subtitle}</CardSubtitle>
+        <CardIconDiv>
+      <CardIcon color={color} />
+        </CardIconDiv>
+        <CardTitle>{note}</CardTitle>
+        <CardSubtitle>{folder}</CardSubtitle>
       </CardHeader>
       <Line />
       <DayDiv>
         <Day>
-            <Date>{date}</Date>
+            <Date>{recentDate}</Date>
         <DateText>최근 학습일</DateText>
         </Day>
         <Day>
-            <Date>{date}</Date>
+            <Date>{nextDate}</Date>
         <DateText>다음 학습일</DateText>
         </Day>
       </DayDiv>
@@ -199,7 +198,12 @@ const FlashcardItem = ({ title, subtitle, date }) => {
 </svg>학습통계</Button>
       </CardFooter>
 
-      <Status>학습 중</Status>
+        {status === "학습 중" &&
+      <Doing>{status}</Doing> }
+        {status === "학습 전" &&
+        <Before>{status}</Before> }
+        {status === "영구 보관" &&
+        <Store>{status}</Store> }
 
       <MoreOptions><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none">
   <path fillRule="evenodd" clipRule="evenodd" d="M12.25 5.83301C12.25 5.36888 12.4344 4.92376 12.7626 4.59557C13.0908 4.26738 13.5359 4.08301 14 4.08301H14.0117C14.4758 4.08301 14.9209 4.26738 15.2491 4.59557C15.5773 4.92376 15.7617 5.36888 15.7617 5.83301V5.84467C15.7617 6.3088 15.5773 6.75392 15.2491 7.08211C14.9209 7.4103 14.4758 7.59468 14.0117 7.59468H14C13.5359 7.59468 13.0908 7.4103 12.7626 7.08211C12.4344 6.75392 12.25 6.3088 12.25 5.84467V5.83301ZM12.25 13.9997C12.25 13.5355 12.4344 13.0904 12.7626 12.7622C13.0908 12.434 13.5359 12.2497 14 12.2497H14.0117C14.4758 12.2497 14.9209 12.434 15.2491 12.7622C15.5773 13.0904 15.7617 13.5355 15.7617 13.9997V14.0113C15.7617 14.4755 15.5773 14.9206 15.2491 15.2488C14.9209 15.577 14.4758 15.7613 14.0117 15.7613H14C13.5359 15.7613 13.0908 15.577 12.7626 15.2488C12.4344 14.9206 12.25 14.4755 12.25 14.0113V13.9997ZM14 20.4163C13.5359 20.4163 13.0908 20.6007 12.7626 20.9289C12.4344 21.2571 12.25 21.7022 12.25 22.1663V22.178C12.25 22.6421 12.4344 23.0873 12.7626 23.4154C13.0908 23.7436 13.5359 23.928 14 23.928H14.0117C14.4758 23.928 14.9209 23.7436 15.2491 23.4154C15.5773 23.0873 15.7617 22.6421 15.7617 22.178V22.1663C15.7617 21.7022 15.5773 21.2571 15.2491 20.9289C14.9209 20.6007 14.4758 20.4163 14.0117 20.4163H14Z" fill="#B1B1B1"/>
