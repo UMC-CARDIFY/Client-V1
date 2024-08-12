@@ -55,7 +55,7 @@ const ToolBar = ({ addCard, addHeading1, toggleBold, onSelectColor, viewRef, onS
       <ImageCardButton onClick={() => addCard('image')} />
       <Divider />
       <HeadingButton onHeadingSelect={addHeading1} />
-      <BoldButton onClick={toggleBold} />
+      <BoldButton toggleBold={() => toggleBold(viewRef.current)} />
       <Divider />
       <TextColorButton onSelectColor={onSelectColor} editorView={viewRef.current} />
       <HighlightColorButton onSelectColor={onSelectHighlightColor} />
