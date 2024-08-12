@@ -69,6 +69,20 @@ const mySchema = new Schema({
         0,
       ],
     },
+    highlight: {
+      attrs: { backgroundColor: {} },
+      parseDOM: [
+        {
+          style: 'background-color',
+          getAttrs: (value) => ({ backgroundColor: value }),
+        },
+      ],
+      toDOM: (mark) => [
+        'span',
+        { style: `background-color: ${mark.attrs.backgroundColor}` },
+        0,
+      ],
+    },
   },
 });
 
