@@ -11,8 +11,6 @@
   import { getFolderSort } from '../../../api/archive/getFolderSort';
   import SortDropdown from './SortDropdown';
 import FilteringDropdown from './FilteringDropdown';
-  // import sortIcon from '../../../assets/sortIcon.svg'
-  // import filterIcon from '../../../assets/filterIcon.svg'
   import addFolder from '../../../assets/addFolder.svg'
   import MarkStateIcon from '../../../assets/markStateIcon.svg';
   import MarkStateActive from '../../../assets/MarkStateActive.svg';
@@ -333,10 +331,6 @@ const Frame = ({ selectedTab }) => {
       <FrameContainer>
         <TitleAll style={{ paddingTop: '3rem' }}>{selectedTab === '폴더' ? '모든 폴더' : '모든 노트'}</TitleAll>
           <SelectFilterDiv>
-          {/* <SortDiv>
-            <SortIcon />
-            <div>정렬</div>
-          </SortDiv> */}
           <SortDropdown onSortOptionClick={handleSortOptionClick} />
           {selectedTab === '폴더' && (
             <>

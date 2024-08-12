@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import Sort from '../../../assets/sortIcon.svg'
 
 const SortDiv = styled.div`
   display: flex;
@@ -9,8 +10,9 @@ const SortDiv = styled.div`
   position: relative;
   border-radius: 0.5rem;
   padding: 0.5rem 1rem;
-  background-color: white;
+  background-color: #ECEFF4;
   box-shadow: 0px 4px 26px 0px rgba(0, 0, 0, 0.02), 0px 10px 60px 0px rgba(0, 74, 162, 0.03);
+  border-radius: 0.3125rem;
 `;
 
 const Dropdown = styled.div`
@@ -34,11 +36,7 @@ const DropdownItem = styled.div`
   }
 `;
 
-const SortIcon = styled.div`
-  width: 1rem;
-  height: 1rem;
-  background-color: gray;
-  margin-right: 0.5rem;
+const SortIcon = styled.img`
 `;
 
 
@@ -59,7 +57,7 @@ const SortDropdown = ({ onSortOptionClick }) => {
   
     return (
       <SortDiv onClick={toggleDropdown}>
-        <SortIcon />
+        <SortIcon src={Sort}/>
         <div>정렬</div> 
         {isOpen && (
           <Dropdown>
