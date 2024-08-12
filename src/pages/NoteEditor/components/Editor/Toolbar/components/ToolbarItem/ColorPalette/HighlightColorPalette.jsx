@@ -48,11 +48,11 @@ const colors = [
 
 const HighlightColorPalette = ({ onSelectColor }) => (
   <PaletteContainer>
-    {colors.map(({ color, $hoverBorderColor }) => (
+    {colors.map(({ color, hoverBorderColor }) => (
       <ColorBox 
         key={color} 
         color={color} 
-        hoverBorderColor={$hoverBorderColor} 
+        hoverBorderColor={hoverBorderColor} 
         onClick={() => onSelectColor(color)}
       >
         <SvgIcon xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 10">

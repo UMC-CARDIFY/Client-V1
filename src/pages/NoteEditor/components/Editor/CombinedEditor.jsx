@@ -45,9 +45,8 @@ const ContentArea = styled.div`
     }
 
     li {
-      border: 1px solid green;
-      padding: 8px;
-      margin-bottom: 4px;
+      border: none;
+      padding: none;
       border-radius: 4px;
       position: relative;
     }
