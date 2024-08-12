@@ -60,7 +60,7 @@ const mySchema = new Schema({
       parseDOM: [
         {
           style: 'color',
-          getAttrs: (color) => ({ color }),
+          getAttrs: (value) => ({ color: value }),
         },
       ],
       toDOM: (mark) => [

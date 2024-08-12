@@ -2,46 +2,23 @@ import { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { ColorPaletteItem, ColorDropDownButton, ColorDropDownMenu } from './style/ToolbarStyles';
 import ColorPalette from './ColorPalette/TextColorPalette';
-import { applyTextColor } from '../../../setup/commands';
+import ReactDOM from 'react-dom';
 
-const TextColorButton = ({ onSelectColor, editorView }) => {
+const TextColorButton = ({ onSelectColor }) => {
   const [isColorPaletteOpen, setIsColorPaletteOpen] = useState(false);
+  const colorPaletteRef = useRef(null);
   const buttonRef = useRef(null);
 
-  const toggleColorPalette = (event) => {
-    event.stopPropagation();
-    event.preventDefault();
-
-    console.log("toggleColorPalette called. editorView:", editorView);
-    console.log("Current isColorPaletteOpen:", isColorPaletteOpen);
-
-    if (editorView && editorView.focus) {
-      console.log("Editor view is valid, focusing.");
-      editorView.focus();
-      setIsColorPaletteOpen(prevState => !prevState);
-    } else {
-      console.log("Editor view is not defined or invalid.");
-    }
+  const toggleColorPalette = () => {
+    setIsColorPaletteOpen(!isColorPaletteOpen);
   };
 
   const handleClickOutside = (event) => {
-    if (buttonRef.current && !buttonRef.current.contains(event.target)) {
+    if (
+      colorPaletteRef.current && !colorPaletteRef.current.contains(event.target) &&
+      buttonRef.current && !buttonRef.current.contains(event.target)
+    ) {
       setIsColorPaletteOpen(false);
-    }
-  };
-
-  const handleColorSelect = (color) => {
-    console.log("handleColorSelect called with color:", color);
-    setIsColorPaletteOpen(false);
-    onSelectColor(color);
-
-    if (editorView) {
-      const { state, dispatch } = editorView;
-      console.log("Applying color to editor:", color);
-      const result = applyTextColor(color)(state, dispatch);
-      console.log("applyTextColor result:", result);  // 색상 적용 결과 출력
-    } else {
-      console.log("Editor view is not defined or invalid."); 
     }
   };
 
@@ -49,23 +26,6 @@ const TextColorButton = ({ onSelectColor, editorView }) => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
-
-  useEffect(() => {
-    const handleMouseDown = (event) => {
-      event.preventDefault();
-    };
-
-    const buttonElement = buttonRef.current;
-    if (buttonElement) {
-      buttonElement.addEventListener('mousedown', handleMouseDown);
-    }
-
-    return () => {
-      if (buttonElement) {
-        buttonElement.removeEventListener('mousedown', handleMouseDown);
-      }
     };
   }, []);
 
@@ -99,7 +59,7 @@ const TextColorButton = ({ onSelectColor, editorView }) => {
 
       {isColorPaletteOpen && 
         <ColorDropDownMenu>
-          <ColorPalette onSelectColor={handleColorSelect} />
+          <ColorPalette onSelectColor={onSelectColor} />
         </ColorDropDownMenu>
       }
     </>
@@ -108,7 +68,6 @@ const TextColorButton = ({ onSelectColor, editorView }) => {
 
 TextColorButton.propTypes = {
   onSelectColor: PropTypes.func.isRequired,
-  editorView: PropTypes.object.isRequired,
 };
 
 export default TextColorButton;
