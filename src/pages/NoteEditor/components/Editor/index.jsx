@@ -30,6 +30,7 @@ const ToolBarWrapper = styled.div`
 const Editor = () => {
   const viewRef = useRef(null);
   const [isEditorInitialized, setIsEditorInitialized] = useState(false);
+  const [isCardSelected, setIsCardSelected] = useState(false);
 
   const handleAddCard = (type) => {
     addCard(viewRef, type);  // viewRef와 type을 전달하여 addCard 호출
@@ -85,11 +86,66 @@ const Editor = () => {
     // 이곳에서 하이라이트 색상을 적용하는 로직을 추가할 수 있습니다.
   };
 
+  const handleAddTextBlock = () => {
+    if (!viewRef.current) return;
+  
+    const { state, dispatch } = viewRef.current;
+    const { tr } = state;
+  
+    // 텍스트 블록을 생성하는 프로세스
+    const paragraphNode = mySchema.nodes.paragraph.create();
+    const listItemNode = mySchema.nodes.list_item.create(null, paragraphNode);
+    const bulletListNode = mySchema.nodes.bullet_list.create(null, listItemNode);
+  
+    // 문서의 마지막 위치에 새로운 블록 삽입
+    const endPos = tr.doc.content.size;
+    tr.insert(endPos, bulletListNode);
+  
+    // 새로운 텍스트 블록 뒤에 커서를 이동합니다.
+    tr.setSelection(TextSelection.near(tr.doc.resolve(endPos + 1)));
+  
+    dispatch(tr.scrollIntoView());
+    viewRef.current.focus();
+  };
+  
+  
+  const handleEditorStateChange = (editorView) => {
+    const { $from } = editorView.state.selection;
+
+    // 현재 선택된 노드에서 하위 노드를 탐색
+    for (let depth = $from.depth; depth > 0; depth--) {
+      const currentNode = $from.node(depth);
+      console.log(`Node at depth ${depth}:`, currentNode.type.name);
+      if (currentNode.type === mySchema.nodes.word_card) {
+        console.log("Card selected");
+        setIsCardSelected(true);
+        return;
+      }
+    }
+    
+    console.log("Card not selected");
+    setIsCardSelected(false);
+  };
+
   useEffect(() => {
     if (viewRef.current) {
       setIsEditorInitialized(true);
+
+      const updateSelection = () => {
+        handleEditorStateChange(viewRef.current);
+      };
+
+      viewRef.current.dom.addEventListener('mouseup', updateSelection);
+      viewRef.current.dom.addEventListener('keyup', updateSelection);
+
+      return () => {
+        if (viewRef.current) {
+          viewRef.current.dom.removeEventListener('mouseup', updateSelection);
+          viewRef.current.dom.removeEventListener('keyup', updateSelection);
+        }
+      };
     }
-  }, [viewRef.current]);
+  }, [viewRef]);
 
   return (
     <EditorContainer>
@@ -105,6 +161,8 @@ const Editor = () => {
             toggleBold={toggleBold} 
             onSelectColor={onSelectColor} 
             onSelectHighlightColor={onSelectHighlightColor} 
+            onAddTextBlock={handleAddTextBlock} // 텍스트 블록 추가 함수 전달
+            isCardSelected={isCardSelected} // 카드 선택 여부 전달
           />
         </ToolBarWrapper>
       )}
