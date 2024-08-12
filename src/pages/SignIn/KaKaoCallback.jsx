@@ -14,7 +14,8 @@ const KakaoCallback = () => {
       if (code) {
         try {
           // 인가 코드를 백엔드의 /api/v1/auth/kakao 엔드포인트로 전달
-          const response = await axios.post(`${config.apiBaseUrl}/auth/kakao`, { code });
+          const response = await axios.post(`http://localhost:8080/api/v1/auth/kakao`, code);
+          //const response = await axios.post(`http://3.37.13.40:8080/api/v1/auth/kakao`, code);
           
           console.log(response.data); // 백엔드 응답 데이터를 로그로 출력
           alert('카카오 로그인 성공');
