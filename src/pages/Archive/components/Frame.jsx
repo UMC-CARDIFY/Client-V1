@@ -8,6 +8,7 @@
   import DeleteConfirmModal from './DeleteConfirmModal';
 import { getFolders } from '../../../api/archive/getFolders';
 import { getNotes } from '../../../api/archive/getNotes';
+import SortDropdown from './SortDropdown';
 
   const FrameBackground = styled.div`
     background: #F9F9F9;
@@ -231,6 +232,9 @@ const Frame = ({ selectedTab }) => {
 
   const moreDivRefs = useRef([]);
 
+
+  const [sortOption, setSortOption] = useState('');
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (moreDivRefs.current.every(ref => ref && !ref.contains(event.target))) {
@@ -317,15 +321,22 @@ const Frame = ({ selectedTab }) => {
     closeDeleteModal();
   };
 
+  const handleSortOptionClick = (option) => {
+    console.log(`Selected sort option in ParentComponent: ${option}`);
+    setSortOption(option);
+    // 정렬 옵션에 따라 데이터를 다시 가져오거나 정렬할 수 있습니다.
+  };
+
   return (
     <FrameBackground>
       <FrameContainer>
         <TitleAll style={{ paddingTop: '3rem' }}>{selectedTab === '폴더' ? '모든 폴더' : '모든 노트'}</TitleAll>
           <SelectFilterDiv>
-          <SortDiv>
+          {/* <SortDiv>
             <SortIcon />
             <div>정렬</div>
-          </SortDiv>
+          </SortDiv> */}
+          <SortDropdown onSortOptionClick={handleSortOptionClick} />
           {selectedTab === '폴더' && (
             <>
             <FiteringDiv>
