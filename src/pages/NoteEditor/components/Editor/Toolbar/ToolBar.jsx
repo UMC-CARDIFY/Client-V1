@@ -50,9 +50,9 @@ const ToolBar = ({ addCard, addHeading1, toggleBold, onSelectColor, viewRef, onS
   return (
     <ToolBarContainer>
       <WordCardButton onClick={() => addCard('word_card')} />
-      <BlankCardButton onClick={() => addCard('blank')} />
-      <MultiCardButton onClick={() => addCard('multi')} />
-      <ImageCardButton onClick={() => addCard('image')} />
+      <BlankCardButton onClick={() => addCard('blank_card')} />
+      <MultiCardButton onClick={() => addCard('multi_card')} />
+      <ImageCardButton onClick={() => addCard('image_card')} />
       <Divider />
       <HeadingButton onHeadingSelect={addHeading1} />
       <BoldButton toggleBold={() => toggleBold(viewRef.current)} />

@@ -177,7 +177,13 @@ const CombinedEditor = ({ viewRef }) => {
             nodeViews: {
               word_card(node, view, getPos) {
                 return new WordCardView(node, view, getPos, openModal);
-              },            
+              },
+              //blank_card(node, view, getPos) {
+                //return new BlankCardView(node, view, getPos, openModal);
+              //},
+              //multi_card(node, view, getPos) {
+                //return new MultiCardView(node, view, getPos, openModal);
+              //},                            
             },
             dispatchTransaction(transaction) {
               const newState = viewRef.current.state.apply(transaction);
@@ -278,7 +284,7 @@ export const handleEnterKey = (viewRef) => {
   viewRef.current.focus();
 };
 
-export const addCard = (viewRef) => {
+export const addCard = (viewRef, type) => {
   if (!viewRef.current) return;
 
   const { state, dispatch } = viewRef.current;
@@ -288,8 +294,28 @@ export const addCard = (viewRef) => {
   // 현재 리스트 아이템의 마지막 위치를 찾습니다.
   const endOfListItem = $from.end($from.depth);
 
-  // 새 카드 노드를 만듭니다.
-  const node = mySchema.nodes.word_card.create();
+  let node;
+
+  // 카드 타입에 따라 카드 노드 생성
+  switch (type) {
+    case 'word_card':
+      node = mySchema.nodes.word_card.create();
+      break;
+    case 'blank_card':
+      node = mySchema.nodes.blank_card.create();
+      break;
+    /*
+    case 'multi_card':
+      node = mySchema.nodes.multi_card.create();
+      break;
+    case 'image_card':
+      node = mySchema.nodes.image_card.create();
+      break;
+    */
+    default:
+      console.error('Unknown card type: ${type}');
+      return;
+  }
 
   // 새로운 카드를 리스트 아이템의 끝 다음에 삽입합니다.
   tr.insert(endOfListItem + 1, node);
