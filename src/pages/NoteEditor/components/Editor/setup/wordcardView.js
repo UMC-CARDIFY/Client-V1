@@ -10,6 +10,7 @@ class WordCardView {
     this.dom.className = 'word-card';
     this.dom.style.border = '1px solid #ddd';
     this.dom.style.padding = '1.25rem';
+    this.dom.style.paddingRight = '3rem';
     this.dom.style.borderRadius = '4px';
     this.dom.style.display = 'flex';
     this.dom.style.flexDirection = 'column';
@@ -44,7 +45,7 @@ class WordCardView {
     // 미리보기 버튼 클릭 이벤트 처리
     this.previewButton.addEventListener('click', () => {
       if(this.openModal) {
-        this.openModal(this.node.attrs.question, this.node.attrs.answer);
+        this.openModal('word_card', this.node.attrs.question, this.node.attrs.answer);
       }
     });
     this.dom.appendChild(this.previewButton); // 미리보기 버튼을 dom에 추가
