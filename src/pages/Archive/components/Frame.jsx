@@ -467,8 +467,8 @@ return (
               <RightData>
                 <Line />
                 <div>
-                  <div>{item.createdAt.split('T')[0]}</div>
-                  <div>노트 생성일</div>
+                  <div>{item.folderName}</div>
+                  <div>폴더</div>
                 </div>
                 <Line />
                 <div>
