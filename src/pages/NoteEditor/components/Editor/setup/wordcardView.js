@@ -1,8 +1,9 @@
 class WordCardView {
-  constructor(node, view, getPos) {
+  constructor(node, view, getPos, openModal) {
     this.node = node;
     this.view = view;
     this.getPos = getPos;
+    this.openModal = openModal;
 
     //컨테이너 div
     this.dom = document.createElement('div');
@@ -42,8 +43,9 @@ class WordCardView {
 
     // 미리보기 버튼 클릭 이벤트 처리
     this.previewButton.addEventListener('click', () => {
-      // 모달 창 열기 또는 기타 동작을 여기서 수행
-      alert('미리보기 클릭됨');
+      if(this.openModal) {
+        this.openModal(this.node.attrs.question, this.node.attrs.answer);
+      }
     });
     this.dom.appendChild(this.previewButton); // 미리보기 버튼을 dom에 추가
 

@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';  
 import { EditorState, TextSelection } from 'prosemirror-state';
@@ -13,6 +13,7 @@ import 'prosemirror-view/style/prosemirror.css';
 import { myInputRules } from './Markdown/inputRules';
 import mySchema from './setup/schema';
 import WordCardView from './setup/wordcardView';
+import WordCardPreviewModal from '../Cards/PreviewModal/wordcardPreview'
 
 const ContentArea = styled.div`
   flex: 1;
@@ -108,6 +109,21 @@ const CombinedEditor = ({ viewRef }) => {
   const contentRef = useRef(null);
   const titleRef = useRef(null);
 
+    // 모달 열림/닫힘 상태와 question/answer 데이터를 관리
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modalQuestion, setModalQuestion] = useState('');
+    const [modalAnswer, setModalAnswer] = useState('');
+  
+    const openModal = (question, answer) => {
+      setModalQuestion(question);
+      setModalAnswer(answer);
+      setIsModalOpen(true);
+    };
+  
+    const closeModal = () => {
+      setIsModalOpen(false);
+    };
+
   useEffect(() => {
     if (contentRef.current) {
       const doc = mySchema.node('doc', null, 
@@ -159,7 +175,9 @@ const CombinedEditor = ({ viewRef }) => {
    viewRef.current = new EditorView(contentRef.current, {
             state,
             nodeViews: {
-              word_card: (node, view, getPos) => new WordCardView(node, view, getPos),
+              word_card(node, view, getPos) {
+                return new WordCardView(node, view, getPos, openModal);
+              },            
             },
             dispatchTransaction(transaction) {
               const newState = viewRef.current.state.apply(transaction);
@@ -226,6 +244,13 @@ const CombinedEditor = ({ viewRef }) => {
       <ContentArea>
         <div ref={contentRef}></div>
       </ContentArea>
+      {isModalOpen && (
+        <WordCardPreviewModal  // Use the renamed component here
+          question={modalQuestion} 
+          answer={modalAnswer} 
+          onClose={closeModal}
+        />
+      )}
     </>
   );
 };
