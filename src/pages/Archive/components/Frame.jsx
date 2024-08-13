@@ -221,7 +221,7 @@ useEffect(() => {
       if (sortOption) {
         data = await getFolderSort(sortOption);
         console.log(sortOption)
-        setFolders(data.sortFoldersList); 
+        setFolders(data.foldersList); 
       } else {
         data = await getFolders();
         setFolders(data.foldersList);
@@ -248,8 +248,9 @@ useEffect(() => {
 }, []);
 
 const currentData = selectedTab === '폴더'
-? folders && folders.length > 0 ? folders.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage) : []
-: notes && notes.length > 0 ? notes.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage) : [];
+  ? (folders?.length > 0 ? folders.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage) : [])
+  : (notes?.length > 0 ? notes.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage) : []);
+
 
 const handlePageChange = ({ selected }) => {
   setCurrentPage(selected);
