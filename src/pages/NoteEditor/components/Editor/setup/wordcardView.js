@@ -14,6 +14,38 @@ class WordCardView {
     this.dom.style.flexDirection = 'column';
     this.dom.style.gap = '1.19rem';
     this.dom.style.marginTop = '1.19rem';
+    this.dom.style.position = 'relative'; // 우측 상단에 미리보기 버튼을 위치시키기 위해 position 속성 추가
+
+    // 컨테이너 호버 시 이벤트 처리
+    this.dom.addEventListener('mouseover', () => {
+      this.previewButton.style.display = 'inline-block';
+    });
+    this.dom.addEventListener('mouseout', () => {
+      this.previewButton.style.display = 'none';
+    });
+
+    // 미리보기 버튼 추가
+    this.previewButton = document.createElement('button');
+    this.previewButton.style.position = 'absolute';
+    this.previewButton.style.top = '0%';
+    this.previewButton.style.right = '0.25rem';
+    this.previewButton.style.background = 'none';
+    this.previewButton.style.border = 'none';
+    this.previewButton.style.cursor = 'pointer';
+    this.previewButton.style.display = 'none'; // 초기 상태에서 숨기기
+    this.previewButton.innerHTML = `
+      <svg width="23" height="17" viewBox="0 0 23 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M11.2841 3.6369L10.842 3.1948L9.07361 1.42639L2 8.5L9.07361 15.5736L10.842 13.8052L11.2841 13.3631" stroke="#6A9CFC" stroke-width="1.5"/>
+        <rect x="6.85352" y="8.5" width="10.0036" height="10.0036" transform="rotate(-45 6.85352 8.5)" stroke="#0F62FE" stroke-width="1.5"/>
+      </svg>
+    `;
+
+    // 미리보기 버튼 클릭 이벤트 처리
+    this.previewButton.addEventListener('click', () => {
+      // 모달 창 열기 또는 기타 동작을 여기서 수행
+      alert('미리보기 클릭됨');
+    });
+    this.dom.appendChild(this.previewButton); // 미리보기 버튼을 dom에 추가
 
     // 카드 question(앞면) div
     this.questionDiv = document.createElement('div');
