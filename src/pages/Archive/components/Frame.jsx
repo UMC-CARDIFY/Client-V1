@@ -13,6 +13,7 @@ import { addFolder } from '../../../api/archive/addFolder';
 import { deleteFolder } from '../../../api/archive/deleteFolder';
 import { editFolder } from '../../../api/archive/editFolder';
 import { deleteNote } from '../../../api/archive/deleteNote';
+import { markFolder } from '../../../api/archive/markFolder';
 import SortDropdown from './SortDropdown';
 import FilteringDropdown from './FilteringDropdown';
 import MarkStateIcon from '../../../assets/markStateIcon.svg';
@@ -176,6 +177,9 @@ line-height: normal;
 const Icon = styled.img`
 `;
 
+const MarkIcon = styled.img`
+cursor: pointer;
+`;
 
 const Contour = styled.div`
 width: 100%;
@@ -362,8 +366,22 @@ const handleDeleteConfirm = async() => {
   closeDeleteModal();
 };
 
-const handleClick = () => {
-  // setIsFavorite(!isFavorite);
+const handleMarkStatus = async(item) => {
+  try {
+    const markFolderData = await markFolder(item.folderId, { markState: item.markState === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE' });
+    console.log(markFolderData);
+  }
+  catch (error) {
+    console.error('Failed to mark folder:', error);
+  }
+
+  try{
+    const data = await getFolders();
+    setFolders(data.foldersList);
+  }
+  catch (error) {
+    console.error('Failed to fetch folders:', error);
+  }
 };
 
 const handleSortOptionClick = (option) => {
@@ -394,10 +412,10 @@ return (
           selectedTab === '폴더' ? (
             <FolderData key={index}>
               <LeftData>
-              <Icon
+              <MarkIcon
                 src={item.markState === 'ACTIVE' ? MarkStateActive : MarkStateIcon}
                 alt='즐겨찾기'
-                onClick={() => handleClick(item)}
+                onClick={() => handleMarkStatus(item)}
               />
                 <FolderIcon fill={item.color} />
                 <Line />
@@ -432,10 +450,10 @@ return (
           ) : (
             <NoteData key={index}>
               <LeftData>
-              <Icon
+              <MarkIcon
                 src={item.markState === 'ACTIVE' ? MarkStateActive : MarkStateIcon}
                 alt='즐겨찾기'
-                onClick={() => handleClick(item)}
+                onClick={() => handleMarkStatus(item)}
               />
                 <Icon src={Note} alt='노트 아이콘'/>
                 <Line />
