@@ -28,14 +28,16 @@ const mySchema = new Schema({
       group: 'block',
       content: 'inline*',
       attrs: {
-        question: { default: '' },
+        question_front: { default: '' },  // 빈칸 앞 text
+        question_back: { default: '' },   // 빈칸 뒤 text
         answer: { default: '' },
       },
       parseDOM: [{
         tag: 'div.blank-card',
         getAttrs(dom) {
           return {
-            question: dom.querySelector('.question').innerText,
+            question_front: dom.querySelector('.question_front').innerText,
+            question_back: dom.querySelector('.question_back').innerText,
             answer: dom.querySelector('.answer').innerText,
           };
         }
@@ -49,7 +51,7 @@ const mySchema = new Schema({
       content: 'inline*',
       attrs: {
         question: { default: '' },
-        answer: { default: [] },  // 기본 값으로 빈 배열 설정
+        answer: { default: ['', ''] },  // 기본 값으로 빈 배열 설정
       },
       parseDOM: [{
         tag: 'div.multi-card',
