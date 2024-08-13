@@ -4,15 +4,20 @@ import PropTypes from 'prop-types';
 import Sort from '../../../assets/sortIcon.svg'
 
 const SortDiv = styled.div`
-  display: flex;
-  align-items: center;
   cursor: pointer;
   position: relative;
-  border-radius: 0.5rem;
-  padding: 0.5rem 1rem;
-  background-color: #ECEFF4;
-  box-shadow: 0px 4px 26px 0px rgba(0, 0, 0, 0.02), 0px 10px 60px 0px rgba(0, 74, 162, 0.03);
-  border-radius: 0.3125rem;
+  display: flex;
+padding: 0.1875rem 0.5rem 0.1875rem 0.4375rem;
+align-items: center;
+gap: 0.375rem;
+border-radius: 0.3125rem;
+background: var(--Main-Button, #ECEFF4);
+color: var(--Grays-Black, #1A1A1A);
+font-family: Pretendard;
+font-size: 0.875rem;
+font-style: normal;
+font-weight: 500;
+line-height: normal;
 `;
 
 const Dropdown = styled.div`
@@ -36,9 +41,6 @@ const DropdownItem = styled.div`
   }
 `;
 
-const SortIcon = styled.img`
-`;
-
 
 const SortDropdown = ({ onSortOptionClick }) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -57,8 +59,11 @@ const SortDropdown = ({ onSortOptionClick }) => {
   
     return (
       <SortDiv onClick={toggleDropdown}>
-        <SortIcon src={Sort}/>
-        <div>정렬</div> 
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+  <line x1="3" y1="7.4" x2="21" y2="7.4" stroke="#1A1A1A" strokeWidth="1.2"/>
+  <line x1="3" y1="12.4" x2="15" y2="12.4" stroke="#1A1A1A" strokeWidth="1.2"/>
+  <line x1="3" y1="17.4" x2="9" y2="17.4" stroke="#1A1A1A" strokeWidth="1.2"/>
+</svg>정렬
         {isOpen && (
           <Dropdown>
             <DropdownItem onClick={() => handleSortOptionClick('asc')}>오름차순</DropdownItem>
