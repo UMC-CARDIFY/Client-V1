@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { EditorState, TextSelection } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 import { keymap } from 'prosemirror-keymap';
-import { baseKeymap } from 'prosemirror-commands';
+import { baseKeymap, deleteSelection } from 'prosemirror-commands';
 import { history } from 'prosemirror-history';
 import { dropCursor } from 'prosemirror-dropcursor';
 import { gapCursor } from 'prosemirror-gapcursor';
@@ -13,7 +13,7 @@ import 'prosemirror-view/style/prosemirror.css';
 import { myInputRules } from './Markdown/inputRules';
 import mySchema from './setup/schema';
 import WordCardView from './setup/wordcardView';
-import WordCardPreviewModal from '../Cards/PreviewModal/wordcardPreview'
+import WordCardPreviewModal from '../Cards/PreviewModal/wordcardPreview';
 
 const ContentArea = styled.div`
   flex: 1;
@@ -109,20 +109,41 @@ const CombinedEditor = ({ viewRef }) => {
   const contentRef = useRef(null);
   const titleRef = useRef(null);
 
-    // 모달 열림/닫힘 상태와 question/answer 데이터를 관리
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [modalQuestion, setModalQuestion] = useState('');
-    const [modalAnswer, setModalAnswer] = useState('');
-  
-    const openModal = (question, answer) => {
-      setModalQuestion(question);
-      setModalAnswer(answer);
-      setIsModalOpen(true);
-    };
-  
-    const closeModal = () => {
-      setIsModalOpen(false);
-    };
+  // 모달 열림/닫힘 상태와 question/answer 데이터를 관리
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalQuestion, setModalQuestion] = useState('');
+  const [modalAnswer, setModalAnswer] = useState('');
+
+  const openModal = (question, answer) => {
+    setModalQuestion(question);
+    setModalAnswer(answer);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleBackspaceInCard = (state, dispatch) => {
+    const { selection } = state;
+    const { $from, empty } = selection;
+
+    if (empty && $from.parent.type === mySchema.nodes.paragraph) {
+        const currentText = $from.parent.textContent;
+
+        if (currentText.length > 0) {
+            console.log('Allowing default backspace behavior');
+            return deleteSelection(state, dispatch); // 텍스트가 있을 경우 삭제
+        }
+
+        console.log('Preventing block deletion');
+        return false; // 텍스트가 없을 경우 기본 동작(블록 삭제)을 막음
+    }
+
+    return true; // 기본 백스페이스 동작 허용
+};
+
+
 
   useEffect(() => {
     if (contentRef.current) {
@@ -145,7 +166,7 @@ const CombinedEditor = ({ viewRef }) => {
             'Shift-Tab': (state, dispatch) => {
               const { $from } = state.selection;
               const depth = $from.depth;
-
+      
               if (depth === 3) {
                 return false;
               }
@@ -163,6 +184,7 @@ const CombinedEditor = ({ viewRef }) => {
                 return wrapInList(mySchema.nodes.bullet_list)(state, dispatch);
               }
             },
+            'Backspace': (state, dispatch) => handleBackspaceInCard(state, dispatch),  // 백스페이스 키 처리 추가
           }),
           keymap(baseKeymap),
           history(),
@@ -171,33 +193,30 @@ const CombinedEditor = ({ viewRef }) => {
           myInputRules(mySchema),
         ]
       });
+      
 
-   viewRef.current = new EditorView(contentRef.current, {
-            state,
-            nodeViews: {
-              word_card(node, view, getPos) {
-                return new WordCardView(node, view, getPos, openModal);
-              },
-              //blank_card(node, view, getPos) {
-                //return new BlankCardView(node, view, getPos, openModal);
-              //},
-              //multi_card(node, view, getPos) {
-                //return new MultiCardView(node, view, getPos, openModal);
-              //},                            
-            },
-            dispatchTransaction(transaction) {
-              const newState = viewRef.current.state.apply(transaction);
-              viewRef.current.updateState(newState);
-              console.log('New state:', JSON.stringify(newState.doc.toJSON(), null, 2));
-            }
-        });
+      viewRef.current = new EditorView(contentRef.current, {
+        state,
+        nodeViews: {
+          word_card(node, view, getPos) {
+            return new WordCardView(node, view, getPos, openModal);
+          },
+        },
+        dispatchTransaction(transaction) {
+          console.log('Transaction dispatched');
+          const newState = viewRef.current.state.apply(transaction);
+          viewRef.current.updateState(newState);
+          console.log('New state:', JSON.stringify(newState.doc.toJSON(), null, 2));
+        }
+        
+      
+      });
 
-        //viewRef.current = view;
-        window.viewRef = viewRef; //데이터 값 들어오게 하려고 추가한 코드
+      window.viewRef = viewRef; // 데이터 값 들어오게 하려고 추가한 코드
 
-        return () => {
-            viewRef.current.destroy();
-        };
+      return () => {
+        viewRef.current.destroy();
+      };
     } 
   }, [viewRef]);
 
@@ -251,7 +270,7 @@ const CombinedEditor = ({ viewRef }) => {
         <div ref={contentRef}></div>
       </ContentArea>
       {isModalOpen && (
-        <WordCardPreviewModal  // Use the renamed component here
+        <WordCardPreviewModal
           question={modalQuestion} 
           answer={modalAnswer} 
           onClose={closeModal}
