@@ -12,6 +12,7 @@ import { getFolderSort } from '../../../api/archive/getFolderSort';
 import { addFolder } from '../../../api/archive/addFolder';
 import { deleteFolder } from '../../../api/archive/deleteFolder';
 import { editFolder } from '../../../api/archive/editFolder';
+import { deleteNote } from '../../../api/archive/deleteNote';
 import SortDropdown from './SortDropdown';
 import FilteringDropdown from './FilteringDropdown';
 import MarkStateIcon from '../../../assets/markStateIcon.svg';
@@ -325,6 +326,23 @@ const closeDeleteModal = () => {
 
 const handleDeleteConfirm = async() => {
   console.log('삭제:', deleteItem);
+  if (deleteItem.type === 'note') {
+    try {
+      const delNote = await deleteNote(deleteItem.noteId);
+      console.log(delNote);
+    } catch (error) {
+      console.error('Failed to delete note:', error);
+    }
+
+    try{
+      const data = await getNotes();
+      setNotes(data.noteList);
+    }
+    catch (error) {
+      console.error('Failed to fetch notes:', error);
+    }
+  }
+  else if (deleteItem.type === 'folder') {
   try {
   const delFolder = await deleteFolder(deleteItem.folderId);
   console.log(delFolder);
@@ -339,6 +357,7 @@ const handleDeleteConfirm = async() => {
   catch (error) {
     console.error('Failed to fetch folders:', error);
   }
+}
   closeDeleteModal();
 };
 
