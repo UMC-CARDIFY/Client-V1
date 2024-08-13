@@ -72,6 +72,19 @@ class WordCardView {
         }
       });
 
+      // QuestionDiv에 대한 백스페이스 처리
+      this.questionDiv.addEventListener('keydown', (event) => {
+        const content = this.questionDiv.innerText.trim();
+        if (event.key === 'Backspace') {
+            if (content === '문제를 입력하세요') {
+                event.preventDefault(); 
+                event.stopPropagation(); // 이벤트 전파 중단
+            } else {
+                // 기본 백스페이스 동작 허용
+            }
+        }
+    });
+
     // 카드 answer(뒷면) div
     this.answerDiv = document.createElement('div');
     this.answerDiv.className = 'answer';
@@ -96,15 +109,27 @@ class WordCardView {
         }
       });
 
-    // 백스페이스로 화살표 삭제 방지
-    this.answerDiv.addEventListener('keydown', (event) => {
+      this.answerDiv.addEventListener('keydown', (event) => {
+        const content = this.answerDiv.innerText.trim();
+        console.log('Keydown event:', event.key);
+        console.log('Current content in answerDiv:', content);
+
         if (event.key === 'Backspace') {
-          const content = this.answerDiv.innerText.trim();
-          if (content === '→' || content === '→ 정답을 입력하세요') {
-            event.preventDefault();
-          }
+            if (content === '→' || content === '→ 정답을 입력하세요') {
+                console.log('Preventing backspace from deleting arrow or placeholder text.');
+                event.preventDefault(); // 화살표와 기본 텍스트가 지워지는 것을 막음
+            } else if (content.length === 2) { // '→ '만 남아있을 때
+                console.log('Resetting answerDiv to default content.');
+                this.answerDiv.innerHTML = `<span contenteditable="false" style="color: #000;">→ </span>`;
+                event.preventDefault();
+            } else {
+                console.log('Allowing backspace to delete text.');
+                return; // 기본 백스페이스 동작을 허용하여 텍스트를 지우도록 함
+            }
         }
-      });
+    });
+    
+    
     
     //attrs 값 설정
     this.questionDiv.addEventListener('blur', this.updateAttrs.bind(this));
@@ -137,8 +162,14 @@ class WordCardView {
   }
   
   stopEvent(event) {
-    return event.type === 'blur';
-  }
+    console.log('Event type:', event.type);
+    if (event.type === 'blur') {
+        console.log('Stopping blur event');
+        return true;
+    }
+    return false; // 다른 모든 이벤트는 허용
+}
+
 }
 
 export default WordCardView;
