@@ -16,6 +16,7 @@ import { deleteNote } from '../../../api/archive/deleteNote';
 import { markFolder } from '../../../api/archive/markFolder';
 import SortDropdown from './SortDropdown';
 import FilteringDropdown from './FilteringDropdown';
+import addFolder from '../../../assets/addFolder.svg'
 import MarkStateIcon from '../../../assets/markStateIcon.svg';
 import MarkStateActive from '../../../assets/MarkStateActive.svg';
 import Folder from '../../../assets/folder.svg';
@@ -399,8 +400,8 @@ return (
             <FilteringDropdown />
 
             <AddFolderDiv onClick={openAddModal}>
-              <Icon src={AddFolder} alt='폴더 추가 아이콘'/>
-            폴더 추가
+              <Icon src={addFolder}/>
+              폴더 추가
             </AddFolderDiv>
           </>
         )}
