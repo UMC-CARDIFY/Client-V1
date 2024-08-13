@@ -42,6 +42,7 @@ const DropdownItem = styled.div`
 `;
 
 
+
 const SortDropdown = ({ onSortOptionClick }) => {
     const [isOpen, setIsOpen] = useState(false);
   
@@ -59,11 +60,8 @@ const SortDropdown = ({ onSortOptionClick }) => {
   
     return (
       <SortDiv onClick={toggleDropdown}>
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-  <line x1="3" y1="7.4" x2="21" y2="7.4" stroke="#1A1A1A" strokeWidth="1.2"/>
-  <line x1="3" y1="12.4" x2="15" y2="12.4" stroke="#1A1A1A" strokeWidth="1.2"/>
-  <line x1="3" y1="17.4" x2="9" y2="17.4" stroke="#1A1A1A" strokeWidth="1.2"/>
-</svg>정렬
+        <img src={Sort}/>
+        정렬
         {isOpen && (
           <Dropdown>
             <DropdownItem onClick={() => handleSortOptionClick('asc')}>오름차순</DropdownItem>
