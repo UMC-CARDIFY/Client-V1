@@ -278,13 +278,14 @@ const closeModal = () => {
   setModalOpen(false);
 };
 
-const handleFormSubmit = (formData) => {
+const handleFormSubmit = async(formData) => {
   if (isEditMode) {
     console.log('폴더 수정:', formData);
     console.log('폴더 수정:', editItem.folderId);
     try {
-      const updatedFolder = editFolder(editItem.folderId, formData);
+      const updatedFolder = await editFolder(editItem.folderId, formData);
       console.log(updatedFolder);
+      
     }
     catch (error) {
       console.error('Failed to update folder:', error);
@@ -292,13 +293,22 @@ const handleFormSubmit = (formData) => {
   } else {
     console.log('폴더 추가:', formData);
     try{
-      const newFolder = addFolder(formData);
+      const newFolder = await addFolder(formData);
       console.log(newFolder);
     }
     catch (error) {
       console.error('Failed to add folder:', error);
     }
   }
+
+  try{
+    const data = await getFolders();
+    setFolders(data.foldersList);
+  }
+  catch (error) {
+    console.error('Failed to fetch folders:', error);
+  }
+  
 };
 
 const openDeleteModal = (item) => {
@@ -320,6 +330,14 @@ const handleDeleteConfirm = async() => {
   console.log(delFolder);
   } catch (error) {
     console.error('Failed to delete folder:', error);
+  }
+
+  try{
+    const data = await getFolders();
+    setFolders(data.foldersList);
+  }
+  catch (error) {
+    console.error('Failed to fetch folders:', error);
   }
   closeDeleteModal();
 };
