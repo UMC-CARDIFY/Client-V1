@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import Editor from './components/Editor';
-import Header from './components/Header';
+import Header from './components/Header/Header';
 import MenuBar from './components/MenuBar';
 
 const NoteEditorWrapper = styled.div`
