@@ -36,6 +36,7 @@ const EditorWrapper = styled.div`
 
 const NoteEditor = () => {
   const [isMenuCollapsed, setIsMenuCollapsed] = useState(false);
+  const [editorView, setEditorView] = useState(null);
 
   const toggleMenuBar = () => {
     setIsMenuCollapsed(!isMenuCollapsed);
@@ -47,9 +48,9 @@ const NoteEditor = () => {
         <MenuBar isCollapsed={isMenuCollapsed} toggleMenuBar={toggleMenuBar} />
       </MenuBarWrapper>
       <ContentWrapper isMenuCollapsed={isMenuCollapsed}>
-        <Header isMenuCollapsed={isMenuCollapsed} toggleMenuBar={toggleMenuBar} />
+        <Header isMenuCollapsed={isMenuCollapsed} toggleMenuBar={toggleMenuBar} editorView={editorView} />
         <EditorWrapper>
-          <Editor />
+          <Editor setEditorView={setEditorView}/>
         </EditorWrapper>
       </ContentWrapper>
     </NoteEditorWrapper>
