@@ -1,4 +1,3 @@
-// src/components/MoreDiv.js
 import { forwardRef } from 'react';
 import styled from 'styled-components';
 import KebabIcon from '../../../assets/kebab.svg'
@@ -14,6 +13,7 @@ box-sizing: border-box;
 justify-content: center;
 align-items: center;
 gap: 0.5rem;
+cursor: pointer;
 
   &:hover {
 background: var(--Grays-Gray7, #F0F0F0);
@@ -57,6 +57,11 @@ border-radius: 0rem 0rem 0.5rem 0.5rem;
 border-top: none;
 `;
 
+const NoteDeleteButton = styled(OptionEditButton)`
+border-radius: 0.5rem;
+`;
+
+
 const MoreButton = styled.div`
   flex-shrink: 0;
   cursor: pointer;
@@ -74,9 +79,11 @@ const MoreDiv = forwardRef(({ type, onEditClick, onDeleteClick, isActive, onMore
       </MoreButton>
       {isActive && (
         <Options>
-          {type === 'folder' && <OptionEditButton onClick={onEditClick}>폴더 수정</OptionEditButton>}
-          <OptionDeleteButton onClick={onDeleteClick}>{type === 'folder' ? '폴더 삭제' : '노트 삭제'}</OptionDeleteButton>
-        </Options>
+          {type === 'folder' && <><OptionEditButton onClick={onEditClick}>폴더 수정</OptionEditButton>
+          <OptionDeleteButton onClick={onDeleteClick}>폴더 삭제</OptionDeleteButton></>
+          }
+          {type === 'note' && <NoteDeleteButton onClick={onDeleteClick}>노트 삭제</NoteDeleteButton>}
+            </Options>
       )}
     </MoreDivContainer>
   );

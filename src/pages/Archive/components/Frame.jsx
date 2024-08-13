@@ -281,6 +281,7 @@ const handleFormSubmit = (formData) => {
 };
 
 const openDeleteModal = (item) => {
+  console.log('삭제:', item);
   setDeleteItem(item);
   setDeleteModalOpen(true);
   setActiveMoreDiv(null);  // MoreDiv를 비활성화
@@ -452,7 +453,7 @@ return (
         onClose={closeDeleteModal}
         onConfirm={handleDeleteConfirm}
         type={deleteItem ? deleteItem.type : ''}
-        itemName={deleteItem ? (deleteItem.type === 'folder' ? deleteItem.folderName : deleteItem.noteTitle) : ''}
+        itemName={deleteItem ? deleteItem.name : ''}
       />
     </FrameContainer>
 );
