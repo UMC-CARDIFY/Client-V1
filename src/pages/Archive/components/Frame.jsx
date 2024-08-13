@@ -19,7 +19,8 @@ import MarkStateIcon from '../../../assets/markStateIcon.svg';
 import MarkStateActive from '../../../assets/MarkStateActive.svg';
 import Folder from '../../../assets/folder.svg';
 import Note from '../../../assets/note.svg';
-
+import AddFolder from '../../../assets/addFolder.svg';
+import FolderIcon from './FolderIcon';
 
 
 const FrameContainer = styled.div`
@@ -380,10 +381,8 @@ return (
             <FilteringDropdown />
 
             <AddFolderDiv onClick={openAddModal}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-<rect x="5" y="11.5" width="14" height="1.2" fill="#1A1A1A"/>
-<rect x="12.5" y="5" width="14" height="1.2" transform="rotate(90 12.5 5)" fill="#1A1A1A"/>
-</svg>폴더 추가
+              <Icon src={AddFolder} alt='폴더 추가 아이콘'/>
+            폴더 추가
             </AddFolderDiv>
           </>
         )}
@@ -400,7 +399,7 @@ return (
                 alt='즐겨찾기'
                 onClick={() => handleClick(item)}
               />
-                <Icon src={Folder} alt='폴더 아이콘'/>
+                <FolderIcon fill={item.color} />
                 <Line />
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
                   <div>{item.name}</div>
