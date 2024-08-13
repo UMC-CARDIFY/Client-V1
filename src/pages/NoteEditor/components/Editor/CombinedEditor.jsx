@@ -14,6 +14,10 @@ import { myInputRules } from './Markdown/inputRules';
 import mySchema from './setup/schema';
 import WordCardView from './setup/wordcardView';
 import WordCardPreviewModal from '../Cards/PreviewModal/wordcardPreview';
+import BlankCardView from './setup/blankcardView';
+import BlankCardPreviewModal from '../Cards/PreviewModal/blankcardPreview';
+import MultiCardView from './setup/multicardView';
+//import MultiCardPreviewModal from '../Cards/PreviewModal/multicardPreview';
 
 const ContentArea = styled.div`
   flex: 1;
@@ -111,12 +115,22 @@ const CombinedEditor = ({ viewRef }) => {
 
   // 모달 열림/닫힘 상태와 question/answer 데이터를 관리
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalType, setModalType] = useState(null);
   const [modalQuestion, setModalQuestion] = useState('');
   const [modalAnswer, setModalAnswer] = useState('');
-
-  const openModal = (question, answer) => {
-    setModalQuestion(question);
-    setModalAnswer(answer);
+  const [modalQuestionBack, setModalQuestionBack] = useState('');
+  
+  const openModal = (type, question_front = '', answer = '', question_back = '') => {
+    setModalType(type);
+    if (type === 'word_card') {
+      setModalQuestion(question_front);  // word_card의 경우, question_front가 실제로 question이 됩니다.
+      setModalAnswer(answer);
+    } else if (type === 'blank_card') {
+      setModalQuestion(question_front);  // blank_card의 경우 각각의 텍스트를 별도로 저장
+      setModalAnswer(answer);
+      setModalQuestionBack(question_back);
+    }
+  
     setIsModalOpen(true);
   };
 
@@ -201,9 +215,15 @@ const CombinedEditor = ({ viewRef }) => {
           word_card(node, view, getPos) {
             return new WordCardView(node, view, getPos, openModal);
           },
+          blank_card(node, view, getPos) {
+            return new BlankCardView(node, view, getPos, openModal);
+          },
+          multi_card(node, view, getPos) {
+            return new MultiCardView(node, view, getPos, openModal);
+          }
         },
         dispatchTransaction(transaction) {
-          console.log('Transaction dispatched');
+          //console.log('Transaction dispatched');
           const newState = viewRef.current.state.apply(transaction);
           viewRef.current.updateState(newState);
           console.log('New state:', JSON.stringify(newState.doc.toJSON(), null, 2));
@@ -269,13 +289,21 @@ const CombinedEditor = ({ viewRef }) => {
       <ContentArea>
         <div ref={contentRef}></div>
       </ContentArea>
-      {isModalOpen && (
-        <WordCardPreviewModal
+      {isModalOpen && modalType === 'word_card' && (
+        <WordCardPreviewModal 
           question={modalQuestion} 
           answer={modalAnswer} 
           onClose={closeModal}
         />
       )}
+      {isModalOpen && modalType === 'blank_card' && (
+        <BlankCardPreviewModal 
+        question_front={modalQuestion}  // 앞부분 텍스트 전달
+        answer={modalAnswer} 
+        question_back={modalQuestionBack}  // 뒷부분 텍스트 전달
+        onClose={closeModal}
+      />
+    )}
     </>
   );
 };
@@ -323,10 +351,10 @@ export const addCard = (viewRef, type) => {
     case 'blank_card':
       node = mySchema.nodes.blank_card.create();
       break;
-    /*
     case 'multi_card':
       node = mySchema.nodes.multi_card.create();
       break;
+    /*
     case 'image_card':
       node = mySchema.nodes.image_card.create();
       break;
