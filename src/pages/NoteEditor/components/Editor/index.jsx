@@ -5,6 +5,7 @@ import CombinedEditor, { addCard } from './CombinedEditor'; // addCard 가져오
 import { TextSelection } from 'prosemirror-state';
 import { toggleMark } from 'prosemirror-commands';  // toggleMark 추가
 import mySchema from './setup/schema';
+import PropTypes from 'prop-types';
 
 const EditorContainer = styled.div`
   display: flex;
@@ -27,7 +28,7 @@ const ToolBarWrapper = styled.div`
   width: 100%;
 `;
 
-const Editor = () => {
+const Editor = ({ setEditorView }) => {
   const viewRef = useRef(null);
   const [isEditorInitialized, setIsEditorInitialized] = useState(false);
   const [isCardSelected, setIsCardSelected] = useState(false);
@@ -142,7 +143,7 @@ const Editor = () => {
   useEffect(() => {
     if (viewRef.current) {
       setIsEditorInitialized(true);
-
+      setEditorView(viewRef.current);    // viewRef.current 값이 설정되면 setEditorView로 전달
       const updateSelection = () => {
         handleEditorStateChange(viewRef.current);
       };
@@ -157,8 +158,8 @@ const Editor = () => {
         }
       };
     }
-  }, [viewRef]);
-
+  }, [viewRef.current, setEditorView]);
+    
   return (
     <EditorContainer>
       <CombinedEditor
@@ -181,5 +182,10 @@ const Editor = () => {
     </EditorContainer>
   );
 };
+
+Editor.propTypes = {
+  setEditorView: PropTypes.func.isRequired, // setEditorView는 필수 prop으로 정의
+};
+
 
 export default Editor;

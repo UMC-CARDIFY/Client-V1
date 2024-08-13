@@ -4,7 +4,8 @@ import styled from 'styled-components';
 import KebabMenu from './KebabMenu/KebabMenu';
 import ExportMenu from './KebabMenu/ExportMenu';
 import ShareMenu from './KebabMenu/ShareMenu';
-import { useSaveContext } from './SaveContext';
+//import { useSaveContext } from './SaveContext';
+import { saveNote } from '../../../api/noteeditor/saveNote'
 
 const HeaderWrapper = styled.header`
   background: var(--Grays-White, #FFF);
@@ -197,7 +198,7 @@ const ToggleMenuButton = styled.button`
   }
 `;
 
-const Header = ({ isMenuCollapsed, toggleMenuBar }) => {
+const Header = ({ isMenuCollapsed, toggleMenuBar, editorView = null }) => {
   const data = [
     'Document 1',
     'Document 2',
@@ -289,7 +290,7 @@ const Header = ({ isMenuCollapsed, toggleMenuBar }) => {
     alert('자료실에 공유되었습니다.');
   };
 
-  //저장
+  /*이미지 카드 저장
   const { saveImageCard } = useSaveContext(); // Context에서 saveImageCard 함수 가져오기
 
   const handleSave = () => {
@@ -299,6 +300,54 @@ const Header = ({ isMenuCollapsed, toggleMenuBar }) => {
       //alert('저장할 데이터가 없습니다.');
     }
   };
+  */
+
+  // 노트 저장
+  const handleSave = async () => {
+    if (!editorView || !editorView.state) {
+        alert('Editor is not ready');
+        console.log("EditorView or its state is not set in viewRef");
+        return;
+    }
+    
+    //const noteId = existingNoteId || 0;
+
+    const noteData = {
+        title: document.querySelector('div[contentEditable=true]').innerText, // 제목 가져오기
+        content: editorView.state.doc.toJSON(), // ProseMirror의 상태를 JSON으로 직렬화
+    };
+
+    // ProseMirror의 상태를 JSON으로 직렬화하여 로그로 출력
+    console.log("Document JSON:", JSON.stringify(editorView.state.doc.toJSON(), null, 2));
+    console.log("Note Data to Save:", noteData);
+
+    // localStorage에서 토큰 가져오기
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+        alert('토큰이 존재하지 않습니다. 다시 로그인해주세요.');
+        return;
+          }
+
+    try {
+        const response = await saveNote(
+            0, //noteId
+            noteData.title,
+            JSON.stringify(noteData.content),
+            token
+        );
+        
+        console.log("Response from server:", response);
+
+        if (response.isSuccess) {
+            alert('저장이 완료되었습니다.');
+        } else {
+            alert('저장에 실패했습니다.');
+        }
+    } catch (error) {
+        alert(error.message);
+        console.log("Error during save:", error);
+    }
+};
 
   return (
     <HeaderWrapper>
@@ -344,7 +393,7 @@ const Header = ({ isMenuCollapsed, toggleMenuBar }) => {
           </svg>
         </StarButton>
         <NotificationText>저장되지 않은 변경 사항이 있습니다.</NotificationText>
-        <SaveButton onClick={()=>handleSave()}>
+        <SaveButton onClick={handleSave}>
           <span>저장하기</span>
         </SaveButton>
       </LeftSection>
@@ -382,6 +431,7 @@ Header.propTypes = {
   isMenuCollapsed: PropTypes.bool.isRequired,
   toggleMenuBar: PropTypes.func.isRequired,
   active: PropTypes.bool,
+  editorView: PropTypes.object,
 };
 
 export default Header;

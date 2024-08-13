@@ -11,7 +11,7 @@ import { gapCursor } from 'prosemirror-gapcursor';
 import { sinkListItem, liftListItem, splitListItem, wrapInList } from 'prosemirror-schema-list';
 import 'prosemirror-view/style/prosemirror.css';
 import { myInputRules } from './Markdown/inputRules';
-import mySchema from './setup/schema';  // schema.jsx에서 가져오기
+import mySchema from './setup/schema';
 import WordCardView from './setup/wordcardView';
 
 const ContentArea = styled.div`
@@ -156,26 +156,26 @@ const CombinedEditor = ({ viewRef }) => {
         ]
       });
 
-      const view = new EditorView(contentRef.current, {
-        state,
-        nodeViews: {
-          word_card: (node, view, getPos) => new WordCardView(node, view, getPos),
-        },
-        dispatchTransaction(transaction) {
-          const newState = view.state.apply(transaction);
-          view.updateState(newState);
-          console.log('New state:', JSON.stringify(newState.doc.toJSON(), null, 2));
-      }
-    });
-    
-      viewRef.current = view;
-      window.viewRef = viewRef; //데이터 값 들어오게 하려고 추가한 코드
+   viewRef.current = new EditorView(contentRef.current, {
+            state,
+            nodeViews: {
+              word_card: (node, view, getPos) => new WordCardView(node, view, getPos),
+            },
+            dispatchTransaction(transaction) {
+              const newState = viewRef.current.state.apply(transaction);
+              viewRef.current.updateState(newState);
+              console.log('New state:', JSON.stringify(newState.doc.toJSON(), null, 2));
+            }
+        });
 
-      return () => {
-        view.destroy();
-      };
-    }
-  }, [contentRef]);
+        //viewRef.current = view;
+        window.viewRef = viewRef; //데이터 값 들어오게 하려고 추가한 코드
+
+        return () => {
+            viewRef.current.destroy();
+        };
+    } 
+  }, [viewRef]);
 
   useEffect(() => {
     const node = titleRef.current;
