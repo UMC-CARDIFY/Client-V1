@@ -9,9 +9,11 @@ import DeleteConfirmModal from './DeleteConfirmModal';
   import { getFolders } from '../../../api/archive/getFolders';
 import { getNotes } from '../../../api/archive/getNotes';
 import { getFolderSort } from '../../../api/archive/getFolderSort';
+import { addFolder } from '../../../api/archive/addFolder';
+import { deleteFolder } from '../../../api/archive/deleteFolder';
+import { editFolder } from '../../../api/archive/editFolder';
 import SortDropdown from './SortDropdown';
 import FilteringDropdown from './FilteringDropdown';
-import addFolder from '../../../assets/addFolder.svg'
 import MarkStateIcon from '../../../assets/markStateIcon.svg';
 import MarkStateActive from '../../../assets/MarkStateActive.svg';
 import Folder from '../../../assets/folder.svg';
@@ -193,6 +195,7 @@ const [initialData, setInitialData] = useState(null);
 const [activeMoreDiv, setActiveMoreDiv] = useState(null);
 const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
 const [deleteItem, setDeleteItem] = useState(null);
+const [editItem, setEditItem] = useState(null);
 
 const moreDivRefs = useRef([]);
 
@@ -264,7 +267,9 @@ const openAddModal = () => {
 
 const openEditModal = (data) => {
   setIsEditMode(true);
-  setInitialData(data);
+  setEditItem(data);
+  console.log('폴더 수정:', data.folderId);
+  setInitialData(data); // 폴더 수정 시 폴더 정보를 Modal에 전달
   setModalOpen(true);
   setActiveMoreDiv(null);  // MoreDiv를 비활성화
 };
@@ -276,8 +281,23 @@ const closeModal = () => {
 const handleFormSubmit = (formData) => {
   if (isEditMode) {
     console.log('폴더 수정:', formData);
+    console.log('폴더 수정:', editItem.folderId);
+    try {
+      const updatedFolder = editFolder(editItem.folderId, formData);
+      console.log(updatedFolder);
+    }
+    catch (error) {
+      console.error('Failed to update folder:', error);
+    }
   } else {
     console.log('폴더 추가:', formData);
+    try{
+      const newFolder = addFolder(formData);
+      console.log(newFolder);
+    }
+    catch (error) {
+      console.error('Failed to add folder:', error);
+    }
   }
 };
 
@@ -293,8 +313,14 @@ const closeDeleteModal = () => {
   setDeleteItem(null);
 };
 
-const handleDeleteConfirm = () => {
+const handleDeleteConfirm = async() => {
   console.log('삭제:', deleteItem);
+  try {
+  const delFolder = await deleteFolder(deleteItem.folderId);
+  console.log(delFolder);
+  } catch (error) {
+    console.error('Failed to delete folder:', error);
+  }
   closeDeleteModal();
 };
 
@@ -460,8 +486,5 @@ return (
 );
 };
 
-Frame.propTypes = {
-selectedTab: PropTypes.string.isRequired,
-};
 
 export default Frame;
