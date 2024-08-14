@@ -1,5 +1,6 @@
-import styled from 'styled-components';
+import React from 'react';
 import config from '../../api/config';
+import styled from 'styled-components';
 
 const KakaoButton = styled.button`
   display: flex;
@@ -40,7 +41,7 @@ const KakaoButtonText = styled.span`
   font-size: 1rem;
   font-style: normal;
   font-weight: 400;
-  line-height: 150%; /* 1.40625rem */
+  line-height: 150%;
 `;
 
 const KakaoLoginButton = () => {
@@ -50,7 +51,6 @@ const KakaoLoginButton = () => {
       window.location.href = kakaoAuthUrl;
     } catch (error) {
       console.error('카카오 로그인 URL 리다이렉트 중 오류 발생:', error);
-      // 사용자에게 오류 메시지를 표시하는 로직을 추가할 수 있습니다.
     }
   };
 
