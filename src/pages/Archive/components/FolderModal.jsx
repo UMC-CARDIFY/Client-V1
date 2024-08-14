@@ -159,6 +159,7 @@ const FolderModal = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => 
                   bgColor={color}
                   isSelected={selectedColor === color}
                   onClick={() => handleCircleClick(color)}
+                  isFilter={false}
                 />
               ))}
             </Color>
