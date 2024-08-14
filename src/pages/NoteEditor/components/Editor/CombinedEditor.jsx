@@ -17,7 +17,7 @@ import WordCardPreviewModal from '../Cards/PreviewModal/wordcardPreview';
 import BlankCardView from './setup/blankcardView';
 import BlankCardPreviewModal from '../Cards/PreviewModal/blankcardPreview';
 import MultiCardView from './setup/multicardView';
-//import MultiCardPreviewModal from '../Cards/PreviewModal/multicardPreview';
+import MultiCardPreviewModal from '../Cards/PreviewModal/multicardPreview';
 import FlashcardButton from './FlashcardButton';
 
 const ContentArea = styled.div`
@@ -118,7 +118,10 @@ const CombinedEditor = ({ viewRef }) => {
       setModalQuestion(question_front);  // blank_card의 경우 각각의 텍스트를 별도로 저장
       setModalAnswer(answer);
       setModalQuestionBack(question_back);
-    }
+    } else if (type === 'multi_card') {
+      setModalQuestion(question_front);  // multi_card의 경우 배열의 형태로 저장된 answer를 그대로 사용
+      setModalAnswer(answer);
+    } 
   
     setIsModalOpen(true);
   };
@@ -130,23 +133,17 @@ const CombinedEditor = ({ viewRef }) => {
   const handleBackspaceInCard = (state, dispatch) => {
     const { selection } = state;
     const { $from, empty } = selection;
-
     if (empty && $from.parent.type === mySchema.nodes.paragraph) {
         const currentText = $from.parent.textContent;
-
         if (currentText.length > 0) {
-            console.log('Allowing default backspace behavior');
+            //console.log('Allowing default backspace behavior');
             return deleteSelection(state, dispatch); // 텍스트가 있을 경우 삭제
         }
-
-        console.log('Preventing block deletion');
+        //console.log('Preventing block deletion');
         return false; // 텍스트가 없을 경우 기본 동작(블록 삭제)을 막음
     }
-
     return true; // 기본 백스페이스 동작 허용
 };
-
-
 
   useEffect(() => {
     if (contentRef.current) {
@@ -217,8 +214,6 @@ const CombinedEditor = ({ viewRef }) => {
           viewRef.current.updateState(newState);
           console.log('New state:', JSON.stringify(newState.doc.toJSON(), null, 2));
         }
-        
-      
       });
 
       window.viewRef = viewRef; // 데이터 값 들어오게 하려고 추가한 코드
@@ -281,12 +276,19 @@ const CombinedEditor = ({ viewRef }) => {
       )}
       {isModalOpen && modalType === 'blank_card' && (
         <BlankCardPreviewModal 
-        question_front={modalQuestion}  // 앞부분 텍스트 전달
-        answer={modalAnswer} 
-        question_back={modalQuestionBack}  // 뒷부분 텍스트 전달
-        onClose={closeModal}
-      />
-    )}
+          question_front={modalQuestion}  // 앞부분 텍스트 전달
+          answer={modalAnswer} 
+          question_back={modalQuestionBack}  // 뒷부분 텍스트 전달
+          onClose={closeModal}
+        />
+      )}
+      {isModalOpen && modalType === 'multi_card' && (
+        <MultiCardPreviewModal 
+          question={modalQuestion} 
+          answer={modalAnswer} 
+          onClose={closeModal}
+        />
+      )}
     </>
   );
 };
