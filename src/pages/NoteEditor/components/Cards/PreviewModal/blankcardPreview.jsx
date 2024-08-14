@@ -131,7 +131,7 @@ const BlankCardPreviewModal = ({ question_front, answer, question_back, onClose 
         <p>
             <CombinedText>
               {question_front}
-              <HighlightedAnswer>{answer}</HighlightedAnswer>
+              <HighlightedAnswer>{answer[0]}</HighlightedAnswer>
               {question_back}
             </CombinedText>
           </p>

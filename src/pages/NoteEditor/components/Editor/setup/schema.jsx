@@ -30,7 +30,7 @@ const mySchema = new Schema({
       attrs: {
         question_front: { default: '' },  // 빈칸 앞 text
         question_back: { default: '' },   // 빈칸 뒤 text
-        answer: { default: '' },
+        answer: { default: [''] },  // 배열
       },
       parseDOM: [{
         tag: 'div.blank-card',
@@ -38,7 +38,7 @@ const mySchema = new Schema({
           return {
             question_front: dom.querySelector('.question_front').innerText,
             question_back: dom.querySelector('.question_back').innerText,
-            answer: dom.querySelector('.answer').innerText,
+            answer: [dom.querySelector('.answer').innerText],  // 배열로 저장
           };
         }
       }],
