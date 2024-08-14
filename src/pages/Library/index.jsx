@@ -182,12 +182,9 @@ export const Library = () => {
           ) : (
             // 여기에 전체보기 모드에서 보여줄 콘텐츠를 작성합니다.
             <>
-            <AllCategoryTitleDiv>
-              <BackButton onClick={() => setIsViewAllCategory(false)}>← 뒤로 가기 btn</BackButton>
-            <AllCategoryText>전체 카테고리</AllCategoryText>
-            </AllCategoryTitleDiv>
-            
-            <AllCategory />
+            <AllCategory
+              onBackClick={() => setIsViewAllCategory(false)} // 뒤로가기 버튼 클릭 시 전체 카테고리 보기 해제
+            />
             </>
           )}
 
