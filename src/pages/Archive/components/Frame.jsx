@@ -13,6 +13,7 @@ import { deleteFolder } from '../../../api/archive/deleteFolder';
 import { editFolder } from '../../../api/archive/editFolder';
 import { deleteNote } from '../../../api/archive/deleteNote';
 import { markFolder } from '../../../api/archive/markFolder';
+import { getNoteToFolder } from '../../../api/archive/getNoteToFolder';
 import SortDropdown from './SortDropdown';
 import FilteringDropdown from './FilteringDropdown';
 import addFolder from '../../../assets/addFolder.svg'
@@ -22,6 +23,7 @@ import Folder from '../../../assets/folder.svg';
 import Note from '../../../assets/note.svg';
 import AddFolder from '../../../assets/addFolder.svg';
 import FolderIcon from './FolderIcon';
+import { useNavigate } from 'react-router-dom';
 
 
 const FrameContainer = styled.div`
@@ -188,10 +190,25 @@ background: #E9E9E9;
 margin-bottom: 1rem;
 `;
 
+const MoveFolderDiv = styled.div`
+display: flex;
+flex-direction: column;
+cursor: pointer;
+`;
+
+const MoveNoteEditor = styled.div`
+display: flex;
+flex-direction: column;
+cursor: pointer;
+`;
 
 const Frame = ({ selectedTab }) => {
-const [folders, setFolders] = useState([]);
+  const navigate = useNavigate();
+
+  const [folders, setFolders] = useState([]);
 const [notes, setNotes] = useState([]);
+const [currentFolderId, setCurrentFolderId] = useState(null); // 선택된 폴더 ID를 저장
+const [folderNotes, setFolderNotes] = useState([]); // 특정 폴더의 노트를 저장할 상태
 
 const [currentPage, setCurrentPage] = useState(0);
 const itemsPerPage = 6;
@@ -389,40 +406,71 @@ const handleSortOptionClick = (option) => {
   setSortOption(option);
 };
 
+// 특정 폴더의 노트를 조회하는 함수
+const MoveFolder = async (folderId) => {
+  setCurrentFolderId(folderId); // 선택된 폴더 ID를 상태에 저장
+  console.log('폴더 이동:', folderId);
+
+  try {
+    const data = await getNoteToFolder(folderId); // API 호출로 폴더의 노트 조회
+    setFolderNotes(data.noteList); // 노트를 상태에 저장
+    console.log('폴더의 노트:', data.noteList);
+  } catch (error) {
+    console.error('Failed to fetch notes:', error);
+  }
+};
+
+// 모든 폴더 목록 화면으로 이동하는 함수
+const goBackToFolders = () => {
+  setCurrentFolderId(null);
+  setFolderNotes([]); // 폴더 노트 초기화
+};
+
+const MoveToNoteEditor = (noteId) => {
+  console.log('노트 이동:', noteId);
+  // 노트 ID를 이용해 노트 에디터 페이지로 이동
+  navigate('/note-editor', { state: { noteId } });
+};
+
+
+
 return (
-    <FrameContainer>
-      <TitleAll style={{ paddingTop: '3rem' }}>{selectedTab === '폴더' ? '모든 폴더' : '모든 노트'}</TitleAll>
-        <SelectFilterDiv>
-        <SortDropdown onSortOptionClick={handleSortOptionClick} selectedTab={selectedTab} />
-        {selectedTab === '폴더' && (
-          <>
-            <FilteringDropdown />
-
-            <AddFolderDiv onClick={openAddModal}>
-              <Icon src={addFolder}/>
-              폴더 추가
-            </AddFolderDiv>
-          </>
-        )}
-      </SelectFilterDiv>
-      <Contour />
-
-      <div>
-        {currentData.map((item, index) => (
+  <FrameContainer>
+    <TitleAll style={{ paddingTop: '3rem' }}>
+      {currentFolderId ? `${folderNotes[0]?.folderName} 폴더`
+      : (selectedTab === '폴더' ? '모든 폴더' : '모든 노트')}
+    </TitleAll>
+    <SelectFilterDiv>
+      <SortDropdown onSortOptionClick={handleSortOptionClick} selectedTab={selectedTab} />
+      {!currentFolderId && selectedTab === '폴더' && (
+        <>
+          <FilteringDropdown />
+          <AddFolderDiv onClick={openAddModal}>
+            <Icon src={addFolder}/>
+            폴더 추가
+          </AddFolderDiv>
+        </>
+      )}
+    </SelectFilterDiv>
+    <Contour />
+    
+    <div>
+      {!currentFolderId ? (
+        currentData.map((item, index) => (
           selectedTab === '폴더' ? (
             <FolderData key={index}>
               <LeftData>
-              <MarkIcon
-                src={item.markState === 'ACTIVE' ? MarkStateActive : MarkStateIcon}
-                alt='즐겨찾기'
-                onClick={() => handleMarkStatus(item)}
-              />
+                <MarkIcon
+                  src={item.markState === 'ACTIVE' ? MarkStateActive : MarkStateIcon}
+                  alt='즐겨찾기'
+                  onClick={() => handleMarkStatus(item)}
+                />
                 <FolderIcon fill={item.color} />
                 <Line />
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <MoveFolderDiv onClick={() => MoveFolder(item.folderId)}>
                   <div>{item.name}</div>
-                  <div>폴더 이름</div>
-                </div>
+                  <div>폴더</div>
+                </MoveFolderDiv>
               </LeftData>
               <FlexSpacer />
               <RightData>
@@ -436,7 +484,6 @@ return (
                   <div>{item.editDate.split('T')[0]}</div>
                   <div>최근 수정일</div>
                 </div>
-
                 <MoreDiv
                   ref={el => moreDivRefs.current[index] = el}
                   type="folder"
@@ -450,17 +497,17 @@ return (
           ) : (
             <NoteData key={index}>
               <LeftData>
-              <MarkIcon
-                src={item.markState === 'ACTIVE' ? MarkStateActive : MarkStateIcon}
-                alt='즐겨찾기'
-                onClick={() => handleMarkStatus(item)}
-              />
+                <MarkIcon
+                  src={item.markState === 'ACTIVE' ? MarkStateActive : MarkStateIcon}
+                  alt='즐겨찾기'
+                  onClick={() => handleMarkStatus(item)}
+                />
                 <Icon src={Note} alt='노트 아이콘'/>
                 <Line />
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <MoveNoteEditor>
                   <div>{item.name}</div>
                   <div>노트</div>
-                </div>
+                </MoveNoteEditor>
               </LeftData>
               <FlexSpacer />
               <RightData>
@@ -484,8 +531,43 @@ return (
               </RightData>
             </NoteData>
           )
-        ))}
-      </div>
+        ))
+      ) : (
+        folderNotes.map((note, index) => (
+          <NoteData key={index}>
+            <LeftData>
+              <MarkIcon
+                src={note.markState === 'ACTIVE' ? MarkStateActive : MarkStateIcon}
+                alt='즐겨찾기'
+                onClick={() => handleMarkStatus(note)}
+              />
+              <Icon src={Note} alt='노트 아이콘'/>
+              <Line />
+              <MoveNoteEditor onClick={()=>MoveToNoteEditor(note.noteId)}>
+                <div>{note.name}</div>
+                <div>노트</div>
+              </MoveNoteEditor>
+            </LeftData>
+            <FlexSpacer />
+            <RightData>
+              <Line />
+              <div>
+                <div>{note.editDate.split('T')[0]}</div>
+                <div>최근 수정일</div>
+              </div>
+              <MoreDiv
+                ref={el => moreDivRefs.current[index] = el}
+                type="note"
+                onDeleteClick={() => openDeleteModal({ ...note, type: 'note' })}
+                isActive={activeMoreDiv === index}
+                onMoreClick={() => setActiveMoreDiv(activeMoreDiv === index ? null : index)}
+              />
+            </RightData>
+          </NoteData>
+        ))
+      )}
+    </div>
+    { !currentFolderId && (
       <PaginationContainer>
         <ReactPaginate
           previousLabel={
@@ -522,23 +604,23 @@ return (
           pageClassName={'page-item'}
         />
       </PaginationContainer>
-      <FolderModal
-        isOpen={isModalOpen}
-        onClose={closeModal}
-        onSubmit={handleFormSubmit}
-        initialData={initialData}
-        isEditMode={isEditMode}
-      />
-      <DeleteConfirmModal
-        isOpen={isDeleteModalOpen}
-        onClose={closeDeleteModal}
-        onConfirm={handleDeleteConfirm}
-        type={deleteItem ? deleteItem.type : ''}
-        itemName={deleteItem ? deleteItem.name : ''}
-      />
-    </FrameContainer>
+    )}
+    <FolderModal
+      isOpen={isModalOpen}
+      onClose={closeModal}
+      onSubmit={handleFormSubmit}
+      initialData={initialData}
+      isEditMode={isEditMode}
+    />
+    <DeleteConfirmModal
+      isOpen={isDeleteModalOpen}
+      onClose={closeDeleteModal}
+      onConfirm={handleDeleteConfirm}
+      type={deleteItem ? deleteItem.type : ''}
+      itemName={deleteItem ? deleteItem.name : ''}
+    />
+  </FrameContainer>
 );
-};
-
+}
 
 export default Frame;
