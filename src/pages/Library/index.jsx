@@ -3,7 +3,9 @@ import MenuBar from '../../components/MenuBar';
 import TopBar from '../../components/TopBar';
 import NoteList from './components/NoteList';
 import RecommendationSection from './components/RecommendationSection';
+import AllCategory from './components/AllCategory';
 import searchIcon from '../../assets/searchIcon.svg';
+import { useState } from 'react';
 
 
 const Container = styled.div`
@@ -115,13 +117,46 @@ const NoteListSection = styled.div`
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
 
+const AllCategoryTitleDiv = styled.div`
+position: relative;
+gap: 0.75rem;
+display: flex;
+justify-content: center;
+`;
+
+const AllCategoryText = styled.div`
+color: #1A1A1A;
+text-align: center;
+font-family: Inter;
+font-size: 2.1875rem;
+font-style: normal;
+font-weight: 700;
+line-height: normal;
+`;
+
+const BackButton = styled.div`
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: #1A1A1A;
+  cursor: pointer;
+  `;
+
 export const Library = () => {
+  const [isViewAllCategory, setIsViewAllCategory] = useState(false);
+
+  const handleViewAllCategory = () => {
+    setIsViewAllCategory(true)
+  };
+
   return (
     <Container>
       <MenuBar />
       <Vcontainer>
         <TopBar title="자료실" subtitle="지식 공유 커뮤니티" />
         <ContentArea>
+        {!isViewAllCategory ? (
+            <>
           <SearchSection>
             <SearchInput placeholder="다른 유저가 공유한 노트와 플래시카드 검색" />
             <SearchIcon>
@@ -137,11 +172,25 @@ export const Library = () => {
             <SearchButton>검색</SearchButton>
           </SearchSection>
 
-          <RecommendationSection />
+          <RecommendationSection onViewAllClick={handleViewAllCategory} />
 
           <NoteListSection>
             <NoteList />
           </NoteListSection>
+          </>
+
+          ) : (
+            // 여기에 전체보기 모드에서 보여줄 콘텐츠를 작성합니다.
+            <>
+            <AllCategoryTitleDiv>
+              <BackButton onClick={() => setIsViewAllCategory(false)}>← 뒤로 가기 btn</BackButton>
+            <AllCategoryText>전체 카테고리</AllCategoryText>
+            </AllCategoryTitleDiv>
+            
+            <AllCategory />
+            </>
+          )}
+
         </ContentArea>
       </Vcontainer>
     </Container>

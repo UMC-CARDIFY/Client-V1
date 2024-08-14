@@ -1,5 +1,6 @@
-import React from 'react';
 import styled from 'styled-components';
+import note from '../../../assets/note.svg';
+import userIcon from '../../../assets/userIcon.svg';
 
 const NoteItemContainer = styled.div`
   display: flex;
@@ -15,17 +16,28 @@ const NoteItemContainer = styled.div`
 const NoteItem = ({ title, category, cardCount, author, date }) => {
   return (
     <NoteItemContainer>
+        <div>
+        <img src={note} alt="note" />
+        </div>
       <div>
         <p>{title}</p>
         <p>노트</p>
       </div>
       <div>
-        <p>{category}</p>
-        <p>{cardCount ? `${cardCount}개 카드 개수` : '- 카드 개수'}</p>
+      <p>{category}</p>
+      <p>카테고리</p>
+        </div>
+      <div>
+        <p>{cardCount ? `${cardCount}개` : '-'}</p>
+        <p>카드 개수</p>
       </div>
       <div>
+        <img src={userIcon} alt="userIcon" />
         <p>{author}</p>
+      </div>
+      <div>
         <p>{date}</p>
+        <p>업로드일</p>
       </div>
     </NoteItemContainer>
   );

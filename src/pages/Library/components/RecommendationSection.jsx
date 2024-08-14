@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import viewAllIcon from '../../../assets/viewAllIcon.svg';
 
@@ -47,7 +46,7 @@ gap: 0.63rem;
 
 const RecommendItems = styled.div`
 display: flex;
-gap: 1rem;
+gap: 2.13rem;
 `;
 
 const RecommendItemContainer = styled.div`
@@ -86,30 +85,27 @@ const dummyData = [
     );
   };
 
-const RecommendationSection = () => {
-  return (
-    <RecommendationContainer>
+  const RecommendationSection = ({ onViewAllClick }) => {
+    return (
+      <RecommendationContainer>
         <RecommendationTitleDiv>
-      <RecommendationTitle>CARDIFY 추천</RecommendationTitle>
-        <RecommendationSubTitle>지금 가장 인기 있는 카테고리 · 노트</RecommendationSubTitle>
-        <ViewAllButton>           
+          <RecommendationTitle>CARDIFY 추천</RecommendationTitle>
+          <RecommendationSubTitle>
+            지금 가장 인기 있는 카테고리 · 노트
+          </RecommendationSubTitle>
+          <ViewAllButton onClick={onViewAllClick}>
             전체 보기
             <img src={viewAllIcon} alt="viewAllIcon" />
-        </ViewAllButton>
-    </RecommendationTitleDiv>
-      
+          </ViewAllButton>
+        </RecommendationTitleDiv>
+  
         <RecommendItems>
-      {dummyData.map((category, index) => (
-        <RecommendItem
-          key={index}
-          title={category.title}
-          noteCount={category.noteCount}
-        />
-      ))}
-    </RecommendItems>
-
-    </RecommendationContainer>
-  );
-};
-
-export default RecommendationSection;
+          {dummyData.map((category, index) => (
+            <RecommendItem key={index} title={category.title} noteCount={category.noteCount} />
+          ))}
+        </RecommendItems>
+      </RecommendationContainer>
+    );
+  };
+  
+  export default RecommendationSection;
