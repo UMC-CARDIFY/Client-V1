@@ -38,11 +38,11 @@ const EditorWrapper = styled.div`
 
 const NoteEditor = () => {
   const location = useLocation();
-  const noteId = location.state || {}; // state에서 noteId를 가져옴
+  const { noteId, folderId } = location.state || {};
 
   useEffect(() => {
     if (noteId) {
-      console.log('Editing note with ID:', noteId);
+      console.log('Editing note with ID:', noteId, 'from folder ID:', folderId);
       // noteId를 사용해 노트 데이터를 가져오거나 다른 로직을 수행
     }
   }, [noteId]);

@@ -492,12 +492,13 @@ const goBackToFolders = () => {
   setFolderNotes([]); // 폴더 노트 초기화
 };
 
-const MoveToNoteEditor = (noteId) => {
-  console.log('노트 이동:', noteId);
+const MoveToNoteEditor = (item) => {
+  console.log('노트 이동:', item.folderId);
+  const noteId = item.noteId;
+  const folderId = item.folderId;
   // 노트 ID를 이용해 노트 에디터 페이지로 이동
-  navigate('/note-editor', { state: { noteId } });
+  navigate('/note-editor', { state: { noteId, folderId } });
 };
-
 useEffect(() => {
     setCurrentFolderId(null);
     setFolderNotes([]);
@@ -574,7 +575,7 @@ return (
                 />
                 <Icon src={Note} alt='노트 아이콘'/>
                 <Line />
-                <MoveNoteEditor onClick={()=>MoveToNoteEditor(item.noteId)}>
+                <MoveNoteEditor onClick={()=>MoveToNoteEditor(item)}>
                   <div>{item.name}</div>
                   <div>노트</div>
                 </MoveNoteEditor>
@@ -613,7 +614,7 @@ return (
               />
               <Icon src={Note} alt='노트 아이콘'/>
               <Line />
-              <MoveNoteEditor onClick={()=>MoveToNoteEditor(note.noteId)}>
+              <MoveNoteEditor onClick={()=>MoveToNoteEditor(note)}>
                 <div>{note.name}</div>
                 <div>노트</div>
               </MoveNoteEditor>
