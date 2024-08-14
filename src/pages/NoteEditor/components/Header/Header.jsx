@@ -278,7 +278,7 @@ const Header = ({ isMenuCollapsed, toggleMenuBar, editorView = null }) => {
       </LeftSection>
       <RightSection>
         <SearchInput data={data} />
-        <CloseButton onClick={() => console.log('Close button clicked')} />
+        <CloseButton />
       </RightSection>
     </HeaderWrapper>
   );
