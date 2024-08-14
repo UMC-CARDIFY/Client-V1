@@ -41,9 +41,17 @@ const DropdownItem = styled.div`
   }
 `;
 
+const FolderDropdown = styled(Dropdown)`
+  /* 폴더 탭에 대한 추가 스타일링을 여기에 추가 */
+`;
+
+const NoteDropdown = styled(Dropdown)`
+  /* 노트 탭에 대한 추가 스타일링을 여기에 추가 */
+`;
 
 
-const SortDropdown = ({ onSortOptionClick }) => {
+
+const SortDropdown = ({ onSortOptionClick ,selectedTab}) => {
     const [isOpen, setIsOpen] = useState(false);
   
     const toggleDropdown = () => {
@@ -60,22 +68,32 @@ const SortDropdown = ({ onSortOptionClick }) => {
   
     return (
       <SortDiv onClick={toggleDropdown}>
-        <img src={Sort}/>
-        정렬
-        {isOpen && (
-          <Dropdown>
-            <DropdownItem onClick={() => handleSortOptionClick('asc')}>오름차순</DropdownItem>
-            <DropdownItem onClick={() => handleSortOptionClick('desc')}>내림차순</DropdownItem>
-            <DropdownItem onClick={() => handleSortOptionClick('edit-newest')}>수정일 - 최신순</DropdownItem>
-            <DropdownItem onClick={() => handleSortOptionClick('edit-oldest')}>수정일 - 오래된 순</DropdownItem>
-          </Dropdown>
-        )}
+          <img src={Sort} alt="Sort Icon"/>
+          정렬
+          {isOpen && (
+              selectedTab === '폴더' ? (
+                  <FolderDropdown>
+                      <DropdownItem onClick={() => handleSortOptionClick('asc')}>폴더 오름차순</DropdownItem>
+                      <DropdownItem onClick={() => handleSortOptionClick('desc')}>폴더 내림차순</DropdownItem>
+                      <DropdownItem onClick={() => handleSortOptionClick('edit-newest')}>폴더 수정일 - 최신순</DropdownItem>
+                      <DropdownItem onClick={() => handleSortOptionClick('edit-oldest')}>폴더 수정일 - 오래된 순</DropdownItem>
+                  </FolderDropdown>
+              ) : (
+                  <NoteDropdown>
+                      <DropdownItem onClick={() => handleSortOptionClick('asc')}>노트 오름차순</DropdownItem>
+                      <DropdownItem onClick={() => handleSortOptionClick('desc')}>노트 내림차순</DropdownItem>
+                      <DropdownItem onClick={() => handleSortOptionClick('edit-newest')}>노트 수정일 - 최신순</DropdownItem>
+                      <DropdownItem onClick={() => handleSortOptionClick('edit-oldest')}>노트 수정일 - 오래된 순</DropdownItem>
+                  </NoteDropdown>
+              )
+          )}
       </SortDiv>
-    );
-  };
+  );
+};
 
   SortDropdown.propTypes = {
     onSortOptionClick: PropTypes.func.isRequired,
+    selectedTab: PropTypes.string.isRequired, 
   };
 
 

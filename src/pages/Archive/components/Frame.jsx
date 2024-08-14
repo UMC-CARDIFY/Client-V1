@@ -9,7 +9,6 @@ import DeleteConfirmModal from './DeleteConfirmModal';
   import { getFolders } from '../../../api/archive/getFolders';
 import { getNotes } from '../../../api/archive/getNotes';
 import { getFolderSort } from '../../../api/archive/getFolderSort';
-import { addFolder } from '../../../api/archive/addFolder';
 import { deleteFolder } from '../../../api/archive/deleteFolder';
 import { editFolder } from '../../../api/archive/editFolder';
 import { deleteNote } from '../../../api/archive/deleteNote';
@@ -394,7 +393,7 @@ return (
     <FrameContainer>
       <TitleAll style={{ paddingTop: '3rem' }}>{selectedTab === '폴더' ? '모든 폴더' : '모든 노트'}</TitleAll>
         <SelectFilterDiv>
-        <SortDropdown onSortOptionClick={handleSortOptionClick} />
+        <SortDropdown onSortOptionClick={handleSortOptionClick} selectedTab={selectedTab} />
         {selectedTab === '폴더' && (
           <>
             <FilteringDropdown />
