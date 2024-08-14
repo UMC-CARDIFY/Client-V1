@@ -30,6 +30,9 @@ import FolderIcon from './FolderIcon';
 import { useNavigate } from 'react-router-dom';
 import addFoldersvg from '../../../assets/addFoldersvg.svg';
 
+import { useLocation } from 'react-router-dom';
+
+
 
 const FrameContainer = styled.div`
   width: 89rem;
@@ -209,7 +212,8 @@ cursor: pointer;
 
 const Frame = ({ selectedTab }) => {
   const navigate = useNavigate();
-
+  const location = useLocation(); 
+  
   const [folders, setFolders] = useState([]);
 const [notes, setNotes] = useState([]);
 const [currentFolderId, setCurrentFolderId] = useState(null); // 선택된 폴더 ID를 저장
@@ -229,6 +233,7 @@ const moreDivRefs = useRef([]);
 
 
 const [sortOption, setSortOption] = useState('');
+
 
 const colorMap = {
   blue1: '#6698F5',
@@ -262,27 +267,27 @@ useEffect(() => {
   const fetchData = async () => {
     try {
       let data;
-
+  
       if (selectedTab === '폴더') {
         if (sortOption) {
-          data = await getFolderSort(sortOption); // 폴더 정렬 API 호출
+          data = await getFolderSort(sortOption);
         } else {
-          data = await getFolders(); // 폴더 목록 API 호출
+          data = await getFolders();
         }
-        setFolders(data.foldersList); // 폴더 데이터를 상태로 저장
+        setFolders(data.foldersList);
       } else if (selectedTab === '노트') {
         if (sortOption) {
-          data = await getNoteSort(sortOption); // 노트 정렬 API 호출
+          data = await getNoteSort(sortOption);
         } else {
-          data = await getNotes(); // 노트 목록 API 호출
+          data = await getNotes();
         }
-        console.log('API Response:', data); // API 응답 구조를 확인
-        setNotes(data.noteList); // 데이터 구조에 맞게 상태 업데이트
+        setNotes(data.noteList);
       }
     } catch (error) {
       console.error('Failed to fetch data:', error);
     }
   };
+  
 
   fetchData();
 }, [sortOption, selectedTab]);
@@ -468,23 +473,62 @@ const handleSortOptionClick = (option) => {
 
 
 // 특정 폴더의 노트를 조회하는 함수
+// const MoveFolder = async (item) => {
+//   console.log('특정 폴더로 이동:', item);
+//   if(item.getNoteCount === 0) {
+//     alert('폴더에 노트가 없습니다.');
+//     return;
+//   }
+//   else {
+//     setCurrentFolderId(item.folderId); // 선택된 폴더 ID를 상태에 저장
+//   try {
+//     const data = await getNoteToFolder(item.folderId); // API 호출로 폴더의 노트 조회
+//     setFolderNotes(data.noteList); // 노트를 상태에 저장
+//     console.log('폴더의 노트:', data.noteList);
+//   } catch (error) {
+//     console.error('Failed to fetch notes:', error);
+//   }
+// }
+// };
 const MoveFolder = async (item) => {
   console.log('특정 폴더로 이동:', item);
   if(item.getNoteCount === 0) {
     alert('폴더에 노트가 없습니다.');
     return;
-  }
-  else {
+  } else {
     setCurrentFolderId(item.folderId); // 선택된 폴더 ID를 상태에 저장
-  try {
-    const data = await getNoteToFolder(item.folderId); // API 호출로 폴더의 노트 조회
-    setFolderNotes(data.noteList); // 노트를 상태에 저장
-    console.log('폴더의 노트:', data.noteList);
-  } catch (error) {
-    console.error('Failed to fetch notes:', error);
+    navigate(`?folderId=${item.folderId}`); // URL에 폴더 ID 추가
+    try {
+      const data = await getNoteToFolder(item.folderId); // API 호출로 폴더의 노트 조회
+      setFolderNotes(data.noteList); // 노트를 상태에 저장
+      console.log('폴더의 노트:', data.noteList);
+    } catch (error) {
+      console.error('Failed to fetch notes:', error);
+    }
   }
-}
 };
+
+useEffect(() => {
+  const queryParams = new URLSearchParams(location.search);
+  const folderIdFromUrl = queryParams.get('folderId');
+  setCurrentFolderId(folderIdFromUrl || null);
+
+  if (folderIdFromUrl) {
+    const fetchFolderNotes = async () => {
+      try {
+        const data = await getNoteToFolder(folderIdFromUrl);
+        setFolderNotes(data.noteList);
+      } catch (error) {
+        console.error('폴더 노트를 가져오는 데 실패했습니다:', error);
+      }
+    };
+    fetchFolderNotes();
+  } else {
+    setFolderNotes([]);
+  }
+}, [location.search, selectedTab]); // 종속성 배열에 location.search 및 selectedTab 추가
+
+
 
 // 모든 폴더 목록 화면으로 이동하는 함수
 const goBackToFolders = () => {
