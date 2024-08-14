@@ -15,14 +15,15 @@ import { deleteNote } from '../../../api/archive/deleteNote';
 import { markFolder } from '../../../api/archive/markFolder';
 import { markNote } from '../../../api/archive/markNote';
 import { getNoteToFolder } from '../../../api/archive/getNoteToFolder';
+import { addFolder } from '../../../api/archive/addFolder';
 import SortDropdown from './SortDropdown';
 import FilteringDropdown from './FilteringDropdown';
-import addFolder from '../../../assets/addFolder.svg'
 import MarkStateIcon from '../../../assets/markStateIcon.svg';
 import MarkStateActive from '../../../assets/MarkStateActive.svg';
 import Note from '../../../assets/note.svg';
 import FolderIcon from './FolderIcon';
 import { useNavigate } from 'react-router-dom';
+import addFoldersvg from '../../../assets/addFoldersvg.svg';
 
 
 const FrameContainer = styled.div`
@@ -224,6 +225,20 @@ const moreDivRefs = useRef([]);
 
 const [sortOption, setSortOption] = useState('');
 
+const colorMap = {
+  blue1: '#6698F5',
+  ocean: '#5AA6C7',
+  lavedar: '#949AEC',
+  gray: '#A9A9A9',
+  mint: '#77CEC6',
+  sage: '#AECA99',
+  orange: '#FDB456',
+  plum: '#D49AE9',
+  coral: '#FD855F',
+  rose: '#ED83B1'
+};
+
+
 useEffect(() => {
   const handleClickOutside = (event) => {
     if (moreDivRefs.current.every(ref => ref && !ref.contains(event.target))) {
@@ -300,7 +315,13 @@ const closeModal = () => {
   setModalOpen(false);
 };
 
+
+const reverseColorMap = Object.fromEntries(
+  Object.entries(colorMap).map(([key, value]) => [value, key])
+);
+
 const handleFormSubmit = async(formData) => {
+  formData.selectedColor = reverseColorMap[formData.selectedColor] || formData.selectedColor;
   if (isEditMode) {
     console.log('폴더 수정:', formData);
     console.log('폴더 수정:', editItem.folderId);
@@ -471,19 +492,6 @@ useEffect(() => {
 
 }, [selectedTab]);
 
-const colorMap = {
-  blue1: '#6698F5',
-  ocean: '#5AA6C7',
-  lavedar: '#949AEC',
-  gray: '#A9A9A9',
-  mint: '#77CEC6',
-  sage: '#AECA99',
-  orange: '#FDB456',
-  plum: '#D49AE9',
-  coral: '#FD855F',
-  rose: '#ED83B1'
-};
-
 return (
   <FrameContainer>
     <TitleAll style={{ paddingTop: '3rem' }}>
@@ -496,7 +504,7 @@ return (
         <>
           <FilteringDropdown />
           <AddFolderDiv onClick={openAddModal}>
-            <Icon src={addFolder}/>
+            <Icon src={addFoldersvg}/>
             폴더 추가
           </AddFolderDiv>
         </>
