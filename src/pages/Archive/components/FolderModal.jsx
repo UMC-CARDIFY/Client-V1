@@ -123,6 +123,20 @@ const FolderModal = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => 
 
   if (!isOpen) return null;
 
+  const colors = [
+    "#6698F5",
+    "#5AA6C7",
+    "#949AEC",
+    "#A9A9A9",
+    "#77CEC6",
+    "#AECA99",
+    "#FDB456",
+    "#D49AE9",
+    "#FD855F",
+    "#ED83B1"
+  ];
+
+
   return (
     <ModalOverlay>
       <ModalContent>
@@ -139,16 +153,14 @@ const FolderModal = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => 
           <Label>색상</Label>
           <ColorContainer>
             <Color>
-              <Circle bgColor="#6698F5" isSelected={selectedColor === "#6698F5"} onClick={() => handleCircleClick("#6698F5")} />
-              <Circle bgColor="#5AA6C7" isSelected={selectedColor === "#5AA6C7"} onClick={() => handleCircleClick("#5AA6C7")} />
-              <Circle bgColor="#949AEC" isSelected={selectedColor === "#949AEC"} onClick={() => handleCircleClick("#949AEC")} />
-              <Circle bgColor="#A9A9A9" isSelected={selectedColor === "#A9A9A9"} onClick={() => handleCircleClick("#A9A9A9")} />
-              <Circle bgColor="#77CEC6" isSelected={selectedColor === "#77CEC6"} onClick={() => handleCircleClick("#77CEC6")} />
-              <Circle bgColor="#AECA99" isSelected={selectedColor === "#AECA99"} onClick={() => handleCircleClick("#AECA99")} />
-              <Circle bgColor="#FDB456" isSelected={selectedColor === "#FDB456"} onClick={() => handleCircleClick("#FDB456")} />
-              <Circle bgColor="#D49AE9" isSelected={selectedColor === "#D49AE9"} onClick={() => handleCircleClick("#D49AE9")} />
-              <Circle bgColor="#FD855F" isSelected={selectedColor === "#FD855F"} onClick={() => handleCircleClick("#FD855F")} />
-              <Circle bgColor="#ED83B1" isSelected={selectedColor === "#ED83B1"} onClick={() => handleCircleClick("#ED83B1")} />
+              {colors.map((color) => (
+                <Circle
+                  key={color}
+                  bgColor={color}
+                  isSelected={selectedColor === color}
+                  onClick={() => handleCircleClick(color)}
+                />
+              ))}
             </Color>
             <Line />
             <FolderIcon fill={selectedColor} />
