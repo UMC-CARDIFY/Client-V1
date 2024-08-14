@@ -1,12 +1,23 @@
-// src/components/MoreDiv.js
 import { forwardRef } from 'react';
 import styled from 'styled-components';
 import KebabIcon from '../../../assets/kebab.svg'
 
 const MoreDivContainer = styled.div`
   position: relative;
-  display: inline-block;
-  border-radius: 0.5rem;
+  border-radius: 0.25rem;
+display: flex;
+width: 2rem;
+height: 2rem;
+padding: 0.375rem 0.875rem;
+box-sizing: border-box;
+justify-content: center;
+align-items: center;
+gap: 0.5rem;
+cursor: pointer;
+
+  &:hover {
+background: var(--Grays-Gray7, #F0F0F0);
+}
 `;
 
 const Options = styled.div`
@@ -15,13 +26,14 @@ const Options = styled.div`
   flex-direction: column;
   align-items: center;
   position: absolute;
-  top: 30px;
-  left: 0;
+  top: 0;
+  right: 2.5rem;
   z-index: 1;
-  box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.04), 0px 4px 20px 0px rgba(0, 0, 0, 0.06);
+  border-radius: 0.5rem;
+box-shadow: 0px 4px 26px 0px rgba(0, 0, 0, 0.02), 0px 10px 60px 0px rgba(0, 74, 162, 0.03);
 `;
 
-const OptionButton = styled.button`
+const OptionEditButton = styled.button`
   display: flex;
   padding: 1.0625rem 2rem;
   justify-content: center;
@@ -29,9 +41,10 @@ const OptionButton = styled.button`
   gap: 0.5rem;
   align-self: stretch;
   cursor: pointer;
-  border: 1px solid #dedede;
-  background: var(--Grays-White, #fff);
-  color: var(--Grays-Black, #1a1a1a);
+  border: none;
+  border-radius: 0.5rem 0.5rem 0rem 0rem;
+border: 1px solid var(--grays-gray-5-divider, #E8E8E8);
+background: var(--Grays-White, #FFF);
   font-family: Pretendard;
   font-size: 0.875rem;
   font-style: normal;
@@ -39,9 +52,17 @@ const OptionButton = styled.button`
   line-height: normal;
 `;
 
+const OptionDeleteButton = styled(OptionEditButton)`
+border-radius: 0rem 0rem 0.5rem 0.5rem;
+border-top: none;
+`;
+
+const NoteDeleteButton = styled(OptionEditButton)`
+border-radius: 0.5rem;
+`;
+
+
 const MoreButton = styled.div`
-  width: var(--font-size-2xl, 1.75rem);
-  height: var(--font-size-2xl, 1.75rem);
   flex-shrink: 0;
   cursor: pointer;
 `;
@@ -52,15 +73,17 @@ const Icon = styled.img`
 // eslint-disable-next-line react/display-name
 const MoreDiv = forwardRef(({ type, onEditClick, onDeleteClick, isActive, onMoreClick }, ref) => {
   return (
-    <MoreDivContainer ref={ref}>
-      <MoreButton onClick={onMoreClick}>
+    <MoreDivContainer ref={ref} onClick={onMoreClick}>
+      <MoreButton>
         <Icon src={KebabIcon} />
       </MoreButton>
       {isActive && (
         <Options>
-          {type === 'folder' && <OptionButton onClick={onEditClick}>폴더 수정</OptionButton>}
-          <OptionButton onClick={onDeleteClick}>{type === 'folder' ? '폴더 삭제' : '노트 삭제'}</OptionButton>
-        </Options>
+          {type === 'folder' && <><OptionEditButton onClick={onEditClick}>폴더 수정</OptionEditButton>
+          <OptionDeleteButton onClick={onDeleteClick}>폴더 삭제</OptionDeleteButton></>
+          }
+          {type === 'note' && <NoteDeleteButton onClick={onDeleteClick}>노트 삭제</NoteDeleteButton>}
+            </Options>
       )}
     </MoreDivContainer>
   );

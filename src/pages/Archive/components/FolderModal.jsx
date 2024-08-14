@@ -109,6 +109,10 @@ const FolderModal = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => 
   }, [initialData]);
 
   const handleSubmit = () => {
+    if(!folderName) {
+      alert('폴더 이름을 입력해주세요.');
+      return;
+    }
     onSubmit({ folderName, selectedColor });
     onClose();
   };
