@@ -621,6 +621,11 @@ return (
             </LeftData>
             <FlexSpacer />
             <RightData>
+            <Line />
+              <div>
+                <div>{note.createdAt.split('T')[0]}</div>
+                <div>노트 생성일</div>
+              </div>
               <Line />
               <div>
                 <div>{note.editDate.split('T')[0]}</div>
