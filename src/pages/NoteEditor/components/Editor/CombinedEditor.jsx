@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { EditorState, TextSelection } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 import { keymap } from 'prosemirror-keymap';
-import { baseKeymap, deleteSelection } from 'prosemirror-commands';
+import { baseKeymap } from 'prosemirror-commands';
 import { history } from 'prosemirror-history';
 import { dropCursor } from 'prosemirror-dropcursor';
 import { gapCursor } from 'prosemirror-gapcursor';
@@ -130,21 +130,6 @@ const CombinedEditor = ({ viewRef }) => {
     setIsModalOpen(false);
   };
 
-  const handleBackspaceInCard = (state, dispatch) => {
-    const { selection } = state;
-    const { $from, empty } = selection;
-    if (empty && $from.parent.type === mySchema.nodes.paragraph) {
-        const currentText = $from.parent.textContent;
-        if (currentText.length > 0) {
-            //console.log('Allowing default backspace behavior');
-            return deleteSelection(state, dispatch); // 텍스트가 있을 경우 삭제
-        }
-        //console.log('Preventing block deletion');
-        return false; // 텍스트가 없을 경우 기본 동작(블록 삭제)을 막음
-    }
-    return true; // 기본 백스페이스 동작 허용
-};
-
   useEffect(() => {
     if (contentRef.current) {
       const doc = mySchema.node('doc', null, 
@@ -184,7 +169,7 @@ const CombinedEditor = ({ viewRef }) => {
                 return wrapInList(mySchema.nodes.bullet_list)(state, dispatch);
               }
             },
-            'Backspace': (state, dispatch) => handleBackspaceInCard(state, dispatch),  // 백스페이스 키 처리 추가
+            'Backspace': (state, dispatch) => (state, dispatch),  
           }),
           keymap(baseKeymap),
           history(),
