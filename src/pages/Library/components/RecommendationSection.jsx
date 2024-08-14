@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import viewAllIcon from '../../../assets/viewAllIcon.svg';
 
 const RecommendationContainer = styled.div`
+margin-bottom: 2.19rem;
 `;
 
 const RecommendationTitleDiv = styled.div`
