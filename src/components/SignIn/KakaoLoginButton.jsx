@@ -45,8 +45,13 @@ const KakaoButtonText = styled.span`
 
 const KakaoLoginButton = () => {
   const handleLogin = () => {
-    const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${config.kakao.clientId}&redirect_uri=${config.kakao.redirectUri}&response_type=code`;
-    window.location.href = kakaoAuthUrl;
+    try {
+      const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${config.kakao.clientId}&redirect_uri=${config.kakao.redirectUri}&response_type=code`;
+      window.location.href = kakaoAuthUrl;
+    } catch (error) {
+      console.error('카카오 로그인 URL 리다이렉트 중 오류 발생:', error);
+      // 사용자에게 오류 메시지를 표시하는 로직을 추가할 수 있습니다.
+    }
   };
 
   return (
