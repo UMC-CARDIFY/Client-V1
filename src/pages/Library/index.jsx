@@ -3,7 +3,6 @@ import MenuBar from '../../components/MenuBar';
 import TopBar from '../../components/TopBar';
 import NoteList from './components/NoteList';
 import RecommendationSection from './components/RecommendationSection';
-import CategoryList from './components/CategoryList';
 import searchIcon from '../../assets/searchIcon.svg';
 
 
@@ -91,6 +90,10 @@ font-size: 0.9375rem;
 font-style: normal;
 font-weight: 300;
 line-height: normal;
+
+&:focus {
+  outline: none;
+}
 `;
 
 const SearchButton = styled.button`
@@ -126,6 +129,9 @@ export const Library = () => {
             </SearchIcon>
             <CategorySelect>
               <option>모든 카테고리</option>
+              <option>언어</option>
+              <option>취업 · 수험</option>
+              <option>컴퓨터 · IT</option>
               {/* 다른 옵션 추가 */}
             </CategorySelect>
             <SearchButton>검색</SearchButton>
