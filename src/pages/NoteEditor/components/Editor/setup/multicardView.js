@@ -5,10 +5,7 @@ class MultiCardView {
       this.getPos = getPos;
       this.openModal = openModal;
 
-      // 기본값으로 answer 배열에 두 개의 빈 항목 추가
-      if (this.node.attrs.answer.length < 2) {
-          this.node.attrs.answer = ['', ''];
-      }
+
 
       // 컨테이너 div
       this.dom = document.createElement('div');
@@ -78,6 +75,21 @@ class MultiCardView {
           this.updateAttrs(); // Blur 이벤트 발생 시 속성 업데이트
       });
 
+   // 카드 앞면 Enter key 이벤트 핸들러
+   this.questionDiv.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+        event.preventDefault(); // 기본 엔터 동작 방지
+        if (this.answerDivs.length > 0) {
+            const range = document.createRange();
+            const selection = window.getSelection();
+            range.setStart(this.answerDivs[0].childNodes[0], 0);
+            range.collapse(true);
+            selection.removeAllRanges();
+            selection.addRange(range);
+            this.answerDivs[0].focus();
+            }
+        }
+    });
       // 카드 answer(뒷면) div들
       this.answerDivs = [];
       this.node.attrs.answer.forEach((answer, index) => {
@@ -86,18 +98,36 @@ class MultiCardView {
   }
 
   addAnswerDiv(answer = '') {
-      const answerDiv = document.createElement('div');
-      answerDiv.className = 'answer';
-      answerDiv.contentEditable = true;
-      answerDiv.style.color = answer ? '#000' : '#aaa';
-      answerDiv.style.outline = 'none';
-      answerDiv.innerText = answer || '• 카드 뒷면';
-      this.dom.appendChild(answerDiv);
-      this.answerDivs.push(answerDiv);
+    //불렛
+    const bulletDiv = document.createElement('div');
+    bulletDiv.className = 'bullet';
+    bulletDiv.style.display = 'inline-block';
+    bulletDiv.style.width = '0.375rem'; 
+    bulletDiv.style.height = '0.375rem';  
+    bulletDiv.style.backgroundColor = '#000';  
+    bulletDiv.style.borderRadius = '50%';  
+    bulletDiv.style.marginRight = '1rem';  
+
+    const containerDiv = document.createElement('div');
+    containerDiv.style.display = 'flex';
+    containerDiv.style.alignItems = 'center';  // 불렛과 텍스트를 수직으로 정렬
+
+    const answerDiv = document.createElement('div');
+    answerDiv.className = 'answer';
+    answerDiv.contentEditable = true;
+    answerDiv.style.color = answer ? '#000' : '#aaa';
+    answerDiv.style.outline = 'none';
+    answerDiv.innerText = answer || '카드 뒷면';
+
+    containerDiv.appendChild(bulletDiv);
+    containerDiv.appendChild(answerDiv); 
+    this.dom.appendChild(containerDiv);  // 전체 컨테이너 추가
+
+    this.answerDivs.push(answerDiv);
 
       // 각 answerDiv에 이벤트 핸들러 등록
       answerDiv.addEventListener('focus', () => {
-          if (answerDiv.innerText === '• 카드 뒷면') {
+          if (answerDiv.innerText === '카드 뒷면') {
               answerDiv.innerText = '';
               answerDiv.style.color = '#000';
           }
@@ -105,21 +135,32 @@ class MultiCardView {
 
       answerDiv.addEventListener('blur', () => {
           if (answerDiv.innerText === '') {
-              answerDiv.innerText = '• 카드 뒷면';
+              answerDiv.innerText = '카드 뒷면';
               answerDiv.style.color = '#aaa';
           }
           this.updateAttrs(); // Blur 이벤트 발생 시 속성 업데이트
       });
 
-      // 엔터 키 이벤트 핸들러
-      answerDiv.addEventListener('keydown', (event) => {
-          if (event.key === 'Enter') {
-              event.preventDefault(); // 기본 엔터 동작 방지
-              const newAnswerDiv = this.addAnswerDiv(); // 새로운 answerDiv 추가
-              newAnswerDiv.focus(); // 새로 추가된 answerDiv로 포커스 이동
+    // 엔터 키 이벤트 핸들러
+    answerDiv.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault(); // 기본 엔터 동작 방지
+            const newAnswerDiv = this.addAnswerDiv(); // 새로운 answerDiv 추가
 
-          }
-      });
+            // 새로 추가된 answerDiv로 포커스 이동
+            const range = document.createRange();
+            const selection = window.getSelection();
+
+            // 새로 생성된 answerDiv의 첫 번째 자식 노드로 커서를 이동
+            range.setStart(newAnswerDiv.childNodes[0], 0);
+            range.collapse(true);
+            selection.removeAllRanges();
+            selection.addRange(range);
+
+            newAnswerDiv.focus(); // 새로 추가된 answerDiv로 포커스 이동
+        }
+    });
+    return answerDiv; // 추가된 answerDiv를 반환
   }
 
   updateAttrs() {

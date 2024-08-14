@@ -51,7 +51,7 @@ const mySchema = new Schema({
       content: 'inline*',
       attrs: {
         question: { default: '' },
-        answer: { default: ['', ''] },  // 기본 값으로 빈 배열 설정
+        answer: { default: [''] },  // 기본 값으로 빈 배열 설정
       },
       parseDOM: [{
         tag: 'div.multi-card',
