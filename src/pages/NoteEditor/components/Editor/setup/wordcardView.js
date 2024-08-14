@@ -5,6 +5,13 @@ class WordCardView {
     this.getPos = getPos;
     this.openModal = openModal;
 
+    // answer 배열이 항상 1개의 요소를 가지도록 설정
+    if (this.node.attrs.answer.length === 0) {
+      this.node.attrs.answer = [''];
+    } else if (this.node.attrs.answer.length > 1) {
+      this.node.attrs.answer = [this.node.attrs.answer[0]];
+    }
+
     //컨테이너 div
     this.dom = document.createElement('div');
     this.dom.className = 'word-card';
@@ -90,9 +97,9 @@ class WordCardView {
     this.answerDiv = document.createElement('div');
     this.answerDiv.className = 'answer';
     this.answerDiv.contentEditable = true;
-    this.answerDiv.style.color = this.node.attrs.answer ? '#000' : '#aaa';
+    this.answerDiv.style.color = this.node.attrs.answer[0] ? '#000' : '#aaa';
     this.answerDiv.style.outline = 'none';  // 포커스 시 테두리 제거
-    this.answerDiv.innerHTML = `<span contenteditable="false" style="color: #000;">→ </span>${node.attrs.answer || '정답을 입력하세요'}`;
+    this.answerDiv.innerHTML = `<span contenteditable="false" style="color: #000;">→ </span>${this.node.attrs.answer[0] || '정답을 입력하세요'}`;
     this.dom.appendChild(this.answerDiv);
 
     // answer 이벤트 핸들러
@@ -108,19 +115,19 @@ class WordCardView {
           this.answerDiv.innerHTML = `<span contenteditable="false" style="color: #000;">→ </span>정답을 입력하세요`;
           this.answerDiv.style.color = '#aaa';
         }
+        this.updateAttrs(); // Blur 이벤트 발생 시 속성 업데이트
       });
 
       this.answerDiv.addEventListener('keydown', (event) => {
         const content = this.answerDiv.innerText.trim();
-        console.log('Keydown event:', event.key);
-        console.log('Current content in answerDiv:', content);
-
+        //console.log('Keydown event:', event.key);
+        //console.log('Current content in answerDiv:', content);
         if (event.key === 'Backspace') {
             if (content === '→' || content === '→ 정답을 입력하세요') {
-                console.log('Preventing backspace from deleting arrow or placeholder text.');
+                //console.log('Preventing backspace from deleting arrow or placeholder text.');
                 event.preventDefault(); // 화살표와 기본 텍스트가 지워지는 것을 막음
             } else if (content.length === 2) { // '→ '만 남아있을 때
-                console.log('Resetting answerDiv to default content.');
+                //console.log('Resetting answerDiv to default content.');
                 this.answerDiv.innerHTML = `<span contenteditable="false" style="color: #000;">→ </span>`;
                 event.preventDefault();
             } else {
@@ -130,8 +137,6 @@ class WordCardView {
         }
     });
     
-    
-    
     //attrs 값 설정
     this.questionDiv.addEventListener('blur', this.updateAttrs.bind(this));
     this.answerDiv.addEventListener('blur', this.updateAttrs.bind(this));
@@ -139,9 +144,9 @@ class WordCardView {
 
   updateAttrs() {
     const question = this.questionDiv.innerText.trim();
-    const answer = this.answerDiv.innerText.trim().replace(/^→\s*/, '');
+    const answer = [this.answerDiv.innerText.trim().replace(/^→\s*/, '')];
 
-    if (question !== this.node.attrs.question || answer !== this.node.attrs.answer) {
+    if (question !== this.node.attrs.question || answer[0] !== this.node.attrs.answer[0]) {
       this.view.dispatch(
         this.view.state.tr.setNodeMarkup(this.getPos(), null, {
           question,
@@ -155,7 +160,7 @@ class WordCardView {
     if (node.attrs.question !== this.node.attrs.question) {
       this.questionDiv.innerText = node.attrs.question;
     }
-    if (node.attrs.answer !== this.node.attrs.answer) {
+    if (node.attrs.answer[0] !== this.node.attrs.answer[0]) {
       this.answerDiv.innerHTML = `<span contenteditable="false" style="color: #000;">→ </span>${node.attrs.answer}`;
     }
     this.node = node;
@@ -163,14 +168,11 @@ class WordCardView {
   }
   
   stopEvent(event) {
-    console.log('Event type:', event.type);
     if (event.type === 'blur') {
-        console.log('Stopping blur event');
         return true;
     }
     return false; // 다른 모든 이벤트는 허용
-}
-
+  }
 }
 
 export default WordCardView;

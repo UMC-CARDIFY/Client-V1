@@ -275,7 +275,7 @@ const CombinedEditor = ({ viewRef }) => {
       {isModalOpen && modalType === 'word_card' && (
         <WordCardPreviewModal 
           question={modalQuestion} 
-          answer={modalAnswer} 
+          answer={[modalAnswer]} 
           onClose={closeModal}
         />
       )}

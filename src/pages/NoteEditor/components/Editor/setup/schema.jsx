@@ -9,14 +9,14 @@ const mySchema = new Schema({
       content: 'inline*',
       attrs: {
         question: { default: '' },
-        answer: { default: '' },
+        answer: { default: [''] },  // 배열
       },
       parseDOM: [{
         tag: 'div.word-card',
         getAttrs(dom) {
           return {
             question: dom.querySelector('.question').innerText,
-            answer: dom.querySelector('.answer').innerText,
+            answer: [dom.querySelector('.answer').innerText],  // 배열로 저장
           };
         }
       }],

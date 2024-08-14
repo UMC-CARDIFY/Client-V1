@@ -118,7 +118,7 @@ const WordCardPreviewModal = ({ question, answer, onClose }) => {
         </ModalHeader>
         <ModalContent>
           <p><strong>문제:</strong> {question} </p>
-          <p><strong>정답:</strong> {answer} </p>
+          <p><strong>정답:</strong> {answer[0]} </p>
         </ModalContent>
       </ModalContainer>
     </Overlay>     
@@ -127,7 +127,7 @@ const WordCardPreviewModal = ({ question, answer, onClose }) => {
   
 WordCardPreviewModal.propTypes = {
   question: PropTypes.string.isRequired,
-  answer: PropTypes.string.isRequired,
+  answer: PropTypes.arrayOf(PropTypes.string).isRequired,
   onClose: PropTypes.func.isRequired,
 };
 
