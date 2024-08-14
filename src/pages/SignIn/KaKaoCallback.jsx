@@ -1,7 +1,7 @@
 
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { kakaoLogin } from '../../api/signin/KaKaoLogin'; // API 호출 모듈 불러옴
+import { kakaoLogin } from '../../api/signin/KaKaoLogin';
 
 const KakaoCallback = () => {
   const navigate = useNavigate();
@@ -13,6 +13,8 @@ const KakaoCallback = () => {
 
       console.log(code)
       if (code) {
+        console.log('인가 코드:', code); // 인가 코드를 콘솔에 출력
+
         try {
           // 인가 코드를 백엔드로 보내고 응답을 받아옴
           const response = await kakaoLogin(code);
@@ -27,13 +29,15 @@ const KakaoCallback = () => {
           alert('카카오 로그인에 실패했습니다: ' + (error.response?.data?.message || error.message));
           navigate('/sign-in');
         }
+      } else {
+        console.error('인가 코드를 받지 못했습니다.');
       }
     };
 
     handleKakaoLogin();
   }, [navigate]);
 
-  return <div>로그인 중...</div>; // 로딩 중 메시지 표시
+  return <div>로그인 중...</div>;
 };
 
 export default KakaoCallback;

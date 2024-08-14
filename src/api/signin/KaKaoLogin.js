@@ -9,6 +9,7 @@ export const kakaoLogin = async (code) => {
     const response = await axios.post(`${config.apiBaseUrl}/oauth2/callback/kakao`, { code });
     return response.data; // 백엔드로부터 받은 액세스 토큰 등의 데이터 반환
   } catch (error) {
-    throw new Error(error.response?.data?.message || '카카오 로그인에 실패했습니다.');
+    const message = error.response?.data?.message || '카카오 로그인에 실패했습니다.';
+    throw new Error(message);
   }
 };

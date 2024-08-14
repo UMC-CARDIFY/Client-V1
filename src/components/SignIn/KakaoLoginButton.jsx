@@ -1,4 +1,3 @@
-import config from '../../api/config';
 import styled from 'styled-components';
 
 const KakaoButton = styled.button`
