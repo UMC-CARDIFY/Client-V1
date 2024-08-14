@@ -407,17 +407,22 @@ const handleSortOptionClick = (option) => {
 };
 
 // 특정 폴더의 노트를 조회하는 함수
-const MoveFolder = async (folderId) => {
-  setCurrentFolderId(folderId); // 선택된 폴더 ID를 상태에 저장
-  console.log('폴더 이동:', folderId);
-
+const MoveFolder = async (item) => {
+  console.log('특정 폴더로 이동:', item);
+  if(item.getNoteCount === 0) {
+    alert('폴더에 노트가 없습니다.');
+    return;
+  }
+  else {
+    setCurrentFolderId(item.folderId); // 선택된 폴더 ID를 상태에 저장
   try {
-    const data = await getNoteToFolder(folderId); // API 호출로 폴더의 노트 조회
+    const data = await getNoteToFolder(item.folderId); // API 호출로 폴더의 노트 조회
     setFolderNotes(data.noteList); // 노트를 상태에 저장
     console.log('폴더의 노트:', data.noteList);
   } catch (error) {
     console.error('Failed to fetch notes:', error);
   }
+}
 };
 
 // 모든 폴더 목록 화면으로 이동하는 함수
@@ -432,7 +437,11 @@ const MoveToNoteEditor = (noteId) => {
   navigate('/note-editor', { state: { noteId } });
 };
 
+useEffect(() => {
+    setCurrentFolderId(null);
+    setFolderNotes([]);
 
+}, [selectedTab]);
 
 return (
   <FrameContainer>
@@ -467,7 +476,7 @@ return (
                 />
                 <FolderIcon fill={item.color} />
                 <Line />
-                <MoveFolderDiv onClick={() => MoveFolder(item.folderId)}>
+                <MoveFolderDiv onClick={() => MoveFolder(item)}>
                   <div>{item.name}</div>
                   <div>폴더</div>
                 </MoveFolderDiv>
