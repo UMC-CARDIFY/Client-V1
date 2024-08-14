@@ -13,6 +13,7 @@ import { deleteFolder } from '../../../api/archive/deleteFolder';
 import { editFolder } from '../../../api/archive/editFolder';
 import { deleteNote } from '../../../api/archive/deleteNote';
 import { markFolder } from '../../../api/archive/markFolder';
+import { markNote } from '../../../api/archive/markNote';
 import { getNoteToFolder } from '../../../api/archive/getNoteToFolder';
 import SortDropdown from './SortDropdown';
 import FilteringDropdown from './FilteringDropdown';
@@ -401,6 +402,35 @@ const handleMarkStatus = async(item) => {
   }
 };
 
+const handleMarkNoteStatus = async(item) => {
+  console.log('즐겨찾기:', item);
+  try {
+    const markNoteData = await markNote(item.noteId, { markState: item.markState === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE' });
+    console.log(markNoteData);
+  }
+  catch (error) {
+    console.error('Failed to mark note:', error);
+  }
+
+  try{
+    const data = await getNotes();
+    setNotes(data.noteList);
+  }
+  catch (error) {
+    console.error('Failed to fetch notes:', error);
+  }
+
+  if(currentFolderId) {
+  try{
+    const data = await getNoteToFolder(currentFolderId);
+    setFolderNotes(data.noteList);
+  }
+  catch (error) {
+    console.error('Failed to fetch notes:', error);
+  }
+}
+};
+
 const handleSortOptionClick = (option) => {
   console.log(`Selected sort option in ParentComponent: ${option}`);
   setSortOption(option);
@@ -509,7 +539,7 @@ return (
                 <MarkIcon
                   src={item.markState === 'ACTIVE' ? MarkStateActive : MarkStateIcon}
                   alt='즐겨찾기'
-                  onClick={() => handleMarkStatus(item)}
+                  onClick={() => handleMarkNoteStatus(item)}
                 />
                 <Icon src={Note} alt='노트 아이콘'/>
                 <Line />
@@ -548,7 +578,7 @@ return (
               <MarkIcon
                 src={note.markState === 'ACTIVE' ? MarkStateActive : MarkStateIcon}
                 alt='즐겨찾기'
-                onClick={() => handleMarkStatus(note)}
+                onClick={() => handleMarkNoteStatus(note)}
               />
               <Icon src={Note} alt='노트 아이콘'/>
               <Line />
