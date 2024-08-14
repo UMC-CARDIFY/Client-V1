@@ -117,31 +117,6 @@ const NoteListSection = styled.div`
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
 
-const AllCategoryTitleDiv = styled.div`
-position: relative;
-gap: 0.75rem;
-display: flex;
-justify-content: center;
-`;
-
-const AllCategoryText = styled.div`
-color: #1A1A1A;
-text-align: center;
-font-family: Inter;
-font-size: 2.1875rem;
-font-style: normal;
-font-weight: 700;
-line-height: normal;
-`;
-
-const BackButton = styled.div`
-  position: absolute;
-  left: 0;
-  top: 0;
-  color: #1A1A1A;
-  cursor: pointer;
-  `;
-
 export const Library = () => {
   const [isViewAllCategory, setIsViewAllCategory] = useState(false);
 

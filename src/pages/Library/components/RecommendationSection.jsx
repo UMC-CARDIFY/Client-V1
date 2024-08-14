@@ -50,7 +50,7 @@ gap: 2.13rem;
 `;
 
 const RecommendItemContainer = styled.div`
-width: 17.94313rem;
+min-width: 17.94313rem;
 height: 10.4375rem;
 flex-shrink: 0;
   flex: 1;
@@ -72,21 +72,7 @@ const dummyData = [
     {
       title: '컴퓨터 · IT',
       noteCount: '85',
-    },
-    {
-        title: '언어',
-        noteCount: '120',
-      },
-      {
-        title: '취업 · 수험',
-        noteCount: '103',
-      },
-      {
-        title: '컴퓨터 · IT',
-        noteCount: '85',
-      },
-      
-    // 더 많은 더미 데이터를 여기에 추가할 수 있습니다.
+    }
   ];
 
   const RecommendItem = ({ title, noteCount }) => {
