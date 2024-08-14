@@ -543,7 +543,7 @@ return (
                 />
                 <Icon src={Note} alt='노트 아이콘'/>
                 <Line />
-                <MoveNoteEditor>
+                <MoveNoteEditor onClick={()=>MoveToNoteEditor(item.noteId)}>
                   <div>{item.name}</div>
                   <div>노트</div>
                 </MoveNoteEditor>
