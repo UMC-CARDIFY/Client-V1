@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import config from '../../api/config';
 
 const KakaoButton = styled.button`
   display: flex;
