@@ -1,4 +1,3 @@
-import config from '../../api/config';
 import styled from 'styled-components';
 
 const KakaoButton = styled.button`
@@ -44,9 +43,14 @@ const KakaoButtonText = styled.span`
 `;
 
 const KakaoLoginButton = () => {
-  const handleLogin = () => {
-    const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${config.kakao.clientId}&redirect_uri=${config.kakao.redirectUri}&response_type=code`;
-    window.location.href = kakaoAuthUrl;
+  const handleLogin = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/api/v1/oauth2/authorization/kakao');
+      const data = await response.json();
+      window.location.href = data.authorizationUrl;  // 백엔드에서 받아온 인증 URL로 리다이렉트
+    } catch (error) {
+      console.error('카카오 로그인 URL 가져오기 실패:', error);
+    }
   };
 
   return (

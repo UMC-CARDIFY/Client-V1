@@ -8,9 +8,11 @@ const KakaoCallback = () => {
   useEffect(() => {
     const handleKakaoLogin = async () => {
       const urlParams = new URLSearchParams(window.location.search);
-      const code = urlParams.get('code');
+      const code = urlParams.get('code'); // URL에서 인가 코드 추출
 
       if (code) {
+        console.log('인가 코드:', code); // 인가 코드를 콘솔에 출력
+
         try {
           const data = await kakaoLogin(code);
           localStorage.setItem('accessToken', data.accessToken);
@@ -20,6 +22,8 @@ const KakaoCallback = () => {
           alert('카카오 로그인에 실패했습니다.');
           navigate('/sign-in');
         }
+      } else {
+        console.error('인가 코드를 받지 못했습니다.');
       }
     };
 
