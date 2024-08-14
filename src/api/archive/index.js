@@ -8,3 +8,4 @@ export { default as getNoteToFolder } from './getNoteToFolder';
 export { default as getNotes } from './getNotes';
 export { default as markFolder } from './markFolder';
 export { default as markNote } from './markNote';
+export { default as getNoteSort } from './getNoteSort';

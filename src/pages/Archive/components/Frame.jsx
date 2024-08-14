@@ -16,7 +16,8 @@ import {
   markFolder, 
   markNote, 
   getNoteToFolder, 
-  addFolder 
+  addFolder,
+  getNoteSort
 } from '../../../api/archive';
 
 
@@ -258,38 +259,34 @@ useEffect(() => {
 
 
 useEffect(() => {
-  const fetchFolders = async () => {
+  const fetchData = async () => {
     try {
       let data;
 
-      if (sortOption) {
-        data = await getFolderSort(sortOption);
-        console.log(sortOption)
-        setFolders(data.foldersList); 
-      } else {
-        data = await getFolders();
-        setFolders(data.foldersList);
+      if (selectedTab === '폴더') {
+        if (sortOption) {
+          data = await getFolderSort(sortOption); // 폴더 정렬 API 호출
+        } else {
+          data = await getFolders(); // 폴더 목록 API 호출
+        }
+        setFolders(data.foldersList); // 폴더 데이터를 상태로 저장
+      } else if (selectedTab === '노트') {
+        if (sortOption) {
+          data = await getNoteSort(sortOption); // 노트 정렬 API 호출
+        } else {
+          data = await getNotes(); // 노트 목록 API 호출
+        }
+        console.log('API Response:', data); // API 응답 구조를 확인
+        setNotes(data.noteList); // 데이터 구조에 맞게 상태 업데이트
       }
     } catch (error) {
-      console.error('Failed to fetch folders:', error);
+      console.error('Failed to fetch data:', error);
     }
   };
 
-  fetchFolders();
-}, [sortOption]); 
+  fetchData();
+}, [sortOption, selectedTab]);
 
-useEffect(() => {
-  const fetchNotes = async () => {
-    try {
-      const data = await getNotes();
-      setNotes(data.noteList);
-    } catch (error) {
-      console.error('Failed to fetch notes:', error);
-    }
-  };
-
-  fetchNotes();
-}, []);
 
 const currentData = selectedTab === '폴더'
   ? (folders?.length > 0 ? folders.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage) : [])
@@ -456,8 +453,19 @@ const handleMarkNoteStatus = async(item) => {
 
 const handleSortOptionClick = (option) => {
   console.log(`Selected sort option in ParentComponent: ${option}`);
-  setSortOption(option);
+
+  const [selectedTab, sortOption] = option.split(';');
+
+  if (selectedTab === '폴더') {
+    console.log(`폴더 정렬 옵션: ${sortOption}`);
+    setSortOption(sortOption);
+
+  } else if (selectedTab === '노트') {
+    console.log(`노트 정렬 옵션: ${sortOption}`);
+    setSortOption(sortOption);
+  }
 };
+
 
 // 특정 폴더의 노트를 조회하는 함수
 const MoveFolder = async (item) => {
