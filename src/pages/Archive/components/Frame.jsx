@@ -6,16 +6,20 @@ import PropTypes from 'prop-types';
 import FolderModal from './FolderModal';
 import MoreDiv from './MoreDiv';
 import DeleteConfirmModal from './DeleteConfirmModal';
-  import { getFolders } from '../../../api/archive/getFolders';
-import { getNotes } from '../../../api/archive/getNotes';
-import { getFolderSort } from '../../../api/archive/getFolderSort';
-import { deleteFolder } from '../../../api/archive/deleteFolder';
-import { editFolder } from '../../../api/archive/editFolder';
-import { deleteNote } from '../../../api/archive/deleteNote';
-import { markFolder } from '../../../api/archive/markFolder';
-import { markNote } from '../../../api/archive/markNote';
-import { getNoteToFolder } from '../../../api/archive/getNoteToFolder';
-import { addFolder } from '../../../api/archive/addFolder';
+import { 
+  getFolders, 
+  getNotes, 
+  getFolderSort, 
+  deleteFolder, 
+  editFolder, 
+  deleteNote, 
+  markFolder, 
+  markNote, 
+  getNoteToFolder, 
+  addFolder 
+} from '../../../api/archive';
+
+
 import SortDropdown from './SortDropdown';
 import FilteringDropdown from './FilteringDropdown';
 import MarkStateIcon from '../../../assets/markStateIcon.svg';

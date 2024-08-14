@@ -16,3 +16,5 @@ export const deleteNote = async (noteId) => {
     }
 
 };
+
+export default deleteNote;

@@ -11,3 +11,5 @@ export const getNotes = async () => {
   }
 
 };
+
+export default getNotes;

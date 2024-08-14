@@ -17,3 +17,5 @@ export const editFolder = async (folderId, data) => {
     }
 
 };
+
+export default editFolder;

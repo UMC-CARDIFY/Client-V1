@@ -17,3 +17,5 @@ export const markNote = async (noteId, markState) => {
     }
 
 };
+
+export default markNote;

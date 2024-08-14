@@ -11,3 +11,5 @@ export const markFolder = async (folderId, data) => {
     }
 
 };
+
+export default markFolder;
