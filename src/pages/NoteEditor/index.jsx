@@ -38,7 +38,7 @@ const EditorWrapper = styled.div`
 
 const NoteEditor = () => {
   const location = useLocation();
-  const { noteId, folderId } = location.state || {};
+  const { noteId, folderId } = location.state || {}; // folderId를 가져옴
 
   useEffect(() => {
     if (noteId) {
@@ -57,12 +57,17 @@ const NoteEditor = () => {
   return (
     <NoteEditorWrapper>
       <MenuBarWrapper isCollapsed={isMenuCollapsed}>
-        <MenuBar isCollapsed={isMenuCollapsed} toggleMenuBar={toggleMenuBar} />
+        {/* MenuBar에 folderId를 전달 */}
+        <MenuBar
+          isCollapsed={isMenuCollapsed}
+          toggleMenuBar={toggleMenuBar}
+          selectedFolderId={folderId} // folderId를 MenuBar에 전달
+        />
       </MenuBarWrapper>
       <ContentWrapper isMenuCollapsed={isMenuCollapsed}>
         <Header isMenuCollapsed={isMenuCollapsed} toggleMenuBar={toggleMenuBar} editorView={editorView} />
         <EditorWrapper>
-          <Editor setEditorView={setEditorView}/>
+          <Editor setEditorView={setEditorView} />
         </EditorWrapper>
       </ContentWrapper>
     </NoteEditorWrapper>
