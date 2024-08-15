@@ -1,3 +1,4 @@
+import React from 'react';
 import config from '../../api/config';
 import styled from 'styled-components';
 
@@ -40,13 +41,17 @@ const KakaoButtonText = styled.span`
   font-size: 1rem;
   font-style: normal;
   font-weight: 400;
-  line-height: 150%; /* 1.40625rem */
+  line-height: 150%;
 `;
 
 const KakaoLoginButton = () => {
   const handleLogin = () => {
-    const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${config.kakao.clientId}&redirect_uri=${config.kakao.redirectUri}&response_type=code`;
-    window.location.href = kakaoAuthUrl;
+    try {
+      const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${config.kakao.clientId}&redirect_uri=${config.kakao.redirectUri}&response_type=code`;
+      window.location.href = kakaoAuthUrl;
+    } catch (error) {
+      console.error('카카오 로그인 URL 리다이렉트 중 오류 발생:', error);
+    }
   };
 
   return (
