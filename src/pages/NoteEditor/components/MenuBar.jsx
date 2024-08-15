@@ -271,7 +271,7 @@ const MenuBar = ({ isCollapsed, toggleMenuBar, selectedFolderId }) => {
           Authorization: `Bearer ${token}`,
         },
         params: {
-          folderId: selectedFolderId, // 현재 폴더의 ID를 쿼리 파라미터로 전달
+          folderId: selectedFolderId, 
         },
       });
   
@@ -283,7 +283,7 @@ const MenuBar = ({ isCollapsed, toggleMenuBar, selectedFolderId }) => {
           ...prevNotes,
           {
             noteId,
-            name: `새 노트 ${prevNotes.length + 1}`, // 기본 노트 이름 설정
+            name: `제목없음`, // 기본 노트 이름 설정
             isFavorite: false,
             createdAt,
           },
@@ -353,7 +353,7 @@ const MenuBar = ({ isCollapsed, toggleMenuBar, selectedFolderId }) => {
       </NowFolderContainer>
 
       <Divider />
-      
+
       {favoriteNotes.length > 0 && (
         <>
           <FavoriteContainer>
