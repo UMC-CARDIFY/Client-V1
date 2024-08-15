@@ -31,11 +31,15 @@ const Dropdown = styled.div`
   z-index: 10;
   border-radius: 0.5rem; 
   overflow: hidden;
+  border-radius: 0.5rem; 
+  overflow: hidden;
 `;
 
 const DropdownItem = styled.div`
   padding: 1.06rem 1rem;
+  padding: 1.06rem 1rem;
   cursor: pointer;
+
 
   &:hover {
     background-color: #f0f0f0;
@@ -52,7 +56,10 @@ const DropdownItem = styled.div`
   }
 `;
 
+
+
 const FolderDropdown = styled(Dropdown)`
+  width: 8.375rem;
   width: 8.375rem;
 `;
 
