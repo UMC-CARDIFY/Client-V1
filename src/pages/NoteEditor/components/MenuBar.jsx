@@ -259,29 +259,34 @@ const MenuBar = ({ isCollapsed, toggleMenuBar, selectedFolderId }) => {
 
   const handleAddNote = async () => {
     const token = localStorage.getItem('accessToken');
-
+  
     if (!token) {
       alert('토큰이 존재하지 않습니다. 다시 로그인해주세요.');
       return;
     }
-
+  
     try {
       const response = await axios.get(`${config.apiBaseUrl}/notes/addNote`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
         params: {
-          folderId: selectedFolderId, // 실제로 선택한 폴더의 ID를 사용
+          folderId: selectedFolderId, // 현재 폴더의 ID를 쿼리 파라미터로 전달
         },
       });
-
+  
       if (response.status === 200) {
-        const newNoteId = response.data.noteId;
-        console.log('생성된 noteId:', newNoteId);
-        // 새로 생성된 노트를 목록에 추가하는 로직
+        const { noteId, createdAt } = response.data;
+        console.log('생성된 noteId:', noteId);
+  
         setNotes((prevNotes) => [
           ...prevNotes,
-          { noteId: newNoteId, name: '새 노트', isFavorite: false },
+          {
+            noteId,
+            name: `새 노트 ${prevNotes.length + 1}`, // 기본 노트 이름 설정
+            isFavorite: false,
+            createdAt,
+          },
         ]);
       } else {
         console.error('노트 생성에 실패했습니다:', response.status);
@@ -290,6 +295,8 @@ const MenuBar = ({ isCollapsed, toggleMenuBar, selectedFolderId }) => {
       console.error('노트 생성 중 오류 발생:', error);
     }
   };
+  
+  
 
   return (
     <MenuBarContainer isCollapsed={isCollapsed}>
@@ -346,31 +353,36 @@ const MenuBar = ({ isCollapsed, toggleMenuBar, selectedFolderId }) => {
       </NowFolderContainer>
 
       <Divider />
+      
+      {favoriteNotes.length > 0 && (
+        <>
+          <FavoriteContainer>
+            <FavoriteTitle>
+              <StarIcon>
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+                  <path d="M15.9998 20.2526L12.4225 22.1331C12.2024 22.2488 11.9452 22.0619 11.9873 21.8168L12.6705 17.8333L9.77531 15.0122C9.5972 14.8387 9.69544 14.5363 9.94153 14.5005L13.9412 13.9193L15.7308 10.2942C15.8409 10.0713 16.1588 10.0713 16.2688 10.2943L18.0578 13.9193L22.0576 14.5005C22.3036 14.5363 22.4019 14.8387 22.2238 15.0122L19.3292 17.8333L20.013 21.8168C20.0551 22.0619 19.7979 22.2488 19.5777 22.1331L15.9998 20.2526Z" fill="#FFD338"/>
+                </svg>
+              </StarIcon>
+              즐겨찾기 한 항목
+            </FavoriteTitle>
+            <NoteContainer>
+              {favoriteNotes.map((note) => (
+                <NoteList
+                  key={note.noteId}
+                  className={selectedItem === note.name ? 'selected' : ''}
+                  onClick={() => handleClick(note)}
+                >
+                  <NoteIcon>{/* 노트 아이콘 */}</NoteIcon>
+                  {note.name}
+                </NoteList>
+              ))}
+            </NoteContainer>
+          </FavoriteContainer>
 
-      <FavoriteContainer>
-        <FavoriteTitle>
-          <StarIcon>
-            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
-            <path d="M15.9998 20.2526L12.4225 22.1331C12.2024 22.2488 11.9452 22.0619 11.9873 21.8168L12.6705 17.8333L9.77531 15.0122C9.5972 14.8387 9.69544 14.5363 9.94153 14.5005L13.9412 13.9193L15.7308 10.2942C15.8409 10.0713 16.1588 10.0713 16.2688 10.2943L18.0578 13.9193L22.0576 14.5005C22.3036 14.5363 22.4019 14.8387 22.2238 15.0122L19.3292 17.8333L20.013 21.8168C20.0551 22.0619 19.7979 22.2488 19.5777 22.1331L15.9998 20.2526Z" fill="#FFD338"/>
-            </svg>
-          </StarIcon>
-          즐겨찾기 한 항목
-        </FavoriteTitle>
-        <NoteContainer>
-          {favoriteNotes.map((note) => (
-            <NoteList
-              key={note.noteId}
-              className={selectedItem === note.name ? 'selected' : ''}
-              onClick={() => handleClick(note)}
-            >
-              <NoteIcon>{/* 노트 아이콘 */}</NoteIcon>
-              {note.name}
-            </NoteList>
-          ))}
-        </NoteContainer>
-      </FavoriteContainer>
+          <Divider2 />
+        </>
+      )}
 
-      <Divider2 />
 
       <NoteContainer>
         {notes.filter((note) => !note.isFavorite).map((note) => (
