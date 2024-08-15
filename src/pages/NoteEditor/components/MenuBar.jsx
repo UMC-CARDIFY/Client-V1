@@ -201,7 +201,7 @@ const colorMap = {
 };
 
 const MenuBar = ({ isCollapsed, toggleMenuBar, selectedFolderId }) => {
-  const [selectedItem, setSelectedItem] = useState('');
+  const [selectedNoteId, setSelectedNoteId] = useState(null);
   const [notes, setNotes] = useState([]);
   const [folderName, setFolderName] = useState(''); // 폴더 이름 상태 추가
   const [folderColor, setFolderColor] = useState('gray'); // 폴더 색상 상태 추가 (기본값: gray)
@@ -249,8 +249,8 @@ const MenuBar = ({ isCollapsed, toggleMenuBar, selectedFolderId }) => {
     }
   }, [selectedFolderId]);
 
-  const handleClick = (item) => {
-    setSelectedItem(item.name);
+  const handleClick = (note) => {
+    setSelectedNoteId(note.noteId);
     // 노트를 클릭했을 때의 추가 작업
   };
 
@@ -369,7 +369,7 @@ const MenuBar = ({ isCollapsed, toggleMenuBar, selectedFolderId }) => {
               {favoriteNotes.map((note) => (
                 <NoteList
                   key={note.noteId}
-                  className={selectedItem === note.name ? 'selected' : ''}
+                  className={selectedNoteId === note.noteId ? 'selected' : ''}
                   onClick={() => handleClick(note)}
                 >
                   <NoteIcon>{/* 노트 아이콘 */}</NoteIcon>
@@ -388,7 +388,7 @@ const MenuBar = ({ isCollapsed, toggleMenuBar, selectedFolderId }) => {
         {notes.filter((note) => !note.isFavorite).map((note) => (
           <NoteList
             key={note.noteId}
-            className={selectedItem === note.name ? 'selected' : ''}
+            className={selectedNoteId === note.noteId ? 'selected' : ''}
             onClick={() => handleClick(note)}
           >
             <NoteIcon>{/* 노트 아이콘 */}</NoteIcon>
