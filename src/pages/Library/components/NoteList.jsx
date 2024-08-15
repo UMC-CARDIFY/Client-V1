@@ -8,6 +8,7 @@ const NoteItemContainer = styled.div`
   grid-template-columns: 2rem 0.5rem 5fr 3fr 2fr 3fr 2fr;
   align-items: center;
   padding: 1.25rem 0 1rem 1.75rem;
+  cursor: pointer;
 
   & > div {
     display: flex;
@@ -17,11 +18,6 @@ const NoteItemContainer = styled.div`
   & > div:nth-child(1) {
     width: 2rem;
     height: 2rem;
-    margin-right: 1rem;
-  }
-
-  & > div:nth-child(1) img {
-    margin-right: 1rem;
   }
 
   & > div:nth-child(2) {
