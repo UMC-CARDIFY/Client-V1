@@ -1,5 +1,5 @@
-import { useState } from 'react';
 import styled from 'styled-components';
+import { useState } from 'react';
 import note from '../../../assets/note.svg';
 import userIcon from '../../../assets/userIcon.svg';
 import sortIcon from '../../../assets/sortIcon.svg';  // 정렬 아이콘 가져오기
@@ -150,13 +150,12 @@ const SortHeader = styled.div`
   color: #1A1A1A;
   cursor: pointer;
   display: inline-flex;
-padding: 0.1875rem 0.5rem 0.1875rem 0.4375rem;
-align-items: center;
-gap: 0.375rem;
+  padding: 0.1875rem 0.5rem 0.1875rem 0.4375rem;
+  align-items: center;
+  gap: 0.375rem;
   border-radius: 0.125rem;
-background: #FFF;
-  `;
-
+  background: #FFF;
+`;
 
 const SortIcon = styled.img`
   cursor: pointer;
@@ -207,6 +206,11 @@ const notesData = {
     { title: '컴활 필기 1급', date: '2023-07-14', category: '컴퓨터 · IT', cardCount: '30', author: '체리' },
     { title: '정보처리기사', date: '2023-07-10', category: '컴퓨터 · IT', cardCount: '25', author: '복숭아' },
   ],
+  '과학': [
+    { title: '물리학 기초', date: '2023-07-07', category: '과학', cardCount: '20', author: '호두' },
+    { title: '화학 기초', date: '2023-07-05', category: '과학', cardCount: '15', author: '사과' },
+  ],
+  '경제 · 경영': [],
 };
 
 const CategoryItem = ({ title, onClick }) => {
@@ -248,12 +252,12 @@ const NoteItem = ({ title, date, category, cardCount, author }) => {
   );
 };
 
-const AllCategory = ({ onBackClick }) => {
-  const [selectedCategory, setSelectedCategory] = useState(null);
+const AllCategory = ({ selectedCategory, onBackClick }) => {
+  const [currentCategory, setCurrentCategory] = useState(selectedCategory || null);
   const [showSortMenu, setShowSortMenu] = useState(false);
 
   const handleCategoryClick = (category) => {
-    setSelectedCategory(category);
+    setCurrentCategory(category);
   };
 
   const toggleSortMenu = () => {
@@ -268,13 +272,13 @@ const AllCategory = ({ onBackClick }) => {
   return (
     <CategoryItemsContainer>
       <AllCategoryTitleDiv>
-        {selectedCategory ? (
+        {currentCategory ? (
           <>
-            <BackButton onClick={() => setSelectedCategory(null)}>
+            <BackButton onClick={() => setCurrentCategory(null)}>
               ← 뒤로 가기
             </BackButton>
             <AllCategoryText>
-              {selectedCategory}
+              {currentCategory}
             </AllCategoryText>
           </>
         ) : (
@@ -285,7 +289,7 @@ const AllCategory = ({ onBackClick }) => {
         )}
       </AllCategoryTitleDiv>
 
-      {!selectedCategory ? (
+      {!currentCategory ? (
         <CategoryItems>
           {categories.map((category, index) => (
             <CategoryItem
@@ -297,33 +301,33 @@ const AllCategory = ({ onBackClick }) => {
         </CategoryItems>
       ) : (
         <>
-        <SortMenu>
-              <SortHeader onClick={toggleSortMenu}>
+          <SortMenu>
+            <SortHeader onClick={toggleSortMenu}>
               <SortIcon src={sortIcon} alt="정렬" />정렬
-              </SortHeader>
-              {showSortMenu && (
-                <SortDropdown>
-                  <SortDropdownItem onClick={() => handleSortSelection('노트 이름 ↑')}>노트 이름 ↑</SortDropdownItem>
-                  <SortDropdownItem onClick={() => handleSortSelection('노트 이름 ↓')}>노트 이름 ↓</SortDropdownItem>
-                  <SortDropdownItem onClick={() => handleSortSelection('업로드일 - 최신 순')}>업로드일 - 최신 순</SortDropdownItem>
-                  <SortDropdownItem onClick={() => handleSortSelection('업로드일 - 오래된 순')}>업로드일 - 오래된 순</SortDropdownItem>
-                  <SortDropdownItem onClick={() => handleSortSelection('다운로드 수 ↑')}>다운로드 수 ↑</SortDropdownItem>
-                </SortDropdown>
-              )}
-            </SortMenu>
+            </SortHeader>
+            {showSortMenu && (
+              <SortDropdown>
+                <SortDropdownItem onClick={() => handleSortSelection('노트 이름 ↑')}>노트 이름 ↑</SortDropdownItem>
+                <SortDropdownItem onClick={() => handleSortSelection('노트 이름 ↓')}>노트 이름 ↓</SortDropdownItem>
+                <SortDropdownItem onClick={() => handleSortSelection('업로드일 - 최신 순')}>업로드일 - 최신 순</SortDropdownItem>
+                <SortDropdownItem onClick={() => handleSortSelection('업로드일 - 오래된 순')}>업로드일 - 오래된 순</SortDropdownItem>
+                <SortDropdownItem onClick={() => handleSortSelection('다운로드 수 ↑')}>다운로드 수 ↑</SortDropdownItem>
+              </SortDropdown>
+            )}
+          </SortMenu>
 
-        <NoteContainer>
-          {notesData[selectedCategory].map((note, index) => (
-            <NoteItem
-              key={index}
-              title={note.title}
-              date={note.date}
-              category={note.category}
-              cardCount={note.cardCount}
-              author={note.author}
-            />
-          ))}
-        </NoteContainer>
+          <NoteContainer>
+            {notesData[currentCategory].map((note, index) => (
+              <NoteItem
+                key={index}
+                title={note.title}
+                date={note.date}
+                category={note.category}
+                cardCount={note.cardCount}
+                author={note.author}
+              />
+            ))}
+          </NoteContainer>
         </>
       )}
     </CategoryItemsContainer>

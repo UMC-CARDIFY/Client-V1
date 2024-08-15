@@ -235,10 +235,18 @@ export const Library = () => {
   const [appliedSearchQuery, setAppliedSearchQuery] = useState('');
   const [showResults, setShowResults] = useState(false);
 
+  const [selectedCategory, setSelectedCategory] = useState(null);
+
+  const handleCategoryClick = (category) => {
+    setSelectedCategory(category);
+    setIsViewAllCategory(true); // 카테고리 선택 시 해당 카테고리 화면으로 이동
+  };
+
   const categories = ['모든 카테고리', '과학', '기술 · 공학', '경제 · 경영', '컴퓨터 · IT', '수학', '언어'];
 
   const handleViewAllCategory = () => {
     setIsViewAllCategory(true);
+    setSelectedCategory(null); // 전체 카테고리 보기로 이동
   };
 
   const toggleDropdown = () => {
@@ -343,7 +351,10 @@ export const Library = () => {
                 </SelectNoteListSection>
               ) : (
                 <>
-                  <RecommendationSection onViewAllClick={handleViewAllCategory} />
+                  <RecommendationSection 
+                    onViewAllClick={handleViewAllCategory} 
+                    onCategoryClick={handleCategoryClick} // 카테고리 클릭 핸들러 추가
+                  />
 
                   <NoteListSection>
                     <NoteList showAllNotes={false} />
@@ -353,7 +364,11 @@ export const Library = () => {
             </>
           ) : (
             <>
-              <AllCategory onBackClick={() => setIsViewAllCategory(false)} />
+              <AllCategory 
+                selectedCategory={selectedCategory} 
+                onBackClick={() => setIsViewAllCategory(false)} 
+                onCategoryClick={handleCategoryClick} // 선택된 카테고리와 함께 화면 전환
+              />
             </>
           )}
         </ContentArea>
