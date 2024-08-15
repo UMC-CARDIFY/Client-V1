@@ -1,5 +1,5 @@
 import { inputRules, wrappingInputRule, textblockTypeInputRule, InputRule } from 'prosemirror-inputrules';
-import mySchema from './schema';
+import mySchema from '../setup/schema';
 
 function markInputRule(regexp, markType, leadingLength, trailingLength) {
   return new InputRule(regexp, (state, match, start, end) => {
@@ -25,7 +25,7 @@ function markInputRule(regexp, markType, leadingLength, trailingLength) {
 }
 
 // 헤딩 규칙
-const headingRule = textblockTypeInputRule(/^#{1,6}\s$/, mySchema.nodes.heading, match => ({ level: match[0].length }));
+const headingRule = textblockTypeInputRule(/^#{1,3}\s$/, mySchema.nodes.heading, match => ({ level: match[0].length - 1 }));
 
 // 불렛 리스트 규칙: 'list_item'으로 수정
 const bulletListRule = wrappingInputRule(/^\s*([-+*])\s$/, mySchema.nodes.bullet_list);
