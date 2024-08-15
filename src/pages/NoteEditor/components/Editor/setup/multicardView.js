@@ -137,7 +137,7 @@ class MultiCardView {
 
     const containerDiv = document.createElement('div');
     containerDiv.style.display = 'flex';
-    containerDiv.style.alignItems = 'center';  // 불렛과 텍스트를 수직으로 정렬
+    containerDiv.style.alignItems = 'center';
 
     const answerDiv = document.createElement('div');
     answerDiv.className = 'answer';
@@ -185,8 +185,14 @@ class MultiCardView {
             selection.addRange(range);
 
             newAnswerDiv.focus(); // 새로 추가된 answerDiv로 포커스 이동
+        } else if (event.key === 'Backspace' && answerDiv.innerText.trim() === '') {
+            event.preventDefault(); // 기본 백스페이스 동작 방지
+            if (this.answerDivs.length > 1) { // answerDiv가 최소 하나 남아있어야 함
+                this.removeAnswerDiv(answerDiv, containerDiv); // `answerDiv` 삭제
+            }
         }
     });
+
     return answerDiv; // 추가된 answerDiv를 반환
   }
 
@@ -194,8 +200,15 @@ class MultiCardView {
     const transaction = this.view.state.tr.delete(this.getPos(), this.getPos() + this.node.nodeSize);
     this.view.dispatch(transaction);
   }
-
-
+  removeAnswerDiv(answerDiv, containerDiv) {
+    const index = this.answerDivs.indexOf(answerDiv);
+    if (index > -1) {
+        this.answerDivs.splice(index, 1);
+        containerDiv.remove(); // DOM에서 해당 컨테이너 삭제
+        this.updateAttrs(); // 속성 업데이트
+    }
+  }
+  
   updateAttrs() {
       const question = this.questionDiv.innerText.trim();
       const answer = this.answerDivs.map(div => div.innerText.trim());
