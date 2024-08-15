@@ -6,47 +6,34 @@
   import FolderModal from './FolderModal';
   import MoreDiv from './MoreDiv';
   import DeleteConfirmModal from './DeleteConfirmModal';
-import { getFolders } from '../../../api/archive/getFolders';
+    import { getFolders } from '../../../api/archive/getFolders';
+  import { getNotes } from '../../../api/archive/getNotes';
+  import { getFolderSort } from '../../../api/archive/getFolderSort';
+  import SortDropdown from './SortDropdown';
+import FilteringDropdown from './FilteringDropdown';
+  import addFolder from '../../../assets/addFolder.svg'
+  import MarkStateIcon from '../../../assets/markStateIcon.svg';
+  import MarkStateActive from '../../../assets/MarkStateActive.svg';
+  import Folder from '../../../assets/folder.svg';
+  import Note from '../../../assets/note.svg';
 
-  const FrameBackground = styled.div`
-    background: #F9F9F9;
-    display: flex;
-    width: 105rem;
-    height: 55.75rem;
-    padding: var(--UI-Component-None, 5rem) var(--UI-Component-None, 8rem);
-    justify-content: center;
-    align-items: center;
-    flex-shrink: 0;
-    background: #F0F0F0;
 
-    @media (max-width: 1440px) {
-    width: 77.625rem;
-    height: 53.375rem;
-    padding: var(--UI-Component-None, 5.5rem) var(--UI-Component-None, 5rem);
-    }
-
-    @media (max-width: 1200px) {
-    width: 68rem;
-    height: 41.8125rem;
-    padding: var(--UI-Component-None, 3.5rem) var(--UI-Component-None, 4rem);
-    }
-      `;
 
   const FrameContainer = styled.div`
     width: 89rem;
     height: 50.75rem;
-    margin: 5rem auto;
     padding: 0 5.5rem;
     display: flex;
     flex-direction: column; 
     background: #FFF;
     box-shadow: 0px 4px 26.7px 0px rgba(0, 0, 0, 0.02), 0px 10px 60px 0px rgba(0, 74, 162, 0.03);
+    border-radius: 0.75rem;
 
-  @media (max-width: 1440px) {
+  @media (min-width: 1440px) and (max-width: 1680px){
     width: 67.625rem;
   }
 
-  @media (max-width: 1200px) {
+  @media (max-width: 1440px) {
     width: 60rem;
     height: 39.8125rem;
   }
@@ -164,47 +151,24 @@ display: flex;
 gap: 0.5rem;
 margin-bottom: 1rem;
 `;
-const SortDiv = styled.div`
-display: flex;
-width: 4.3125rem;
-height: 1.875rem;
-padding: 0.1875rem 0.4375rem;
-justify-content: center;
-align-items: center;
-gap: 0.375rem;
-background: #F3F3F3;
-color: var(--Grays-Black, #1A1A1A);
-font-family: Pretendard;
-font-size: 0.875rem;
-font-style: normal;
-font-weight: 500;
-line-height: normal;
-cursor: pointer;
-`;
-const FiteringDiv = styled(SortDiv)`
-width: 4.875rem;
-height: 1.875rem;
-padding: 0.1875rem 0.4375rem 0.1875rem 0.3125rem;
-gap: 0.3125rem;
-`;
-const AddFolderDiv = styled(SortDiv)`
-width: 5.875rem;
+
+const AddFolderDiv = styled.div`  
 height: 1.875rem;
 padding: 0.1875rem 0.4375rem 0.1875rem 0.375rem;
 gap: 0.3125rem;
+display: flex;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+  border-radius: 0.5rem;
+  background-color: #ECEFF4;
+  box-shadow: 0px 4px 26px 0px rgba(0, 0, 0, 0.02), 0px 10px 60px 0px rgba(0, 74, 162, 0.03);
+  border-radius: 0.3125rem;
 `;
-const SortIcon = styled.div`
-width: 1.5rem;
-height: 1.5rem;
-flex-shrink: 0;
-background: url(<path-to-image>) lightgray 50% / cover no-repeat;
+
+const Icon = styled.img`
 `;
-const FilteringIcon = styled(SortIcon)`
-background: url(<path-to-image>) lightgray 50% / cover no-repeat;
-`;
-const AddFolderIcon = styled(SortIcon)`
-background: url(<path-to-image>) lightgray 50% / cover no-repeat;
-`;
+
 
 const Contour = styled.div`
 width: 100%;
@@ -214,9 +178,9 @@ margin-bottom: 1rem;
 `;
 
 
-
 const Frame = ({ selectedTab }) => {
   const [folders, setFolders] = useState([]);
+  const [notes, setNotes] = useState([]);
 
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 6;
@@ -228,6 +192,9 @@ const Frame = ({ selectedTab }) => {
   const [deleteItem, setDeleteItem] = useState(null);
 
   const moreDivRefs = useRef([]);
+
+
+  const [sortOption, setSortOption] = useState('');
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -242,20 +209,44 @@ const Frame = ({ selectedTab }) => {
     };
   }, []);
 
+
   useEffect(() => {
     const fetchFolders = async () => {
       try {
-        const data = await getFolders();
-        setFolders(data.foldersList);
+        let data;
+
+        if (sortOption) {
+          data = await getFolderSort(sortOption);
+          console.log(sortOption)
+          setFolders(data.sortFoldersList); 
+        } else {
+          data = await getFolders();
+          setFolders(data.foldersList);
+        }
       } catch (error) {
         console.error('Failed to fetch folders:', error);
       }
     };
 
     fetchFolders();
+  }, [sortOption]); 
+
+  useEffect(() => {
+    const fetchNotes = async () => {
+      try {
+        const data = await getNotes();
+        setNotes(data.notesList);
+      } catch (error) {
+        console.error('Failed to fetch notes:', error);
+      }
+    };
+
+    fetchNotes();
   }, []);
 
-  const currentData = folders.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
+  const currentData = selectedTab === '폴더'
+  ? folders && folders.length > 0 ? folders.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage) : []
+  : notes && notes.length > 0 ? notes.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage) : [];
 
   const handlePageChange = ({ selected }) => {
     setCurrentPage(selected);
@@ -302,23 +293,26 @@ const Frame = ({ selectedTab }) => {
     closeDeleteModal();
   };
 
+  const handleClick = () => {
+    // setIsFavorite(!isFavorite);
+  };
+
+  const handleSortOptionClick = (option) => {
+    console.log(`Selected sort option in ParentComponent: ${option}`);
+    setSortOption(option);
+  };
+
   return (
-    <FrameBackground>
       <FrameContainer>
         <TitleAll style={{ paddingTop: '3rem' }}>{selectedTab === '폴더' ? '모든 폴더' : '모든 노트'}</TitleAll>
           <SelectFilterDiv>
-          <SortDiv>
-            <SortIcon />
-            <div>정렬</div>
-          </SortDiv>
+          <SortDropdown onSortOptionClick={handleSortOptionClick} />
           {selectedTab === '폴더' && (
             <>
-            <FiteringDiv>
-                <FilteringIcon />
-                <div>필터링</div>
-              </FiteringDiv>
+              <FilteringDropdown />
+
               <AddFolderDiv onClick={openAddModal}>
-                <AddFolderIcon />
+                <Icon src={addFolder} />
                 <div>폴더 추가</div>
               </AddFolderDiv>
             </>
@@ -331,8 +325,12 @@ const Frame = ({ selectedTab }) => {
             selectedTab === '폴더' ? (
               <FolderData key={index}>
                 <LeftData>
-                  <div>즐겨찾기</div>
-                  <div>아이콘</div>
+                <Icon
+                  src={item.markState === 'ACTIVE' ? MarkStateActive : MarkStateIcon}
+                  alt='즐겨찾기'
+                  onClick={() => handleClick(item)}
+                />
+                  <Icon src={Folder} alt='폴더 아이콘'/>
                   <Line />
                   <div style={{ display: 'flex', flexDirection: 'column' }}>
                     <div>{item.name}</div>
@@ -348,7 +346,7 @@ const Frame = ({ selectedTab }) => {
                   </div>
                   <Line />
                   <div>
-                    <div>{item.editDate}</div>
+                    <div>{item.editDate.split('T')[0]}</div>
                     <div>최근 수정일</div>
                   </div>
 
@@ -365,24 +363,28 @@ const Frame = ({ selectedTab }) => {
             ) : (
               <NoteData key={index}>
                 <LeftData>
-                  <div>즐겨찾기</div>
-                  <div>아이콘</div>
+                <Icon
+                  src={item.markState === 'ACTIVE' ? MarkStateActive : MarkStateIcon}
+                  alt='즐겨찾기'
+                  onClick={() => handleClick(item)}
+                />
+                  <Icon src={Note} alt='노트 아이콘'/>
                   <Line />
                   <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <div>{item.noteTitle}</div>
-                    <div>노트 제목</div>
+                    <div>{item.name}</div>
+                    <div>노트</div>
                   </div>
                 </LeftData>
                 <FlexSpacer />
                 <RightData>
                   <Line />
                   <div>
-                    <div>{item.category}</div>
-                    <div>카테고리</div>
+                    <div>{item.createdAt.split('T')[0]}</div>
+                    <div>노트 생성일</div>
                   </div>
                   <Line />
                   <div>
-                    <div>{item.modifiedDate}</div>
+                    <div>{item.editDate.split('T')[0]}</div>
                     <div>최근 수정일</div>
                   </div>
                   <MoreDiv
@@ -448,7 +450,6 @@ const Frame = ({ selectedTab }) => {
           itemName={deleteItem ? (deleteItem.type === 'folder' ? deleteItem.folderName : deleteItem.noteTitle) : ''}
         />
       </FrameContainer>
-    </FrameBackground>
   );
 };
 
