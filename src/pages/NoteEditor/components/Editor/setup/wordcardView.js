@@ -23,7 +23,7 @@ class WordCardView {
     this.dom.style.flexDirection = 'column';
     this.dom.style.gap = '1.19rem';
     this.dom.style.marginTop = '1.19rem';
-    this.dom.style.position = 'relative'; // 우측 상단에 미리보기 버튼을 위치시키기 위해 position 속성 추가
+    this.dom.style.position = 'relative';
 
     // 컨테이너 호버 시 이벤트 처리
     this.dom.addEventListener('mouseover', () => {
@@ -92,19 +92,19 @@ class WordCardView {
     this.questionDiv.contentEditable = true;
     this.questionDiv.style.color = this.node.attrs.question ? '#000' : '#aaa';
     this.questionDiv.style.outline = 'none';
-    this.questionDiv.innerText = node.attrs.question || '문제를 입력하세요';
+    this.questionDiv.innerText = node.attrs.question || '카드 앞면';
     this.dom.appendChild(this.questionDiv);
 
     // question 이벤트 핸들러
     this.questionDiv.addEventListener('focus', () => {
-        if (this.questionDiv.innerText === '문제를 입력하세요') {
+        if (this.questionDiv.innerText === '카드 앞면') {
           this.questionDiv.innerText = '';
           this.questionDiv.style.color = '#000';
         }
       });
     this.questionDiv.addEventListener('blur', () => {
         if (this.questionDiv.innerText === '') {
-          this.questionDiv.innerText = '문제를 입력하세요';
+          this.questionDiv.innerText = '카드 앞면';
           this.questionDiv.style.color = '#aaa';
         }
       });
@@ -113,7 +113,7 @@ class WordCardView {
       this.questionDiv.addEventListener('keydown', (event) => {
         const content = this.questionDiv.innerText.trim();
         if (event.key === 'Backspace') {
-            if (content === '문제를 입력하세요') {
+            if (content === '카드 앞면') {
                 event.preventDefault(); 
                 event.stopPropagation(); // 이벤트 전파 중단
             } else {
@@ -123,25 +123,38 @@ class WordCardView {
     });
 
     // 카드 answer(뒷면) div
+    const containerDiv = document.createElement('div');
+    containerDiv.style.display = 'flex';
+    containerDiv.style.alignItems = 'center';
+
+    this.arrowDiv = document.createElement('div');
+    this.arrowDiv.className = 'arrow';
+    this.arrowDiv.style.color = '#000';
+    this.arrowDiv.style.marginRight = '0.5rem';
+    this.arrowDiv.innerText = '→';
+
     this.answerDiv = document.createElement('div');
     this.answerDiv.className = 'answer';
     this.answerDiv.contentEditable = true;
     this.answerDiv.style.color = this.node.attrs.answer[0] ? '#000' : '#aaa';
-    this.answerDiv.style.outline = 'none';  // 포커스 시 테두리 제거
-    this.answerDiv.innerHTML = `<span contenteditable="false" style="color: #000;">→ </span>${this.node.attrs.answer[0] || '정답을 입력하세요'}`;
-    this.dom.appendChild(this.answerDiv);
+    this.answerDiv.style.outline = 'none'; 
+    this.answerDiv.innerText = this.node.attrs.answer[0] || '카드 뒷면';
+
+    containerDiv.appendChild(this.arrowDiv);
+    containerDiv.appendChild(this.answerDiv); 
+    this.dom.appendChild(containerDiv);
 
     // answer 이벤트 핸들러
     this.answerDiv.addEventListener('focus', () => {
-        if (this.answerDiv.innerText.trim() === '→ 정답을 입력하세요') {
-          this.answerDiv.innerHTML = `<span contenteditable="false" style="color: #000;">→ </span>`;
+        if (this.answerDiv.innerText.trim() === '카드 뒷면') {
+          this.answerDiv.innerText = '';
           this.answerDiv.style.color = '#000';
         }
       });
 
       this.answerDiv.addEventListener('blur', () => {
-        if (this.answerDiv.innerText.trim() === '→') {
-          this.answerDiv.innerHTML = `<span contenteditable="false" style="color: #000;">→ </span>정답을 입력하세요`;
+        if (this.answerDiv.innerText.trim() === '') {
+          this.answerDiv.innerText = '카드 뒷면';
           this.answerDiv.style.color = '#aaa';
         }
         this.updateAttrs(); // Blur 이벤트 발생 시 속성 업데이트
@@ -149,19 +162,12 @@ class WordCardView {
 
       this.answerDiv.addEventListener('keydown', (event) => {
         const content = this.answerDiv.innerText.trim();
-        //console.log('Keydown event:', event.key);
-        //console.log('Current content in answerDiv:', content);
         if (event.key === 'Backspace') {
-            if (content === '→' || content === '→ 정답을 입력하세요') {
-                //console.log('Preventing backspace from deleting arrow or placeholder text.');
-                event.preventDefault(); // 화살표와 기본 텍스트가 지워지는 것을 막음
-            } else if (content.length === 2) { // '→ '만 남아있을 때
-                //console.log('Resetting answerDiv to default content.');
-                this.answerDiv.innerHTML = `<span contenteditable="false" style="color: #000;">→ </span>`;
-                event.preventDefault();
-            } else {
-                console.log('Allowing backspace to delete text.');
-                return; // 기본 백스페이스 동작을 허용하여 텍스트를 지우도록 함
+            if (content === '' || content === '카드 뒷면') {
+                event.preventDefault(); // 기본 백스페이스 동작 방지
+                this.answerDiv.innerText = ''; // 화살표와 기본 텍스트가 지워지는 것을 막음
+                this.answerDiv.style.color = '#aaa';
+                this.answerDiv.innerText = '카드 뒷면';
             }
         }
     });
@@ -178,7 +184,7 @@ class WordCardView {
 
   updateAttrs() {
     const question = this.questionDiv.innerText.trim();
-    const answer = [this.answerDiv.innerText.trim().replace(/^→\s*/, '')];
+    const answer = [this.answerDiv.innerText.trim()];
 
     if (question !== this.node.attrs.question || answer[0] !== this.node.attrs.answer[0]) {
       this.view.dispatch(
@@ -195,7 +201,7 @@ class WordCardView {
       this.questionDiv.innerText = node.attrs.question;
     }
     if (node.attrs.answer[0] !== this.node.attrs.answer[0]) {
-      this.answerDiv.innerHTML = `<span contenteditable="false" style="color: #000;">→ </span>${node.attrs.answer}`;
+      this.answerDiv.innerText = node.attrs.answer[0];
     }
     this.node = node;
     return true;
