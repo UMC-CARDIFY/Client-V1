@@ -54,17 +54,24 @@ const Divider = styled.div`
   background: #CACACA;
 `;
 
+const Divider2 = styled.div`
+  width: 13rem;
+  height: 0.03125rem;
+  background: #CACACA;
+  margin-top: 0.5rem;
+  margin-bottom: 0.25rem;
+`;
+
 const FavoriteContainer = styled.div`
-border: 1px solid red;
-  margin-bottom: 0.5rem;
+
 `;
 
 const FavoriteTitle = styled.div`
   margin-top: 0.25rem;
   display: flex;
   width: 13rem;
-  align-items: center; /* 아이템들을 세로로 가운데 정렬 */
-  gap: 0.5rem; /* 아이콘과 텍스트 사이의 간격 조정 */
+  align-items: center; 
+  gap: var(--UI-Component-xxxxxS, 0.25rem);
   color: var(--Grays-Gray2, #767676);
   font-family: Pretendard;
   font-size: 0.75rem;
@@ -83,19 +90,18 @@ const StarIcon = styled.div`
 const NoteContainer = styled.div`
   display: flex;
   flex-direction: column;
-  margin-top: 0.5rem;
 `;
 
 const NoteList = styled.div`
   width: 13rem;
   display: flex;
-  padding: 0.5rem 0.25rem;
+  padding: 0.5rem 0;
   align-items: center;
   gap: 0.5rem;
+  margin-top: var(--UI-Component-xxxxxS, 0.25rem);
   align-self: stretch;
   cursor: pointer;
-  transition: background-color 0.3s;
-    border-radius: 0.5rem;
+  border-radius: 0.5rem;
   overflow: hidden;
   color: var(--Grays-Gray1, #646464);
   text-overflow: ellipsis;
@@ -335,11 +341,8 @@ const MenuBar = ({ isCollapsed, toggleMenuBar, selectedFolderId }) => {
       <FavoriteContainer>
         <FavoriteTitle>
           <StarIcon>
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="13" viewBox="0 0 14 13" fill="none">
-              <path
-                d="M6.99984 10.2526L3.42254 12.1331C3.20245 12.2488 2.94523 12.0619 2.98726 11.8168L3.67051 7.83327L0.775311 5.01224C0.597204 4.8387 0.69544 4.53626 0.941531 4.5005L4.94118 3.91927L6.73079 0.294246C6.84086 0.0713016 7.15878 0.0713218 7.26882 0.294281L9.05784 3.91927L13.0576 4.50051C13.3036 4.53627 13.4019 4.83868 13.2238 5.01223L10.3292 7.83327L11.013 11.8168C11.0551 12.0619 10.7979 12.2488 10.5777 12.1331L6.99984 10.2526Z"
-                fill="#FFD338"
-              />
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <path d="M15.9998 20.2526L12.4225 22.1331C12.2024 22.2488 11.9452 22.0619 11.9873 21.8168L12.6705 17.8333L9.77531 15.0122C9.5972 14.8387 9.69544 14.5363 9.94153 14.5005L13.9412 13.9193L15.7308 10.2942C15.8409 10.0713 16.1588 10.0713 16.2688 10.2943L18.0578 13.9193L22.0576 14.5005C22.3036 14.5363 22.4019 14.8387 22.2238 15.0122L19.3292 17.8333L20.013 21.8168C20.0551 22.0619 19.7979 22.2488 19.5777 22.1331L15.9998 20.2526Z" fill="#FFD338"/>
             </svg>
           </StarIcon>
           즐겨찾기 한 항목
@@ -358,7 +361,7 @@ const MenuBar = ({ isCollapsed, toggleMenuBar, selectedFolderId }) => {
         </NoteContainer>
       </FavoriteContainer>
 
-      <Divider />
+      <Divider2 />
 
       <NoteContainer>
         {notes.filter((note) => !note.isFavorite).map((note) => (
@@ -374,10 +377,13 @@ const MenuBar = ({ isCollapsed, toggleMenuBar, selectedFolderId }) => {
       </NoteContainer>
 
       <AddButton onClick={handleAddNote}>
-        <PlusIcon><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-  <rect x="4.16699" y="9.58325" width="11.6667" height="1" fill="#646464"/>
-  <rect x="10.417" y="4.16675" width="11.6667" height="1" transform="rotate(90 10.417 4.16675)" fill="#646464"/>
-</svg></PlusIcon>추가
+        <PlusIcon>
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <rect x="4.16699" y="9.58325" width="11.6667" height="1" fill="#646464"/>
+          <rect x="10.417" y="4.16675" width="11.6667" height="1" transform="rotate(90 10.417 4.16675)" fill="#646464"/>
+          </svg>
+        </PlusIcon>
+        추가
       </AddButton>
 
       <BackButtonDiv>
