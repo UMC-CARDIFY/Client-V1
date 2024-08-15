@@ -167,7 +167,6 @@ const CustomCheckbox = styled.div`
   `}
 `;
 
-
 const SearchButton = styled.button`
   width: 5.5625rem;
   height: 4.3125rem;
@@ -185,7 +184,17 @@ const NoteListSection = styled.div`
   padding: 1rem;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: auto;
 `;
+
+const SelectNoteListSection = styled.div`
+  background: #fff;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: auto;
+  height: 29.4375rem;
+  `;
 
 const SelectedCategoriesWrapper = styled.div`
   display: flex;
@@ -193,6 +202,7 @@ const SelectedCategoriesWrapper = styled.div`
   flex-wrap: wrap;
   margin-top: 0.81rem;
   margin-bottom: 1.56rem;
+  height: 1.5rem; /* 고정된 높이 설정 */
 `;
 
 const SelectedCategoryTag = styled.div`
@@ -223,8 +233,9 @@ export const Library = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [appliedCategories, setAppliedCategories] = useState([]);
   const [appliedSearchQuery, setAppliedSearchQuery] = useState('');
+  const [showResults, setShowResults] = useState(false);
 
-  const categories = ['모든 카테고리', '과학', '기술 · 공학', '경제 · 경영', '컴퓨터 · IT', '언어'];
+  const categories = ['모든 카테고리', '과학', '기술 · 공학', '경제 · 경영', '컴퓨터 · IT', '수학', '언어'];
 
   const handleViewAllCategory = () => {
     setIsViewAllCategory(true);
@@ -263,6 +274,7 @@ export const Library = () => {
     setAppliedCategories([...selectedCategories]);
     setAppliedSearchQuery(searchQuery);
     setIsDropdownOpen(false);
+    setShowResults(true);
   };
 
   return (
@@ -307,7 +319,7 @@ export const Library = () => {
               </SearchSection>
 
               <SelectedCategoriesWrapper>
-                {appliedCategories.map((category, index) =>
+                {selectedCategories.map((category, index) =>
                   category !== '모든 카테고리' ? (
                     <SelectedCategoryTag key={index}>
                       <RemoveButton onClick={() => removeCategory(category)}>
@@ -319,11 +331,19 @@ export const Library = () => {
                 )}
               </SelectedCategoriesWrapper>
 
-              <RecommendationSection onViewAllClick={handleViewAllCategory} />
+              {showResults ? (
+                <SelectNoteListSection>
+                  <NoteList searchQuery={appliedSearchQuery} categories={appliedCategories} />
+                </SelectNoteListSection>
+              ) : (
+                <>
+                  <RecommendationSection onViewAllClick={handleViewAllCategory} />
 
-              <NoteListSection>
-                <NoteList searchQuery={appliedSearchQuery} categories={appliedCategories} />
-              </NoteListSection>
+                  <NoteListSection>
+                    <NoteList />
+                  </NoteListSection>
+                </>
+              )}
             </>
           ) : (
             <>
