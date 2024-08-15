@@ -193,8 +193,8 @@ const SelectNoteListSection = styled.div`
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   overflow: auto;
-  height: 29.4375rem;
-  `;
+  height: 32.4375rem; /* 29.4375rem */
+`;
 
 const SelectedCategoriesWrapper = styled.div`
   display: flex;
@@ -247,14 +247,14 @@ export const Library = () => {
 
   const handleCategorySelect = (category) => {
     if (category === '모든 카테고리') {
-      setSelectedCategories([]);
+      setSelectedCategories(['모든 카테고리']);
       setIsDropdownOpen(false);
     } else {
       const isAlreadySelected = selectedCategories.includes(category);
       if (isAlreadySelected) {
         setSelectedCategories(selectedCategories.filter(item => item !== category));
       } else {
-        setSelectedCategories([...selectedCategories, category]);
+        setSelectedCategories([...selectedCategories.filter(cat => cat !== '모든 카테고리'), category]);
       }
     }
   };
@@ -276,6 +276,8 @@ export const Library = () => {
     setIsDropdownOpen(false);
     setShowResults(true);
   };
+
+  const isAllCategoriesSelected = appliedCategories.includes('모든 카테고리') || appliedCategories.length === 0;
 
   return (
     <Container>
@@ -333,14 +335,18 @@ export const Library = () => {
 
               {showResults ? (
                 <SelectNoteListSection>
-                  <NoteList searchQuery={appliedSearchQuery} categories={appliedCategories} />
+                  <NoteList 
+                    searchQuery={appliedSearchQuery} 
+                    categories={appliedCategories} 
+                    showAllNotes={isAllCategoriesSelected}
+                  />
                 </SelectNoteListSection>
               ) : (
                 <>
                   <RecommendationSection onViewAllClick={handleViewAllCategory} />
 
                   <NoteListSection>
-                    <NoteList />
+                    <NoteList showAllNotes={false} />
                   </NoteListSection>
                 </>
               )}
