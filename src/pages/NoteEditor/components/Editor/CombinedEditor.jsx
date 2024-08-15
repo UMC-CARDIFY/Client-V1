@@ -169,7 +169,7 @@ const CombinedEditor = ({ viewRef }) => {
                 return wrapInList(mySchema.nodes.bullet_list)(state, dispatch);
               }
             },
-            'Backspace': (state, dispatch) => (state, dispatch),  
+            'Backspace': (state, dispatch) => handleBackspaceInCard(state, dispatch),  // 백스페이스
           }),
           keymap(baseKeymap),
           history(),
