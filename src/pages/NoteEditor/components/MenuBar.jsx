@@ -29,9 +29,9 @@ const MenuBarContainer = styled.div.withConfig({
 `;
 
 const NowFolderContainer = styled.div`
+  width: 14rem;
   margin-bottom: 0.25rem;
   display: inline-flex;
-  padding: 0.25rem 4.8125rem 0.25rem 0rem;
   align-items: center;
   gap: 0.875rem;
   color: var(--Grays-Gray1, #646464);
@@ -49,13 +49,13 @@ const FolderIcon = styled.div`
 `;
 
 const Divider = styled.div`
-  width: 13rem;
+  width: 14rem;
   height: 0.03125rem;
   background: #CACACA;
 `;
 
 const Divider2 = styled.div`
-  width: 13rem;
+  width: 14rem;
   height: 0.03125rem;
   background: #CACACA;
   margin-top: 0.5rem;
@@ -69,7 +69,7 @@ const FavoriteContainer = styled.div`
 const FavoriteTitle = styled.div`
   margin-top: 0.25rem;
   display: flex;
-  width: 13rem;
+  width: 14rem;
   align-items: center; 
   gap: var(--UI-Component-xxxxxS, 0.25rem);
   color: var(--Grays-Gray2, #767676);
@@ -93,7 +93,7 @@ const NoteContainer = styled.div`
 `;
 
 const NoteList = styled.div`
-  width: 13rem;
+  width: 14rem;
   display: flex;
   padding: 0.5rem 0;
   align-items: center;
@@ -177,6 +177,14 @@ const PushButton = styled.div`
   height: 2.5rem;
   cursor: pointer;
   flex-shrink: 0;
+`;
+
+const ContentContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* 가로 방향으로 가운데 정렬 */
+  padding-bottom: 2rem; /* 추가 버튼 위의 여백을 위해 추가 */
+  width: 100%;
 `;
 
 const colorMap = {
@@ -322,6 +330,7 @@ const MenuBar = ({ isCollapsed, toggleMenuBar, selectedFolderId }) => {
           </svg>
         )}
       </PushButton>
+      <ContentContainer>
 
       <NowFolderContainer>
         <FolderIcon>
@@ -375,6 +384,7 @@ const MenuBar = ({ isCollapsed, toggleMenuBar, selectedFolderId }) => {
           </NoteList>
         ))}
       </NoteContainer>
+      </ContentContainer>
 
       <AddButton onClick={handleAddNote}>
         <PlusIcon>
