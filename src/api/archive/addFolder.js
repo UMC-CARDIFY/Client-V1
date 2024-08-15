@@ -17,3 +17,5 @@ export const addFolder = async (data) => {
     }
 
 };
+
+export default addFolder;

@@ -11,3 +11,5 @@ export const getFolders = async () => {
   }
 
 };
+
+export default getFolders;

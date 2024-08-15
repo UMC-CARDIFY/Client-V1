@@ -6,24 +6,29 @@ import PropTypes from 'prop-types';
 import FolderModal from './FolderModal';
 import MoreDiv from './MoreDiv';
 import DeleteConfirmModal from './DeleteConfirmModal';
-  import { getFolders } from '../../../api/archive/getFolders';
-import { getNotes } from '../../../api/archive/getNotes';
-import { getFolderSort } from '../../../api/archive/getFolderSort';
-import { deleteFolder } from '../../../api/archive/deleteFolder';
-import { editFolder } from '../../../api/archive/editFolder';
-import { deleteNote } from '../../../api/archive/deleteNote';
-import { markFolder } from '../../../api/archive/markFolder';
-import { getNoteToFolder } from '../../../api/archive/getNoteToFolder';
+import { 
+  getFolders, 
+  getNotes, 
+  getFolderSort, 
+  deleteFolder, 
+  editFolder, 
+  deleteNote, 
+  markFolder, 
+  markNote, 
+  getNoteToFolder, 
+  addFolder,
+  getNoteSort
+} from '../../../api/archive';
+
+
 import SortDropdown from './SortDropdown';
 import FilteringDropdown from './FilteringDropdown';
-import addFolder from '../../../assets/addFolder.svg'
 import MarkStateIcon from '../../../assets/markStateIcon.svg';
 import MarkStateActive from '../../../assets/MarkStateActive.svg';
-import Folder from '../../../assets/folder.svg';
 import Note from '../../../assets/note.svg';
-import AddFolder from '../../../assets/addFolder.svg';
 import FolderIcon from './FolderIcon';
 import { useNavigate } from 'react-router-dom';
+import addFoldersvg from '../../../assets/addFoldersvg.svg';
 
 
 const FrameContainer = styled.div`
@@ -225,6 +230,20 @@ const moreDivRefs = useRef([]);
 
 const [sortOption, setSortOption] = useState('');
 
+const colorMap = {
+  blue1: '#6698F5',
+  ocean: '#5AA6C7',
+  lavedar: '#949AEC',
+  gray: '#A9A9A9',
+  mint: '#77CEC6',
+  sage: '#AECA99',
+  orange: '#FDB456',
+  plum: '#D49AE9',
+  coral: '#FD855F',
+  rose: '#ED83B1'
+};
+
+
 useEffect(() => {
   const handleClickOutside = (event) => {
     if (moreDivRefs.current.every(ref => ref && !ref.contains(event.target))) {
@@ -240,38 +259,34 @@ useEffect(() => {
 
 
 useEffect(() => {
-  const fetchFolders = async () => {
+  const fetchData = async () => {
     try {
       let data;
 
-      if (sortOption) {
-        data = await getFolderSort(sortOption);
-        console.log(sortOption)
-        setFolders(data.foldersList); 
-      } else {
-        data = await getFolders();
-        setFolders(data.foldersList);
+      if (selectedTab === '폴더') {
+        if (sortOption) {
+          data = await getFolderSort(sortOption); // 폴더 정렬 API 호출
+        } else {
+          data = await getFolders(); // 폴더 목록 API 호출
+        }
+        setFolders(data.foldersList); // 폴더 데이터를 상태로 저장
+      } else if (selectedTab === '노트') {
+        if (sortOption) {
+          data = await getNoteSort(sortOption); // 노트 정렬 API 호출
+        } else {
+          data = await getNotes(); // 노트 목록 API 호출
+        }
+        console.log('API Response:', data); // API 응답 구조를 확인
+        setNotes(data.noteList); // 데이터 구조에 맞게 상태 업데이트
       }
     } catch (error) {
-      console.error('Failed to fetch folders:', error);
+      console.error('Failed to fetch data:', error);
     }
   };
 
-  fetchFolders();
-}, [sortOption]); 
+  fetchData();
+}, [sortOption, selectedTab]);
 
-useEffect(() => {
-  const fetchNotes = async () => {
-    try {
-      const data = await getNotes();
-      setNotes(data.noteList);
-    } catch (error) {
-      console.error('Failed to fetch notes:', error);
-    }
-  };
-
-  fetchNotes();
-}, []);
 
 const currentData = selectedTab === '폴더'
   ? (folders?.length > 0 ? folders.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage) : [])
@@ -301,7 +316,13 @@ const closeModal = () => {
   setModalOpen(false);
 };
 
+
+const reverseColorMap = Object.fromEntries(
+  Object.entries(colorMap).map(([key, value]) => [value, key])
+);
+
 const handleFormSubmit = async(formData) => {
+  formData.selectedColor = reverseColorMap[formData.selectedColor] || formData.selectedColor;
   if (isEditMode) {
     console.log('폴더 수정:', formData);
     console.log('폴더 수정:', editItem.folderId);
@@ -401,23 +422,68 @@ const handleMarkStatus = async(item) => {
   }
 };
 
-const handleSortOptionClick = (option) => {
-  console.log(`Selected sort option in ParentComponent: ${option}`);
-  setSortOption(option);
+const handleMarkNoteStatus = async(item) => {
+  console.log('즐겨찾기:', item);
+  try {
+    const markNoteData = await markNote(item.noteId, { markState: item.markState === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE' });
+    console.log(markNoteData);
+  }
+  catch (error) {
+    console.error('Failed to mark note:', error);
+  }
+
+  try{
+    const data = await getNotes();
+    setNotes(data.noteList);
+  }
+  catch (error) {
+    console.error('Failed to fetch notes:', error);
+  }
+
+  if(currentFolderId) {
+  try{
+    const data = await getNoteToFolder(currentFolderId);
+    setFolderNotes(data.noteList);
+  }
+  catch (error) {
+    console.error('Failed to fetch notes:', error);
+  }
+}
 };
 
-// 특정 폴더의 노트를 조회하는 함수
-const MoveFolder = async (folderId) => {
-  setCurrentFolderId(folderId); // 선택된 폴더 ID를 상태에 저장
-  console.log('폴더 이동:', folderId);
+const handleSortOptionClick = (option) => {
+  console.log(`Selected sort option in ParentComponent: ${option}`);
 
+  const [selectedTab, sortOption] = option.split(';');
+
+  if (selectedTab === '폴더') {
+    console.log(`폴더 정렬 옵션: ${sortOption}`);
+    setSortOption(sortOption);
+
+  } else if (selectedTab === '노트') {
+    console.log(`노트 정렬 옵션: ${sortOption}`);
+    setSortOption(sortOption);
+  }
+};
+
+
+// 특정 폴더의 노트를 조회하는 함수
+const MoveFolder = async (item) => {
+  console.log('특정 폴더로 이동:', item);
+  if(item.getNoteCount === 0) {
+    alert('폴더에 노트가 없습니다.');
+    return;
+  }
+  else {
+    setCurrentFolderId(item.folderId); // 선택된 폴더 ID를 상태에 저장
   try {
-    const data = await getNoteToFolder(folderId); // API 호출로 폴더의 노트 조회
+    const data = await getNoteToFolder(item.folderId); // API 호출로 폴더의 노트 조회
     setFolderNotes(data.noteList); // 노트를 상태에 저장
     console.log('폴더의 노트:', data.noteList);
   } catch (error) {
     console.error('Failed to fetch notes:', error);
   }
+}
 };
 
 // 모든 폴더 목록 화면으로 이동하는 함수
@@ -426,13 +492,18 @@ const goBackToFolders = () => {
   setFolderNotes([]); // 폴더 노트 초기화
 };
 
-const MoveToNoteEditor = (noteId) => {
-  console.log('노트 이동:', noteId);
+const MoveToNoteEditor = (item) => {
+  console.log('노트 이동:', item.folderId);
+  const noteId = item.noteId;
+  const folderId = item.folderId;
   // 노트 ID를 이용해 노트 에디터 페이지로 이동
-  navigate('/note-editor', { state: { noteId } });
+  navigate('/note-editor', { state: { noteId, folderId } });
 };
+useEffect(() => {
+    setCurrentFolderId(null);
+    setFolderNotes([]);
 
-
+}, [selectedTab]);
 
 return (
   <FrameContainer>
@@ -446,7 +517,7 @@ return (
         <>
           <FilteringDropdown />
           <AddFolderDiv onClick={openAddModal}>
-            <Icon src={addFolder}/>
+            <Icon src={addFoldersvg}/>
             폴더 추가
           </AddFolderDiv>
         </>
@@ -465,9 +536,9 @@ return (
                   alt='즐겨찾기'
                   onClick={() => handleMarkStatus(item)}
                 />
-                <FolderIcon fill={item.color} />
+                 <FolderIcon fill={colorMap[item.color]} />
                 <Line />
-                <MoveFolderDiv onClick={() => MoveFolder(item.folderId)}>
+                <MoveFolderDiv onClick={() => MoveFolder(item)}>
                   <div>{item.name}</div>
                   <div>폴더</div>
                 </MoveFolderDiv>
@@ -500,11 +571,11 @@ return (
                 <MarkIcon
                   src={item.markState === 'ACTIVE' ? MarkStateActive : MarkStateIcon}
                   alt='즐겨찾기'
-                  onClick={() => handleMarkStatus(item)}
+                  onClick={() => handleMarkNoteStatus(item)}
                 />
                 <Icon src={Note} alt='노트 아이콘'/>
                 <Line />
-                <MoveNoteEditor>
+                <MoveNoteEditor onClick={()=>MoveToNoteEditor(item)}>
                   <div>{item.name}</div>
                   <div>노트</div>
                 </MoveNoteEditor>
@@ -539,11 +610,11 @@ return (
               <MarkIcon
                 src={note.markState === 'ACTIVE' ? MarkStateActive : MarkStateIcon}
                 alt='즐겨찾기'
-                onClick={() => handleMarkStatus(note)}
+                onClick={() => handleMarkNoteStatus(note)}
               />
               <Icon src={Note} alt='노트 아이콘'/>
               <Line />
-              <MoveNoteEditor onClick={()=>MoveToNoteEditor(note.noteId)}>
+              <MoveNoteEditor onClick={()=>MoveToNoteEditor(note)}>
                 <div>{note.name}</div>
                 <div>노트</div>
               </MoveNoteEditor>

@@ -13,3 +13,5 @@ export const getNoteToFolder = async (folderId) => {
     }
 
 };
+
+export default getNoteToFolder;

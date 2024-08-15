@@ -11,3 +11,5 @@ export const deleteFolder = async (folderId) => {
     }
 
 };
+
+export default deleteFolder;
