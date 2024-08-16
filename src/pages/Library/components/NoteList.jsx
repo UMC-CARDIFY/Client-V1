@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import note from '../../../assets/note.svg';
 import userIcon from '../../../assets/userIcon.svg';
 import { getTopNote } from '../../../api/library/getTopNote';
-import { getNoteToCategory } from '../../../api/library/getNoteToCategory';
+import { searchLib } from '../../../api/library/searchLib'; // searchLib API import
 import { useState, useEffect } from 'react';
 
 const NoteItemContainer = styled.div`
@@ -90,7 +90,7 @@ const Line = styled.div`
 
 const NoteItem = ({ noteName, categoryName, cntCard, userName, uploadAt }) => {
   const formattedDate = new Date(uploadAt).toISOString().split('T')[0];
-  const formattedCategoryName = categoryName.join(', ');
+  const formattedCategoryName = Array.isArray(categoryName) ? categoryName.join(', ') : categoryName;
 
   return (
     <NoteItemContainer>
@@ -122,32 +122,9 @@ const NoteItem = ({ noteName, categoryName, cntCard, userName, uploadAt }) => {
   );
 };
 
-const NoteList = ({ categories = [], showAllNotes = false, selectedCategory }) => {
-  const dummyData = [
-    {
-      noteName: 'JLPT N1 단어',
-      categoryName: ['언어'],
-      cntCard: '45',
-      userName: '호두',
-      uploadAt: '2021-09-01',
-    },
-    {
-      noteName: '형렬대수 중간고사 문제',
-      categoryName: ['수학'],
-      cntCard: '',
-      userName: '도라',
-      uploadAt: '2021-09-02',
-    },
-    {
-      noteName: '컴활 필기 1급!!',
-      categoryName: ['컴퓨터 · IT'],
-      cntCard: '39',
-      userName: '체리',
-      uploadAt: '2021-09-03',
-    },
-  ];
-
+const NoteList = ({ searchQuery, categories = [], showAllNotes = false }) => {
   const [notes, setNotes] = useState([]);
+
   useEffect(() => {
     const fetchData = async () => {
       const data = await getTopNote();
@@ -157,30 +134,19 @@ const NoteList = ({ categories = [], showAllNotes = false, selectedCategory }) =
     fetchData();
   }, []);
 
-  const [noteToCategory, setNoteToCategory] = useState([]);
   useEffect(() => {
-    if (selectedCategory) {
-      const fetchData = async () => {
-        const data = await getNoteToCategory(selectedCategory);
-        setNoteToCategory(data);
+      const fetchSearchData = async () => {
+        const data = await searchLib(searchQuery, categories); // 카테고리를 배열로 전달
+        setNotes(data);
         console.log(data);
       };
-      fetchData();
-    }
-  }, [selectedCategory]);
-
-  const filteredNotes = showAllNotes
-    ? dummyData
-    : categories.length > 0
-    ? dummyData.filter(note => categories.includes(note.category))
-    : notes.slice(0, 3); // Show only 3 notes on the first screen
-
-  console.log(showAllNotes);
+      fetchSearchData();
+  }, [searchQuery, categories]);
 
   return (
     <>
-      {filteredNotes.length > 0 ? (
-        filteredNotes.map((note, index) => (
+      {notes.length > 0 ? (
+        notes.map((note, index) => (
           <NoteItem
             key={index}
             noteName={note.noteName}
