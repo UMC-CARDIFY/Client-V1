@@ -27,13 +27,15 @@ const FrameContainer = styled.div`
   background: #FFF;
   box-shadow: 0px 4px 26.7px 0px rgba(0, 0, 0, 0.02), 0px 10px 60px 0px rgba(0, 74, 162, 0.03);
   border-radius: 0.75rem;
+  box-sizing: border-box;
+  position: relative;
 
-  @media (min-width: 1440px) and (max-width: 1680px){
-    width: 67.625rem;
+  @media (min-width: 1440px) and (max-width: 1680px) {
+    max-width: 67.625rem;
   }
 
-  @media (max-width: 1440px){
-    width: 48rem;
+  @media (max-width: 1440px) {
+    max-width: 48rem;
   }
 `;
 
@@ -72,6 +74,14 @@ const Content = styled.div`
   overflow-x: hidden;
 `;
 
+const PaginationContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  position: absolute; 
+  bottom: 0;
+  width: calc(100% - 10rem);
+`;
+
 const Frame = () => {
   const [folders, setFolders] = useState([]);
   const [notes, setNotes] = useState([]);
@@ -91,7 +101,7 @@ const Frame = () => {
 
   // 화면 크기에 따라 페이지 사이즈 결정
   const getPageSize = () => {
-    return window.innerWidth < 1220 ? 5 : 6;
+    return window.innerWidth < 1440 ? 5 : 6;
   };
 
   useEffect(() => {
@@ -215,10 +225,12 @@ const Frame = () => {
           activeMoreDiv={activeMoreDiv}
           moveItem={moveItem}
         />
+         <PaginationContainer>
         <Pagination
           pageCount={pageCount}
           handlePageChange={handlePageChange}
         />
+      </PaginationContainer>
       </Content>
       {showAddModal && <FolderModal type={modalType} item={selectedItem} onClose={closeModal} />}
       {showDeleteModal && <DeleteConfirmModal item={selectedItem} onClose={closeModal} onConfirm={() => {
