@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import WordCardButton from './components/ToolbarItem/WordCardButton';
 import BlankCardButton from './components/ToolbarItem/BlankCardButton';
 import MultiCardButton from './components/ToolbarItem/MultiCardButton';
@@ -46,13 +46,31 @@ const AddTextBlockButton = styled.button`
 
 const ToolBar = ({ addCard, addHeading, toggleBold, onSelectColor, viewRef, onSelectHighlightColor, isCardSelected, onAddTextBlock }) => {
   const [activeDropDown, setActiveDropDown] = useState(null);
+  const dropDownRef = useRef(null);
 
   const handleToggleDropDown = (dropdownName) => {
     setActiveDropDown(prev => prev === dropdownName ? null : dropdownName);
   };
 
+  const handleClickOutside = (event) => {
+    if (dropDownRef.current && !dropDownRef.current.contains(event.target)) {
+      setActiveDropDown(null);
+    }
+  };
+
+  useEffect(() => {
+    if (activeDropDown) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [activeDropDown]);
+
   return (
-    <ToolBarContainer>
+    <ToolBarContainer ref={dropDownRef}>
       <WordCardButton onClick={() => addCard('word_card')} />
       <BlankCardButton onClick={() => addCard('blank_card')} />
       <MultiCardButton onClick={() => addCard('multi_card')} />

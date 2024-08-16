@@ -1,30 +1,11 @@
-import { useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { ColorPaletteItem, ColorDropDownButton, ColorDropDownMenu } from './style/ToolbarStyles';
 import HighlightColorPalette from './ColorPalette/HighlightColorPalette';
 
 const HighlightColorButton = ({ onSelectColor, isOpen, onToggle }) => {
-  const dropDownRef = useRef(null);
-
-  const handleClickOutside = (event) => {
-    if (dropDownRef.current && !dropDownRef.current.contains(event.target)) {
-      onToggle();
-    }
-  };
-
-  useEffect(() => {
-    if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    } else {
-      document.removeEventListener('mousedown', handleClickOutside);
-    }
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isOpen]);
 
   return (
-    <ColorPaletteItem ref={dropDownRef}>
+    <ColorPaletteItem>
       <svg 
         xmlns="http://www.w3.org/2000/svg" 
         width="32" 
@@ -43,7 +24,7 @@ const HighlightColorButton = ({ onSelectColor, isOpen, onToggle }) => {
         </svg>
       </ColorDropDownButton>
       {isOpen && (
-        <ColorDropDownMenu ref={dropDownRef}>
+        <ColorDropDownMenu>
           <HighlightColorPalette onSelectColor={onSelectColor} />
         </ColorDropDownMenu>
       )}
