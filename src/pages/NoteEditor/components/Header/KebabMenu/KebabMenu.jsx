@@ -1,10 +1,11 @@
-import { forwardRef } from 'react';
+import { useState, forwardRef } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import DeleteMenu from './DeleteMenu';
 
 const KebabMenuWrapper = styled.div`
   position: absolute;
-  top: 4.25rem; // 위치 조정
+  top: 4.25rem;
   left: 1.06rem;
   display: flex;
   width: 8.8125rem;
@@ -48,20 +49,30 @@ const DeleteItem = styled(ExportItem)`
 `;
 
 // eslint-disable-next-line react/display-name
-const KebabMenu = forwardRef(({ onShare, onExport, onDelete }, ref) => {
-    return (
+const KebabMenu = forwardRef(({ onShare, onExport, noteId }, ref) => {
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+  return (
+    <>
       <KebabMenuWrapper ref={ref}>
-      <KebabMenuItem onClick={onShare}>공유하기</KebabMenuItem>
-      <ExportItem onClick={onExport}>내보내기</ExportItem>
-      <DeleteItem onClick={onDelete}>삭제</DeleteItem>
-    </KebabMenuWrapper>
+        <KebabMenuItem onClick={onShare}>공유하기</KebabMenuItem>
+        <ExportItem onClick={onExport}>내보내기</ExportItem>
+        <DeleteItem onClick={() => setIsDeleteModalOpen(true)}>삭제</DeleteItem>
+      </KebabMenuWrapper>
+      {isDeleteModalOpen && (
+        <DeleteMenu
+          noteId={noteId}
+          onClose={() => setIsDeleteModalOpen(false)}
+        />
+      )}
+    </>
   );
 });
 
 KebabMenu.propTypes = {
   onShare: PropTypes.func.isRequired,
   onExport: PropTypes.func.isRequired,
-  onDelete: PropTypes.func.isRequired,
+  noteId: PropTypes.number.isRequired,
 };
 
 export default KebabMenu;

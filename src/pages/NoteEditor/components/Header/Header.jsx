@@ -6,7 +6,6 @@ import ExportMenu from './KebabMenu/ExportMenu';
 import ShareMenu from './KebabMenu/ShareMenu';
 //import { useSaveContext } from './SaveContext';
 import { saveNote } from '../../../../api/noteeditor/saveNote'
-import { deleteNote } from '../../../../api/noteeditor/deleteNote';
 import StarButton from './StarButton';
 import SaveButton from './SaveButton';
 import SearchInput from './SearchInput';
@@ -116,32 +115,10 @@ const Header = ({ isMenuCollapsed, toggleMenuBar, editorView = null }) => {
     setIsShareMenuOpen(true);
   };
 
-  const handleDeleteNote = async () => {
-    const token = localStorage.getItem('accessToken');
-
-    if (!token) {
-      alert('토큰이 존재하지 않습니다. 다시 로그인해주세요.');
-      return;
-    }
-
-    try {
-      const response = await deleteNote(noteId, token);
-      if(response.isSuccess) {
-        alert('노트가 삭제되었습니다.');
-        //삭제 후 동작 추가
-      } else {
-        alert('노트 삭제에 실패했습니다.');
-      }
-    } catch (error) {
-      alert('노트 삭제 중 오류가 발생했습니다.');
-      console.error(error);
-    }
-  };
-
   const handleClickOutside = (event) => {
-    if (kebabMenuRef.current && !kebabMenuRef.current.contains(event.target)) {
-      setIsKebabMenuOpen(false);
-    }
+    //if (kebabMenuRef.current && !kebabMenuRef.current.contains(event.target)) {
+      //setIsKebabMenuOpen(false);
+    //}
     if (exportMenuRef.current && !exportMenuRef.current.contains(event.target)) {
       setIsExportMenuOpen(false);
     }
@@ -255,7 +232,7 @@ const Header = ({ isMenuCollapsed, toggleMenuBar, editorView = null }) => {
             ref={kebabMenuRef}
             onShare={handleShareClick}
             onExport={handleExportClick}
-            onDelete={handleDeleteNote}
+            noteId={noteId}
           />
         )}
         {isExportMenuOpen && (
