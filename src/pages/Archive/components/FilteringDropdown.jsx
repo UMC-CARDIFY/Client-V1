@@ -1,59 +1,71 @@
-import styled from 'styled-components';
 import { useState } from 'react';
-import Circle from './Circle';
+import styled from 'styled-components';
+import Circle from './Circle'; // 수정된 Circle 컴포넌트 경로
+import filterIcon from '../../../assets/filterIcon.svg';
 
 const FiteringDiv = styled.div`
-display: flex;
-align-items: center;
-cursor: pointer;
-position: relative;
-border-radius: 0.5rem;
-padding: 0.5rem 1rem;
-background-color: #ECEFF4;
-box-shadow: 0px 4px 26px 0px rgba(0, 0, 0, 0.02), 0px 10px 60px 0px rgba(0, 74, 162, 0.03);
+  display: flex;
+  cursor: pointer;
+  position: relative;
+  padding: 0.1875rem 0.5rem 0.1875rem 0.4375rem;
+  align-items: center;
+  gap: 0.3125rem;
+  border-radius: 0.3125rem;
+  background: var(--Main-Button, #ECEFF4);
+  color: var(--Grays-Black, #1A1A1A);
+  font-family: Pretendard;
+  font-size: 0.875rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
 `;
 
 const Dropdown = styled.div`
-position: absolute;
-top: 100%;
-left: 0;
-width: 100%;
-margin-top: 0.5rem;
-padding: 0.5rem 0;
-border-radius: 0.5rem;
-background-color: white;
-box-shadow: 0px 4px 26px 0px rgba(0, 0, 0, 0.02), 0px 10px 60px 0px rgba(0, 74, 162, 0.03);
-z-index: 10;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 0.5rem;
+  padding: 1rem 1.3rem;
+  z-index: 10;
+  width: 8.25rem;
+  height: 8.5625rem;
+  box-sizing: border-box;
+  border-radius: 0.5rem;
+  border: 1px solid var(--grays-gray-5-divider, #E8E8E8);
+  background: var(--Grays-White, #FFF);
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  color: var(--Grays-Black, #1A1A1A);
+  font-family: Pretendard;
+  font-size: 0.875rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
 `;
 
 const ColorMatrix = styled.div`
+  margin-top: 0.5rem;
   display: grid;
-  grid-template-columns: repeat(4, 1fr); // 4개의 컬럼으로 설정합니다.
-  gap: 0.5rem; // 각 색상 원 사이의 간격을 설정합니다.
+  grid-template-columns: repeat(4, 1fr); 
+  gap: 0.5rem;
 `;
-
-const SortIcon = styled.div`
-width: 1rem;
-height: 1rem;
-background-color: gray;
-margin-right: 0.5rem;
-`;
-
 
 const FilteringDropdown = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedColors, setSelectedColors] = useState([]); // 선택된 색상 배열
 
-
-const [isOpen, setIsOpen] = useState(false);
-const [selectedColor, setSelectedColor] = useState( '#6698F5');
-  
-const toggleDropdown = () => {
-  setIsOpen(!isOpen);
-};
-
-const handleCircleClick = (color) => {
-    setSelectedColor(color);
+  const toggleDropdown = () => {
+    setIsOpen(!isOpen);
   };
 
+  const handleCircleClick = (color) => {
+    setSelectedColors((prevSelectedColors) =>
+      prevSelectedColors.includes(color)
+        ? prevSelectedColors.filter((c) => c !== color) // 선택 해제
+        : [...prevSelectedColors, color] // 선택 추가
+    );
+  };
 
   const colors = [
     "#6698F5", "#5AA6C7", "#949AEC", "#A9A9A9",
@@ -61,29 +73,28 @@ const handleCircleClick = (color) => {
     "#FD855F", "#ED83B1"
   ];
 
-
-
   return (
     <FiteringDiv onClick={toggleDropdown}>
-        <SortIcon />
-        <div>필터링</div> 
-        {isOpen && (
-          <Dropdown>
-            <div>색상</div>
-            <ColorMatrix>
+      <img src={filterIcon} alt="필터 아이콘" />
+      필터링
+      {isOpen && (
+        <Dropdown>
+          <div>색상</div>
+          <ColorMatrix>
             {colors.map((color, index) => (
               <Circle
                 key={index}
                 bgColor={color}
-                isSelected={selectedColor === color}
+                isSelected={selectedColors.includes(color)}
                 onClick={() => handleCircleClick(color)}
+                isFilter={true} // 필터링 드롭다운에서 체크 표시를 활성화
               />
             ))}
           </ColorMatrix>
-          </Dropdown>
-        )}
-      </FiteringDiv>
-  )
-}
+        </Dropdown>
+      )}
+    </FiteringDiv>
+  );
+};
 
-export default FilteringDropdown
+export default FilteringDropdown;

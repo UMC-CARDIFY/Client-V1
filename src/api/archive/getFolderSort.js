@@ -10,3 +10,5 @@ export const getFolderSort = async (order) => {
   }
   
 };
+
+export default getFolderSort;

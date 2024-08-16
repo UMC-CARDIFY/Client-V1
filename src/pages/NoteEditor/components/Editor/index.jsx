@@ -37,22 +37,30 @@ const Editor = ({ setEditorView }) => {
     addCard(viewRef, type);  // viewRef와 type을 전달하여 addCard 호출
   };
 
-  const addHeading1 = () => {
+  const addHeading = (level) => {
     if (!viewRef.current) return;
 
     const { state, dispatch } = viewRef.current;
     const { tr } = state;
 
-    const headingNode = mySchema.nodes.heading.create({ level: 1 }, mySchema.text("헤딩1"));
-    tr.replaceSelectionWith(headingNode);
+    // 헤딩 노드를 생성합니다.
+    const headingNode = mySchema.nodes.heading.create({ level }, mySchema.text(`헤딩${level}`));
 
-    const resolvedPos = tr.doc.resolve(tr.selection.from + 1); 
+    // 헤딩을 포함한 list_item 노드를 생성합니다.
+    const listItemNode = mySchema.nodes.list_item.create(null, headingNode);
+
+    // 현재 선택된 위치에 list_item 노드를 삽입합니다.
+    tr.replaceSelectionWith(listItemNode);
+
+    // 새로운 블록 뒤에 커서를 이동합니다.
+    const resolvedPos = tr.doc.resolve(tr.selection.from + 1);
     const newSelection = TextSelection.create(tr.doc, resolvedPos.pos);
     tr.setSelection(newSelection).scrollIntoView();
 
     dispatch(tr);
     viewRef.current.focus();
-  };
+};
+
 
   const toggleBold = () => {
     if (!viewRef.current) return;
@@ -170,7 +178,7 @@ const Editor = ({ setEditorView }) => {
           <ToolBar 
             viewRef={viewRef} 
             addCard={handleAddCard} // 수정된 addCard 함수 전달
-            addHeading1={addHeading1} 
+            addHeading={addHeading} 
             toggleBold={toggleBold} 
             onSelectColor={onSelectColor} 
             onSelectHighlightColor={onSelectHighlightColor} 

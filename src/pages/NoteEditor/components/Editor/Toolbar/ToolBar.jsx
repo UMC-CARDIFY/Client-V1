@@ -44,17 +44,17 @@ const AddTextBlockButton = styled.button`
   }
 `;
 
-const ToolBar = ({ addCard, addHeading1, toggleBold, onSelectColor, viewRef, onSelectHighlightColor, isCardSelected, onAddTextBlock }) => {
-  console.log("ToolBar isCardSelected:", isCardSelected); // 상태 로그 출력
+const ToolBar = ({ addCard, addHeading, toggleBold, onSelectColor, viewRef, onSelectHighlightColor, isCardSelected, onAddTextBlock }) => {
+  //console.log("ToolBar isCardSelected:", isCardSelected); // 상태 로그 출력
 
   return (
     <ToolBarContainer>
       <WordCardButton onClick={() => addCard('word_card')} />
-      <BlankCardButton onClick={() => addCard('blank')} />
-      <MultiCardButton onClick={() => addCard('multi')} />
-      <ImageCardButton onClick={() => addCard('image')} />
+      <BlankCardButton onClick={() => addCard('blank_card')} />
+      <MultiCardButton onClick={() => addCard('multi_card')} />
+      <ImageCardButton onClick={() => addCard('image_card')} />
       <Divider />
-      <HeadingButton onHeadingSelect={addHeading1} />
+      <HeadingButton addHeading={addHeading} />
       <BoldButton toggleBold={() => toggleBold(viewRef.current)} />
       <Divider />
       <TextColorButton onSelectColor={onSelectColor} editorView={viewRef.current} />
@@ -70,10 +70,9 @@ const ToolBar = ({ addCard, addHeading1, toggleBold, onSelectColor, viewRef, onS
   );
 };
 
-
 ToolBar.propTypes = {
   addCard: PropTypes.func.isRequired,
-  addHeading1: PropTypes.func.isRequired,
+  addHeading: PropTypes.func.isRequired,
   toggleBold: PropTypes.func.isRequired,
   onSelectColor: PropTypes.func.isRequired,
   onSelectHighlightColor: PropTypes.func.isRequired,
