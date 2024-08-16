@@ -65,7 +65,9 @@ const ButtonWrapper = styled.div`
   margin-top: 1.25rem;
 `;
 
-const ShareMenuButton = styled.button`
+const ShareMenuButton = styled.button.withConfig({
+  shouldForwardProp: (prop) => prop !== 'copied',
+})`
   display: flex;
   width: 10.8125rem;
   padding: 0.5rem 0.375rem;
