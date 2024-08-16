@@ -83,7 +83,7 @@
       try {
         let response;
         if (selectedTab === '폴더') {
-          response = await getFolders(sortOption, currentPage + 1);
+          response = await getFolders();
           console.log('Folders response:', response);
     
           if (response && response.foldersList) {
@@ -93,7 +93,7 @@
             console.error('Unexpected response structure for folders:', response);
           }
         } else {
-          response = await getNotes(sortOption, currentPage + 1);
+          response = await getNotes();
           console.log('Notes response:', response);
     
           if (response && response.notesList) {
