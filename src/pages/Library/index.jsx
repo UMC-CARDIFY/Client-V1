@@ -241,6 +241,7 @@ export const Library = () => {
   const handleCategoryClick = (category) => {
     setSelectedCategory(category);
     setIsViewAllCategory(true); // 카테고리 선택 시 해당 카테고리 화면으로 이동
+    console.log(`Selected Category: ${category}`);
   };
 
   const [categories, setCategories] = useState([]);
@@ -288,11 +289,19 @@ export const Library = () => {
   };
 
   const handleSearch = () => {
-    setAppliedCategories([...selectedCategories]);
+    if(selectedCategories === '모든 카테고리') {
+      setSelectedCategories([]);
+    }
+    else{
+    setAppliedCategories([...selectedCategories]); // 모든 선택된 카테고리를 적용
+  }
     setAppliedSearchQuery(searchQuery);
     setIsDropdownOpen(false);
     setShowResults(true);
-  };
+
+    console.log(`Search Query: ${searchQuery}, Selected Categories: ${selectedCategories}`);
+};
+
 
   const isAllCategoriesSelected = appliedCategories.includes('모든 카테고리') || appliedCategories.length === 0;
 
@@ -335,7 +344,7 @@ export const Library = () => {
                         : (
                           <p>Loading categories...</p>
                       )
-}
+                    }
 
                     </DropdownList>
                   )}
@@ -358,12 +367,13 @@ export const Library = () => {
 
               {showResults ? (
                 <SelectNoteListSection>
-                  <NoteList 
-                    searchQuery={appliedSearchQuery} 
-                    categories={appliedCategories} 
-                    showAllNotes={isAllCategoriesSelected}
-                  />
-                </SelectNoteListSection>
+    <NoteList 
+        searchQuery={appliedSearchQuery} 
+        categories={appliedCategories} // 여러 카테고리를 배열로 전달
+        showAllNotes={isAllCategoriesSelected}
+    />
+</SelectNoteListSection>
+
               ) : (
                 <>
                   <RecommendationSection 
