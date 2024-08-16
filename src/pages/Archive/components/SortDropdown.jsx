@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import Sort from '../../../assets/sortIcon.svg'
@@ -50,49 +50,63 @@ const NoteDropdown = styled(Dropdown)`
 `;
 
 const SortDropdown = ({ onSortOptionClick, selectedTab }) => {
-    const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
-    const toggleDropdown = () => {
-      setIsOpen(!isOpen);
-    };
+  const toggleDropdown = () => {
+    setIsOpen(!isOpen);
+  };
 
-    const handleSortOptionClick = (option) => {
-      const optionWithTab = `${selectedTab};${option}`; // 선택된 탭과 옵션을 결합
-      console.log(`Selected sort option: ${optionWithTab}`);
-      if (onSortOptionClick) {
-        onSortOptionClick(optionWithTab); // 결합된 옵션 전달
-      }
+  const handleSortOptionClick = (option) => {
+    const optionWithTab = `${selectedTab};${option}`; // 선택된 탭과 옵션을 결합
+    console.log(`Selected sort option: ${optionWithTab}`);
+    if (onSortOptionClick) {
+      onSortOptionClick(optionWithTab); // 결합된 옵션 전달
+    }
+    setIsOpen(false);
+  };
+
+  const handleClickOutside = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
       setIsOpen(false);
-    };
+    }
+  };
 
-    return (
-      <SortDiv onClick={toggleDropdown}>
-          <img src={Sort} alt="Sort Icon"/>
-          정렬
-          {isOpen && (
-              selectedTab === '폴더' ? (
-                  <FolderDropdown>
-                      <DropdownItem onClick={() => handleSortOptionClick('asc')}>폴더 오름차순</DropdownItem>
-                      <DropdownItem onClick={() => handleSortOptionClick('desc')}>폴더 내림차순</DropdownItem>
-                      <DropdownItem onClick={() => handleSortOptionClick('edit-newest')}>폴더 수정일 - 최신순</DropdownItem>
-                      <DropdownItem onClick={() => handleSortOptionClick('edit-oldest')}>폴더 수정일 - 오래된 순</DropdownItem>
-                  </FolderDropdown>
-              ) : (
-                  <NoteDropdown>
-                      <DropdownItem onClick={() => handleSortOptionClick('asc')}>노트 오름차순</DropdownItem>
-                      <DropdownItem onClick={() => handleSortOptionClick('desc')}>노트 내림차순</DropdownItem>
-                      <DropdownItem onClick={() => handleSortOptionClick('edit-newest')}>노트 수정일 - 최신순</DropdownItem>
-                      <DropdownItem onClick={() => handleSortOptionClick('edit-oldest')}>노트 수정일 - 오래된 순</DropdownItem>
-                  </NoteDropdown>
-              )
-          )}
-      </SortDiv>
-  );
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  return (
+    <SortDiv onClick={toggleDropdown} ref={dropdownRef}>
+        <img src={Sort} alt="Sort Icon"/>
+        정렬
+        {isOpen && (
+            selectedTab === '폴더' ? (
+                <FolderDropdown>
+                    <DropdownItem onClick={() => handleSortOptionClick('asc')}>폴더 오름차순</DropdownItem>
+                    <DropdownItem onClick={() => handleSortOptionClick('desc')}>폴더 내림차순</DropdownItem>
+                    <DropdownItem onClick={() => handleSortOptionClick('edit-newest')}>폴더 수정일 - 최신순</DropdownItem>
+                    <DropdownItem onClick={() => handleSortOptionClick('edit-oldest')}>폴더 수정일 - 오래된 순</DropdownItem>
+                </FolderDropdown>
+            ) : (
+                <NoteDropdown>
+                    <DropdownItem onClick={() => handleSortOptionClick('asc')}>노트 오름차순</DropdownItem>
+                    <DropdownItem onClick={() => handleSortOptionClick('desc')}>노트 내림차순</DropdownItem>
+                    <DropdownItem onClick={() => handleSortOptionClick('edit-newest')}>노트 수정일 - 최신순</DropdownItem>
+                    <DropdownItem onClick={() => handleSortOptionClick('edit-oldest')}>노트 수정일 - 오래된 순</DropdownItem>
+                </NoteDropdown>
+            )
+        )}
+    </SortDiv>
+);
 };
 
 SortDropdown.propTypes = {
-  onSortOptionClick: PropTypes.func.isRequired,
-  selectedTab: PropTypes.string.isRequired, 
+onSortOptionClick: PropTypes.func.isRequired,
+selectedTab: PropTypes.string.isRequired, 
 };
 
 export default SortDropdown;

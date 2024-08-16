@@ -88,7 +88,7 @@ const ItemList = ({
                   />
                   <FolderIcon fill={colorMap[item.color]} />
                   <Line />
-                  <div onClick={() => moveItem(item)}>{item.name} 폴더</div>
+                  <div onClick={() => moveItem(item)}>{item.name}</div>
                 </LeftData>
                 <FlexSpacer />
                 <RightData>
