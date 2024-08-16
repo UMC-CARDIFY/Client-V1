@@ -87,7 +87,10 @@ const Line = styled.div`
   background: #E9E9E9;
 `;
 
-const NoteItem = ({ noteName, categoryName, cntCard, userName, date }) => {
+const NoteItem = ({ noteName, categoryName, cntCard, userName, uploadAt }) => {
+  const formattedDate = new Date(uploadAt).toISOString().split('T')[0];
+  const formattedCategoryName = categoryName.join(', ');
+
   return (
     <NoteItemContainer>
       <div>
@@ -99,7 +102,7 @@ const NoteItem = ({ noteName, categoryName, cntCard, userName, date }) => {
         <p>노트</p>
       </div>
       <div>
-        <p>{categoryName}</p>
+        <p>{formattedCategoryName}</p>
         <p>카테고리</p>
       </div>
       <div>
@@ -111,7 +114,7 @@ const NoteItem = ({ noteName, categoryName, cntCard, userName, date }) => {
         <p>{userName}</p>
       </div>
       <div>
-        <p>{date}</p>
+        <p>{formattedDate}</p>
         <p>업로드일</p>
       </div>
     </NoteItemContainer>
@@ -122,89 +125,25 @@ const NoteList = ({ categories = [], showAllNotes = false }) => {
   const dummyData = [
     {
       noteName: 'JLPT N1 단어',
-      categoryName: '언어',
+      categoryName: ['언어'],
       cntCard: '45',
       userName: '호두',
-      date: 'YYYY-MM-DD',
+      uploadAt: '2021-09-01',
     },
     {
       noteName: '형렬대수 중간고사 문제',
-      categoryName: '수학',
+      categoryName: ['수학'],
       cntCard: '',
       userName: '도라',
-      date: 'YYYY-MM-DD',
+      uploadAt: '2021-09-02',
     },
     {
       noteName: '컴활 필기 1급!!',
-      categoryName: '컴퓨터 · IT',
+      categoryName: ['컴퓨터 · IT'],
       cntCard: '39',
-      author: '체리',
-      date: 'YYYY-MM-DD',
+      userName: '체리',
+      uploadAt: '2021-09-03',
     },
-    {
-      noteName: 'JLPT N1 단어',
-      category: '언어',
-      cardCount: '45',
-      author: '호두',
-      date: 'YYYY-MM-DD',
-    },
-    {
-      title: '형렬대수 중간고사 문제',
-      category: '수학',
-      cardCount: '',
-      author: '도라',
-      date: 'YYYY-MM-DD',
-    },
-    {
-      title: '컴활 필기 1급!!',
-      category: '컴퓨터 · IT',
-      cardCount: '39',
-      author: '체리',
-      date: 'YYYY-MM-DD',
-    },
-    {
-      title: 'JLPT N1 단어',
-      category: '언어',
-      cardCount: '45',
-      author: '호두',
-      date: 'YYYY-MM-DD',
-    },
-    {
-      title: '형렬대수 중간고사 문제',
-      category: '수학',
-      cardCount: '',
-      author: '도라',
-      date: 'YYYY-MM-DD',
-    },
-    {
-      title: '컴활 필기 1급!!',
-      category: '컴퓨터 · IT',
-      cardCount: '39',
-      author: '체리',
-      date: 'YYYY-MM-DD',
-    },
-    {
-      title: 'JLPT N1 단어',
-      category: '언어',
-      cardCount: '45',
-      author: '호두',
-      date: 'YYYY-MM-DD',
-    },
-    {
-      title: '형렬대수 중간고사 문제',
-      category: '수학',
-      cardCount: '',
-      author: '도라',
-      date: 'YYYY-MM-DD',
-    },
-    {
-      noteName: '컴활 필기 1급!!',
-      category: '컴퓨터 · IT',
-      cardCount: '39',
-      author: '체리',
-      date: 'YYYY-MM-DD',
-    },
-    // Add more dummy data as needed
   ];
 
     const [notes, setNotes] = useState([]);
