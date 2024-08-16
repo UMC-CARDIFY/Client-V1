@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import note from '../../../assets/note.svg';
 import userIcon from '../../../assets/userIcon.svg';
 import { getTopNote } from '../../../api/library/getTopNote';
+import { getNoteToCategory } from '../../../api/library/getNoteToCategory';
 import { useState, useEffect } from 'react';
 
 const NoteItemContainer = styled.div`
@@ -121,7 +122,7 @@ const NoteItem = ({ noteName, categoryName, cntCard, userName, uploadAt }) => {
   );
 };
 
-const NoteList = ({ categories = [], showAllNotes = false }) => {
+const NoteList = ({ categories = [], showAllNotes = false, selectedCategory }) => {
   const dummyData = [
     {
       noteName: 'JLPT N1 단어',
@@ -146,15 +147,27 @@ const NoteList = ({ categories = [], showAllNotes = false }) => {
     },
   ];
 
-    const [notes, setNotes] = useState([]);
-    useEffect(() => {
-        const fetchData = async () => {
-            const data = await getTopNote();
-            setNotes(data);
-            console.log(data);
-        };
-        fetchData();
-    }, []);
+  const [notes, setNotes] = useState([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await getTopNote();
+      setNotes(data);
+      console.log(data);
+    };
+    fetchData();
+  }, []);
+
+  const [noteToCategory, setNoteToCategory] = useState([]);
+  useEffect(() => {
+    if (selectedCategory) {
+      const fetchData = async () => {
+        const data = await getNoteToCategory(selectedCategory);
+        setNoteToCategory(data);
+        console.log(data);
+      };
+      fetchData();
+    }
+  }, [selectedCategory]);
 
   const filteredNotes = showAllNotes
     ? dummyData
@@ -162,7 +175,7 @@ const NoteList = ({ categories = [], showAllNotes = false }) => {
     ? dummyData.filter(note => categories.includes(note.category))
     : notes.slice(0, 3); // Show only 3 notes on the first screen
 
-    console.log(showAllNotes);
+  console.log(showAllNotes);
 
   return (
     <>
