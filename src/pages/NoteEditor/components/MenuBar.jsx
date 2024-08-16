@@ -95,7 +95,9 @@ const NoteContainer = styled.div`
 const NoteList = styled.div`
   width: 14rem;
   display: flex;
-  padding: 0.5rem 0;
+  padding: 0.5rem var(--UI-Component-xxxxxS, 0.25rem);
+
+
   align-items: center;
   gap: 0.5rem;
   margin-top: var(--UI-Component-xxxxxS, 0.25rem);
@@ -124,6 +126,10 @@ const NoteList = styled.div`
 const NoteIcon = styled.div`
   width: 1.5rem;
   height: 1.5rem;
+
+  svg {
+    fill: ${props => props.iconColor};
+  }
 `;
 
 const AddButton = styled.button`
@@ -372,7 +378,11 @@ const MenuBar = ({ isCollapsed, toggleMenuBar, selectedFolderId }) => {
                   className={selectedNoteId === note.noteId ? 'selected' : ''}
                   onClick={() => handleClick(note)}
                 >
-                  <NoteIcon>{/* 노트 아이콘 */}</NoteIcon>
+                  <NoteIcon iconColor={folderIconColor}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                      <path d="M6.25694 21.5999C5.76556 21.5999 5.3556 21.4356 5.02707 21.1071C4.69854 20.7786 4.53391 20.3686 4.5332 19.8772V4.12257C4.5332 3.6319 4.69783 3.2223 5.02707 2.89377C5.35631 2.56524 5.76627 2.40061 6.25694 2.3999H14.2523C14.5175 2.3999 14.7719 2.50526 14.9594 2.6928L19.1736 6.90701C19.3612 7.09455 19.4665 7.3489 19.4665 7.61412V19.8772C19.4665 20.3679 19.3023 20.7779 18.9737 21.1071C18.6452 21.4363 18.2349 21.6006 17.7428 21.5999H6.25694ZM14.1332 7.73324H18.1584C18.2475 7.73324 18.2922 7.62552 18.2292 7.56253L14.3039 3.63728C14.2409 3.57428 14.1332 3.6189 14.1332 3.70799V7.73324Z" />
+                    </svg>
+                  </NoteIcon>
                   {note.name}
                 </NoteList>
               ))}
@@ -391,7 +401,11 @@ const MenuBar = ({ isCollapsed, toggleMenuBar, selectedFolderId }) => {
             className={selectedNoteId === note.noteId ? 'selected' : ''}
             onClick={() => handleClick(note)}
           >
-            <NoteIcon>{/* 노트 아이콘 */}</NoteIcon>
+            <NoteIcon iconColor={folderIconColor}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M6.25694 21.5999C5.76556 21.5999 5.3556 21.4356 5.02707 21.1071C4.69854 20.7786 4.53391 20.3686 4.5332 19.8772V4.12257C4.5332 3.6319 4.69783 3.2223 5.02707 2.89377C5.35631 2.56524 5.76627 2.40061 6.25694 2.3999H14.2523C14.5175 2.3999 14.7719 2.50526 14.9594 2.6928L19.1736 6.90701C19.3612 7.09455 19.4665 7.3489 19.4665 7.61412V19.8772C19.4665 20.3679 19.3023 20.7779 18.9737 21.1071C18.6452 21.4363 18.2349 21.6006 17.7428 21.5999H6.25694ZM14.1332 7.73324H18.1584C18.2475 7.73324 18.2922 7.62552 18.2292 7.56253L14.3039 3.63728C14.2409 3.57428 14.1332 3.6189 14.1332 3.70799V7.73324Z" />
+              </svg>
+            </NoteIcon>
             {note.name}
           </NoteList>
         ))}
