@@ -253,8 +253,6 @@ export const Library = () => {
     fetchCategories();
   }, []);
 
-  //const categories = ['모든 카테고리', '과학', '기술 · 공학', '경제 · 경영', '컴퓨터 · IT', '수학', '언어'];
-
   const handleViewAllCategory = () => {
     setIsViewAllCategory(true);
     setSelectedCategory(null); // 전체 카테고리 보기로 이동

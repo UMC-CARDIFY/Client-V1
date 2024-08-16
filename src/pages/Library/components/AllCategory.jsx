@@ -1,8 +1,10 @@
 import styled from 'styled-components';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import note from '../../../assets/note.svg';
 import userIcon from '../../../assets/userIcon.svg';
-import sortIcon from '../../../assets/sortIcon.svg';  // 정렬 아이콘 가져오기
+import sortIcon from '../../../assets/sortIcon.svg';
+import { getCategory } from '../../../api/library/getCategory';
+
 
 const CategoryItemsContainer = styled.div`
   display: flex;
@@ -191,7 +193,6 @@ const BackButton = styled.div`
   cursor: pointer;
 `;
 
-const categories = ['언어', '취업 · 수험', '컴퓨터 · IT', '과학', '경제 · 경영'];
 
 const notesData = {
   '언어': [
@@ -209,11 +210,11 @@ const notesData = {
   '과학': [
     { title: '물리학 기초', date: '2023-07-07', category: '과학', cardCount: '20', author: '호두' },
     { title: '화학 기초', date: '2023-07-05', category: '과학', cardCount: '15', author: '사과' },
-  ],
-  '경제 · 경영': [],
+  ]
 };
 
 const CategoryItem = ({ title, onClick }) => {
+
   return (
     <CategoryItemContainer onClick={() => onClick(title)}>
       <p>{title}</p>
@@ -253,6 +254,16 @@ const NoteItem = ({ title, date, category, cardCount, author }) => {
 };
 
 const AllCategory = ({ selectedCategory, onBackClick }) => {
+  const [categories, setCategories] = useState([]);
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const data = await getCategory();
+      const categoryNames = data.map(item => item.categoryName); // data의 각 항목에서 categoryName 추출
+      setCategories(categoryNames);
+    };
+    fetchCategories();
+  }, []);
+
   const [currentCategory, setCurrentCategory] = useState(selectedCategory || null);
   const [showSortMenu, setShowSortMenu] = useState(false);
 
@@ -290,8 +301,10 @@ const AllCategory = ({ selectedCategory, onBackClick }) => {
       </AllCategoryTitleDiv>
 
       {!currentCategory ? (
+        /* 전체 카테고리 목록 */
         <CategoryItems>
-          {categories.map((category, index) => (
+          {categories.length > 0 && 
+          categories.map((category, index) => (
             <CategoryItem
               key={index}
               title={category}
@@ -300,6 +313,7 @@ const AllCategory = ({ selectedCategory, onBackClick }) => {
           ))}
         </CategoryItems>
       ) : (
+        /* 특정 카테고리의 노트 목록 */
         <>
           <SortMenu>
             <SortHeader onClick={toggleSortMenu}>
@@ -317,7 +331,10 @@ const AllCategory = ({ selectedCategory, onBackClick }) => {
           </SortMenu>
 
           <NoteContainer>
-            {notesData[currentCategory].map((note, index) => (
+            {!notesData[currentCategory] ? (
+              <div>해당 카테고리에 노트가 없습니다.</div>
+            ) : (
+            notesData[currentCategory].map((note, index) => (
               <NoteItem
                 key={index}
                 title={note.title}
@@ -326,7 +343,8 @@ const AllCategory = ({ selectedCategory, onBackClick }) => {
                 cardCount={note.cardCount}
                 author={note.author}
               />
-            ))}
+            ))
+            )}
           </NoteContainer>
         </>
       )}
