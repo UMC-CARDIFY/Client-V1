@@ -9,6 +9,7 @@ import dropdownArrow from '../../assets/dropdownArrow.svg';
 import removeButtonsvg from '../../assets/removeButtonsvg.svg';
 import checkIconsvg from '../../assets/checkIconsvg.svg';
 import { useState, useEffect } from 'react';
+import { getCategory } from '../../api/library/getCategory';
 
 const Container = styled.div`
   display: flex;
@@ -242,7 +243,17 @@ export const Library = () => {
     setIsViewAllCategory(true); // 카테고리 선택 시 해당 카테고리 화면으로 이동
   };
 
-  const categories = ['모든 카테고리', '과학', '기술 · 공학', '경제 · 경영', '컴퓨터 · IT', '수학', '언어'];
+  const [categories, setCategories] = useState([]);
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const data = await getCategory();
+      const categoryNames = data.map(item => item.categoryName); // data의 각 항목에서 categoryName 추출
+      setCategories(['모든 카테고리', ...categoryNames]); // '모든 카테고리'를 추가하여 카테고리 목록 완성
+    };
+    fetchCategories();
+  }, []);
+
+  //const categories = ['모든 카테고리', '과학', '기술 · 공학', '경제 · 경영', '컴퓨터 · IT', '수학', '언어'];
 
   const handleViewAllCategory = () => {
     setIsViewAllCategory(true);
@@ -313,7 +324,8 @@ export const Library = () => {
                   </DropdownHeader>
                   {isDropdownOpen && (
                     <DropdownList>
-                      {categories.map((category, index) => (
+                      {categories.length > 0 ? (
+                      categories.map((category, index) => (
                         <DropdownItem key={index} onClick={() => handleCategorySelect(category)}>
                           <CustomCheckbox
                             checked={selectedCategories.includes(category)}
@@ -321,7 +333,12 @@ export const Library = () => {
                           />
                           {category}
                         </DropdownItem>
-                      ))}
+                      )))
+                        : (
+                          <p>Loading categories...</p>
+                      )
+}
+
                     </DropdownList>
                   )}
                 </DropdownWrapper>
@@ -357,7 +374,7 @@ export const Library = () => {
                   />
 
                   <NoteListSection>
-                    <NoteList showAllNotes={false} />
+                    <NoteList />
                   </NoteListSection>
                 </>
               )}

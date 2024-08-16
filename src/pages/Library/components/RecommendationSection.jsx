@@ -1,5 +1,7 @@
 import styled from 'styled-components';
 import viewAllIcon from '../../../assets/viewAllIcon.svg';
+import { getTopCategory } from '../../../api/library/getTopCategory';
+import { useEffect, useState } from 'react';
 
 const RecommendationContainer = styled.div`
   margin-bottom: 2.19rem;
@@ -61,31 +63,27 @@ const RecommendItemContainer = styled.div`
   cursor: pointer;
 `;
 
-const dummyData = [
-  {
-    category: '언어',
-    noteCount: '120',
-  },
-  {
-    category: '취업 · 수험',
-    noteCount: '103',
-  },
-  {
-    category: '컴퓨터 · IT',
-    noteCount: '85',
-  }
-];
-
-const RecommendItem = ({ category, noteCount, onClick }) => {
+const RecommendItem = ({ categoryName, cntNote, onClick }) => {
   return (
-    <RecommendItemContainer onClick={() => onClick(category)}>
-      <p>{category}</p>
-      <p>노트 {noteCount}개</p>
+    <RecommendItemContainer onClick={() => onClick(categoryName)}>
+      <p>{categoryName}</p>
+      <p>노트 {cntNote}개</p>
     </RecommendItemContainer>
   );
 };
 
 const RecommendationSection = ({ onViewAllClick, onCategoryClick }) => {
+  const [topCategory, setTopCategory] = useState([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await getTopCategory();
+      setTopCategory(data);
+    };
+    fetchData();
+  }, []);
+  
+  console.log(topCategory);
+
   return (
     <RecommendationContainer>
       <RecommendationTitleDiv>
@@ -100,14 +98,14 @@ const RecommendationSection = ({ onViewAllClick, onCategoryClick }) => {
       </RecommendationTitleDiv>
 
       <RecommendItems>
-        {dummyData.map((data, index) => (
-          <RecommendItem 
-            key={index} 
-            category={data.category} 
-            noteCount={data.noteCount} 
-            onClick={onCategoryClick} // 여기서 클릭 이벤트를 처리합니다.
-          />
-        ))}
+      { topCategory.length > 0 && topCategory.map((data, index) => (
+        <RecommendItem
+          key={index}
+          categoryName={data.categoryName} 
+          cntNote={data.cntNote} 
+          onClick={onCategoryClick}
+        />
+      ))}
       </RecommendItems>
     </RecommendationContainer>
   );

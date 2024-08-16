@@ -1,7 +1,8 @@
-import React from 'react';
 import styled from 'styled-components';
 import note from '../../../assets/note.svg';
 import userIcon from '../../../assets/userIcon.svg';
+import { getTopNote } from '../../../api/library/getTopNote';
+import { useState, useEffect } from 'react';
 
 const NoteItemContainer = styled.div`
   display: grid;
@@ -86,7 +87,7 @@ const Line = styled.div`
   background: #E9E9E9;
 `;
 
-const NoteItem = ({ title, category, cardCount, author, date }) => {
+const NoteItem = ({ noteName, categoryName, cntCard, userName, date }) => {
   return (
     <NoteItemContainer>
       <div>
@@ -94,20 +95,20 @@ const NoteItem = ({ title, category, cardCount, author, date }) => {
       </div>
       <Line />
       <div>
-        <p>{title}</p>
+        <p>{noteName}</p>
         <p>노트</p>
       </div>
       <div>
-        <p>{category}</p>
+        <p>{categoryName}</p>
         <p>카테고리</p>
       </div>
       <div>
-        <p>{cardCount ? `${cardCount}개` : '-'}</p>
+        <p>{cntCard ? `${cntCard}개` : '-'}</p>
         <p>카드 개수</p>
       </div>
       <div>
         <img src={userIcon} alt="userIcon" />
-        <p>{author}</p>
+        <p>{userName}</p>
       </div>
       <div>
         <p>{date}</p>
@@ -120,7 +121,28 @@ const NoteItem = ({ title, category, cardCount, author, date }) => {
 const NoteList = ({ categories = [], showAllNotes = false }) => {
   const dummyData = [
     {
-      title: 'JLPT N1 단어',
+      noteName: 'JLPT N1 단어',
+      categoryName: '언어',
+      cntCard: '45',
+      userName: '호두',
+      date: 'YYYY-MM-DD',
+    },
+    {
+      noteName: '형렬대수 중간고사 문제',
+      categoryName: '수학',
+      cntCard: '',
+      userName: '도라',
+      date: 'YYYY-MM-DD',
+    },
+    {
+      noteName: '컴활 필기 1급!!',
+      categoryName: '컴퓨터 · IT',
+      cntCard: '39',
+      author: '체리',
+      date: 'YYYY-MM-DD',
+    },
+    {
+      noteName: 'JLPT N1 단어',
       category: '언어',
       cardCount: '45',
       author: '호두',
@@ -176,28 +198,7 @@ const NoteList = ({ categories = [], showAllNotes = false }) => {
       date: 'YYYY-MM-DD',
     },
     {
-      title: '컴활 필기 1급!!',
-      category: '컴퓨터 · IT',
-      cardCount: '39',
-      author: '체리',
-      date: 'YYYY-MM-DD',
-    },
-    {
-      title: 'JLPT N1 단어',
-      category: '언어',
-      cardCount: '45',
-      author: '호두',
-      date: 'YYYY-MM-DD',
-    },
-    {
-      title: '형렬대수 중간고사 문제',
-      category: '수학',
-      cardCount: '',
-      author: '도라',
-      date: 'YYYY-MM-DD',
-    },
-    {
-      title: '컴활 필기 1급!!',
+      noteName: '컴활 필기 1급!!',
       category: '컴퓨터 · IT',
       cardCount: '39',
       author: '체리',
@@ -206,11 +207,21 @@ const NoteList = ({ categories = [], showAllNotes = false }) => {
     // Add more dummy data as needed
   ];
 
+    const [notes, setNotes] = useState([]);
+    useEffect(() => {
+        const fetchData = async () => {
+            const data = await getTopNote();
+            setNotes(data);
+            console.log(data);
+        };
+        fetchData();
+    }, []);
+
   const filteredNotes = showAllNotes
     ? dummyData
     : categories.length > 0
     ? dummyData.filter(note => categories.includes(note.category))
-    : dummyData.slice(0, 3); // Show only 3 notes on the first screen
+    : notes.slice(0, 3); // Show only 3 notes on the first screen
 
     console.log(showAllNotes);
 
@@ -220,11 +231,11 @@ const NoteList = ({ categories = [], showAllNotes = false }) => {
         filteredNotes.map((note, index) => (
           <NoteItem
             key={index}
-            title={note.title}
-            category={note.category}
-            cardCount={note.cardCount}
-            author={note.author}
-            date={note.date}
+            noteName={note.noteName}
+            categoryName={note.categoryName}
+            cntCard={note.cntCard}
+            userName={note.userName}
+            uploadAt={note.uploadAt}
           />
         ))
       ) : (
