@@ -120,6 +120,11 @@ class WordCardView {
                 // 기본 백스페이스 동작 허용
             }
         }
+        else if ( event.key === 'Enter') {  // 엔터키 막기
+          event.preventDefault();
+          event.stopPropagation();
+        }
+        
     });
 
     // 카드 answer(뒷면) div
@@ -169,6 +174,10 @@ class WordCardView {
                 this.answerDiv.style.color = '#aaa';
                 this.answerDiv.innerText = '카드 뒷면';
             }
+        }
+        else if ( event.key === 'Enter') {  // 엔터키 막기
+          event.preventDefault();
+          event.stopPropagation();
         }
     });
     

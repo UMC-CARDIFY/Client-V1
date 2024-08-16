@@ -110,6 +110,13 @@ class BlankCardView {
         this.questionFrontDiv.style.color = '#aaa';
       }
     });
+    // 엔터 키 막기
+    this.questionFrontDiv.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        event.stopPropagation();
+        }
+    });
 
     // 카드 빈칸 div
     this.answerDiv = document.createElement('div');
@@ -131,10 +138,16 @@ class BlankCardView {
         this.answerDiv.innerText = '';
       }
     });
-
     this.answerDiv.addEventListener('blur', () => {
       if (this.answerDiv.innerText === '') {
         this.answerDiv.innerText = '빈칸';
+      }
+    });
+    // 엔터 키 막기
+    this.answerDiv.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        event.stopPropagation();
       }
     });
 
@@ -160,6 +173,13 @@ class BlankCardView {
       if (this.questionBackDiv.innerText === '') {
         this.questionBackDiv.innerText = '내용';
         this.questionBackDiv.style.color = '#aaa';
+      }
+    });
+    // 엔터 키 막기
+    this.questionBackDiv.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        event.stopPropagation();
       }
     });
     
