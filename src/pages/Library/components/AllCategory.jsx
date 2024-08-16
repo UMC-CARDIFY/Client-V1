@@ -4,7 +4,7 @@ import note from '../../../assets/note.svg';
 import userIcon from '../../../assets/userIcon.svg';
 import sortIcon from '../../../assets/sortIcon.svg';
 import { getCategory } from '../../../api/library/getCategory';
-
+import { getNoteToCategory } from '../../../api/library/getNoteToCategory'; // 특정 카테고리의 노트 데이터를 가져오는 API
 
 const CategoryItemsContainer = styled.div`
   display: flex;
@@ -36,7 +36,7 @@ const NoteContainer = styled.div`
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   overflow: auto;
-  height: 32.4375rem; /* 29.4375rem */
+  height: 32.4375rem;
 `;
 
 const NoteItemContainer = styled.div`
@@ -193,28 +193,7 @@ const BackButton = styled.div`
   cursor: pointer;
 `;
 
-
-const notesData = {
-  '언어': [
-    { title: 'JLPT N1 단어', date: '2023-08-15', category: '언어', cardCount: '45', author: '호두' },
-    { title: 'TOPIK 고급 단어', date: '2023-08-12', category: '언어', cardCount: '39', author: '체리' },
-  ],
-  '취업 · 수험': [
-    { title: 'NCS 모의고사', date: '2023-07-21', category: '취업 · 수험', cardCount: '50', author: '사과' },
-    { title: '공무원 한국사', date: '2023-07-18', category: '취업 · 수험', cardCount: '100', author: '바나나' },
-  ],
-  '컴퓨터 · IT': [
-    { title: '컴활 필기 1급', date: '2023-07-14', category: '컴퓨터 · IT', cardCount: '30', author: '체리' },
-    { title: '정보처리기사', date: '2023-07-10', category: '컴퓨터 · IT', cardCount: '25', author: '복숭아' },
-  ],
-  '과학': [
-    { title: '물리학 기초', date: '2023-07-07', category: '과학', cardCount: '20', author: '호두' },
-    { title: '화학 기초', date: '2023-07-05', category: '과학', cardCount: '15', author: '사과' },
-  ]
-};
-
 const CategoryItem = ({ title, onClick }) => {
-
   return (
     <CategoryItemContainer onClick={() => onClick(title)}>
       <p>{title}</p>
@@ -222,7 +201,9 @@ const CategoryItem = ({ title, onClick }) => {
   );
 };
 
-const NoteItem = ({ title, date, category, cardCount, author }) => {
+const NoteItem = ({ noteName, uploadAt, categoryName, cntCard, userName, isDownload }) => {
+  const formattedDate = new Date(uploadAt).toISOString().split('T')[0];
+  const formattedCategoryName = categoryName.join(', ');
   return (
     <NoteItemContainer>
       <div>
@@ -230,23 +211,26 @@ const NoteItem = ({ title, date, category, cardCount, author }) => {
       </div>
       <Line />
       <div>
-        <p>{title}</p>
+        <p>{noteName}</p>
         <p>노트</p>
       </div>
-      <div>
-        <p>{category}</p>
+      {isDownload && <div>
+        <p>저장 완료</p>
+      </div>}
+      <div>        
+        <p>{formattedCategoryName}</p>
         <p>카테고리</p>
       </div>
       <div>
-        <p>{cardCount ? `${cardCount}개` : '-'}</p>
+        <p>{cntCard ? `${cntCard}개` : '-'}</p>
         <p>카드 개수</p>
       </div>
       <div>
         <img src={userIcon} alt="userIcon" />
-        <p>{author}</p>
+        <p>{userName}</p>
       </div>
       <div>
-        <p>{date}</p>
+        <p>{formattedDate}</p>
         <p>업로드일</p>
       </div>
     </NoteItemContainer>
@@ -255,17 +239,30 @@ const NoteItem = ({ title, date, category, cardCount, author }) => {
 
 const AllCategory = ({ selectedCategory, onBackClick }) => {
   const [categories, setCategories] = useState([]);
+  const [notes, setNotes] = useState([]);
+  const [currentCategory, setCurrentCategory] = useState(selectedCategory || null);
+  const [showSortMenu, setShowSortMenu] = useState(false);
+  const [sortOption, setSortOption] = useState('asc');
+
   useEffect(() => {
     const fetchCategories = async () => {
       const data = await getCategory();
-      const categoryNames = data.map(item => item.categoryName); // data의 각 항목에서 categoryName 추출
+      const categoryNames = data.map(item => item.categoryName);
       setCategories(categoryNames);
     };
     fetchCategories();
   }, []);
 
-  const [currentCategory, setCurrentCategory] = useState(selectedCategory || null);
-  const [showSortMenu, setShowSortMenu] = useState(false);
+  useEffect(() => {
+    if (currentCategory) {
+      const fetchNotes = async () => {
+        const data = await getNoteToCategory(currentCategory, sortOption);
+        setNotes(data);
+        console.log(data);
+      };
+      fetchNotes();
+    }
+  }, [currentCategory]);
 
   const handleCategoryClick = (category) => {
     setCurrentCategory(category);
@@ -331,19 +328,19 @@ const AllCategory = ({ selectedCategory, onBackClick }) => {
           </SortMenu>
 
           <NoteContainer>
-            {!notesData[currentCategory] ? (
+            {notes.length === 0 ? (
               <div>해당 카테고리에 노트가 없습니다.</div>
             ) : (
-            notesData[currentCategory].map((note, index) => (
-              <NoteItem
-                key={index}
-                title={note.title}
-                date={note.date}
-                category={note.category}
-                cardCount={note.cardCount}
-                author={note.author}
-              />
-            ))
+              notes.map((note, index) => (
+                <NoteItem
+                  key={index}
+                  noteName={note.noteName}
+                  uploadAt={note.uploadAt}
+                  categoryName={note.categoryName}
+                  cntCard={note.cntCard}
+                  userName={note.userName}
+                />
+              ))
             )}
           </NoteContainer>
         </>
