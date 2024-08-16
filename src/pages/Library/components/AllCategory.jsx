@@ -262,7 +262,7 @@ const AllCategory = ({ selectedCategory, onBackClick }) => {
       };
       fetchNotes();
     }
-  }, [currentCategory]);
+  }, [currentCategory, sortOption]);
 
   const handleCategoryClick = (category) => {
     setCurrentCategory(category);
@@ -275,6 +275,17 @@ const AllCategory = ({ selectedCategory, onBackClick }) => {
   const handleSortSelection = (sortType) => {
     console.log(`Selected sort type: ${sortType}`);
     setShowSortMenu(false);
+    if(sortType === '노트 이름 ↑') {
+      setSortOption('asc');
+    } else if(sortType === '노트 이름 ↓') {
+      setSortOption('desc');
+    } else if(sortType === '업로드일 - 최신 순') {
+      setSortOption('upload-newest');
+    } else if(sortType === '업로드일 - 오래된 순') {
+      setSortOption('upload-oldest');
+    } else if(sortType === '다운로드 수 ↑') {
+      setSortOption('download');
+    }
   };
 
   return (
