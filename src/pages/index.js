@@ -9,3 +9,4 @@ export { default as Archive } from './Archive/index';
 export { default as Dashboard } from './Dashboard';
 export { default as NoteEditor } from './NoteEditor/index';
 export { default as KaKaoCallback } from './SignIn/KaKaoCallback'
+export { default as Library } from './Library/index';
