@@ -3,11 +3,11 @@ import styled from 'styled-components';
 import note from '../../../assets/note.svg';
 import userIcon from '../../../assets/userIcon.svg';
 import { getNote } from '../../../api/library/getNote';
-import NoteModal from './NoteModal';  // Import the modal component
+import NoteModal from './NoteModal';
 
 const NoteItemContainer = styled.div`
   display: grid;
-  grid-template-columns: 2rem 0.5rem 5fr 3fr 2fr 3fr 2fr;
+  grid-template-columns: 3.5rem 0.0625rem 6fr 0.0625rem 3fr 0.0625rem 2fr 0.0625rem 2fr 0.0625rem 2fr;
   align-items: center;
   padding: 1.25rem 0 1rem 1.75rem;
   cursor: pointer;
@@ -15,77 +15,71 @@ const NoteItemContainer = styled.div`
   & > div {
     display: flex;
     align-items: center;
-  }
-
-  & > div:nth-child(1) {
-    width: 2rem;
-    height: 2rem;
-  }
-
-  & > div:nth-child(2) {
-    margin-left: 0.94rem;
-  }
-
-  & > div:nth-child(3) {
-    margin-left: 1.12rem;
-  }
+}
 
   & > div:nth-child(3),
-  & > div:nth-child(4),
   & > div:nth-child(5),
-  & > div:nth-child(7) {
+  & > div:nth-child(7),
+  & > div:nth-child(11) {
     flex-direction: column;
     align-items: flex-start;
-  }
-
-  & > div:nth-child(3) p:first-child,
-  & > div:nth-child(4) p:first-child,
-  & > div:nth-child(5) p:first-child,
-  & > div:nth-child(7) p:first-child {
-    color: #1A1A1A;
-    font-family: Inter;
-    font-size: 0.875rem;
-    font-style: normal;
-    font-weight: 600;
-    line-height: normal;
-    margin-bottom: 0.5rem;
-  }
-
-  & > div:nth-child(3) p:last-child,
-  & > div:nth-child(4) p:last-child,
-  & > div:nth-child(5) p:last-child,
-  & > div:nth-child(7) p:last-child {
-    color: #696969;
-    font-family: Inter;
-    font-size: 0.75rem;
-    font-style: normal;
-    font-weight: 500;
-    line-height: normal;
-    margin: 0;
-  }
-
-  & > div:nth-child(6) {
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  & > div:nth-child(6) img {
-  }
-
-  & > div:nth-child(6) p {
-    color: #696969;
-    font-family: Pretendard;
-    font-size: 0.75rem;
-    font-style: normal;
-    font-weight: 500;
-    line-height: normal;
+    margin : 0 1.5rem;
   }
 `;
 
+const Title = styled.div`
+overflow: hidden;
+color: var(--Grays-Black, #1A1A1A);
+text-overflow: ellipsis;
+font-family: Pretendard;
+font-size: 0.875rem;
+font-style: normal;
+font-weight: 600;
+line-height: normal;
+margin-bottom: 0.06rem;
+`;
+
+const Sub = styled.div`
+color: var(--Grays-Gray1, #646464);
+font-family: Pretendard;
+font-size: 0.75rem;
+font-style: normal;
+font-weight: 500;
+line-height: normal;
+`;
+
+const NoteIcon = styled.div`
+    width: 2.5rem;
+    height: 2.5rem;
+    flex-shrink: 0;
+`;
+
 const Line = styled.div`
-  width: 0.0625rem;
-  height: 2.4375rem;
-  background: #E9E9E9;
+    width: 0.0625rem;
+    height: 2.4375rem;
+    background: #E8E8E8;
+`;
+
+const Name = styled.div`
+    flex-direction: column;
+    align-items: flex-start;
+    margin : 0 1.5rem;
+`;
+
+const Category = styled.div`
+`;
+
+const Cnt = styled.div`
+`;
+
+const User = styled.div`
+display: flex;
+flex-direction: row;
+gap: 0.5rem;
+    margin : 0 1.5rem;
+    `;
+
+const DateDiv = styled.div`
 `;
 
 const NoteItem = ({ noteName, categoryName, cntCard, userName, uploadAt, noteId }) => {
@@ -104,30 +98,34 @@ const NoteItem = ({ noteName, categoryName, cntCard, userName, uploadAt, noteId 
   return (
     <>
       <NoteItemContainer onClick={handleClick}>
-        <div>
+        <NoteIcon>
           <img src={note} alt="note" />
-        </div>
+        </NoteIcon>
         <Line />
-        <div>
-          <p>{noteName}</p>
-          <p>노트</p>
-        </div>
-        <div>
-          <p>{formattedCategoryName}</p>
-          <p>카테고리</p>
-        </div>
-        <div>
-          <p>{cntCard ? `${cntCard}개` : '-'}</p>
-          <p>카드 개수</p>
-        </div>
-        <div>
+        <Name>
+            <Title>{noteName}</Title>
+            <Sub>{noteId}</Sub> 
+        </Name>
+        <Line />
+        <Category>
+            <Title>{formattedCategoryName}</Title>
+            <Sub>카테고리</Sub>
+        </Category>
+        <Line />
+        <Cnt>
+            <Title>{cntCard ? `${cntCard}개` : '-'}</Title>
+            <Sub>카드 개수</Sub>
+        </Cnt>
+        <Line />
+        <User>
           <img src={userIcon} alt="userIcon" />
-          <p>{userName}</p>
-        </div>
-        <div>
-          <p>{formattedDate}</p>
-          <p>업로드일</p>
-        </div>
+          <Sub>{userName}</Sub>
+        </User>
+        <Line />
+        <DateDiv>
+            <Title>{formattedDate}</Title>
+            <Sub>업로드 날짜</Sub>
+        </DateDiv>
       </NoteItemContainer>
 
       {/* 노트 미리보기 모달창 */}
