@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import Editor from './components/Editor';
 import Header from './components/Header';
 import MenuBar from './components/MenuBar';
+import { useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
 
 const NoteEditorWrapper = styled.div`
   display: flex;
@@ -35,6 +37,16 @@ const EditorWrapper = styled.div`
 `;
 
 const NoteEditor = () => {
+  const location = useLocation();
+  const { noteId, folderId } = location.state || {};
+
+  useEffect(() => {
+    if (noteId) {
+      console.log('Editing note with ID:', noteId, 'from folder ID:', folderId);
+      // noteId를 사용해 노트 데이터를 가져오거나 다른 로직을 수행
+    }
+  }, [noteId]);
+
   const [isMenuCollapsed, setIsMenuCollapsed] = useState(false);
   const [editorView, setEditorView] = useState(null);
 
