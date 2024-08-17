@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import viewAllIcon from '../../../assets/viewAllIcon.svg';
+import science from '../../../assets/category/science.svg';
 import { getTopCategory } from '../../../api/library/getTopCategory';
 import { useEffect, useState } from 'react';
 
@@ -55,25 +56,59 @@ flex-shrink: 0;
 
 const RecommendItems = styled.div`
   display: flex;
-  gap: 2.13rem;
+  width: 100%;
+  gap: 1.5rem;
 `;
 
 const RecommendItemContainer = styled.div`
-  min-width: 17.94313rem;
-  height: 10.4375rem;
-  flex-shrink: 0;
-  flex: 1;
-  padding: 2rem;
-  border-radius: 0.625rem;
-  background: var(--White, #FFF);
+width: 19rem;
+height: 12.25rem;
+flex-shrink: 0;
+  border-radius: 0.75rem;
+background: var(--Grays-White, #FFF);
+padding: 2.3rem 4rem 1rem 4rem;
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const CategoryIcon = styled.div`
+width: 5.0625rem;
+height: 5.0625rem;
+flex-shrink: 0;
+margin-bottom: 1.5rem;
+`;
+
+const CategoryName = styled.div`
+color: var(--Grays-Gray1, #646464);
+text-align: center;
+font-family: Pretendard;
+font-size: 1.125rem;
+font-style: normal;
+font-weight: 600;
+line-height: normal;
+margin-bottom: 0.5rem;
+`;
+
+const CategoryCnt = styled.div`
+color: var(--Grays-Gray1, #646464);
+text-align: center;
+font-family: Pretendard;
+font-size: 0.75rem;
+font-style: normal;
+font-weight: 500;
+line-height: normal;
 `;
 
 const RecommendItem = ({ categoryName, cntNote, onClick }) => {
   return (
     <RecommendItemContainer onClick={() => onClick(categoryName)}>
-      <p>{categoryName}</p>
-      <p>노트 {cntNote}개</p>
+      <CategoryIcon>
+        <img src={science} alt="science" />
+      </CategoryIcon>
+      <CategoryName>{categoryName}</CategoryName>
+      <CategoryCnt>{cntNote}개의 노트</CategoryCnt>
     </RecommendItemContainer>
   );
 };
