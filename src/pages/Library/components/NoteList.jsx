@@ -36,7 +36,8 @@ const NoteList = ({ searchQuery, categories = [], showAllNotes = false }) => {
             cntCard={note.cntCard}
             userName={note.userName}
             uploadAt={note.uploadAt}
-            noteId={note.noteId} // Note ID 전달
+            noteId={note.noteId} 
+            libraryId={note.libraryId}
           />
         ))
       ) : (

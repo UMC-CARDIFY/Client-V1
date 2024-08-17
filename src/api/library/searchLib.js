@@ -1,7 +1,7 @@
 import axiosInstance from '..';
 
 export const searchLib = async (searchTxt, categoryList) => {
-    if (categoryList.length === 0 || categoryList.includes("모든 카테고리")) {
+    if (categoryList.length === 0 || categoryList.includes("전체 카테고리")) {
         try {
             const response = await axiosInstance.post('/library/searchLib', {
                 searchTxt: searchTxt

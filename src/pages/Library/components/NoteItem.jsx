@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import note from '../../../assets/note.svg';
 import userIcon from '../../../assets/userIcon.svg';
 import { getNote } from '../../../api/library/getNote';
+import  {checkDownload} from '../../../api/library/checkDownload';
 import NoteModal from './NoteModal';
 
 const NoteItemContainer = styled.div`
@@ -82,17 +83,30 @@ gap: 0.5rem;
 const DateDiv = styled.div`
 `;
 
-const NoteItem = ({ noteName, categoryName, cntCard, userName, uploadAt, noteId }) => {
+const NoteItem = ({ noteName, categoryName, cntCard, userName, uploadAt, noteId, libraryId }) => {
   const [showModal, setShowModal] = useState(false);
   const [noteContent, setNoteContent] = useState('');
+  const [isContainCard, setIsContainCard] = useState(false);
 
   const formattedDate = new Date(uploadAt).toISOString().split('T')[0];
   const formattedCategoryName = Array.isArray(categoryName) ? categoryName.join(', ') : categoryName;
 
   const handleClick = async () => {
     const data = await getNote(noteId);
+    console.log(data);
     setNoteContent(data.noteContent);
     setShowModal(true);
+
+    const download = await checkDownload(libraryId);
+    console.log(download.isDownload);
+    if(download.isDownload.includes('NotContainCard')){
+      setIsContainCard(false);
+    }
+    else{
+        setIsContainCard(true);
+        }
+    console.log(isContainCard);
+
   };
 
   return (
