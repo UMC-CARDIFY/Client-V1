@@ -1,9 +1,8 @@
 import styled from 'styled-components';
 import { useState, useEffect } from 'react';
-import note from '../../../assets/note.svg';
-import userIcon from '../../../assets/userIcon.svg';
 import sortIcon from '../../../assets/sortIcon.svg';
 import backButton from '../../../assets/backButton.svg';
+import science from '../../../assets/category/science.svg';
 import { getCategory } from '../../../api/library/getCategory';
 import { getNoteToCategory } from '../../../api/library/getNoteToCategory'; // 특정 카테고리의 노트 데이터를 가져오는 API
 
@@ -22,15 +21,44 @@ const CategoryItems = styled.div`
 `;
 
 const CategoryItemContainer = styled.div`
-  min-width: 17.94313rem;
-  max-width: 17.94313rem;
-  height: 10.4375rem;
-  flex-shrink: 0;
-  flex: 1;
-  padding: 2rem;
-  border-radius: 0.625rem;
-  background: var(--White, #FFF);
+width: 16rem; /* 19rem */
+height: 12.25rem;
+flex-shrink: 0;
+  border-radius: 0.75rem;
+background: var(--Grays-White, #FFF);
+padding: 2.3rem 4rem 1rem 4rem;
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const CategoryIcon = styled.div`
+width: 5.0625rem;
+height: 5.0625rem;
+flex-shrink: 0;
+margin-bottom: 1.5rem;
+`;
+
+const CategoryName = styled.div`
+color: var(--Grays-Gray1, #646464);
+text-align: center;
+font-family: Pretendard;
+font-size: 1.125rem;
+font-style: normal;
+font-weight: 600;
+line-height: normal;
+margin-bottom: 0.5rem;
+`;
+
+const CategoryCnt = styled.div`
+color: var(--Grays-Gray1, #646464);
+text-align: center;
+font-family: Pretendard;
+font-size: 0.75rem;
+font-style: normal;
+font-weight: 500;
+line-height: normal;
 `;
 
 const NoteContainer = styled.div`
@@ -40,83 +68,6 @@ const NoteContainer = styled.div`
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   overflow: auto;
   height: 32.4375rem;
-`;
-
-const NoteItemContainer = styled.div`
-  display: grid;
-  grid-template-columns: 3.5rem 0.0625rem 6fr 0.0625rem 3fr 0.0625rem 2fr 0.0625rem 2fr 0.0625rem 2fr;
-  align-items: center;
-  padding: 1.25rem 0 1rem 1.75rem;
-  cursor: pointer;
-
-  & > div {
-    display: flex;
-    align-items: center;
-}
-
-  & > div:nth-child(3),
-  & > div:nth-child(5),
-  & > div:nth-child(7),
-  & > div:nth-child(11) {
-    flex-direction: column;
-    align-items: flex-start;
-    margin : 0 1.5rem;
-  }
-`;
-
-const Title = styled.div`
-overflow: hidden;
-color: var(--Grays-Black, #1A1A1A);
-text-overflow: ellipsis;
-font-family: Pretendard;
-font-size: 0.875rem;
-font-style: normal;
-font-weight: 600;
-line-height: normal;
-margin-bottom: 0.06rem;
-`;
-
-const Sub = styled.div`
-color: var(--Grays-Gray1, #646464);
-font-family: Pretendard;
-font-size: 0.75rem;
-font-style: normal;
-font-weight: 500;
-line-height: normal;
-`;
-
-const NoteIcon = styled.div`
-    width: 2.5rem;
-    height: 2.5rem;
-    flex-shrink: 0;
-`;
-
-const Line = styled.div`
-    width: 0.0625rem;
-    height: 2.4375rem;
-    background: #E8E8E8;
-`;
-
-const Name = styled.div`
-    flex-direction: column;
-    align-items: flex-start;
-    margin : 0 1.5rem;
-`;
-
-const Category = styled.div`
-`;
-
-const Cnt = styled.div`
-`;
-
-const User = styled.div`
-display: flex;
-flex-direction: row;
-gap: 0.5rem;
-    margin : 0 1.5rem;
-    `;
-
-const DateDiv = styled.div`
 `;
 
 const AllCategoryTitleDiv = styled.div`
@@ -206,10 +157,14 @@ flex-shrink: 0;
   cursor: pointer;
 `;
 
-const CategoryItem = ({ title, onClick }) => {
+const CategoryItem = ({ title, cntNote, onClick }) => {
   return (
     <CategoryItemContainer onClick={() => onClick(title)}>
-      <p>{title}</p>
+            <CategoryIcon>
+        <img src={science} alt="science" />
+      </CategoryIcon>
+      <CategoryName>{title}</CategoryName>
+      <CategoryCnt>{cntNote}개의 노트</CategoryCnt>
     </CategoryItemContainer>
   );
 };
@@ -220,11 +175,14 @@ const AllCategory = ({ selectedCategory, onBackClick }) => {
   const [currentCategory, setCurrentCategory] = useState(selectedCategory || null);
   const [showSortMenu, setShowSortMenu] = useState(false);
   const [sortOption, setSortOption] = useState('asc');
+  const [cntNote, setCntNote] = useState([]);
 
   useEffect(() => {
     const fetchCategories = async () => {
       const data = await getCategory();
       const categoryNames = data.map(item => item.categoryName);
+      const categoryCntNote = data.map(item => item.cntNote);
+      setCntNote(categoryCntNote);
       setCategories(categoryNames);
     };
     fetchCategories();
@@ -295,6 +253,7 @@ const AllCategory = ({ selectedCategory, onBackClick }) => {
             <CategoryItem
               key={index}
               title={category}
+              cntNote={cntNote[index]}
               onClick={handleCategoryClick}
             />
           ))}
