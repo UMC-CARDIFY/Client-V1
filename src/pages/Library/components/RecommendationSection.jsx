@@ -44,7 +44,13 @@ const ViewAllButton = styled.div`
   line-height: normal;
   display: flex;
   cursor: pointer;
-  gap: 0.63rem;
+  align-items: center;
+`;
+
+const ViewAllSVG = styled.div`
+width: 2.25rem;
+height: 2.25rem;
+flex-shrink: 0;
 `;
 
 const RecommendItems = styled.div`
@@ -93,7 +99,9 @@ const RecommendationSection = ({ onViewAllClick, onCategoryClick }) => {
         </RecommendationSubTitle>
         <ViewAllButton onClick={onViewAllClick}>
           전체 보기
+        <ViewAllSVG>
           <img src={viewAllIcon} alt="viewAllIcon" />
+          </ViewAllSVG>
         </ViewAllButton>
       </RecommendationTitleDiv>
 

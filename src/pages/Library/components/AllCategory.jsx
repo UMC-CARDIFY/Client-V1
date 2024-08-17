@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import note from '../../../assets/note.svg';
 import userIcon from '../../../assets/userIcon.svg';
 import sortIcon from '../../../assets/sortIcon.svg';
+import backButton from '../../../assets/backButton.svg';
 import { getCategory } from '../../../api/library/getCategory';
 import { getNoteToCategory } from '../../../api/library/getNoteToCategory'; // 특정 카테고리의 노트 데이터를 가져오는 API
 
@@ -124,23 +125,32 @@ const Line = styled.div`
 
 const AllCategoryTitleDiv = styled.div`
   position: relative;
-  gap: 0.75rem;
+  gap: 0.5rem;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   margin-bottom: 3.81rem;
 `;
 
 const AllCategoryText = styled.div`
-  color: #1A1A1A;
-  text-align: center;
-  font-family: Inter;
-  font-size: 2.1875rem;
-  font-weight: 700;
+color: var(--Grays-Black, #1A1A1A);
+font-family: Pretendard;
+font-size: 1rem;
+font-style: normal;
+font-weight: 500;
+line-height: normal;
+cursor: pointer;
 `;
 
 const SortMenu = styled.div`
   position: relative;
+
+  color: var(--Grays-Black, #1A1A1A);
+font-family: Pretendard;
+font-size: 0.875rem;
+font-style: normal;
+font-weight: 500;
+line-height: normal;
 `;
 
 const SortHeader = styled.div`
@@ -155,26 +165,24 @@ const SortHeader = styled.div`
   padding: 0.1875rem 0.5rem 0.1875rem 0.4375rem;
   align-items: center;
   gap: 0.375rem;
-  border-radius: 0.125rem;
-  background: #FFF;
+  border-radius: 0.3125rem;
+background: var(--grays-gray-5-divider, #E8E8E8);
 `;
 
 const SortIcon = styled.img`
-  cursor: pointer;
-  margin-left: auto;
 `;
 
 const SortDropdown = styled.ul`
   position: absolute;
-  top: 100%;
+  top: -1.5rem;
   right: 0;
-  background: #FFF;
-  border: 1px solid #E9E9E9;
-  box-shadow: 0px 4px 26.7px rgba(0, 0, 0, 0.02), 0px 10px 60px rgba(0, 74, 162, 0.03);
+  border-radius: 0.5rem;
+  background: var(--Grays-White, #FFF);
+  border: 1px solid var(--grays-gray-5-divider, #E8E8E8);
+box-shadow: 0px 4px 26px 0px rgba(0, 0, 0, 0.02), 0px 10px 60px 0px rgba(0, 74, 162, 0.03);
   border-radius: 0.625rem;
-  padding: 0.5rem 0;
+  padding: 0;
   list-style: none;
-  width: 12rem;
 `;
 
 const SortDropdownItem = styled.li`
@@ -183,13 +191,22 @@ const SortDropdownItem = styled.li`
   &:hover {
     background-color: #F2F4F8;
   }
+    display: flex;
+padding: 1.0625rem 1rem;
+align-items: center;
+gap: 0.5rem;
+align-self: stretch;
+
+border-bottom: 1px solid var(--grays-gray-5-divider, #E8E8E8);
+&:last-child {
+  border-bottom: none;
+}
 `;
 
 const BackButton = styled.div`
-  position: absolute;
-  left: 0;
-  top: 0;
-  color: #1A1A1A;
+width: 2.25rem;
+height: 2.25rem;
+flex-shrink: 0;
   cursor: pointer;
 `;
 
@@ -275,7 +292,9 @@ const AllCategory = ({ selectedCategory, onBackClick }) => {
   const handleSortSelection = (sortType) => {
     console.log(`Selected sort type: ${sortType}`);
     setShowSortMenu(false);
-    if(sortType === '노트 이름 ↑') {
+    if(sortType === '다운로드 수 ↑') {
+      setSortOption('download');
+    } else if(sortType === '노트 이름 ↑') {
       setSortOption('asc');
     } else if(sortType === '노트 이름 ↓') {
       setSortOption('desc');
@@ -283,8 +302,6 @@ const AllCategory = ({ selectedCategory, onBackClick }) => {
       setSortOption('upload-newest');
     } else if(sortType === '업로드일 - 오래된 순') {
       setSortOption('upload-oldest');
-    } else if(sortType === '다운로드 수 ↑') {
-      setSortOption('download');
     }
   };
 
@@ -294,16 +311,18 @@ const AllCategory = ({ selectedCategory, onBackClick }) => {
         {currentCategory ? (
           <>
             <BackButton onClick={() => setCurrentCategory(null)}>
-              ← 뒤로 가기
+              <img src={backButton} alt="뒤로 가기" />
             </BackButton>
-            <AllCategoryText>
+            <AllCategoryText onClick={() => setCurrentCategory(null)}>
               {currentCategory}
             </AllCategoryText>
           </>
         ) : (
           <>
-            <BackButton onClick={onBackClick}>← 뒤로 가기</BackButton>
-            <AllCategoryText>전체 카테고리</AllCategoryText>
+                      <BackButton onClick={onBackClick}>
+              <img src={backButton} alt="뒤로 가기" />
+            </BackButton>
+            <AllCategoryText onClick={onBackClick}>전체 카테고리 보기</AllCategoryText>
           </>
         )}
       </AllCategoryTitleDiv>
@@ -329,11 +348,11 @@ const AllCategory = ({ selectedCategory, onBackClick }) => {
             </SortHeader>
             {showSortMenu && (
               <SortDropdown>
+                <SortDropdownItem onClick={() => handleSortSelection('다운로드 수 ↑')}>인기순</SortDropdownItem>
                 <SortDropdownItem onClick={() => handleSortSelection('노트 이름 ↑')}>노트 이름 ↑</SortDropdownItem>
                 <SortDropdownItem onClick={() => handleSortSelection('노트 이름 ↓')}>노트 이름 ↓</SortDropdownItem>
                 <SortDropdownItem onClick={() => handleSortSelection('업로드일 - 최신 순')}>업로드일 - 최신 순</SortDropdownItem>
                 <SortDropdownItem onClick={() => handleSortSelection('업로드일 - 오래된 순')}>업로드일 - 오래된 순</SortDropdownItem>
-                <SortDropdownItem onClick={() => handleSortSelection('다운로드 수 ↑')}>다운로드 수 ↑</SortDropdownItem>
               </SortDropdown>
             )}
           </SortMenu>

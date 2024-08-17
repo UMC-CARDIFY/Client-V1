@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import modalClose from '../../../assets/modalClose.svg';
 
 const ModalBackdrop = styled.div`
   position: fixed;
@@ -24,7 +25,7 @@ const ModalContent = styled.div`
   position: relative;
 `;
 
-const CloseButton = styled.button`
+const CloseButton = styled.div`
   position: absolute;
   top: 1rem;
   right: 1rem;
@@ -50,7 +51,9 @@ const NoteModal = ({ show, onClose, title, content }) => {
   return (
     <ModalBackdrop onClick={onClose}>
       <ModalContent onClick={e => e.stopPropagation()}>
-        <CloseButton onClick={onClose}>&times;</CloseButton>
+        <CloseButton onClick={onClose}>
+            <img src={modalClose} alt="close" />
+        </CloseButton>
         <ModalTitle>{title}</ModalTitle>
         <ModalBody>{content}</ModalBody>
       </ModalContent>
