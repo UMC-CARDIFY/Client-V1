@@ -107,8 +107,10 @@ const getColorNameByCode = (colorCode) => {
 const Frame = ({ selectedTab }) => {
   const [folders, setFolders] = useState([]);
   const [notes, setNotes] = useState([]);
-  const [currentPage, setCurrentPage] = useState(0);
-  const [pageCount, setPageCount] = useState(0);
+  const [currentPageFolder, setCurrentPageFolder] = useState(0);
+  const [currentPageNote, setCurrentPageNote] = useState(0);
+  const [pageCountFolder, setPageCountFolder] = useState(0);
+  const [pageCountNote, setPageCountNote] = useState(0);
   const [sortOption, setSortOption] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -132,18 +134,18 @@ const Frame = ({ selectedTab }) => {
 
       if (selectedTab === '폴더') {
         data = sortOption
-          ? await getFolderSort(sortOption, currentPage, pageSize)
-          : await getFolders(currentPage, pageSize);
+          ? await getFolderSort(sortOption, currentPageFolder, pageSize)
+          : await getFolders(currentPageFolder, pageSize);
 
         setFolders(data.foldersList || []);
-        setPageCount(data.totalPages || 0);
+        setPageCountFolder(data.totalPages || 0);
       } else if (selectedTab === '노트') {
         data = sortOption
-          ? await getNoteSort(sortOption, currentPage, pageSize)
-          : await getNotes(currentPage, pageSize);
+          ? await getNoteSort(sortOption, currentPageNote, pageSize)
+          : await getNotes(currentPageNote, pageSize);
 
         setNotes(data.noteList || []);
-        setPageCount(data.totalPage || 0);
+        setPageCountNote(data.totalPage || 0);
       }
     } catch (error) {
       console.error('Failed to fetch data:', error);
@@ -155,10 +157,14 @@ const Frame = ({ selectedTab }) => {
 
   useEffect(() => {
     fetchData();
-  }, [selectedTab, currentPage, sortOption]);
+  }, [selectedTab, currentPageFolder, currentPageNote, sortOption]);
 
   const handlePageChange = (selectedItem) => {
-    setCurrentPage(selectedItem.selected);
+    if (selectedTab === '폴더') {
+      setCurrentPageFolder(selectedItem.selected);
+    } else if (selectedTab === '노트') {
+      setCurrentPageNote(selectedItem.selected);
+    }
   };
 
   const handleSortOptionClick = (option) => {
@@ -266,12 +272,19 @@ const Frame = ({ selectedTab }) => {
           activeMoreDiv={activeMoreDiv}
           moveItem={moveItem}
         />
-        <PaginationContainer>
+            <PaginationContainer>
+        {selectedTab === '폴더' ? (
           <Pagination
-            pageCount={pageCount}
+            pageCount={pageCountFolder}
             handlePageChange={handlePageChange}
           />
-        </PaginationContainer>
+        ) : (
+          <Pagination
+            pageCount={pageCountNote}
+            handlePageChange={handlePageChange}
+          />
+        )}
+      </PaginationContainer>
       </Content>
       {showAddModal && (
         <FolderModal
