@@ -80,6 +80,7 @@ const MoreDiv = forwardRef(({ type, onEditClick, onDeleteClick, isActive, onMore
         await deleteFolder(itemId);
       }
       onDeleteClick(); // 삭제 후 호출되는 콜백
+      window.location.reload();
     } catch (error) {
       console.error('삭제 실패:', error);
     }

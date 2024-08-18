@@ -9,7 +9,8 @@ import {
   deleteFolder,
   deleteNote,
   markFolder,
-  markNote
+  markNote,
+  addFolder
 } from '../../../api/archive';
 
 import FolderModal from './FolderModal';
@@ -19,6 +20,7 @@ import FilteringDropdown from './FilteringDropdown';
 import Pagination from './Pagination';
 import ItemList from './ItemList';
 import addFolderIcon from '../../../assets/addFoldersvg.svg';
+import AddButton from './AddButton';
 
 const FrameContainer = styled.div`
   width: 89rem;
@@ -84,7 +86,25 @@ const PaginationContainer = styled.div`
   width: calc(100% - 10rem);
 `;
 
-const Frame = ({selectedTab}) => {
+const colorMap = {
+  blue: '#6698F5',
+  ocean: '#5AA6C7',
+  lavender: '#949AEC',
+  gray: '#A9A9A9',
+  mint: '#77CEC6',
+  sage: '#AECA99',
+  orange: '#FDB456',
+  plum: '#D49AE9',
+  coral: '#FD855F',
+  rose: '#ED83B1'
+};
+
+const getColorNameByCode = (colorCode) => {
+  const colorEntry = Object.entries(colorMap).find(([key, code]) => code === colorCode);
+  return colorEntry ? colorEntry[0] : 'defaultColorName'; // 색상 이름 반환
+};
+
+const Frame = ({ selectedTab }) => {
   const [folders, setFolders] = useState([]);
   const [notes, setNotes] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
@@ -100,37 +120,30 @@ const Frame = ({selectedTab}) => {
 
   const navigate = useNavigate();
 
-  // 화면 크기에 따라 페이지 사이즈 결정
-  const getPageSize = () => {
-    return window.innerWidth < 1440 ? 5 : 6;
-  };
+  const getPageSize = () => window.innerWidth < 1440 ? 5 : 6;
 
   const fetchData = async () => {
     setLoading(true);
     setError(null);
-  
+
     try {
       const pageSize = getPageSize();
       let data;
-  
+
       if (selectedTab === '폴더') {
         data = sortOption
           ? await getFolderSort(sortOption, currentPage, pageSize)
           : await getFolders(currentPage, pageSize);
-  
+
         setFolders(data.foldersList || []);
-        setPageCount(data.totalPages || 0); // Ensure 'totalPages' is correctly used
+        setPageCount(data.totalPages || 0);
       } else if (selectedTab === '노트') {
         data = sortOption
           ? await getNoteSort(sortOption, currentPage, pageSize)
           : await getNotes(currentPage, pageSize);
-  
-        console.log('Fetched Notes Data:', data); // Verify data structure
-  
+
         setNotes(data.noteList || []);
-        setPageCount(data.totalPage || 0); // Correctly use 'totalPage'
-  
-        console.log('노트 페이지:', data.totalPage); // Log to verify correct value
+        setPageCount(data.totalPage || 0);
       }
     } catch (error) {
       console.error('Failed to fetch data:', error);
@@ -139,7 +152,6 @@ const Frame = ({selectedTab}) => {
       setLoading(false);
     }
   };
-  
 
   useEffect(() => {
     fetchData();
@@ -196,19 +208,44 @@ const Frame = ({selectedTab}) => {
     setShowDeleteModal(false);
   };
 
+  const handleFolderSubmit = async (data) => {
+    try {
+      const colorName = getColorNameByCode(data.selectedColor) || 'defaultColorName';
+      
+      if (modalType === 'addFolder') {
+        await addFolder({
+          folderName: data.folderName,
+          selectedColor: colorName, // 색상 이름으로 변환하여 제출
+        });
+      } else if (modalType === 'editFolder') {
+        // Folder edit logic here (e.g., API call to update folder)
+      }
+      fetchData(); // Refresh folder list
+      setShowAddModal(false);
+    } catch (error) {
+      console.error('Failed to add/edit folder:', error);
+    }
+  };
+
+  const initialData = selectedItem
+    ? {
+        folderName: selectedItem.folderName || '',
+        selectedColor: selectedItem.selectedColor || '',
+      }
+    : {};
+
   return (
     <FrameContainer>
       <Header>
         <h3>{selectedTab === '폴더' ? '모든 폴더' : '모든 노트'}</h3>
         <ButtonContainer>
-          <button onClick={() => {
-            setSelectedItem(null);
-            setModalType('addFolder');
-            setShowAddModal(true);
-          }}>
-            <img src={addFolderIcon} alt='폴더 추가' />
-            {selectedTab === '폴더' ? '폴더 추가' : '노트 추가'}
-          </button>
+          <AddButton
+            selectedTab={selectedTab}
+            setSelectedItem={setSelectedItem}
+            setShowAddModal={setShowAddModal}
+            setModalType={setModalType}
+            addFolderIcon={addFolderIcon}
+          />
           <SortDropdown 
             onSortOptionClick={handleSortOptionClick} 
             selectedTab={selectedTab} 
@@ -236,14 +273,30 @@ const Frame = ({selectedTab}) => {
           />
         </PaginationContainer>
       </Content>
-      {showAddModal && <FolderModal type={modalType} item={selectedItem} onClose={closeModal} />}
-      {showDeleteModal && <DeleteConfirmModal item={selectedItem} onClose={closeModal} onConfirm={() => {
-        const deleteAction = selectedTab === '폴더' ? deleteFolder : deleteNote;
-        deleteAction(selectedItem.id).then(() => {
-          fetchData();
-          closeModal();
-        });
-      }} />}
+      {showAddModal && (
+        <FolderModal
+          isOpen={showAddModal}
+          onClose={closeModal}
+          onSubmit={handleFolderSubmit}
+          initialData={initialData}
+          isEditMode={modalType === 'editFolder'}
+        />
+      )}
+      {showDeleteModal && (
+        <DeleteConfirmModal
+          closeModal={closeModal}
+          selectedItem={selectedItem}
+          selectedTab={selectedTab}
+          onDelete={() => {
+            if (selectedTab === '폴더') {
+              deleteFolder(selectedItem.folderId).then(() => fetchData());
+            } else if (selectedTab === '노트') {
+              deleteNote(selectedItem.noteId).then(() => fetchData());
+            }
+            closeModal();
+          }}
+        />
+      )}
     </FrameContainer>
   );
 };

@@ -109,8 +109,12 @@ const FolderModal = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => 
   }, [initialData]);
 
   const handleSubmit = () => {
-    if(!folderName) {
+    if (!folderName) {
       alert('폴더 이름을 입력해주세요.');
+      return;
+    }
+    if (!selectedColor) {
+      alert('색상을 선택해주세요.');
       return;
     }
     onSubmit({ folderName, selectedColor });
@@ -122,6 +126,7 @@ const FolderModal = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => 
   };
 
   if (!isOpen) return null;
+
 
   const colors = [
     "#6698F5",
@@ -135,7 +140,6 @@ const FolderModal = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => 
     "#FD855F",
     "#ED83B1"
   ];
-
 
   return (
     <ModalOverlay>
@@ -175,6 +179,7 @@ const FolderModal = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => 
     </ModalOverlay>
   );
 };
+
 
 FolderModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
