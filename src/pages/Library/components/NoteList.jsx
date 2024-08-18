@@ -3,6 +3,27 @@ import { getTopNote } from '../../../api/library/getTopNote';
 import { searchLib } from '../../../api/library/searchLib';
 import { useState, useEffect } from 'react';
 import NoteItem from './NoteItem';
+import noResult from '../../../assets/noResult.svg';
+
+const NoResult = styled.div`
+  color: var(--grays-gray-25, #939393);
+text-align: center;
+font-family: Pretendard;
+font-size: 1.5rem;
+font-style: normal;
+font-weight: 400;
+line-height: normal;
+display: flex;
+justify-content: center;
+align-items: center;
+margin-top: 12rem;
+  `;
+
+const NoResultIcon = styled.div`
+width: 3rem;
+height: 3rem;
+flex-shrink: 0;
+`;
 
 const NoteList = ({ searchQuery, categories = [], showAllNotes = false }) => {
   const [notes, setNotes] = useState([]);
@@ -41,7 +62,12 @@ const NoteList = ({ searchQuery, categories = [], showAllNotes = false }) => {
           />
         ))
       ) : (
-        <p>선택된 카테고리에 해당하는 노트가 없습니다.</p>
+        <NoResult>
+          <NoResultIcon>
+            <img src={noResult} alt="noResultIcon" />
+          </NoResultIcon>
+        검색 결과가 없습니다.
+        </NoResult>
       )}
     </>
   );
