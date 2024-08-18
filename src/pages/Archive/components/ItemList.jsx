@@ -6,7 +6,7 @@ import FolderIcon from './FolderIcon';
 import MoreDiv from './MoreDiv';
 import PropTypes from 'prop-types';
 
-const FolderData = styled.div`
+const Data = styled.div`
   display: flex;
   flex-direction: row;
   min-width: 37.75rem;
@@ -16,15 +16,6 @@ const FolderData = styled.div`
   width: 100%;
 `;
 
-const NoteData = styled.div`
-  display: flex;
-  flex-direction: row;
-  min-width: 37.75rem;
-  padding: 1.25rem 0.5rem;
-  align-items: center;
-  gap: 1.5rem;
-  width: 100%;
-`;
 
 const LeftData = styled.div`
   display: flex;
@@ -85,7 +76,7 @@ const ItemList = ({
       {items.length > 0 ? (
         items.map((item, index) => (
           selectedTab === '폴더' ? (
-            <FolderData key={index}>
+            <Data key={index}>
               <LeftData>
                 <img
                   src={item.markState === 'ACTIVE' ? MarkStateActive : MarkStateIcon}
@@ -116,9 +107,9 @@ const ItemList = ({
                   onMoreClick={() => handleMoreClick(index)}
                 />
               </RightData>
-            </FolderData>
+            </Data>
           ) : (
-            <NoteData key={index}>
+            <Data key={index}>
               <LeftData>
                 <img
                   src={item.markState === 'ACTIVE' ? MarkStateActive : MarkStateIcon}
@@ -127,7 +118,7 @@ const ItemList = ({
                 />
                 <img src={Note} alt='노트 아이콘' />
                 <Line />
-                <div onClick={() => moveItem(item)}>{item.name} 노트</div>
+                <div onClick={() => moveItem(item)}>{item.name}</div>
               </LeftData>
               <FlexSpacer />
               <RightData>
@@ -148,7 +139,7 @@ const ItemList = ({
                   onMoreClick={() => handleMoreClick(index)}
                 />
               </RightData>
-            </NoteData>
+            </Data>
           )
         ))
       ) : (

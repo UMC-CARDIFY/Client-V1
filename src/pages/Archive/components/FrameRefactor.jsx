@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {
   getFolders,
   getFolderSort,
@@ -99,7 +99,6 @@ const Frame = ({selectedTab}) => {
   const [modalType, setModalType] = useState('');
 
   const navigate = useNavigate();
-  const location = useLocation();
 
   // 화면 크기에 따라 페이지 사이즈 결정
   const getPageSize = () => {
@@ -149,7 +148,6 @@ const Frame = ({selectedTab}) => {
     if (option) {
       const [tab, sortOption] = option.split(';');
       if (tab === '폴더' || tab === '노트') {
-        setSelectedTab(tab);
         setSortOption(sortOption);
       } else {
         console.error('Invalid tab:', tab);
