@@ -18,6 +18,7 @@ import BlankCardView from './setup/blankcardView';
 import BlankCardPreviewModal from '../Cards/PreviewModal/blankcardPreview';
 import MultiCardView from './setup/multicardView';
 import MultiCardPreviewModal from '../Cards/PreviewModal/multicardPreview';
+import ImageCardView from './setup/imagecardView';
 import FlashcardButton from './FlashcardButton';
 import { NoteContext } from '../../../../api/NoteContext';
 
@@ -230,6 +231,9 @@ const CombinedEditor = ({ viewRef }) => {
           },
           multi_card(node, view, getPos) {
             return new MultiCardView(node, view, getPos, openModal);
+          },
+          image_card(node, view, getPos) {
+            return new ImageCardView(node, view, getPos, openModal);
           }
         },
         dispatchTransaction(transaction) {
@@ -237,6 +241,9 @@ const CombinedEditor = ({ viewRef }) => {
           const newState = viewRef.current.state.apply(transaction);
           viewRef.current.updateState(newState);
           console.log('New state:', JSON.stringify(newState.doc.toJSON(), null, 2));
+       
+          // 노트 내용 업데이트
+          noteData.noteContent = JSON.stringify(newState.doc.toJSON());
         }
       });
     } catch (error) {
@@ -252,7 +259,7 @@ const CombinedEditor = ({ viewRef }) => {
         viewRef.current = null; // 에디터를 해제하고 참조를 null로 설정
       }
     };
-  }, [contentRef, noteData, viewRef]);
+  }, [contentRef, noteData, viewRef, setNoteData]);
   
   /*
    // 새로운 useEffect 훅 추가
@@ -410,11 +417,9 @@ export const addCard = (viewRef, type) => {
     case 'multi_card':
       node = mySchema.nodes.multi_card.create();
       break;
-    /*
     case 'image_card':
       node = mySchema.nodes.image_card.create();
       break;
-    */
     default:
       console.error('Unknown card type: ${type}');
       return;
