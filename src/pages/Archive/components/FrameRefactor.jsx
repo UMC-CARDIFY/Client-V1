@@ -108,25 +108,29 @@ const Frame = ({selectedTab}) => {
   const fetchData = async () => {
     setLoading(true);
     setError(null);
-
+  
     try {
       const pageSize = getPageSize();
       let data;
-
+  
       if (selectedTab === '폴더') {
         data = sortOption
           ? await getFolderSort(sortOption, currentPage, pageSize)
           : await getFolders(currentPage, pageSize);
-
+  
         setFolders(data.foldersList || []);
-        setPageCount(data.totalPages || 0);
+        setPageCount(data.totalPages || 0); // Ensure 'totalPages' is correctly used
       } else if (selectedTab === '노트') {
         data = sortOption
           ? await getNoteSort(sortOption, currentPage, pageSize)
           : await getNotes(currentPage, pageSize);
-
-        setNotes(data.noteList || []); 
-        setPageCount(data.totalPages || 0);
+  
+        console.log('Fetched Notes Data:', data); // Verify data structure
+  
+        setNotes(data.noteList || []);
+        setPageCount(data.totalPage || 0); // Correctly use 'totalPage'
+  
+        console.log('노트 페이지:', data.totalPage); // Log to verify correct value
       }
     } catch (error) {
       console.error('Failed to fetch data:', error);
@@ -135,6 +139,7 @@ const Frame = ({selectedTab}) => {
       setLoading(false);
     }
   };
+  
 
   useEffect(() => {
     fetchData();
