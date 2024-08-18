@@ -10,7 +10,8 @@ import {
   deleteNote,
   markFolder,
   markNote,
-  addFolder
+  addFolder,
+  editFolder
 } from '../../../api/archive';
 
 import FolderModal from './FolderModal';
@@ -221,17 +222,22 @@ const Frame = ({ selectedTab }) => {
       if (modalType === 'addFolder') {
         await addFolder({
           folderName: data.folderName,
-          selectedColor: colorName, // 색상 이름으로 변환하여 제출
+          selectedColor: colorName,
         });
-      } else if (modalType === 'editFolder') {
-        // Folder edit logic here (e.g., API call to update folder)
+      } else if (modalType === 'editFolder' && selectedItem) {
+        await editFolder(selectedItem.folderId, {
+          folderName: data.folderName,
+          selectedColor: colorName,
+        });
       }
+  
       fetchData(); // Refresh folder list
       setShowAddModal(false);
     } catch (error) {
       console.error('Failed to add/edit folder:', error);
     }
   };
+  
 
   const initialData = selectedItem
     ? {
