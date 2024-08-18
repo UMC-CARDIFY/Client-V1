@@ -27,8 +27,8 @@ const ModalContent = styled.div`
 `;
 
 const FormField = styled.div`
-  display:flex;
-  flex-direction:column;
+  display: flex;
+  flex-direction: column;
 `;
 
 const Input = styled.input`
@@ -127,7 +127,6 @@ const FolderModal = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => 
 
   if (!isOpen) return null;
 
-
   const colors = [
     "#6698F5",
     "#5AA6C7",
@@ -179,7 +178,6 @@ const FolderModal = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => 
     </ModalOverlay>
   );
 };
-
 
 FolderModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,

@@ -63,83 +63,72 @@ const ItemList = ({
   handleDelete,
   handleMoreClick,
   activeMoreDiv,
-  moveItem
+  moveItem,
+  onFolderClick // 추가된 prop
 }) => {
-  console.log('Selected Tab:', selectedTab);
-  console.log('Items:', items); // 데이터가 잘 전달되는지 확인
-
   return (
     <>
       {items.length > 0 ? (
         items.map((item, index) => (
-          selectedTab === '폴더' ? (
-            <Data key={item.id}> {/* Use unique ID if available */}
-              <LeftData>
-                <img
-                  src={item.markState === 'ACTIVE' ? MarkStateActive : MarkStateIcon}
-                  alt='즐겨찾기'
-                  onClick={() => handleMarkStatus(item)}
-                />
-                <FolderIcon fill={colorMap[item.color]} />
-                <Line />
-                <div onClick={() => moveItem(item)}>{item.name}</div>
-              </LeftData>
-              <FlexSpacer />
-              <RightData>
-                <Line />
-                <div>
-                  <div>{item.getNoteCount}</div>
-                  <div>포함된 노트 개수</div>
-                </div>
-                <Line />
-                <div>
-                  <div>{item.editDate.split('T')[0]}</div>
-                  <div>최근 수정일</div>
-                </div>
-                <MoreDiv
-                  type="folder"
-                  onEditClick={() => handleEdit(item)}
-                  onDeleteClick={() => handleDelete(item.id)} // Ensure you are passing item.id
-                  isActive={activeMoreDiv === index}
-                  onMoreClick={() => handleMoreClick(index)}
-                  itemId={item.folderId} // Ensure itemId is passed correctly
-                />
-              </RightData>
-            </Data>
-          ) : (
-            <Data key={item.id}> {/* Use unique ID if available */}
-              <LeftData>
-                <img
-                  src={item.markState === 'ACTIVE' ? MarkStateActive : MarkStateIcon}
-                  alt='즐겨찾기'
-                  onClick={() => handleMarkNoteStatus(item)}
-                />
-                <img src={Note} alt='노트 아이콘' />
-                <Line />
-                <div onClick={() => moveItem(item)}>{item.name}</div>
-              </LeftData>
-              <FlexSpacer />
-              <RightData>
-                <Line />
-                <div>
-                  <div>{item.folderName}</div>
-                  <div>폴더</div>
-                </div>
-                <Line />
-                <div>
-                  <div>{item.editDate.split('T')[0]}</div>
-                  <div>최근 수정일</div>
-                </div>
-                <MoreDiv
-                  type="note"
-                  onDeleteClick={() => handleDelete(item)}
-                  isActive={activeMoreDiv === index}
-                  onMoreClick={() => handleMoreClick(index)}
-                  itemId={item.NoteId} // Ensure itemId is passed correctly
-                />
-              </RightData>
-            </Data>
-          )
+          <Data key={`${selectedTab}-${item.id || index}`}>
+            <LeftData>
+              <img
+                src={item.markState === 'ACTIVE' ? MarkStateActive : MarkStateIcon}
+                alt='즐겨찾기'
+                onClick={() => selectedTab === '폴더' ? handleMarkStatus(item) : handleMarkNoteStatus(item)}
+              />
+              {selectedTab === '폴더' ? (
+                <>
+                  <FolderIcon fill={colorMap[item.color]} />
+                  <Line />
+                  <div
+                    onClick={() => {
+                      moveItem(item);
+                      if (selectedTab === '폴더' && onFolderClick) {
+                        // folderId가 undefined일 때 로깅
+                        console.log('아이템 컴포넌트 폴더 ID:', item.folderId);
+                        if (item.folderId !== undefined) {
+                          onFolderClick(item.folderId);
+                        } else {
+                          console.error('폴더 ID가 정의되어 있지 않습니다.');
+                        }
+                      }
+                    }}
+                  >
+                    {item.name}
+                  </div>
+
+                </>
+              ) : (
+                <>
+                  <img src={Note} alt='노트 아이콘' />
+                  <Line />
+                  <div onClick={() => moveItem(item)}>{item.name}</div>
+                </>
+              )}
+            </LeftData>
+            <FlexSpacer />
+            <RightData>
+              <Line />
+              <div>
+                <div>{selectedTab === '폴더' ? item.getNoteCount : item.folderName}</div>
+                <div>{selectedTab === '폴더' ? '포함된 노트 개수' : '폴더'}</div>
+              </div>
+              <Line />
+              <div>
+                <div>{item.editDate.split('T')[0]}</div>
+                <div>최근 수정일</div>
+              </div>
+              <MoreDiv
+                type={selectedTab.toLowerCase()}
+                onEditClick={() => handleEdit(item)}
+                onDeleteClick={() => handleDelete(item.id)}
+                isActive={activeMoreDiv === index}
+                onMoreClick={() => handleMoreClick(index)}
+                itemId={selectedTab === '폴더' ? item.folderId : item.noteId}
+              />
+            </RightData>
+          </Data>
         ))
       ) : (
         <div>No items found</div>
@@ -158,6 +147,7 @@ ItemList.propTypes = {
   handleMoreClick: PropTypes.func.isRequired,
   activeMoreDiv: PropTypes.number,
   moveItem: PropTypes.func.isRequired,
+  onFolderClick: PropTypes.func // 추가된 prop 타입 정의
 };
 
 export default ItemList;
