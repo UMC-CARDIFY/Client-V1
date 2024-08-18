@@ -206,7 +206,7 @@ const colorMap = {
   rose: '#ED83B1'
 };
 
-const MenuBar = ({ isCollapsed, toggleMenuBar, selectedFolderId }) => {
+const MenuBar = ({ isCollapsed, toggleMenuBar, selectedFolderId, onSelectNote }) => {
   const [selectedNoteId, setSelectedNoteId] = useState(null);
   const [notes, setNotes] = useState([]);
   const [folderName, setFolderName] = useState(''); // 폴더 이름 상태 추가
@@ -255,11 +255,6 @@ const MenuBar = ({ isCollapsed, toggleMenuBar, selectedFolderId }) => {
     }
   }, [selectedFolderId]);
 
-  const handleClick = (note) => {
-    setSelectedNoteId(note.noteId);
-    // 노트를 클릭했을 때의 추가 작업
-  };
-
   const favoriteNotes = notes.filter(note => note.markState === 'ACTIVE');
   const folderIconColor = colorMap[folderColor] || colorMap.gray;
 
@@ -302,7 +297,10 @@ const MenuBar = ({ isCollapsed, toggleMenuBar, selectedFolderId }) => {
     }
   };
   
-  
+  const handleClick = (note) => {
+    setSelectedNoteId(note.noteId);
+    onSelectNote(note.noteId); // 선택된 노트의 ID를 NoteEditor로 전달
+  };
 
   return (
     <MenuBarContainer isCollapsed={isCollapsed}>
@@ -433,8 +431,7 @@ MenuBar.propTypes = {
   isCollapsed: PropTypes.bool.isRequired,
   toggleMenuBar: PropTypes.func.isRequired,
   selectedFolderId: PropTypes.number.isRequired, // 아카이브에서 선택된 폴더 ID
+  onSelectNote: PropTypes.func.isRequired, 
 };
 
 export default MenuBar;
-
-
