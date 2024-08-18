@@ -1,6 +1,8 @@
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import RecentNoteItem from './RecentNoteItem';
 import { useMediaQuery } from 'react-responsive';
+import { getRecentNotes } from '../../../../api/dashboard/recentNotes';
 
 const RecentNotesDiv = styled.div`
   display: flex;
@@ -14,10 +16,12 @@ const RecentNotesDiv = styled.div`
   /* default */
   box-shadow: 0px 4px 26px 0px rgba(0, 0, 0, 0.02), 0px 10px 60px 0px rgba(0, 74, 162, 0.03);
   width: 100%;
+
   @media (min-width: 1440px) and (max-width: 1680px) {
   width: 41.5em;
   height: 24.3125rem;
-}
+  }
+  
   @media (max-width: 1440px) and (min-width: 1200px){
   width: 38.8125rem;
   height: 18.5625rem;
@@ -45,21 +49,40 @@ const RecentNotesContainer = styled.div`
 `;
 
 const RecentNotes = () => {
+  const [notes, setNotes] = useState([]);
   const isLaptop = useMediaQuery({ minWidth: 1440, maxWidth: 1680 });
+
+  useEffect(() => {
+    const fetchNotes = async () => {
+      try {
+        const noteSize = isLaptop ? 4 : 3;
+        const recentNotes = await getRecentNotes(noteSize);
+
+        console.log('받아온 노트 데이터:', recentNotes); // 받아온 데이터 확인
+        setNotes(recentNotes);
+      } catch (error) {
+        console.error('노트 데이터를 불러오는 중 오류 발생:', error);
+      }
+    };
+
+    fetchNotes();
+  }, [isLaptop]);
 
   return (
     <RecentNotesDiv>
       <Title>최근 열람한 노트</Title>
       <RecentNotesContainer>
-        <RecentNoteItem folderName="폴더 이름 1" noteName="노트 이름 1" lastModified="YYYY-MM-DD" />
-        <RecentNoteItem folderName="폴더 이름 2" noteName="노트 이름 2" lastModified="YYYY-MM-DD" />
-        <RecentNoteItem folderName="폴더 이름 3" noteName="노트 이름 3" lastModified="YYYY-MM-DD" />
-        {isLaptop && (
-          <RecentNoteItem folderName="폴더 이름 4" noteName="노트 이름 4" lastModified="YYYY-MM-DD" />
-        )}
+        {notes.map(note => (
+          <RecentNoteItem
+            key={note.noteId}
+            folderName={note.folderName.length > 8 ? `${note.folderName.substring(0, 8)}...` : note.folderName}
+            noteName={note.name.length > 8 ? `${note.name.substring(0, 8)}...` : note.name}
+            lastModified={note.editDate}
+          />
+        ))}
       </RecentNotesContainer>
     </RecentNotesDiv>
   );
 };
 
-export default RecentNotes;
+export default RecentNotes
