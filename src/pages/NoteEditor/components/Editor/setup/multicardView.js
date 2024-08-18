@@ -49,7 +49,7 @@ class MultiCardView {
 
       this.previewButton.addEventListener('click', () => {
           if (this.openModal) {
-              this.openModal('multi_card', this.node.attrs.question, this.node.attrs.answer);
+              this.openModal('multi_card', this.node.attrs.question_front, this.node.attrs.answer);
           }
       });
       this.dom.appendChild(this.previewButton);
@@ -82,9 +82,9 @@ class MultiCardView {
       this.questionDiv = document.createElement('div');
       this.questionDiv.className = 'question';
       this.questionDiv.contentEditable = true;
-      this.questionDiv.style.color = this.node.attrs.question ? '#000' : '#aaa';
+      this.questionDiv.style.color = this.node.attrs.question_front ? '#000' : '#aaa';
       this.questionDiv.style.outline = 'none';
-      this.questionDiv.innerText = node.attrs.question || '카드 앞면';
+      this.questionDiv.innerText = node.attrs.question_front || '카드 앞면';
       this.dom.appendChild(this.questionDiv);
 
       // question 이벤트 핸들러
@@ -213,7 +213,7 @@ class MultiCardView {
       const question = this.questionDiv.innerText.trim();
       const answer = this.answerDivs.map(div => div.innerText.trim());
 
-      if (question !== this.node.attrs.question || JSON.stringify(answer) !== JSON.stringify(this.node.attrs.answer)) {
+      if (question !== this.node.attrs.question_front || JSON.stringify(answer) !== JSON.stringify(this.node.attrs.answer)) {
           this.view.dispatch(
               this.view.state.tr.setNodeMarkup(this.getPos(), null, {
                   question,
@@ -224,8 +224,8 @@ class MultiCardView {
   }
 
   update(node) {
-      if (node.attrs.question !== this.node.attrs.question) {
-          this.questionDiv.innerText = node.attrs.question;
+      if (node.attrs.question_front !== this.node.attrs.question_front) {
+          this.questionDiv.innerText = node.attrs.question_front;
       }
       if (JSON.stringify(node.attrs.answer) !== JSON.stringify(this.node.attrs.answer)) {
           node.attrs.answer.forEach((answer, index) => {
