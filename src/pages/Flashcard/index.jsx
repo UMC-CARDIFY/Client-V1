@@ -1,8 +1,9 @@
 import MenuBar from '../../components/MenuBar';
 import TopBar from '../../components/TopBar';
 import FlashcardItem from './components/FlashcardItem';
-
 import styled from 'styled-components';
+import {getCards} from '../../api/flashcard/getCards';
+import {useEffect, useState} from 'react';
 
 const Container = styled.div`
   display: flex;
@@ -96,6 +97,18 @@ const SortButton = styled(OptionButton)`
 `;
 
 export const Flashcard = () => {
+  const [cards, setCards] = useState([]);
+
+  useEffect(() => {
+    const fetchCards = async () => {
+      const data = await getCards();
+      setCards(data.content);
+    };
+    fetchCards();
+  }, []);
+
+  console.log(cards);
+
   return (
     <Container>
       <MenuBar />
@@ -121,12 +134,20 @@ export const Flashcard = () => {
               </OptionButton>
             </OptionDiv>
             <Flashcards>
-              <FlashcardItem note="1차시" folder="토익" recentDate="2024-07-09" nextDate="-" status="학습 중" color="#77CEC6" />
-              <FlashcardItem note="1장 음성학 기초" folder="국어 음운론" recentDate="-" nextDate="-" status="학습 전" color="#FD855F"/>
-              <FlashcardItem note="프로세서" folder="운영체제" recentDate="2024-07-09" nextDate="-" status="영구 보관" color="#ED83B1" />
-              <FlashcardItem note="스크럼 기법" folder="정보처리기사" recentDate="2024-07-09" nextDate="2024-07-09" status="학습 중" color="#FD855F"/>
-              <FlashcardItem note="스크럼 기법" folder="정보처리기사" recentDate="2024-07-09" nextDate="2024-07-09" status="학습 중" color="#FD855F"/>
-              <FlashcardItem note="프로세서" folder="운영체제" recentDate="2024-07-09" nextDate="-" status="영구 보관" color="#ED83B1" />
+              { cards.length > 0 ?  (
+              cards.map((card, index) => (
+                <FlashcardItem key={index}
+                  color={card.color}
+                  forderName={card.folderName}
+                  nextStudyDate={card.nextStudyDate}
+                  noteName={card.noteName}
+                  studyStatus={card.studyStatus}
+                  recentStudyDate={card.recentStudyDate}
+                 />
+              )
+              )) : (
+                <p>데이터가 없습니다.</p>
+              )}
             </Flashcards>
           </FlashcardContainer>
         </ContentArea>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import CardIcon from './CardIcon';
 import DeleteModal from './DeleteModal';
@@ -187,7 +187,20 @@ const DeleteButton = styled.div`
   font-weight: 500;
 `;
 
-const FlashcardItem = ({ note, folder, recentDate, nextDate, status, color }) => {
+const FlashcardItem = ({ noteName, forderName, recentStudyDate, nextStudyDate, studyStatus, color }) => {
+  const colorMap = {
+    blue1: '#6698F5',
+    ocean: '#5AA6C7',
+    lavedar: '#949AEC',
+    gray: '#A9A9A9',
+    mint: '#77CEC6',
+    sage: '#AECA99',
+    orange: '#FDB456',
+    plum: '#D49AE9',
+    coral: '#FD855F',
+    rose: '#ED83B1'
+  };
+
   const [showDeleteButton, setShowDeleteButton] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
@@ -216,7 +229,7 @@ const FlashcardItem = ({ note, folder, recentDate, nextDate, status, color }) =>
       
       {/* 실제 콘텐츠를 담고 있는 카드 */}
       <ForegroundCard>
-        <StatusBadge status={status}>{status}</StatusBadge>
+        <StatusBadge status={studyStatus}>{studyStatus}</StatusBadge>
         <MoreOptions onClick={toggleDeleteButton}>
           <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none">
           <path fillRule="evenodd" clipRule="evenodd" d="M12.25 5.83301C12.25 5.36888 12.4344 4.92376 12.7626 4.59557C13.0908 4.26738 13.5359 4.08301 14 4.08301H14.0117C14.4758 4.08301 14.9209 4.26738 15.2491 4.59557C15.5773 4.92376 15.7617 5.36888 15.7617 5.83301V5.84467C15.7617 6.3088 15.5773 6.75392 15.2491 7.08211C14.9209 7.4103 14.4758 7.59468 14.0117 7.59468H14C13.5359 7.59468 13.0908 7.4103 12.7626 7.08211C12.4344 6.75392 12.25 6.3088 12.25 5.84467V5.83301ZM12.25 13.9997C12.25 13.5355 12.4344 13.0904 12.7626 12.7622C13.0908 12.434 13.5359 12.2497 14 12.2497H14.0117C14.4758 12.2497 14.9209 12.434 15.2491 12.7622C15.5773 13.0904 15.7617 13.5355 15.7617 13.9997V14.0113C15.7617 14.4755 15.5773 14.9206 15.2491 15.2488C14.9209 15.577 14.4758 15.7613 14.0117 15.7613H14C13.5359 15.7613 13.0908 15.577 12.7626 15.2488C12.4344 14.9206 12.25 14.4755 12.25 14.0113V13.9997ZM14 20.4163C13.5359 20.4163 13.0908 20.6007 12.7626 20.9289C12.4344 21.2571 12.25 21.7022 12.25 22.1663V22.178C12.25 22.6421 12.4344 23.0873 12.7626 23.4154C13.0908 23.7436 13.5359 23.928 14 23.928H14.0117C14.4758 23.928 14.9209 23.7436 15.2491 23.4154C15.5773 23.0873 15.7617 22.6421 15.7617 22.178V22.1663C15.7617 21.7022 15.5773 21.2571 15.2491 20.9289C14.9209 20.6007 14.4758 20.4163 14.0117 20.4163H14Z" fill="#B1B1B1"/>
@@ -228,19 +241,19 @@ const FlashcardItem = ({ note, folder, recentDate, nextDate, status, color }) =>
 
         <CardHeader>
           <CardIconDiv>
-            <CardIcon color={color} />
+            <CardIcon color={colorMap[color]} />
           </CardIconDiv>
-          <CardTitle>{note}</CardTitle>
-          <CardSubtitle>{folder}</CardSubtitle>
+          <CardTitle>{noteName}</CardTitle>
+          <CardSubtitle>{forderName}</CardSubtitle>
         </CardHeader>
         <Line />
         <DayDiv>
           <Day>
-            <Date>{recentDate}</Date>
+            {recentStudyDate ? <Date>{recentStudyDate}</Date> : <Date>-</Date>}
             <DateText>최근 학습일</DateText>
           </Day>
           <Day>
-            <Date>{nextDate}</Date>
+            {nextStudyDate ? <Date>{nextStudyDate}</Date> : <Date>-</Date>}
             <DateText>다음 학습일</DateText>
           </Day>
         </DayDiv>
@@ -279,11 +292,11 @@ const FlashcardItem = ({ note, folder, recentDate, nextDate, status, color }) =>
 };
 
 FlashcardItem.propTypes = {
-  note: PropTypes.string.isRequired,
-  folder: PropTypes.string.isRequired,
-  recentDate: PropTypes.string.isRequired,
-  nextDate: PropTypes.string.isRequired,
-  status: PropTypes.oneOf(['학습 중', '학습 전', '영구 보관']).isRequired,
+  noteName: PropTypes.string.isRequired,
+  forderName: PropTypes.string.isRequired,
+  recentStudyDate: PropTypes.string.isRequired,
+  nextStudyDate: PropTypes.string.isRequired,
+  studyStatus: PropTypes.oneOf(['학습 중', '학습 전', '영구 보관']).isRequired,
   color: PropTypes.string.isRequired,
 };
 
