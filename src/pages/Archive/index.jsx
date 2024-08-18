@@ -1,7 +1,7 @@
 import MenuBar from '../../components/MenuBar'
 import TopBar from '../../components/TopBar'
 import styled from 'styled-components'
-import Frame from './components/Frame'
+import Frame from './components/FrameRefactor'
 import { useState } from 'react'
 import { Desktop, Tablet, Laptop } from '../../styles/MediaQuery'
 

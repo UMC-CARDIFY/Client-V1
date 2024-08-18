@@ -63,106 +63,112 @@ const colorMap = {
 
 
 const ItemList = ({
-    items,
-    selectedTab,
-    handleMarkStatus,
-    handleMarkNoteStatus,
-    handleEdit,
-    handleDelete,
-    handleMoreClick,
-    activeMoreDiv,
-    moveItem
-  }) => {
-    console.log('Items:', items); // 데이터가 잘 전달되는지 확인
-    return (
-      <>
-        {items.length > 0 ? (
-          items.map((item, index) => (
-            selectedTab === '폴더' ? (
-              <FolderData key={index}>
-                <LeftData>
-                  <img
-                    src={item.markState === 'ACTIVE' ? MarkStateActive : MarkStateIcon}
-                    alt='즐겨찾기'
-                    onClick={() => handleMarkStatus(item)}
-                  />
-                  <FolderIcon fill={colorMap[item.color]} />
-                  <Line />
-                  <div onClick={() => moveItem(item)}>{item.name}</div>
-                </LeftData>
-                <FlexSpacer />
-                <RightData>
-                  <Line />
-                  <div>
-                    <div>{item.getNoteCount}</div>
-                    <div>포함된 노트 개수</div>
-                  </div>
-                  <Line />
-                  <div>
-                    <div>{item.editDate.split('T')[0]}</div>
-                    <div>최근 수정일</div>
-                  </div>
-                  <MoreDiv
-                    type="folder"
-                    onEditClick={() => handleEdit(item)}
-                    onDeleteClick={() => handleDelete(item)}
-                    isActive={activeMoreDiv === index}
-                    onMoreClick={() => handleMoreClick(index)}
-                  />
-                </RightData>
-              </FolderData>
-            ) : (
-              <NoteData key={index}>
-                <LeftData>
-                  <img
-                    src={item.markState === 'ACTIVE' ? MarkStateActive : MarkStateIcon}
-                    alt='즐겨찾기'
-                    onClick={() => handleMarkNoteStatus(item)}
-                  />
-                  <img src={Note} alt='노트 아이콘' />
-                  <Line />
-                  <div onClick={() => moveItem(item)}>{item.name} 노트</div>
-                </LeftData>
-                <FlexSpacer />
-                <RightData>
-                  <Line />
-                  <div>
-                    <div>{item.folderName}</div>
-                    <div>폴더</div>
-                  </div>
-                  <Line />
-                  <div>
-                    <div>{item.editDate.split('T')[0]}</div>
-                    <div>최근 수정일</div>
-                  </div>
-                  <MoreDiv
-                    type="note"
-                    onDeleteClick={() => handleDelete(item)}
-                    isActive={activeMoreDiv === index}
-                    onMoreClick={() => handleMoreClick(index)}
-                  />
-                </RightData>
-              </NoteData>
-            )
-          ))
-        ) : (
-          <div>No items found</div>
-        )}
-      </>
-    );
-  };
+  items,
+  selectedTab,
+  handleMarkStatus,
+  handleMarkNoteStatus,
+  handleEdit,
+  handleDelete,
+  handleMoreClick,
+  activeMoreDiv,
+  moveItem
+}) => {
+  console.log('Selected Tab:', selectedTab);
+  console.log('Items:', items); // 데이터가 잘 전달되는지 확인
 
-  ItemList.propTypes = {
-    items: PropTypes.arrayOf(PropTypes.object).isRequired,
-    selectedTab: PropTypes.string.isRequired,
-    handleMarkStatus: PropTypes.func.isRequired,
-    handleMarkNoteStatus: PropTypes.func.isRequired,
-    handleEdit: PropTypes.func.isRequired,
-    handleDelete: PropTypes.func.isRequired,
-    handleMoreClick: PropTypes.func.isRequired,
-    activeMoreDiv: PropTypes.number,
-    moveItem: PropTypes.func.isRequired,
-  };
-  
+  if (selectedTab === '아이템 리스트 : 노트') {
+    console.log('Note Items:', items);
+}
+
+  return (
+    <>
+      {items.length > 0 ? (
+        items.map((item, index) => (
+          selectedTab === '폴더' ? (
+            <FolderData key={index}>
+              <LeftData>
+                <img
+                  src={item.markState === 'ACTIVE' ? MarkStateActive : MarkStateIcon}
+                  alt='즐겨찾기'
+                  onClick={() => handleMarkStatus(item)}
+                />
+                <FolderIcon fill={colorMap[item.color]} />
+                <Line />
+                <div onClick={() => moveItem(item)}>{item.name}</div>
+              </LeftData>
+              <FlexSpacer />
+              <RightData>
+                <Line />
+                <div>
+                  <div>{item.getNoteCount}</div>
+                  <div>포함된 노트 개수</div>
+                </div>
+                <Line />
+                <div>
+                  <div>{item.editDate.split('T')[0]}</div>
+                  <div>최근 수정일</div>
+                </div>
+                <MoreDiv
+                  type="folder"
+                  onEditClick={() => handleEdit(item)}
+                  onDeleteClick={() => handleDelete(item)}
+                  isActive={activeMoreDiv === index}
+                  onMoreClick={() => handleMoreClick(index)}
+                />
+              </RightData>
+            </FolderData>
+          ) : (
+            <NoteData key={index}>
+              <LeftData>
+                <img
+                  src={item.markState === 'ACTIVE' ? MarkStateActive : MarkStateIcon}
+                  alt='즐겨찾기'
+                  onClick={() => handleMarkNoteStatus(item)}
+                />
+                <img src={Note} alt='노트 아이콘' />
+                <Line />
+                <div onClick={() => moveItem(item)}>{item.name} 노트</div>
+              </LeftData>
+              <FlexSpacer />
+              <RightData>
+                <Line />
+                <div>
+                  <div>{item.folderName}</div>
+                  <div>폴더</div>
+                </div>
+                <Line />
+                <div>
+                  <div>{item.editDate.split('T')[0]}</div>
+                  <div>최근 수정일</div>
+                </div>
+                <MoreDiv
+                  type="note"
+                  onDeleteClick={() => handleDelete(item)}
+                  isActive={activeMoreDiv === index}
+                  onMoreClick={() => handleMoreClick(index)}
+                />
+              </RightData>
+            </NoteData>
+          )
+        ))
+      ) : (
+        <div>No items found</div>
+      )}
+    </>
+  );
+};
+
+ItemList.propTypes = {
+  items: PropTypes.arrayOf(PropTypes.object).isRequired,
+  selectedTab: PropTypes.string.isRequired,
+  handleMarkStatus: PropTypes.func.isRequired,
+  handleMarkNoteStatus: PropTypes.func.isRequired,
+  handleEdit: PropTypes.func.isRequired,
+  handleDelete: PropTypes.func.isRequired,
+  handleMoreClick: PropTypes.func.isRequired,
+  activeMoreDiv: PropTypes.number,
+  moveItem: PropTypes.func.isRequired,
+};
+
 
 export default ItemList;
