@@ -1,11 +1,12 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { SignIn, SignUp, VerifyEmail, CompleteSignUp, MyPage, Archive, Dashboard, PointPage, SubscriptionPage, NoteEditor, Flashcard } from "../pages";
+import { SignIn, SignUp, VerifyEmail, CompleteSignUp, MyPage, Archive, Dashboard, PointPage, SubscriptionPage, NoteEditor, Flashcard, KaKaoCallback, Library } from "../pages";
 
 const Router = () => {
   return (
     <BrowserRouter>
       <Routes>
         <Route path='/sign-in' element={<SignIn />} />
+        <Route path="/oauth2/callback/kakao" element={<KaKaoCallback />} />
         <Route path='/sign-up' element={<SignUp />} />
         <Route path='/sign-up/verify' element={<VerifyEmail />} />
         <Route path='/sign-up/complete' element={<CompleteSignUp />} />
@@ -16,6 +17,7 @@ const Router = () => {
         <Route path='/dashboard' element={<Dashboard />} /> 
         <Route path='/note-editor' element={<NoteEditor />} /> 
         <Route path='/flashcard' element={<Flashcard />} />
+        <Route path='/library' element={<Library />} />
        </Routes>
     </BrowserRouter>
   );

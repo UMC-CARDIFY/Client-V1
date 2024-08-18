@@ -1,33 +1,31 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';  
-import { EditorState } from 'prosemirror-state';
+import { EditorState, TextSelection } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 import { keymap } from 'prosemirror-keymap';
 import { baseKeymap } from 'prosemirror-commands';
 import { history } from 'prosemirror-history';
 import { dropCursor } from 'prosemirror-dropcursor';
 import { gapCursor } from 'prosemirror-gapcursor';
-import { Schema } from 'prosemirror-model';
-import { addListNodes, splitListItem, wrapInList, liftListItem, sinkListItem } from 'prosemirror-schema-list';
-import { schema as basicSchema } from 'prosemirror-schema-basic';
+import { sinkListItem, liftListItem, splitListItem, wrapInList } from 'prosemirror-schema-list';
 import 'prosemirror-view/style/prosemirror.css';
-import WordCard from '../Cards/WordCard';
-import BlankCard from '../Cards/BlankCard';
-import MultiCard from '../Cards/MultiCard';
-import ImageCard from '../Cards/ImageCard';
 import { myInputRules } from './Markdown/inputRules';
-
-const mySchema = new Schema({
-  nodes: addListNodes(basicSchema.spec.nodes, 'paragraph block*', 'block'),
-  marks: basicSchema.spec.marks,
-});
+import mySchema from './setup/schema';
+import WordCardView from './setup/wordcardView';
+import WordCardPreviewModal from '../Cards/PreviewModal/wordcardPreview';
+import BlankCardView from './setup/blankcardView';
+import BlankCardPreviewModal from '../Cards/PreviewModal/blankcardPreview';
+import MultiCardView from './setup/multicardView';
+import MultiCardPreviewModal from '../Cards/PreviewModal/multicardPreview';
+import FlashcardButton from './FlashcardButton';
 
 const ContentArea = styled.div`
   flex: 1;
   border: none;
   outline: none;
   width: 100%;
+  height: auto;
   box-sizing: border-box;
   resize: none;
   height: auto;
@@ -44,62 +42,20 @@ const ContentArea = styled.div`
     border-radius: 4px;
     min-height: 20rem;
     max-height: 33rem;
-    white-space: pre-wrap; 
+    white-space: pre-wrap;
     
     ul {
       list-style-type: disc;
       padding-left: 20px;
       position: relative;
-
-      /* 연결선 관련 기능 - 추후 활성화 가능 */
-      /* position: relative; */
     }
 
     li {
-      border: 1px solid #ddd;  /* 각 리스트 아이템에 경계선 추가 */
-      padding: 8px;
-      margin-bottom: 4px;
+      border: none;
+      padding: none;
       border-radius: 4px;
       position: relative;
-
-      /* 연결선 관련 기능 - 추후 활성화 가능 */
-      /* position: relative; */
     }
-
-    /* 연결선 관련 CSS - 추후 활성화 가능 */
-    /*
-    li:before {
-      content: '';
-      position: absolute;
-      left: -20px;  // 원하는 위치로 조정
-      top: 0;
-      bottom: 50%;
-      width: 1px;
-      background-color: #ddd;
-    }
-
-    li:after {
-      content: '';
-      position: absolute;
-      left: -20px;  // 원하는 위치로 조정
-      top: 50%;
-      width: 20px;  // 항목 사이에 수평선을 그리기 위해 추가
-      height: 1px;
-      background-color: #ddd;
-    }
-
-    li:last-child:before {
-      bottom: 0;
-    }
-
-    li:last-child:after {
-      display: none;
-    }
-
-    ul ul li:before {
-      top: -50%;
-    }
-    */
   }
 
   @media (max-width: 48rem) {
@@ -133,18 +89,6 @@ const TitleInput = styled.div`
   }
 `;
 
-const TransformFlashcard = styled.div`
-  display: flex;
-  width: 4rem;
-  padding: 1.25rem 1.0625rem 1.25rem 0;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 0.5rem;
-  flex-shrink: 0;
-  cursor: pointer;
-`;
-
 const Divider = styled.div`
   height: 1px;
   background: #B1B1B1;
@@ -154,17 +98,44 @@ const Divider = styled.div`
   box-sizing: border-box;
 `;
 
-const CombinedEditor = ({ cards }) => {  // cards prop 추가
+const CombinedEditor = ({ viewRef }) => {  
   const contentRef = useRef(null);
   const titleRef = useRef(null);
 
+  // 모달 열림/닫힘 상태와 question/answer 데이터를 관리
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalType, setModalType] = useState(null);
+  const [modalQuestion, setModalQuestion] = useState('');
+  const [modalAnswer, setModalAnswer] = useState('');
+  const [modalQuestionBack, setModalQuestionBack] = useState('');
+  
+  const openModal = (type, question_front = '', answer = '', question_back = '') => {
+    setModalType(type);
+    if (type === 'word_card') {
+      setModalQuestion(question_front);  // word_card의 경우, question_front가 실제로 question이 됩니다.
+      setModalAnswer(answer);
+    } else if (type === 'blank_card') {
+      setModalQuestion(question_front);  // blank_card의 경우 각각의 텍스트를 별도로 저장
+      setModalAnswer(answer);
+      setModalQuestionBack(question_back);
+    } else if (type === 'multi_card') {
+      setModalQuestion(question_front);  // multi_card의 경우 배열의 형태로 저장된 answer를 그대로 사용
+      setModalAnswer(answer);
+    } 
+  
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
   useEffect(() => {
     if (contentRef.current) {
-      // 빈 리스트 아이템을 포함한 기본 문서 구조
       const doc = mySchema.node('doc', null, 
         mySchema.node('bullet_list', null, 
           mySchema.node('list_item', null, 
-            mySchema.node('paragraph', null)  // 빈 paragraph 노드 추가
+            mySchema.node('paragraph', null)
           )
         )
       );
@@ -180,10 +151,9 @@ const CombinedEditor = ({ cards }) => {  // cards prop 추가
             'Shift-Tab': (state, dispatch) => {
               const { $from } = state.selection;
               const depth = $from.depth;
-
-              // 현재 선택된 항목이 최상위 항목일 경우 liftListItem을 실행하지 않음
-              if (depth === 3) {  // depth가 3인 경우는 bullet_list 바로 아래 있는 항목
-                return false; // 최상위 항목에서는 아무 동작도 하지 않음
+      
+              if (depth === 3) {
+                return false;
               }
               return liftListItem(mySchema.nodes.list_item)(state, dispatch);
             },
@@ -192,10 +162,14 @@ const CombinedEditor = ({ cards }) => {  // cards prop 추가
               const parent = $from.node(-1);
               if (parent.type === mySchema.nodes.list_item) {
                 return splitListItem(mySchema.nodes.list_item)(state, dispatch);
+              } else if (parent.type === mySchema.nodes.paragraph) {
+                handleEnterKey(viewRef);
+                return true;
               } else {
                 return wrapInList(mySchema.nodes.bullet_list)(state, dispatch);
               }
-            }
+            },
+            'Backspace': (state, dispatch) => handleBackspaceInCard(state, dispatch),  // 백스페이스
           }),
           keymap(baseKeymap),
           history(),
@@ -204,20 +178,36 @@ const CombinedEditor = ({ cards }) => {  // cards prop 추가
           myInputRules(mySchema),
         ]
       });
+      
 
-      const view = new EditorView(contentRef.current, {
+      viewRef.current = new EditorView(contentRef.current, {
         state,
+        nodeViews: {
+          word_card(node, view, getPos) {
+            return new WordCardView(node, view, getPos, openModal);
+          },
+          blank_card(node, view, getPos) {
+            return new BlankCardView(node, view, getPos, openModal);
+          },
+          multi_card(node, view, getPos) {
+            return new MultiCardView(node, view, getPos, openModal);
+          }
+        },
         dispatchTransaction(transaction) {
-          const newState = view.state.apply(transaction);
-          view.updateState(newState);
+          //console.log('Transaction dispatched');
+          const newState = viewRef.current.state.apply(transaction);
+          viewRef.current.updateState(newState);
+          console.log('New state:', JSON.stringify(newState.doc.toJSON(), null, 2));
         }
       });
 
+      window.viewRef = viewRef; // 데이터 값 들어오게 하려고 추가한 코드
+
       return () => {
-        view.destroy();
+        viewRef.current.destroy();
       };
-    }
-  }, []);
+    } 
+  }, [viewRef]);
 
   useEffect(() => {
     const node = titleRef.current;
@@ -254,43 +244,110 @@ const CombinedEditor = ({ cards }) => {  // cards prop 추가
           data-placeholder="제목 없음"
           ref={titleRef}
           className="empty"
-        ></TitleInput>
-        <TransformFlashcard>
-          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="26" viewBox="0 0 32 26" fill="none">
-            <path d="M7.81846 6.2672L7.99227 5.35878L8.6875 1.7251L30.3901 5.65605L27.6092 20.1908L24.8964 19.6994L24.2182 19.5766" stroke="#B1B1B1" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-            <rect x="1.61035" y="7.2749" width="22" height="17" stroke="#B1B1B1" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-            <line x1="6.71035" y1="14.1749" x2="18.5104" y2="14.1749" stroke="#B1B1B1" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-            <line x1="6.71035" y1="18.1749" x2="14.5104" y2="18.1749" stroke="#B1B1B1" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </TransformFlashcard>
+        >
+        </TitleInput>
+        <FlashcardButton />
       </TitleDiv>
       <Divider />
       <ContentArea>
         <div ref={contentRef}></div>
-        {cards.map((card, index) => {
-          switch (card.type) {
-            case 'word':
-              return <WordCard key={index} {...card.props} />;
-            case 'blank':
-              return <BlankCard key={index} {...card.props} />;
-            case 'multi':
-              return <MultiCard key={index} {...card.props} />;
-            case 'image':
-              return <ImageCard key={index} {...card.props} />;
-            default:
-              return null;
-          }
-        })}
       </ContentArea>
+      {isModalOpen && modalType === 'word_card' && (
+        <WordCardPreviewModal 
+          question={modalQuestion} 
+          answer={[modalAnswer]} 
+          onClose={closeModal}
+        />
+      )}
+      {isModalOpen && modalType === 'blank_card' && (
+        <BlankCardPreviewModal 
+          question_front={modalQuestion}  // 앞부분 텍스트 전달
+          answer={modalAnswer} 
+          question_back={modalQuestionBack}  // 뒷부분 텍스트 전달
+          onClose={closeModal}
+        />
+      )}
+      {isModalOpen && modalType === 'multi_card' && (
+        <MultiCardPreviewModal 
+          question={modalQuestion} 
+          answer={modalAnswer} 
+          onClose={closeModal}
+        />
+      )}
     </>
   );
 };
 
+export const handleEnterKey = (viewRef) => {
+  if (!viewRef.current) return;
+
+  const { state, dispatch } = viewRef.current;
+  const { tr, selection } = state;
+  const { $from } = selection;
+
+  // 현재 선택된 위치가 속한 리스트 아이템의 마지막 위치를 찾습니다.
+  const endOfListItem = $from.end($from.depth);
+
+  // 새로운 텍스트 노드를 만듭니다.
+  const paragraphNode = mySchema.nodes.paragraph.create();
+
+  // 새로운 텍스트 노드를 리스트 아이템의 끝 다음에 삽입합니다.
+  tr.insert(endOfListItem + 1, paragraphNode);
+
+  // 새로운 텍스트 블록 뒤에 커서를 이동합니다.
+  tr.setSelection(TextSelection.near(tr.doc.resolve(endOfListItem + 2)));
+
+  dispatch(tr.scrollIntoView());
+  viewRef.current.focus();
+};
+
+export const addCard = (viewRef, type) => {
+  if (!viewRef.current) return;
+
+  const { state, dispatch } = viewRef.current;
+  const { tr, selection } = state;
+  const { $from } = selection;
+
+  // 현재 리스트 아이템의 마지막 위치를 찾습니다.
+  const endOfListItem = $from.end($from.depth);
+
+  let node;
+
+  // 카드 타입에 따라 카드 노드 생성
+  switch (type) {
+    case 'word_card':
+      node = mySchema.nodes.word_card.create();
+      break;
+    case 'blank_card':
+      node = mySchema.nodes.blank_card.create();
+      break;
+    case 'multi_card':
+      node = mySchema.nodes.multi_card.create();
+      break;
+    /*
+    case 'image_card':
+      node = mySchema.nodes.image_card.create();
+      break;
+    */
+    default:
+      console.error('Unknown card type: ${type}');
+      return;
+  }
+
+  // 새로운 카드를 리스트 아이템의 끝 다음에 삽입합니다.
+  tr.insert(endOfListItem + 1, node);
+
+  // 새로운 카드 뒤에 커서를 이동합니다.
+  tr.setSelection(TextSelection.near(tr.doc.resolve(endOfListItem + 2)));
+
+  dispatch(tr.scrollIntoView());
+  viewRef.current.focus();
+};
+
 CombinedEditor.propTypes = {
-  cards: PropTypes.arrayOf(PropTypes.shape({
-    type: PropTypes.string.isRequired,
-    props: PropTypes.object
-  })).isRequired
+  viewRef: PropTypes.shape({
+    current: PropTypes.object,
+  }).isRequired,
 };
 
 export default CombinedEditor;

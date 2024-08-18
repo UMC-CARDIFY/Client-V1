@@ -7,8 +7,8 @@ const KebabMenuWrapper = styled.div`
   top: 4.25rem; // 위치 조정
   left: 1.06rem;
   display: flex;
-width: 8.8125rem;
-flex-direction: column;
+  width: 8.8125rem;
+  flex-direction: column;
   border-radius: 0.25rem;
   border: 1px solid var(--grays-gray-5-divider, #E8E8E8);
   box-shadow: 0px 4px 26px 0px rgba(0, 0, 0, 0.02), 0px 10px 60px 0px rgba(0, 74, 162, 0.03);
@@ -18,17 +18,25 @@ flex-direction: column;
 `;
 
 const KebabMenuItem = styled.div`
-display: flex;
-padding: 1rem 1.5rem;
-align-items: center;
-gap: 0.5rem;
+  display: flex;
+  padding: 1rem 1.5rem;
+  align-items: center;
+  gap: 0.5rem;
   cursor: pointer;
-color: var(--Grays-Black, #1A1A1A);
-font-family: Pretendard;
-font-size: 0.875rem;
-font-style: normal;
-font-weight: 500;
-line-height: normal;
+  color: var(--Grays-Black, #1A1A1A);
+  font-family: Pretendard;
+  font-size: 0.875rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+
+  &:hover {
+    background: var(--Grays-Gray7, #F0F0F0);
+  }
+
+  &:active {
+    background: var(--Main-PrimaryDull, #E3EAF6);
+  }
 `;
 
 const ExportItem = styled(KebabMenuItem)`

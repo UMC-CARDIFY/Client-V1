@@ -78,6 +78,7 @@ font-size: 1rem;
 font-style: normal;
 font-weight: 400;
 line-height: normal;
+cursor: pointer;
 `;
 
 const DeleteConfirmModal = ({ isOpen, onClose, onConfirm, type, itemName }) => {
