@@ -16,7 +16,6 @@ const Data = styled.div`
   width: 100%;
 `;
 
-
 const LeftData = styled.div`
   display: flex;
   flex-direction: row;
@@ -52,7 +51,6 @@ const colorMap = {
   rose: '#FFC0CB',
 };
 
-
 const ItemList = ({
   items,
   selectedTab,
@@ -67,16 +65,12 @@ const ItemList = ({
   console.log('Selected Tab:', selectedTab);
   console.log('Items:', items); // 데이터가 잘 전달되는지 확인
 
-  if (selectedTab === '아이템 리스트 : 노트') {
-    console.log('Note Items:', items);
-}
-
   return (
     <>
       {items.length > 0 ? (
         items.map((item, index) => (
           selectedTab === '폴더' ? (
-            <Data key={index}>
+            <Data key={item.id}> {/* Use unique ID if available */}
               <LeftData>
                 <img
                   src={item.markState === 'ACTIVE' ? MarkStateActive : MarkStateIcon}
@@ -102,14 +96,15 @@ const ItemList = ({
                 <MoreDiv
                   type="folder"
                   onEditClick={() => handleEdit(item)}
-                  onDeleteClick={() => handleDelete(item)}
+                  onDeleteClick={() => handleDelete(item.id)} // Ensure you are passing item.id
                   isActive={activeMoreDiv === index}
                   onMoreClick={() => handleMoreClick(index)}
+                  itemId={item.folderId} // Ensure itemId is passed correctly
                 />
               </RightData>
             </Data>
           ) : (
-            <Data key={index}>
+            <Data key={item.id}> {/* Use unique ID if available */}
               <LeftData>
                 <img
                   src={item.markState === 'ACTIVE' ? MarkStateActive : MarkStateIcon}
@@ -137,6 +132,7 @@ const ItemList = ({
                   onDeleteClick={() => handleDelete(item)}
                   isActive={activeMoreDiv === index}
                   onMoreClick={() => handleMoreClick(index)}
+                  itemId={item.NoteId} // Ensure itemId is passed correctly
                 />
               </RightData>
             </Data>
@@ -160,6 +156,5 @@ ItemList.propTypes = {
   activeMoreDiv: PropTypes.number,
   moveItem: PropTypes.func.isRequired,
 };
-
 
 export default ItemList;
