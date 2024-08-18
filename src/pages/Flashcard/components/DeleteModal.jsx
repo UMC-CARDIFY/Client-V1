@@ -1,4 +1,4 @@
-import React from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 const ModalOverlay = styled.div`
@@ -28,22 +28,22 @@ const ModalButtons = styled.div`
   margin-top: 1rem;
 `;
 
-const ConfirmButton = styled.button`
-  background: #FF6B6B;
-  color: white;
+const Button = styled.button`
+  padding: 0.5rem 1rem;
   border: none;
   border-radius: 0.5rem;
-  padding: 0.5rem 1rem;
   cursor: pointer;
+  color: white;
+  font-weight: bold;
 `;
 
-const CancelButton = styled.button`
+const ConfirmButton = styled(Button)`
+  background: #FF6B6B;
+`;
+
+const CancelButton = styled(Button)`
   background: #E0E0E0;
   color: #333;
-  border: none;
-  border-radius: 0.5rem;
-  padding: 0.5rem 1rem;
-  cursor: pointer;
 `;
 
 const DeleteModal = ({ onClose, onConfirm }) => (
@@ -57,5 +57,10 @@ const DeleteModal = ({ onClose, onConfirm }) => (
     </ModalContent>
   </ModalOverlay>
 );
+
+DeleteModal.propTypes = {
+  onClose: PropTypes.func.isRequired,
+  onConfirm: PropTypes.func.isRequired,
+};
 
 export default DeleteModal;

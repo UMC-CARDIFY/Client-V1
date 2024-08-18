@@ -8,9 +8,6 @@ export { default as SubscriptionPage } from './MyPage/SubscriptionPage';
 export { default as Archive } from './Archive/index';
 export { default as Dashboard } from './Dashboard';
 export { default as NoteEditor } from './NoteEditor/index';
-<<<<<<< HEAD
 export { default as Flashcard } from './Flashcard/index';
-=======
 export { default as KaKaoCallback } from './SignIn/KaKaoCallback'
 export { default as Library } from './Library/index';
->>>>>>> 476c1ce8db4a2fdffdc755794a1cefdb31ada325
