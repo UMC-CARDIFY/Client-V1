@@ -69,9 +69,7 @@ const Editor = ({ setEditorView }) => {
     viewRef.current.focus();
   };
 
-  const onSelectColor = (color) => {
-    console.log("onSelectColor called with color:", color);
-    
+  const onSelectColor = (color) => {    
     if (!viewRef.current) return;
     const { state, dispatch } = viewRef.current;
     const { tr, selection } = state;
@@ -80,7 +78,7 @@ const Editor = ({ setEditorView }) => {
     if (selection.empty) return;
 
     let { from, to } = selection;
-    console.log("Applying color to selection:", { from, to, color });
+    //console.log("Applying color to selection:", { from, to, color });
 
     if (selection instanceof TextSelection) {
       tr.addMark(from, to, markType.create({ color }));

@@ -6,6 +6,9 @@ class WordCardView {
     this.openModal = openModal;
 
     // answer 배열이 항상 1개의 요소를 가지도록 설정
+    if (!Array.isArray(this.node.attrs.answer)) {
+      this.node.attrs.answer = [''];
+    }
     if (this.node.attrs.answer.length === 0) {
       this.node.attrs.answer = [''];
     } else if (this.node.attrs.answer.length > 1) {
@@ -57,7 +60,7 @@ class WordCardView {
     // 미리보기 버튼 클릭 이벤트 처리
     this.previewButton.addEventListener('click', () => {
       if(this.openModal) {
-        this.openModal('word_card', this.node.attrs.question, this.node.attrs.answer);
+        this.openModal('word_card', this.node.attrs.question_front, this.node.attrs.answer);
       }
     });
     this.dom.appendChild(this.previewButton); // 미리보기 버튼을 dom에 추가
@@ -90,9 +93,9 @@ class WordCardView {
     this.questionDiv = document.createElement('div');
     this.questionDiv.className = 'question';
     this.questionDiv.contentEditable = true;
-    this.questionDiv.style.color = this.node.attrs.question ? '#000' : '#aaa';
+    this.questionDiv.style.color = this.node.attrs.question_front ? '#000' : '#aaa';
     this.questionDiv.style.outline = 'none';
-    this.questionDiv.innerText = node.attrs.question || '카드 앞면';
+    this.questionDiv.innerText = node.attrs.question_front || '카드 앞면';
     this.dom.appendChild(this.questionDiv);
 
     // question 이벤트 핸들러
@@ -195,7 +198,7 @@ class WordCardView {
     const question = this.questionDiv.innerText.trim();
     const answer = [this.answerDiv.innerText.trim()];
 
-    if (question !== this.node.attrs.question || answer[0] !== this.node.attrs.answer[0]) {
+    if (question !== this.node.attrs.question_front || answer[0] !== this.node.attrs.answer[0]) {
       this.view.dispatch(
         this.view.state.tr.setNodeMarkup(this.getPos(), null, {
           question,
@@ -206,8 +209,8 @@ class WordCardView {
   }
 
   update(node) {
-    if (node.attrs.question !== this.node.attrs.question) {
-      this.questionDiv.innerText = node.attrs.question;
+    if (node.attrs.question_front !== this.node.attrs.question_front) {
+      this.questionDiv.innerText = node.attrs.question_front;
     }
     if (node.attrs.answer[0] !== this.node.attrs.answer[0]) {
       this.answerDiv.innerText = node.attrs.answer[0];

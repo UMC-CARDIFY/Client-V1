@@ -6,6 +6,9 @@ class BlankCardView {
     this.openModal = openModal;
   
     // answer 배열이 항상 1개의 요소를 가지도록 설정
+    if (!Array.isArray(this.node.attrs.answer)) {
+      this.node.attrs.answer = [''];
+    }
     if (this.node.attrs.answer.length === 0) {
       this.node.attrs.answer = [''];
     } else if (this.node.attrs.answer.length > 1) {

@@ -1,13 +1,7 @@
-import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { ToolBarItem2, DropDownButton, DropDownMenu, DropDownItem, IconWrapper } from './style/ToolbarStyles';
 
-const HeadingButton = ({ addHeading }) => {
-  const [isDropDownOpen, setIsDropDownOpen] = useState(false);
-
-  const toggleDropDown = () => {
-    setIsDropDownOpen(!isDropDownOpen);
-  };
+const HeadingButton = ({ addHeading, isOpen, onToggle }) => {
 
   return (
     <ToolBarItem2>
@@ -15,13 +9,13 @@ const HeadingButton = ({ addHeading }) => {
         <path d="M17.7275 0.636719V13.3633H15.7764V2.57031H15.7061L12.665 4.55664V2.71094L15.8291 0.636719H17.7275Z" fill="#1A1A1A"/>
         <path d="M0.272461 13.3633V0.636719H2.20605V6.15625H8.53418V0.636719H10.4678V13.3633H8.53418V7.80859H2.20605V13.3633H0.272461Z" fill="#1A1A1A"/>
       </svg>
-      <DropDownButton onClick={toggleDropDown} isActive={isDropDownOpen}>
+      <DropDownButton onClick={onToggle} isActive={isOpen}>
         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="32" viewBox="0 0 12 32" fill="none">
-          <rect width="12" height="32" rx="4" fill={isDropDownOpen ? "#F2F4F8" : "transparent"}/>
-          <path d="M2.79492 17.5L5.79492 14.5L8.79492 17.5" stroke={isDropDownOpen ? "#0F62FE" : "#CACACA"} strokeLinecap="round" strokeLinejoin="round"/>
+          <rect width="12" height="32" rx="4" fill={isOpen ? "#F2F4F8" : "transparent"}/>
+          <path d="M2.79492 17.5L5.79492 14.5L8.79492 17.5" stroke={isOpen ? "#0F62FE" : "#CACACA"} strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
       </DropDownButton>
-      {isDropDownOpen && (
+      {isOpen && (
         <DropDownMenu>
           <DropDownItem onClick={() => addHeading(1)}>
             <IconWrapper>
@@ -58,6 +52,8 @@ const HeadingButton = ({ addHeading }) => {
 
 HeadingButton.propTypes = {
   addHeading: PropTypes.func.isRequired,
+  isOpen: PropTypes.bool.isRequired,
+  onToggle: PropTypes.func.isRequired,
 };
 
 export default HeadingButton;
