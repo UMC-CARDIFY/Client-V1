@@ -1,9 +1,9 @@
 import styled from 'styled-components';
 import closeCard from '../../../assets/flashcard/closeCard.svg';
 import folder from '../../../assets/flashcard/folder.svg';
-import toNoteEditor from '../../../assets/flashcard/toNoteEditor.svg';
 import studyCardSet from '../../../api/flashcard/studyCardSet';
 import { useEffect, useState } from 'react';
+import {difficulty} from '../../../api/flashcard/difficulty';
 
 // Styled components
 const ModalBackdrop = styled.div`
@@ -245,7 +245,7 @@ const AnalysisStudyModal = ({ onClose, studyCardSetId, noteName, folderName, col
     }));
   };
 
-  const handleDifficultySelection = (difficulty) => {
+  const handleDifficultySelection = async (difficulty) => {
     const allRevealed = content.every((_, index) => revealedAnswers[index]);
 
     if (allRevealed) {
@@ -253,6 +253,18 @@ const AnalysisStudyModal = ({ onClose, studyCardSetId, noteName, folderName, col
       if (currentPage < totalPage - 1) {
         setCurrentPage((prevPage) => prevPage + 1);
       }
+
+      const difficultyIdMap = {
+        어려움: 1,
+        알맞음: 2,
+        쉬움: 3,
+        패스: 4,
+      };
+  
+      const difficultyId = difficultyIdMap[difficulty];
+      console.log(`Difficulty ID: ${difficultyId}`);
+        //const response = await difficulty(cardId, difficultyId);
+        //console.log(response);
     }
   };
 
