@@ -12,7 +12,7 @@ import {
   markNote,
   addFolder,
   editFolder,
-  getNoteToFolder // 함수 가져오기
+  getNoteToFolder
 } from '../../../api/archive';
 
 import FolderModal from './FolderModal';
@@ -174,6 +174,19 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
     console.log('폴더의 노트:', folderNotes);
   }, [folderNotes, currentFolderId, selectedTab]);
 
+  // 폴더 이름을 가져오기 위한 함수 수정
+  const getCurrentFolderName = (folderId) => {
+    const folder = folderNotes.find(note => note.folderId === folderId);
+    return folder ? folder.folderName : '폴더';
+  };
+
+  // 제목 결정
+  const title = currentFolderId
+    ? getCurrentFolderName(currentFolderId)  // 현재 폴더 ID가 있을 때는 해당 폴더의 이름으로 설정
+    : selectedTab === '폴더'
+    ? '모든 폴더'
+    : '모든 노트';
+
   const handlePageChange = (selectedItem) => {
     if (selectedTab === '폴더') {
       setCurrentPageFolder(selectedItem.selected);
@@ -282,7 +295,7 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
   return (
     <FrameContainer>
       <Header>
-        <h3>{selectedTab === '폴더' ? '모든 폴더' : '모든 노트'}</h3>
+        <h3>{title}</h3>
         <ButtonContainer>
           <SortDropdown 
             onSortOptionClick={handleSortOptionClick} 
@@ -311,7 +324,9 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
           activeMoreDiv={activeMoreDiv}
           moveItem={handleFolderClick} // handleFolderClick을 전달
           onFolderClick={selectedTab === '폴더' ? handleFolderClick : undefined} // onFolderClick을 전달
+          currentFolderId={currentFolderId} // 현재 폴더 아이디를 전달
         />
+
         <PaginationContainer>
           {selectedTab === '폴더' ? (
             <Pagination
