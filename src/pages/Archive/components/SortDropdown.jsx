@@ -26,23 +26,34 @@ const Dropdown = styled.div`
   left: 0;
   width: 100%;
   margin-top: 0.5rem;
-  padding: 0.5rem 0;
-  border-radius: 0.5rem;
   background-color: white;
   box-shadow: 0px 4px 26px 0px rgba(0, 0, 0, 0.02), 0px 10px 60px 0px rgba(0, 74, 162, 0.03);
   z-index: 10;
+  border-radius: 0.5rem; 
+  overflow: hidden;
 `;
 
 const DropdownItem = styled.div`
-  padding: 0.5rem 1rem;
+  padding: 1.06rem 1rem;
   cursor: pointer;
+
   &:hover {
     background-color: #f0f0f0;
+  }
+
+  &:first-child {
+    border-top-left-radius: 0.5rem; 
+    border-top-right-radius: 0.5rem; 
+  }
+
+  &:last-child {
+    border-bottom-left-radius: 0.5rem; 
+    border-bottom-right-radius: 0.5rem; 
   }
 `;
 
 const FolderDropdown = styled(Dropdown)`
-  /* 폴더 탭에 대한 추가 스타일링을 여기에 추가 */
+  width: 8.375rem;
 `;
 
 const NoteDropdown = styled(Dropdown)`
@@ -88,15 +99,15 @@ const SortDropdown = ({ onSortOptionClick, selectedTab }) => {
                 <FolderDropdown>
                     <DropdownItem onClick={() => handleSortOptionClick('asc')}>폴더 오름차순</DropdownItem>
                     <DropdownItem onClick={() => handleSortOptionClick('desc')}>폴더 내림차순</DropdownItem>
-                    <DropdownItem onClick={() => handleSortOptionClick('edit-newest')}>폴더 수정일 - 최신순</DropdownItem>
-                    <DropdownItem onClick={() => handleSortOptionClick('edit-oldest')}>폴더 수정일 - 오래된 순</DropdownItem>
+                    <DropdownItem onClick={() => handleSortOptionClick('edit-newest')}>수정일 - 최신순</DropdownItem>
+                    <DropdownItem onClick={() => handleSortOptionClick('edit-oldest')}>수정일 - 오래된 순</DropdownItem>
                 </FolderDropdown>
             ) : (
                 <NoteDropdown>
                     <DropdownItem onClick={() => handleSortOptionClick('asc')}>노트 오름차순</DropdownItem>
                     <DropdownItem onClick={() => handleSortOptionClick('desc')}>노트 내림차순</DropdownItem>
-                    <DropdownItem onClick={() => handleSortOptionClick('edit-newest')}>노트 수정일 - 최신순</DropdownItem>
-                    <DropdownItem onClick={() => handleSortOptionClick('edit-oldest')}>노트 수정일 - 오래된 순</DropdownItem>
+                    <DropdownItem onClick={() => handleSortOptionClick('edit-newest')}>수정일 - 최신순</DropdownItem>
+                    <DropdownItem onClick={() => handleSortOptionClick('edit-oldest')}>수정일 - 오래된 순</DropdownItem>
                 </NoteDropdown>
             )
         )}
