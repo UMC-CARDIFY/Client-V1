@@ -8,6 +8,7 @@ import studymore from '../../../assets/flashcard/studymore.svg';
 import statistics from '../../../assets/flashcard/statistics.svg';
 import moreoptions from '../../../assets/flashcard/moreoptions.svg';
 import CommonStudyModal from './CommonStudyModal';
+import AnalysisStudyModal from './AnalysisStudyModal';
 
 // 겹쳐진 카드들을 감싸는 컨테이너
 const CardStackContainer = styled.div`
@@ -208,7 +209,8 @@ const FlashcardItem = ({ noteName, folderName, recentStudyDate, nextStudyDate, s
 
   const [showDeleteButton, setShowDeleteButton] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [showCommonStudyModal, setShowCommonStudyModal] = useState(false); // New state for general study modal
+  const [showCommonStudyModal, setShowCommonStudyModal] = useState(false); 
+  const [showAnalysisStudyModal, setShowAnalysisStudyModal] = useState(false);
 
   const toggleDeleteButton = () => {
     setShowDeleteButton((prev) => !prev);
@@ -233,6 +235,14 @@ const FlashcardItem = ({ noteName, folderName, recentStudyDate, nextStudyDate, s
 
   const closeCommonStudyModal = () => {
     setShowCommonStudyModal(false);  // Close the general study modal
+  };
+
+  const handleAnalysisStudyClick = () => {
+    setShowAnalysisStudyModal(true);  // Show the analysis study modal
+  };
+
+  const closeAnalysisStudyModal = () => {
+    setShowAnalysisStudyModal(false);  // Close the analysis study modal
   };
 
   return (
@@ -274,7 +284,7 @@ const FlashcardItem = ({ noteName, folderName, recentStudyDate, nextStudyDate, s
           <Button onClick={handleCommonStudyClick}>
             <img src={studycommon} alt="일반학습" />
           일반학습</Button>
-            <Button>
+            <Button onClick={handleAnalysisStudyClick}>
               <img src={studymore} alt="분석학습" />
               분석학습</Button>
           <Button>
@@ -291,6 +301,16 @@ const FlashcardItem = ({ noteName, folderName, recentStudyDate, nextStudyDate, s
       {/* 일반학습 모달 */}
           {showCommonStudyModal && (
         <CommonStudyModal onClose={closeCommonStudyModal}
+        studyCardSetId= {studyCardSetId}
+        noteName={noteName}
+        color={color}
+        folderName={folderName}
+         />
+      )}
+
+      {/* 분석학습 모달 */}
+      {showAnalysisStudyModal && (
+        <AnalysisStudyModal onClose={closeAnalysisStudyModal}
         studyCardSetId= {studyCardSetId}
         noteName={noteName}
         color={color}
