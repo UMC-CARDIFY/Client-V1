@@ -138,11 +138,12 @@ export const Flashcard = () => {
               cards.map((card, index) => (
                 <FlashcardItem key={index}
                   color={card.color}
-                  forderName={card.folderName}
+                  folderName={card.folderName}
                   nextStudyDate={card.nextStudyDate}
                   noteName={card.noteName}
                   studyStatus={card.studyStatus}
                   recentStudyDate={card.recentStudyDate}
+                  studyCardSetId={card.studyCardSetId}
                  />
               )
               )) : (

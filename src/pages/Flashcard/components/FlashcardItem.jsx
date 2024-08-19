@@ -7,6 +7,7 @@ import studycommon from '../../../assets/flashcard/studycommon.svg';
 import studymore from '../../../assets/flashcard/studymore.svg';
 import statistics from '../../../assets/flashcard/statistics.svg';
 import moreoptions from '../../../assets/flashcard/moreoptions.svg';
+import CommonStudyModal from './CommonStudyModal';
 
 // 겹쳐진 카드들을 감싸는 컨테이너
 const CardStackContainer = styled.div`
@@ -191,7 +192,7 @@ const DeleteButton = styled.div`
   font-weight: 500;
 `;
 
-const FlashcardItem = ({ noteName, forderName, recentStudyDate, nextStudyDate, studyStatus, color }) => {
+const FlashcardItem = ({ noteName, folderName, recentStudyDate, nextStudyDate, studyStatus, color, studyCardSetId }) => {
   const colorMap = {
     blue1: '#6698F5',
     ocean: '#5AA6C7',
@@ -207,6 +208,7 @@ const FlashcardItem = ({ noteName, forderName, recentStudyDate, nextStudyDate, s
 
   const [showDeleteButton, setShowDeleteButton] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [showCommonStudyModal, setShowCommonStudyModal] = useState(false); // New state for general study modal
 
   const toggleDeleteButton = () => {
     setShowDeleteButton((prev) => !prev);
@@ -223,6 +225,14 @@ const FlashcardItem = ({ noteName, forderName, recentStudyDate, nextStudyDate, s
 
   const cancelDelete = () => {
     setShowModal(false);
+  };
+
+  const handleCommonStudyClick = () => {
+    setShowCommonStudyModal(true);  // Show the general study modal
+  };
+
+  const closeCommonStudyModal = () => {
+    setShowCommonStudyModal(false);  // Close the general study modal
   };
 
   return (
@@ -246,7 +256,7 @@ const FlashcardItem = ({ noteName, forderName, recentStudyDate, nextStudyDate, s
             <CardIcon color={colorMap[color]} />
           </CardIconDiv>
           <CardTitle>{noteName}</CardTitle>
-          <CardSubtitle>{forderName}</CardSubtitle>
+          <CardSubtitle>{folderName}</CardSubtitle>
         </CardHeader>
         <Line />
         <DayDiv>
@@ -261,7 +271,7 @@ const FlashcardItem = ({ noteName, forderName, recentStudyDate, nextStudyDate, s
         </DayDiv>
         <CardFooter>
           <ButtonContainer>
-          <Button>
+          <Button onClick={handleCommonStudyClick}>
             <img src={studycommon} alt="일반학습" />
           일반학습</Button>
             <Button>
@@ -277,13 +287,24 @@ const FlashcardItem = ({ noteName, forderName, recentStudyDate, nextStudyDate, s
 
       {/* 삭제 모달 */}
       {showModal && <DeleteModal onClose={cancelDelete} onConfirm={confirmDelete} />}
+
+      {/* 일반학습 모달 */}
+          {showCommonStudyModal && (
+        <CommonStudyModal onClose={closeCommonStudyModal}
+        studyCardSetId= {studyCardSetId}
+        noteName={noteName}
+        color={color}
+        folderName={folderName}
+         />
+      )}
+
     </CardStackContainer>
   );
 };
 
 FlashcardItem.propTypes = {
   noteName: PropTypes.string.isRequired,
-  forderName: PropTypes.string.isRequired,
+  folderName: PropTypes.string.isRequired,
   recentStudyDate: PropTypes.string.isRequired,
   nextStudyDate: PropTypes.string.isRequired,
   studyStatus: PropTypes.oneOf(['학습 중', '학습 전', '영구 보관']).isRequired,
