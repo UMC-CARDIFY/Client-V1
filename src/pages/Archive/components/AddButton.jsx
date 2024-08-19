@@ -1,5 +1,7 @@
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
+import { addNote } from '../../../api/archive'; // API 호출 함수 임포트
 
 const StyledButton = styled.button`
   display: flex;
@@ -18,16 +20,23 @@ const StyledButton = styled.button`
 `;
 
 const AddButton = ({ selectedTab, setSelectedItem, setShowAddModal, setModalType, addFolderIcon, currentFolderId }) => {
-  const handleClick = () => {
+  const navigate = useNavigate();
+
+  const handleClick = async () => {
     setSelectedItem(null);
-    setShowAddModal(true);
 
     if (selectedTab === '폴더' && currentFolderId) {
-      setModalType('addNote');
+      try {
+        const data = await addNote(currentFolderId);
 
+        setModalType('addNote');
+        navigate(`/note-editor?folderId=${currentFolderId}&noteId=${data.noteId}`);
+      } catch (error) {
+        console.error('노트 추가 실패:', error);
+      }
     } else if (selectedTab === '폴더') {
+      setShowAddModal(true);
       setModalType('addFolder');
-
     }
   };
 
