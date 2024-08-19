@@ -210,13 +210,13 @@ class MultiCardView {
   }
   
   updateAttrs() {
-      const question = this.questionDiv.innerText.trim();
+      const question_front = this.questionDiv.innerText.trim();
       const answer = this.answerDivs.map(div => div.innerText.trim());
 
-      if (question !== this.node.attrs.question_front || JSON.stringify(answer) !== JSON.stringify(this.node.attrs.answer)) {
+      if (question_front !== this.node.attrs.question_front || JSON.stringify(answer) !== JSON.stringify(this.node.attrs.answer)) {
           this.view.dispatch(
               this.view.state.tr.setNodeMarkup(this.getPos(), null, {
-                  question,
+                  question_front,
                   answer,
               })
           );

@@ -195,13 +195,13 @@ class WordCardView {
   }
 
   updateAttrs() {
-    const question = this.questionDiv.innerText.trim();
+    const question_front = this.questionDiv.innerText.trim();
     const answer = [this.answerDiv.innerText.trim()];
 
-    if (question !== this.node.attrs.question_front || answer[0] !== this.node.attrs.answer[0]) {
+    if (question_front !== this.node.attrs.question_front || answer[0] !== this.node.attrs.answer[0]) {
       this.view.dispatch(
         this.view.state.tr.setNodeMarkup(this.getPos(), null, {
-          question,
+          question_front,
           answer,
         })
       );
