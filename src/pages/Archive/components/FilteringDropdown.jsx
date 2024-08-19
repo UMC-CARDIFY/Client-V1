@@ -28,7 +28,6 @@ const Dropdown = styled.div`
   padding: 1rem 1.3rem;
   z-index: 10;
   width: 8.25rem;
-  height: 8.5625rem;
   box-sizing: border-box;
   border-radius: 0.5rem;
   border: 1px solid var(--grays-gray-5-divider, #E8E8E8);
@@ -49,6 +48,19 @@ const ColorMatrix = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr); 
   gap: 0.5rem;
+`;
+
+const Button = styled.button`
+  display: flex;
+  width: 96px;
+  height: var(--font-size-2xl, 28px);
+  justify-content: center;
+  align-items: center;
+  margin-top: 0.75rem;
+  flex-shrink: 0;
+  border-radius: 4px;
+  background: var(--Main-Button, #ECEFF4);
+  border: none;
 `;
 
 const FilteringDropdown = () => {
@@ -87,10 +99,11 @@ const FilteringDropdown = () => {
                 bgColor={color}
                 isSelected={selectedColors.includes(color)}
                 onClick={() => handleCircleClick(color)}
-                isFilter={true} // 필터링 드롭다운에서 체크 표시를 활성화
+                isFilter={true} 
               />
             ))}
           </ColorMatrix>
+          <Button>적용하기</Button>
         </Dropdown>
       )}
     </FiteringDiv>
