@@ -157,7 +157,7 @@ const ItemList = ({
                   <div>최근 수정일</div>
                 </div>
                 <MoreDiv
-                  type={selectedTab.toLowerCase()}
+                  type={selectedTab==='폴더'? 'folder': 'note'}
                   onEditClick={() => handleEdit(item)}
                   onDeleteClick={() => handleDelete(item.id)}
                   isActive={activeMoreDiv === index}
