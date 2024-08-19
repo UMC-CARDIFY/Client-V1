@@ -37,20 +37,6 @@ export const Title = styled.div`
   margin-bottom: 1rem;
 `;
 
-export const DeleteIcon = styled.svg.attrs({
-  xmlns: 'http://www.w3.org/2000/svg',
-  width: 24,
-  height: 24,
-  viewBox: '0 0 24 24',
-  fill: 'none'
-})`
-  margin-right: 0.75rem;
-  & path {
-    stroke: #EA1215;
-    stroke-width: 2;
-  }
-`;
-
 export const Description = styled.p`
   margin: 0;
   margin-bottom: 0.25rem;

@@ -2,7 +2,8 @@ import PropTypes from 'prop-types';
 import { deleteNote } from '../../../../../api/noteeditor/deleteNote';
 //import { useContext } from 'react';
 //import { NoteContext } from '../../../../../api/NoteContext';
-import { ModalOverlay, ModalContent, Title, DeleteIcon, Description, ButtonGroup, Button } from '../../../../../components/Modal/style/DeleteModalStyles';
+import { ModalOverlay, ModalContent, Title, Description, ButtonGroup, Button } from '../../../../../components/Modal/style/DeleteModalStyles';
+import  deleteIcon from '../../../../../../src/assets/deleteicon.svg';
 
 const DeleteMenu = ({ noteId, onClose }) => {
   //const { noteData, setNoteData } = useContext(NoteContext);
@@ -34,9 +35,7 @@ const DeleteMenu = ({ noteId, onClose }) => {
     <ModalOverlay>
         <ModalContent>
         <Title>
-          <DeleteIcon>
-            <path d="M12 14V6M12 18V16M12 2C6.477 2 2 6.477 2 12C2 17.523 6.477 22 12 22C17.523 22 22 17.523 22 12C22 6.477 17.523 2 12 2Z" stroke="#EA1215" strokeWidth="2"/>
-          </DeleteIcon>
+          <img src={deleteIcon} alt="deleteIcon" style={{ marginRight: '0.75rem' }} />
           노트 삭제
         </Title>
         <Description>‘노트 이름’을 삭제하시겠습니까? </Description>
