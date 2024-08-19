@@ -2,6 +2,8 @@ import styled from 'styled-components';
 import closeCard from '../../../assets/flashcard/closeCard.svg';
 import folder from '../../../assets/flashcard/folder.svg';
 import toNoteEditor from '../../../assets/flashcard/toNoteEditor.svg';
+import studyCardSet from '../../../api/flashcard/studyCardSet';
+import { useEffect, useState } from 'react';
 
 const ModalBackdrop = styled.div`
   position: fixed;
@@ -78,7 +80,6 @@ const CardBox = styled.div`
   background: var(--Grays-White, #FFF);
   box-shadow: 0px 4px 26px 0px rgba(0, 0, 0, 0.02), 0px 10px 60px 0px rgba(0, 74, 162, 0.03);
   z-index: 2;
-  margin: 0 4rem;
   
   padding: 5rem;
   box-sizing: border-box;
@@ -101,16 +102,16 @@ const SideBox = styled.div`
   box-shadow: 0px 4px 26px 0px rgba(0, 0, 0, 0.02), 0px 10px 60px 0px rgba(0, 74, 162, 0.03);
   position: absolute;
   z-index: 1;
-  top: 5.4rem;
+  top: 8.7rem;
 `;
 
 const LeftBox = styled(SideBox)`
-  left: calc(-27vw); /* 화면 크기에 따라 위치 조정 */
+  left: calc(-20vw); /* 화면 크기에 따라 위치 조정 */
   transform: rotate(-6deg);
 `;
 
 const RightBox = styled(SideBox)`
-  right: calc(-27vw); /* 화면 크기에 따라 위치 조정 */
+  right: calc(-20vw); /* 화면 크기에 따라 위치 조정 */
   transform: rotate(6deg);
 `;
 
@@ -147,6 +148,22 @@ line-height: normal;
 const CommonStudyModal = ({ onClose, studyCardSetId, noteName, folderName, color }) => {
   console.log(studyCardSetId);
 
+    const [content, setContent] = useState([]);
+    const [totalPage, setTotalPage] = useState(1);
+    const [currentPage, setCurrentPage] = useState(1);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const response = await studyCardSet(studyCardSetId);
+            setContent(response.content);
+            setTotalPage(response.totalPages);
+        }
+        fetchData();
+    }
+    ,[currentPage]);
+
+    console.log(content);
+
   return (
     <ModalBackdrop onClick={onClose}>
       <ModalContent onClick={e => e.stopPropagation()}>
@@ -161,8 +178,13 @@ const CommonStudyModal = ({ onClose, studyCardSetId, noteName, folderName, color
         <ModalBody>
           <LeftBox />
           <CardBox>
-            {/* 여기에서 카드 스택을 채우세요 */}
-            card content
+            {content.map((card, index) => (
+              <div key={index}>
+                {card.contentsFront}
+                <br />
+                {card.contentsBack}
+              </div>
+            ))}
             <ToEditor>
               <img src={toNoteEditor} alt="toNoteEditor" />
             </ToEditor>
@@ -171,9 +193,9 @@ const CommonStudyModal = ({ onClose, studyCardSetId, noteName, folderName, color
         </ModalBody>
 
         <PageDiv>
-            <div>1</div>
+            <div>{currentPage}</div>
             <div>/</div>
-            <div>2</div>
+            <div>{totalPage}</div>
         </PageDiv>
       </ModalContent>
     </ModalBackdrop>
