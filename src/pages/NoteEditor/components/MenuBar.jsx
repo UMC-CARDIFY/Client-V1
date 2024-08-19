@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 import { getNotesByFolder } from '../../../api/noteeditor/getNoteToFolder';
 import { addNoteToFolder } from '../../../api/noteeditor/addNote';
+import { NoteContext } from '../../../api/NoteContext';
 
 const MenuBarContainer = styled.div.withConfig({
   shouldForwardProp: (prop) => prop !== 'isCollapsed',
@@ -205,6 +206,7 @@ const colorMap = {
 };
 
 const MenuBar = ({ isCollapsed, toggleMenuBar, selectedFolderId, selectedNoteId, onSelectNote }) => {
+  const { noteData, setNoteData } = useContext(NoteContext);
   const [selectedNote, setSelectedNote] = useState(selectedNoteId);
   const [notes, setNotes] = useState([]);
   const [folderName, setFolderName] = useState(''); // 폴더 이름 상태 추가
@@ -227,9 +229,19 @@ const MenuBar = ({ isCollapsed, toggleMenuBar, selectedFolderId, selectedNoteId,
     }
   }, [selectedFolderId]);
 
+  
+  useEffect(() => {
+    // noteData가 변경되었을 때 notes 상태를 업데이트
+    setNotes((prevNotes) =>
+      prevNotes.map((note) =>
+        note.noteId === noteData.noteId
+          ? { ...note, markState: noteData.markState }
+          : note
+      )
+    );
+  }, [noteData]);
 
-
-  const favoriteNotes = notes.filter(note => note.markState === 'ACTIVE');
+  const favoriteNotes = notes.filter(note => note.markState === 'ACTIVE' || note.markState === true);
   const folderIconColor = colorMap[folderColor] || colorMap.gray;
 
   const handleAddNote = async () => {
@@ -242,7 +254,7 @@ const MenuBar = ({ isCollapsed, toggleMenuBar, selectedFolderId, selectedNoteId,
         {
           noteId,
           name: `제목없음`, // 기본 노트 이름 설정
-          isFavorite: false,
+          markState: false,
           createdAt,
         },
       ]);
@@ -370,8 +382,8 @@ const MenuBar = ({ isCollapsed, toggleMenuBar, selectedFolderId, selectedNoteId,
       <AddButton onClick={handleAddNote}>
         <PlusIcon>
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-          <rect x="4.16699" y="9.58325" width="11.6667" height="1" fill="#646464"/>
-          <rect x="10.417" y="4.16675" width="11.6667" height="1" transform="rotate(90 10.417 4.16675)" fill="#646464"/>
+            <rect x="4.16699" y="9.58325" width="11.6667" height="1" fill="#646464"/>
+            <rect x="10.417" y="4.16675" width="11.6667" height="1" transform="rotate(90 10.417 4.16675)" fill="#646464"/>
           </svg>
         </PlusIcon>
         추가
