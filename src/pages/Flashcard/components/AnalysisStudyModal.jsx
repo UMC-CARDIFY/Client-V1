@@ -6,6 +6,7 @@ import {difficultySelect} from '../../../api/flashcard/difficulty';
 import { colorMap } from './colorMap';
 import FolderIcon from './FolderIcon';
 import ConfirmModal from './ConfirmModal';
+import CompletionModal from './CompletionModal';
 
 // Styled components
 const ModalBackdrop = styled.div`
@@ -32,8 +33,8 @@ const ModalContent = styled.div`
 
 const CloseButton = styled.div`
   position: absolute;
-  top: 2.5rem;
-  right: 2.5rem;
+  top: 12.5rem;
+  right: 10.5rem;
   background: none;
   border: none;
   cursor: pointer;
@@ -221,130 +222,154 @@ const difficultyColors = {
 };
 
 const AnalysisStudyModal = ({ onClose, studyCardSetId, noteName, folderName, color }) => {
-  const [content, setContent] = useState([]);
-  const [totalPage, setTotalPage] = useState(1);
-  const [currentPage, setCurrentPage] = useState(0);
-  const [revealedAnswers, setRevealedAnswers] = useState({});
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [cardId, setCardId] = useState(0);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await studyCardSet(studyCardSetId, currentPage);
-      setContent(response.content);
-      setTotalPage(response.totalPages);
-      setCardId(response.content[0].cardId);
-    };
-    fetchData();
-  }, [currentPage]);
-
-  useEffect(() => {
-    setRevealedAnswers({});
-  }, [currentPage]);
-
-  const revealAnswer = (index) => {
-    setRevealedAnswers((prevRevealed) => ({
-      ...prevRevealed,
-      [index]: true, // Ensure the answer is revealed on click
-    }));
-  };
-
-  const handleDifficultySelection = async (difficulty) => {
-    const allRevealed = content.every((_, index) => revealedAnswers[index]);
-
-    if (allRevealed) {
-      console.log(`Selected Difficulty: ${difficulty}`);
-      if (currentPage < totalPage - 1) {
-        setCurrentPage((prevPage) => prevPage + 1);
-      }
-
-      const difficultyIdMap = {
-        어려움: 1,
-        알맞음: 2,
-        쉬움: 3,
-        패스: 4,
-      };
+    const [content, setContent] = useState([]);
+    const [totalPage, setTotalPage] = useState(1);
+    const [currentPage, setCurrentPage] = useState(0);
+    const [revealedAnswers, setRevealedAnswers] = useState({});
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
+    const [showCompletionModal, setShowCompletionModal] = useState(false);
+    const [cardId, setCardId] = useState(0);
   
-      console.log(`Card ID: ${cardId}`);
-      const difficultyId = difficultyIdMap[difficulty];
-      console.log(`Difficulty ID: ${difficultyId}`);
-      const data = await difficultySelect(cardId, difficultyId);
-      console.log(data);
-    }
-  };
-
-  const handleClose = () => {
-    setShowConfirmModal(true);
-  };
-
-  const handleConfirmClose = () => {
-    setShowConfirmModal(false);
-    onClose();
-  };
-
-  const handleCancelClose = () => {
-    setShowConfirmModal(false);
-  };
-
-  const allRevealed = content.every((_, index) => revealedAnswers[index]);
-
-  return (
-    <>
-      <ModalBackdrop onClick={handleClose}>
-        <ModalContent onClick={(e) => e.stopPropagation()}>
-          <CloseButton onClick={handleClose}>
-            <img src={closeCard} alt="close" />
-          </CloseButton>
-          <ModalTitle>{noteName}</ModalTitle>
-          <ModalSubTitle>
-            <FolderIcon color={colorMap[color]} />
-            {folderName}
-          </ModalSubTitle>
-          <ModalBody>
-            <CardBox>
-              {content.map((card, index) => (
-                <Content key={index}>
-                  <div>{card.contentsFront}</div>
-                  <Answer revealed={revealedAnswers[index]} onClick={() => revealAnswer(index)}>
-                    {card.answer}
-                  </Answer>
-                  <div>{card.contentsBack}</div>
-                </Content>
-              ))}
-              
-              {allRevealed && (
-                <DifficultyButtonContainer>
-                  {Object.keys(difficultyColors).map((difficulty) => (
-                    <DifficultyButton
-                      key={difficulty}
-                      color={difficultyColors[difficulty]}
-                      onClick={() => handleDifficultySelection(difficulty)}
-                      disabled={!allRevealed}
-                    >
-                      {difficulty}
-                    </DifficultyButton>
-                  ))}
-                </DifficultyButtonContainer>
-              )}
-            </CardBox>
-          </ModalBody>
-
-          <PageDiv>
-            <div>{currentPage + 1}</div>
-            <div>/</div>
-            <div>{totalPage}</div>
-          </PageDiv>
-        </ModalContent>
-      </ModalBackdrop>
-
-      {showConfirmModal && (
-        <ConfirmModal
+    useEffect(() => {
+      const fetchData = async () => {
+        const response = await studyCardSet(studyCardSetId, currentPage);
+        setContent(response.content);
+        setTotalPage(response.totalPages);
+        setCardId(response.content[0].cardId);
+      };
+      fetchData();
+    }, [currentPage]);
+  
+    useEffect(() => {
+      setRevealedAnswers({});
+    }, [currentPage]);
+  
+    const revealAnswer = (index) => {
+      setRevealedAnswers((prevRevealed) => ({
+        ...prevRevealed,
+        [index]: true, // Ensure the answer is revealed on click
+      }));
+    };
+  
+    const handleDifficultySelection = async (difficulty) => {
+      const allRevealed = content.every((_, index) => revealedAnswers[index]);
+  
+      if (allRevealed) {
+        console.log(`Selected Difficulty: ${difficulty}`);
+        
+        const difficultyIdMap = {
+          어려움: 1,
+          알맞음: 2,
+          쉬움: 3,
+          패스: 4,
+        };
+    
+        console.log(`Card ID: ${cardId}`);
+        const difficultyId = difficultyIdMap[difficulty];
+        console.log(`Difficulty ID: ${difficultyId}`);
+        const data = await difficultySelect(cardId, difficultyId);
+        console.log(data);
+  
+        // Check if it's the last page
+        if (currentPage < totalPage - 1) {
+          setCurrentPage((prevPage) => prevPage + 1);
+        } else {
+          // If it's the last page, show the completion modal
+          setShowCompletionModal(true);
+        }
+      }
+    };
+  
+    const handleClose = () => {
+      setShowConfirmModal(true);
+    };
+  
+    const handleConfirmClose = () => {
+      setShowConfirmModal(false);
+      onClose();
+    };
+  
+    const handleCancelClose = () => {
+      setShowConfirmModal(false);
+    };
+  
+    const handleCompletionConfirm = () => {
+      // Logic to redirect to statistics page or another action
+      console.log("Redirect to statistics page");
+      onClose();
+    };
+  
+    const handleCompletionClose = () => {
+      setShowCompletionModal(false);
+      onClose();
+    };
+  
+    const allRevealed = content.every((_, index) => revealedAnswers[index]);
+  
+    return (
+      <>
+        <ModalBackdrop onClick={handleClose}>
+          <ModalContent onClick={(e) => e.stopPropagation()}>
+            <CloseButton onClick={handleClose}>
+                <img src={closeCard} alt="close" />
+            </CloseButton>
+            <ModalTitle>{noteName}</ModalTitle>
+            <ModalSubTitle>
+              <FolderIcon color={colorMap[color]} />
+              {folderName}
+            </ModalSubTitle>
+            <ModalBody>
+              <CardBox>
+                {content.map((card, index) => (
+                  <Content key={index}>
+                    <div>{card.contentsFront}</div>
+                    <Answer revealed={revealedAnswers[index]} onClick={() => revealAnswer(index)}>
+                      {card.answer}
+                    </Answer>
+                    <div>{card.contentsBack}</div>
+                  </Content>
+                ))}
+                
+                {allRevealed && (
+                  <DifficultyButtonContainer>
+                    {Object.keys(difficultyColors).map((difficulty) => (
+                      <DifficultyButton
+                        key={difficulty}
+                        color={difficultyColors[difficulty]}
+                        onClick={() => handleDifficultySelection(difficulty)}
+                        disabled={!allRevealed}
+                      >
+                        {difficulty}
+                      </DifficultyButton>
+                    ))}
+                  </DifficultyButtonContainer>
+                )}
+              </CardBox>
+            </ModalBody>
+  
+            <PageDiv>
+              <div>{currentPage + 1}</div>
+              <div>/</div>
+              <div>{totalPage}</div>
+            </PageDiv>
+          </ModalContent>
+        </ModalBackdrop>
+  
+        {showConfirmModal && (
+          <ConfirmModal
             onConfirm={handleConfirmClose}
             onCancel={handleCancelClose}
-        />
-      )}
-    </>
-  );
-};
-
-export default AnalysisStudyModal;
+          />
+        )}
+  
+        {showCompletionModal && (
+          <CompletionModal
+            onConfirm={handleCompletionConfirm}
+            onClose={handleCompletionClose}
+          />
+        )}
+      </>
+    );
+  };
+  
+  export default AnalysisStudyModal;
