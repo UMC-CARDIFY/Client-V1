@@ -88,8 +88,8 @@ const ItemList = ({
               <RightData>
                 <Line />
                 <div>
-                  <div>{note.folderName}</div>
-                  <div>폴더</div>
+                  <div>{note.createdAt}</div>
+                  <div>노트 생성일</div>
                 </div>
                 <Line />
                 <div>
