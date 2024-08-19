@@ -348,7 +348,7 @@ const SignIn = () => {
           </InputBox>
         </SignInBox>
         <SignUpDiv>
-          <SignUpText>아직 계정이 없으신가요?</SignUpText>
+          <SignUpText>아직 정원이 없으신가요?</SignUpText>
           <SignUpLink onClick={() => navigate('/sign-up')}>회원가입</SignUpLink>
         </SignUpDiv>
         <ButtonContainer>
