@@ -14,7 +14,6 @@ export const studyCardSet = async (studyCardSetId, page) => {
         console.error(error);
         throw error;
     }
-
 };
 
 export default studyCardSet;

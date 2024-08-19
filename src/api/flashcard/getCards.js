@@ -10,3 +10,5 @@ export const getCards = async () => {
         throw error;
     }
 };
+
+export default getCards;

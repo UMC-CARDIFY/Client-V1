@@ -152,14 +152,17 @@ const Content = styled.div`
 `;
 
 const Answer = styled.div`
-    display: flex;
-    border-radius: 0.125rem;
-    padding: 0 1rem;
-    background-color: ${({ revealed }) => (revealed ? 'transparent' : 'var(--Main-PrimaryLight2, #CDDDFF)')}; /* 기본적으로 파란색 배경 */
-    color: ${({ revealed }) => (revealed ? 'var(--Grays-Black, #1A1A1A)' : 'transparent')}; /* 기본적으로 투명한 텍스트 */
-    border: ${({ revealed }) => (revealed ? '1px solid var(--Main-PrimaryLight2, #CDDDFF)' : '1px solid var(--Main-PrimaryLight2, #CDDDFF)')}; /* 기본적으로 파란색 테두리 */
-    cursor: pointer;
-    /* 부드러운 전환 효과 transition: all 0.2s ease; */
+  display: flex;
+  border-radius: 0.125rem;
+  padding: 0 1rem;
+  background-color: ${({ revealed }) => (revealed ? 'transparent' : 'var(--Main-PrimaryLight2, #CDDDFF)')};
+  color: ${({ revealed }) => (revealed ? 'var(--Grays-Black, #1A1A1A)' : 'transparent')};
+  border: ${({ revealed }) => (revealed ? '1px solid var(--Main-PrimaryLight2, #CDDDFF)' : 'none')};
+  cursor: pointer;
+
+    &:hover {
+    background-color: ${({ revealed }) => (revealed ? 'transparent' : '#C0D4FF')}; /* Change to hover color when not revealed */
+  }
 `;
 
 const CommonStudyModal = ({ onClose, studyCardSetId, noteName, folderName, color }) => {
