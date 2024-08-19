@@ -86,11 +86,11 @@ const CardBox = styled.div`
   position: relative;
 
   color: var(--kakao-logo, #000);
-font-family: Pretendard;
-font-size: 1.25rem;
-font-style: normal;
-font-weight: 400;
-line-height: normal;
+  font-family: Pretendard;
+  font-size: 1.25rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
 `;
 
 const SideBox = styled.div`
@@ -108,65 +108,102 @@ const SideBox = styled.div`
 const LeftBox = styled(SideBox)`
   left: calc(-20vw); /* 화면 크기에 따라 위치 조정 */
   transform: rotate(-6deg);
+  cursor: ${({ isClickable }) => (isClickable ? 'pointer' : 'default')};
 `;
 
 const RightBox = styled(SideBox)`
   right: calc(-20vw); /* 화면 크기에 따라 위치 조정 */
   transform: rotate(6deg);
+  cursor: ${({ isClickable }) => (isClickable ? 'pointer' : 'default')};
 `;
 
 const ToEditor = styled.div`
-    position: absolute;
-    bottom: 1rem;
-    right: 1.5rem;
-    display: flex;
-width: 4rem;
-height: 4rem;
-padding: 1.21875rem 0.5rem 1.11456rem 1.25rem;
-justify-content: flex-end;
-align-items: center;
-flex-shrink: 0;
-cursor: pointer;
+  position: absolute;
+  bottom: 1rem;
+  right: 1.5rem;
+  display: flex;
+  width: 4rem;
+  height: 4rem;
+  padding: 1.21875rem 0.5rem 1.11456rem 1.25rem;
+  justify-content: flex-end;
+  align-items: center;
+  flex-shrink: 0;
+  cursor: pointer;
 `;
 
 const PageDiv = styled.div`
-display: inline-flex;
-align-items: center;
-gap: var(--UI-Component-xxxxxS, 0.25rem);
-justify-content: center;
-    margin-bottom: 5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--UI-Component-xxxxxS, 0.25rem);
+  justify-content: center;
+  margin-bottom: 5rem;
 
-    color: var(--Grays-Gray1, #646464);
-font-family: Pretendard;
-font-size: 1rem;
-font-style: normal;
-font-weight: 400;
-line-height: normal;
+  color: var(--Grays-Gray1, #646464);
+  font-family: Pretendard;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
 `;
 
+const Content = styled.div`
+    display: flex;
+    gap: 0.75rem;
+`;
+
+const Answer = styled.div`
+    display: flex;
+    border-radius: 0.125rem;
+    padding: 0 1rem;
+    background-color: ${({ revealed }) => (revealed ? 'transparent' : 'var(--Main-PrimaryLight2, #CDDDFF)')}; /* 기본적으로 파란색 배경 */
+    color: ${({ revealed }) => (revealed ? 'var(--Grays-Black, #1A1A1A)' : 'transparent')}; /* 기본적으로 투명한 텍스트 */
+    border: ${({ revealed }) => (revealed ? '1px solid var(--Main-PrimaryLight2, #CDDDFF)' : '1px solid var(--Main-PrimaryLight2, #CDDDFF)')}; /* 기본적으로 파란색 테두리 */
+    cursor: pointer;
+    /* 부드러운 전환 효과 transition: all 0.2s ease; */
+`;
 
 const CommonStudyModal = ({ onClose, studyCardSetId, noteName, folderName, color }) => {
-  console.log(studyCardSetId);
+  const [content, setContent] = useState([]);
+  const [totalPage, setTotalPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [revealedAnswers, setRevealedAnswers] = useState({});
 
-    const [content, setContent] = useState([]);
-    const [totalPage, setTotalPage] = useState(1);
-    const [currentPage, setCurrentPage] = useState(1);
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await studyCardSet(studyCardSetId, currentPage);
+      setContent(response.content);
+      setTotalPage(response.totalPages);
+    };
+    fetchData();
+  }, [currentPage]);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const response = await studyCardSet(studyCardSetId);
-            setContent(response.content);
-            setTotalPage(response.totalPages);
-        }
-        fetchData();
+  useEffect(() => {
+    // 페이지가 변경될 때마다 revealedAnswers 초기화
+    setRevealedAnswers({});
+  }, [currentPage]);
+
+  const goToNextPage = () => {
+    if (currentPage < totalPage - 1) {
+      setCurrentPage((prevPage) => prevPage + 1);
     }
-    ,[currentPage]);
+  };
 
-    console.log(content);
+  const goToPreviousPage = () => {
+    if (currentPage > 0) {
+      setCurrentPage((prevPage) => prevPage - 1);
+    }
+  };
+
+  const revealAnswer = (index) => {
+    setRevealedAnswers((prevRevealed) => ({
+      ...prevRevealed,
+      [index]: !prevRevealed[index], // 클릭 시 토글
+    }));
+  };
 
   return (
     <ModalBackdrop onClick={onClose}>
-      <ModalContent onClick={e => e.stopPropagation()}>
+      <ModalContent onClick={(e) => e.stopPropagation()}>
         <CloseButton onClick={onClose}>
           <img src={closeCard} alt="close" />
         </CloseButton>
@@ -176,26 +213,35 @@ const CommonStudyModal = ({ onClose, studyCardSetId, noteName, folderName, color
           {folderName}
         </ModalSubTitle>
         <ModalBody>
-          <LeftBox />
+          <LeftBox onClick={goToPreviousPage} isClickable={currentPage > 0} />
           <CardBox>
             {content.map((card, index) => (
-              <div key={index}>
-                {card.contentsFront}
-                <br />
-                {card.contentsBack}
-              </div>
+              <Content key={index}>
+                <div>
+                  {card.contentsFront}
+                </div>
+                <Answer
+                  revealed={revealedAnswers[index]}
+                  onClick={() => revealAnswer(index)}
+                >
+                  {card.answer}
+                </Answer>
+                <div>
+                  {card.contentsBack}
+                </div>
+              </Content>
             ))}
             <ToEditor>
               <img src={toNoteEditor} alt="toNoteEditor" />
             </ToEditor>
           </CardBox>
-          <RightBox />
+          <RightBox onClick={goToNextPage} isClickable={currentPage < totalPage - 1} />
         </ModalBody>
 
         <PageDiv>
-            <div>{currentPage}</div>
-            <div>/</div>
-            <div>{totalPage}</div>
+          <div>{currentPage + 1}</div>
+          <div>/</div>
+          <div>{totalPage}</div>
         </PageDiv>
       </ModalContent>
     </ModalBackdrop>

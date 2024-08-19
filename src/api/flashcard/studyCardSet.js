@@ -1,11 +1,11 @@
 import axiosInstance from '..';
 
-export const studyCardSet = async (studyCardSetId) => {
+export const studyCardSet = async (studyCardSetId, page) => {
     try {
         const response = await axiosInstance.get(`/cards/${studyCardSetId}`, {
             params: {
                 studyCardSetId: studyCardSetId,
-                page: 1
+                page: page
             }
         });
         console.log(response.data);
