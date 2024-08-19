@@ -302,13 +302,16 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
             selectedTab={selectedTab} 
           />
           <FilteringDropdown />
-          <AddButton
-            selectedTab={selectedTab}
-            setSelectedItem={setSelectedItem}
-            setShowAddModal={setShowAddModal}
-            setModalType={setModalType}
-            addFolderIcon={addFolderIcon}
-          />
+          {selectedTab !== '노트' && (
+            <AddButton
+              selectedTab={selectedTab}
+              setSelectedItem={setSelectedItem}
+              setShowAddModal={setShowAddModal}
+              setModalType={setModalType}
+              addFolderIcon={addFolderIcon}
+              currentFolderId={currentFolderId}
+            />
+          )}
         </ButtonContainer>
         <Line />
       </Header>

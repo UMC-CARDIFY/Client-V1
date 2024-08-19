@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 
 const StyledButton = styled.button`
   display: flex;
@@ -16,26 +17,35 @@ const StyledButton = styled.button`
   }
 `;
 
-const AddButton = ({ selectedTab, setSelectedItem, setShowAddModal, setModalType, addFolderIcon }) => {
+const AddButton = ({ selectedTab, setSelectedItem, setShowAddModal, setModalType, addFolderIcon, currentFolderId }) => {
   const handleClick = () => {
     setSelectedItem(null);
     setShowAddModal(true);
 
-    if (selectedTab === '폴더') {
-      setModalType('addFolder');
-      // 폴더 관련 API 호출
-    } else if (selectedTab === '노트') {
+    if (selectedTab === '폴더' && currentFolderId) {
       setModalType('addNote');
-      // 노트 관련 API 호출
+
+    } else if (selectedTab === '폴더') {
+      setModalType('addFolder');
+
     }
   };
 
   return (
     <StyledButton onClick={handleClick}>
-      <img src={addFolderIcon} alt={selectedTab === '폴더' ? '폴더 추가' : '노트 추가'} />
-      {selectedTab === '폴더' ? '폴더 추가' : '노트 추가'}
+      <img src={addFolderIcon} alt={selectedTab === '폴더' && currentFolderId ? '노트 추가' : '폴더 추가'} />
+      {selectedTab === '폴더' && currentFolderId ? '노트 추가' : '폴더 추가'}
     </StyledButton>
   );
+};
+
+AddButton.propTypes = {
+  selectedTab: PropTypes.string.isRequired,
+  setSelectedItem: PropTypes.func.isRequired,
+  setShowAddModal: PropTypes.func.isRequired,
+  setModalType: PropTypes.func.isRequired,
+  addFolderIcon: PropTypes.string.isRequired,
+  currentFolderId: PropTypes.string 
 };
 
 export default AddButton;
