@@ -9,6 +9,7 @@ import statistics from '../../../assets/flashcard/statistics.svg';
 import moreoptions from '../../../assets/flashcard/moreoptions.svg';
 import CommonStudyModal from './CommonStudyModal';
 import AnalysisStudyModal from './AnalysisStudyModal';
+import { colorMap } from './colorMap';
 
 // 겹쳐진 카드들을 감싸는 컨테이너
 const CardStackContainer = styled.div`
@@ -194,18 +195,6 @@ const DeleteButton = styled.div`
 `;
 
 const FlashcardItem = ({ noteName, folderName, recentStudyDate, nextStudyDate, studyStatus, color, studyCardSetId }) => {
-  const colorMap = {
-    blue1: '#6698F5',
-    ocean: '#5AA6C7',
-    lavedar: '#949AEC',
-    gray: '#A9A9A9',
-    mint: '#77CEC6',
-    sage: '#AECA99',
-    orange: '#FDB456',
-    plum: '#D49AE9',
-    coral: '#FD855F',
-    rose: '#ED83B1'
-  };
 
   const [showDeleteButton, setShowDeleteButton] = useState(false);
   const [showModal, setShowModal] = useState(false);

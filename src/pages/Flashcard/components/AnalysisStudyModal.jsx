@@ -1,9 +1,10 @@
 import styled from 'styled-components';
 import closeCard from '../../../assets/flashcard/closeCard.svg';
-import folder from '../../../assets/flashcard/folder.svg';
 import studyCardSet from '../../../api/flashcard/studyCardSet';
 import { useEffect, useState } from 'react';
-import {difficulty} from '../../../api/flashcard/difficulty';
+import {difficultySelect} from '../../../api/flashcard/difficulty';
+import { colorMap } from './colorMap';
+import FolderIcon from './FolderIcon';
 
 // Styled components
 const ModalBackdrop = styled.div`
@@ -152,9 +153,9 @@ const DifficultyButton = styled.button`
   flex-shrink: 0;
   border-radius: 0.5rem;
   border: none;
-  cursor: ${({ disabled }) => (disabled ? '' : 'pointer')};
+  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
   background-color: ${({ color }) => color};
-  color:var(--Grays-Black, #1A1A1A);
+  color: var(--Grays-Black, #1A1A1A);
   font-family: Pretendard;
   font-size: 1rem;
   font-style: normal;
@@ -224,12 +225,14 @@ const AnalysisStudyModal = ({ onClose, studyCardSetId, noteName, folderName, col
   const [currentPage, setCurrentPage] = useState(0);
   const [revealedAnswers, setRevealedAnswers] = useState({});
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [cardId, setCardId] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
       const response = await studyCardSet(studyCardSetId, currentPage);
       setContent(response.content);
       setTotalPage(response.totalPages);
+      setCardId(response.content[0].cardId);
     };
     fetchData();
   }, [currentPage]);
@@ -241,7 +244,7 @@ const AnalysisStudyModal = ({ onClose, studyCardSetId, noteName, folderName, col
   const revealAnswer = (index) => {
     setRevealedAnswers((prevRevealed) => ({
       ...prevRevealed,
-      [index]: true,  // Ensure the answer is revealed on click
+      [index]: true, // Ensure the answer is revealed on click
     }));
   };
 
@@ -261,10 +264,11 @@ const AnalysisStudyModal = ({ onClose, studyCardSetId, noteName, folderName, col
         패스: 4,
       };
   
+      console.log(`Card ID: ${cardId}`);
       const difficultyId = difficultyIdMap[difficulty];
       console.log(`Difficulty ID: ${difficultyId}`);
-        //const response = await difficulty(cardId, difficultyId);
-        //console.log(response);
+      const data = await difficultySelect(cardId, difficultyId);
+      console.log(data);
     }
   };
 
@@ -292,7 +296,7 @@ const AnalysisStudyModal = ({ onClose, studyCardSetId, noteName, folderName, col
           </CloseButton>
           <ModalTitle>{noteName}</ModalTitle>
           <ModalSubTitle>
-            <img src={folder} alt="folder" />
+            <FolderIcon color={colorMap[color]} />
             {folderName}
           </ModalSubTitle>
           <ModalBody>
@@ -306,19 +310,21 @@ const AnalysisStudyModal = ({ onClose, studyCardSetId, noteName, folderName, col
                   <div>{card.contentsBack}</div>
                 </Content>
               ))}
-
-              <DifficultyButtonContainer>
-                {Object.keys(difficultyColors).map((difficulty) => (
-                  <DifficultyButton
-                    key={difficulty}
-                    color={difficultyColors[difficulty]}
-                    onClick={() => handleDifficultySelection(difficulty)}
-                    disabled={!allRevealed} // Disable button if any answers are hidden
-                  >
-                    {difficulty}
-                  </DifficultyButton>
-                ))}
-              </DifficultyButtonContainer>
+              
+              {allRevealed && (
+                <DifficultyButtonContainer>
+                  {Object.keys(difficultyColors).map((difficulty) => (
+                    <DifficultyButton
+                      key={difficulty}
+                      color={difficultyColors[difficulty]}
+                      onClick={() => handleDifficultySelection(difficulty)}
+                      disabled={!allRevealed}
+                    >
+                      {difficulty}
+                    </DifficultyButton>
+                  ))}
+                </DifficultyButtonContainer>
+              )}
             </CardBox>
           </ModalBody>
 

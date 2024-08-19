@@ -1,14 +1,12 @@
 import axiosInstance from '..';
 
-export const difficulty = async (cardId, difficulty) => {
+export const difficultySelect = async (cardId, difficulty) => {
     console.log(cardId, difficulty);
     try {
-        const response = await axiosInstance.post(`/cards/difficulty`,
-            {
-                cardId: cardId,
-                difficulty: difficulty
-            }
-        );
+        const response = await axiosInstance.post(`/cards/difficulty`, {
+            cardId: cardId,
+            difficulty: difficulty
+        });
         console.log(response.data);
         return response.data;
     } catch (error) {
@@ -17,4 +15,4 @@ export const difficulty = async (cardId, difficulty) => {
     }
 };
 
-export default difficulty;
+export default difficultySelect;

@@ -1,9 +1,10 @@
 import styled from 'styled-components';
 import closeCard from '../../../assets/flashcard/closeCard.svg';
-import folder from '../../../assets/flashcard/folder.svg';
 import toNoteEditor from '../../../assets/flashcard/toNoteEditor.svg';
 import studyCardSet from '../../../api/flashcard/studyCardSet';
 import { useEffect, useState } from 'react';
+import FolderIcon from './FolderIcon';
+import { colorMap } from './colorMap';
 
 const ModalBackdrop = styled.div`
   position: fixed;
@@ -212,7 +213,7 @@ const CommonStudyModal = ({ onClose, studyCardSetId, noteName, folderName, color
         </CloseButton>
         <ModalTitle>{noteName}</ModalTitle>
         <ModalSubTitle>
-          <img src={folder} alt="folder" />
+            <FolderIcon color={colorMap[color]} />
           {folderName}
         </ModalSubTitle>
         <ModalBody>
