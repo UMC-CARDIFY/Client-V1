@@ -2,6 +2,7 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate, useLocation } from 'react-router-dom';
 import MainLogo from '../assets/logo.svg';
+import FolderSelectModal from './Modal/SelectFolderModal';
 
 const MenuBarContainer = styled.div`
   width: 15.5rem;
@@ -190,10 +191,19 @@ const MenuBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [activePath, setActivePath] = useState(location.pathname);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const navigateTo = (path) => {
     setActivePath(path);
     navigate(path);
+  };
+
+  const handleNoteAddClick = () => {
+    setIsModalOpen(true); // 노트 추가 버튼을 누르면 모달 열림
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false); // 모달을 닫는 함수
   };
 
   return (  
@@ -276,7 +286,7 @@ const MenuBar = () => {
           <Text>자료실</Text>
         </Menu>
       </MenuContainer>
-      <NoteAdd onClick={() => navigateTo('/note-editor')}>
+      <NoteAdd onClick={handleNoteAddClick}>
         <NoteAddIcon>
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
             <path fillRule="evenodd" clipRule="evenodd" d="M0 8.00012C0 7.44784 0.255837 7.00012 0.571429 7.00012L15.4286 7.00012C15.7442 7.00012 16 7.44784 16 8.00012C16 8.55241 15.7442 9.00012 15.4286 9.00012L0.571429 9.00012C0.255837 9.00012 0 8.55241 0 8.00012Z" fill="white"/>
@@ -285,6 +295,8 @@ const MenuBar = () => {
         </NoteAddIcon>
         <NoteAddText>노트 추가</NoteAddText>
       </NoteAdd>
+
+      <FolderSelectModal isOpen={isModalOpen} onClose={handleModalClose} />
     </MenuBarContainer>
   );
 };
