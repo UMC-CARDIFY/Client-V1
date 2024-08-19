@@ -25,7 +25,7 @@ import SortDropdown from './SortDropdown';
 import FilteringDropdown from './FilteringDropdown';
 import MarkStateIcon from '../../../assets/markStateIcon.svg';
 import MarkStateActive from '../../../assets/MarkStateActive.svg';
-import Note from '../../../assets/note.svg';
+// import Note from '../../../assets/note.svg';
 import FolderIcon from './FolderIcon';
 import { useNavigate } from 'react-router-dom';
 import addFolderIcon from '../../../assets/addFoldersvg.svg';

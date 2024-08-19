@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 import MarkStateIcon from '../../../assets/markStateIcon.svg';
 import MarkStateActive from '../../../assets/MarkStateActive.svg';
-import Note from '../../../assets/note.svg';
 import FolderIcon from './FolderIcon';
+import NoteIcon from './NoteIcon';
 import MoreDiv from './MoreDiv';
 import PropTypes from 'prop-types';
 
@@ -101,7 +101,7 @@ const ItemList = ({
                 </>
               ) : (
                 <>
-                  <img src={Note} alt='노트 아이콘' />
+                  <NoteIcon color={colorMap[item.folderColor]} />
                   <Line />
                   <div onClick={() => moveItem(item)}>{item.name}</div>
                 </>
