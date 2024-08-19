@@ -92,6 +92,8 @@ margin-top: 5.7rem;
 `;
 
 const CompletionModal = ({ onClose, onConfirm }) => {
+
+    
   return (
     <CompletionModalBackdrop>
         <CompletionModalHeader />

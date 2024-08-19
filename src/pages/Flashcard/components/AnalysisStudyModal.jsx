@@ -3,12 +3,13 @@ import closeCard from '../../../assets/flashcard/closeCard.svg';
 import studyCardSet from '../../../api/flashcard/studyCardSet';
 import { useEffect, useState } from 'react';
 import {difficultySelect} from '../../../api/flashcard/difficulty';
+import {completedStudy} from '../../../api/flashcard/completedStudy';
 import { colorMap } from './colorMap';
 import FolderIcon from './FolderIcon';
 import ConfirmModal from './ConfirmModal';
 import CompletionModal from './CompletionModal';
+import StatisticsModal from './StatisticsModal';
 
-// Styled components
 const ModalBackdrop = styled.div`
   position: fixed;
   top: 0;
@@ -33,8 +34,8 @@ const ModalContent = styled.div`
 
 const CloseButton = styled.div`
   position: absolute;
-  top: 12.5rem;
-  right: 10.5rem;
+  top: 2.5rem;
+    right: 2.5rem;
   background: none;
   border: none;
   cursor: pointer;
@@ -165,55 +166,6 @@ const DifficultyButton = styled.button`
   line-height: normal;
 `;
 
-const ConfirmModalBackdrop = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2000;
-`;
-
-const ConfirmModalContent = styled.div`
-  background: white;
-  padding: 2rem;
-  border-radius: 0.75rem;
-  text-align: center;
-  max-width: 400px;
-  width: 80%;
-`;
-
-const ConfirmModalButtonContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-top: 1.5rem;
-`;
-
-const ConfirmButton = styled.button`
-  padding: 0.5rem 1.5rem;
-  border-radius: 0.5rem;
-  border: none;
-  cursor: pointer;
-  font-family: Pretendard;
-  font-size: 1rem;
-  background-color: ${({ variant }) => (variant === 'confirm' ? '#ff4d4f' : '#d9d9d9')};
-  color: white;
-  flex: 1;
-  margin: 0 0.5rem;
-
-  &:first-child {
-    margin-left: 0;
-  }
-
-  &:last-child {
-    margin-right: 0;
-  }
-`;
-
 const difficultyColors = {
   어려움: '#FFE1E1',
   알맞음: '#CEEFE3',
@@ -228,6 +180,8 @@ const AnalysisStudyModal = ({ onClose, studyCardSetId, noteName, folderName, col
     const [revealedAnswers, setRevealedAnswers] = useState({});
     const [showConfirmModal, setShowConfirmModal] = useState(false);
     const [showCompletionModal, setShowCompletionModal] = useState(false);
+    const [showStatisticsModal, setShowStatisticsModal] = useState(false); 
+
     const [cardId, setCardId] = useState(0);
   
     useEffect(() => {
@@ -274,7 +228,8 @@ const AnalysisStudyModal = ({ onClose, studyCardSetId, noteName, folderName, col
         if (currentPage < totalPage - 1) {
           setCurrentPage((prevPage) => prevPage + 1);
         } else {
-          // If it's the last page, show the completion modal
+          const response = await completedStudy(studyCardSetId);
+            console.log(response);
           setShowCompletionModal(true);
         }
       }
@@ -294,15 +249,22 @@ const AnalysisStudyModal = ({ onClose, studyCardSetId, noteName, folderName, col
     };
   
     const handleCompletionConfirm = () => {
-      // Logic to redirect to statistics page or another action
-      console.log("Redirect to statistics page");
-      onClose();
-    };
+        console.log("Show Statistics Modal");
+        setShowCompletionModal(false);
+        setShowStatisticsModal(true); // Show statistics modal when completion is confirmed
+      };
   
     const handleCompletionClose = () => {
       setShowCompletionModal(false);
       onClose();
     };
+
+    // 학습하러 가기 버튼 눌렀을때
+    const handleStatisticsClose = () => {
+        setShowStatisticsModal(false);
+        onClose();
+        // 학습하기 버튼 눌렀을때 노트에디터로 이동
+      };
   
     const allRevealed = content.every((_, index) => revealedAnswers[index]);
   
@@ -368,6 +330,14 @@ const AnalysisStudyModal = ({ onClose, studyCardSetId, noteName, folderName, col
             onClose={handleCompletionClose}
           />
         )}
+
+{showStatisticsModal && (
+        <StatisticsModal
+          onClose={handleStatisticsClose}
+          studyCardSetId={studyCardSetId}
+          color={color}
+        />
+      )}
       </>
     );
   };
