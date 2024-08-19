@@ -116,11 +116,15 @@ const ItemList = ({
           items.map((item, index) => (
             <Data key={`${selectedTab}-${item.id || index}`}>
               <LeftData>
-                <img
+              {selectedTab === '폴더' ? (<img
                   src={item.markState === 'ACTIVE' ? MarkStateActive : MarkStateIcon}
                   alt='즐겨찾기'
                   onClick={() => handleMarkStatus(item)}
-                />
+                />):(<img
+                  src={item.markState === 'ACTIVE' ? MarkStateActive : MarkStateIcon}
+                  alt='즐겨찾기'
+                  onClick={() => handleMarkNoteStatus(item)}
+                />)}
                 {selectedTab === '폴더' ? (
                   <>
                     <FolderIcon fill={colorMap[item.color]} />

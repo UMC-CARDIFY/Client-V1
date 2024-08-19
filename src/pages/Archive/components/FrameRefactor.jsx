@@ -223,14 +223,22 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
     setActiveMoreDiv(activeMoreDiv === index ? null : index);
   };
 
-  const handleMarkStatus = (folder) => {
-    markFolder(folder.folderId, folder.markState === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE')
-      .then(() => fetchData());
+  const handleMarkStatus = async (folder) => {
+    try {
+      await markFolder(folder.folderId, folder.markState === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE');
+      fetchData(); // 데이터 새로고침
+    } catch (error) {
+      console.error('폴더 즐겨찾기 상태 변경에 실패했습니다:', error);
+    }
   };
-
-  const handleMarkNoteStatus = (note) => {
-    markNote(note.noteId, note.markState === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE')
-      .then(() => fetchData());
+  
+  const handleMarkNoteStatus = async (note) => {
+    try {
+      await markNote(note.noteId, note.markState === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE');
+      fetchData(); // 데이터 새로고침
+    } catch (error) {
+      console.error('노트 즐겨찾기 상태 변경에 실패했습니다:', error);
+    }
   };
 
   const closeModal = () => {
