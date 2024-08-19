@@ -103,7 +103,7 @@ const colorMap = {
 
 const getColorNameByCode = (colorCode) => {
   const colorEntry = Object.entries(colorMap).find(([key, code]) => code === colorCode);
-  return colorEntry ? colorEntry[0] : 'defaultColorName'; // 색상 이름 반환
+  return colorEntry ? colorEntry[0] : 'defaultColorName';
 };
 
 const Frame = ({ selectedTab, setSelectedTab }) => {
@@ -121,8 +121,8 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [modalType, setModalType] = useState('');
-  const [folderNotes, setFolderNotes] = useState([]); // 폴더의 노트를 저장할 상태
-  const [currentFolderId, setCurrentFolderId] = useState(null); // 현재 폴더 ID 상태 관리
+  const [folderNotes, setFolderNotes] = useState([]);
+  const [currentFolderId, setCurrentFolderId] = useState(null);
 
   const navigate = useNavigate();
 
@@ -144,7 +144,6 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
         setFolders(data.foldersList || []);
         setPageCountFolder(data.totalPages || 0);
 
-        // 폴더 ID가 존재하면 해당 폴더의 노트를 가져옵니다.
         if (currentFolderId) {
           const folderNotesData = await getNoteToFolder(currentFolderId);
           setFolderNotes(folderNotesData.noteList || []);
@@ -174,15 +173,13 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
     console.log('폴더의 노트:', folderNotes);
   }, [folderNotes, currentFolderId, selectedTab]);
 
-  // 폴더 이름을 가져오기 위한 함수 수정
   const getCurrentFolderName = (folderId) => {
     const folder = folderNotes.find(note => note.folderId === folderId);
     return folder ? folder.folderName : '폴더';
   };
 
-  // 제목 결정
   const title = currentFolderId
-    ? getCurrentFolderName(currentFolderId)  // 현재 폴더 ID가 있을 때는 해당 폴더의 이름으로 설정
+    ? getCurrentFolderName(currentFolderId)
     : selectedTab === '폴더'
     ? '모든 폴더'
     : '모든 노트';
@@ -226,16 +223,16 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
   const handleMarkStatus = async (folder) => {
     try {
       await markFolder(folder.folderId, folder.markState === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE');
-      fetchData(); // 데이터 새로고침
+      fetchData();
     } catch (error) {
       console.error('폴더 즐겨찾기 상태 변경에 실패했습니다:', error);
     }
   };
-  
+
   const handleMarkNoteStatus = async (note) => {
     try {
       await markNote(note.noteId, note.markState === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE');
-      fetchData(); // 데이터 새로고침
+      fetchData();
     } catch (error) {
       console.error('노트 즐겨찾기 상태 변경에 실패했습니다:', error);
     }
@@ -261,8 +258,8 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
           selectedColor: colorName,
         });
       }
- 
-      fetchData(); // 폴더 목록 새로고침
+
+      fetchData();
       setShowAddModal(false);
     } catch (error) {
       console.error('폴더 추가/수정에 실패했습니다:', error);
@@ -333,9 +330,9 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
           handleDelete={handleDelete}
           handleMoreClick={handleMoreClick}
           activeMoreDiv={activeMoreDiv}
-          moveItem={handleFolderClick} // handleFolderClick을 전달
-          onFolderClick={selectedTab === '폴더' ? handleFolderClick : undefined} // onFolderClick을 전달
-          currentFolderId={currentFolderId} // 현재 폴더 아이디를 전달
+          moveItem={handleFolderClick}
+          onFolderClick={selectedTab === '폴더' ? handleFolderClick : undefined}
+          currentFolderId={currentFolderId}
         />
 
         <PaginationContainer>

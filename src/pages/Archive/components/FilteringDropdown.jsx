@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
-import Circle from './Circle'; // 수정된 Circle 컴포넌트 경로
+import Circle from './Circle'; 
 import filterIcon from '../../../assets/filterIcon.svg';
 
 const FiteringDiv = styled.div`
@@ -61,36 +61,74 @@ const Button = styled.button`
   border-radius: 4px;
   background: var(--Main-Button, #ECEFF4);
   border: none;
+  cursor: pointer;
 `;
 
 const FilteringDropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedColors, setSelectedColors] = useState([]); // 선택된 색상 배열
+  const [selectedColors, setSelectedColors] = useState([]);
+  const dropdownRef = useRef(null);
+  const filterDivRef = useRef(null);
 
-  const toggleDropdown = () => {
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        filterDivRef.current &&
+        !filterDivRef.current.contains(event.target) &&
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  const toggleDropdown = (event) => {
+    event.stopPropagation();
     setIsOpen(!isOpen);
   };
 
-  const handleCircleClick = (color) => {
+  const handleCircleClick = (event, color) => {
+    event.stopPropagation();
     setSelectedColors((prevSelectedColors) =>
       prevSelectedColors.includes(color)
-        ? prevSelectedColors.filter((c) => c !== color) // 선택 해제
-        : [...prevSelectedColors, color] // 선택 추가
+        ? prevSelectedColors.filter((c) => c !== color)
+        : [...prevSelectedColors, color]
     );
   };
 
-  const colors = [
-    "#6698F5", "#5AA6C7", "#949AEC", "#A9A9A9",
-    "#77CEC6", "#AECA99", "#FDB456", "#D49AE9",
-    "#FD855F", "#ED83B1"
-  ];
+  const handleApplyClick = (event) => {
+    event.stopPropagation();
+    setIsOpen(false);
+    console.log('선택된 색상:', selectedColors);
+  };
+
+  const colorMap = {
+    blue: '#6698F5',
+    ocean: '#5AA6C7',
+    lavender: '#949AEC',
+    gray: '#A9A9A9',
+    mint: '#77CEC6',
+    sage: '#AECA99',
+    orange: '#FDB456',
+    plum: '#D49AE9',
+    coral: '#FD855F',
+    rose: '#ED83B1'
+  };
+
+  const colors = Object.values(colorMap);
 
   return (
-    <FiteringDiv onClick={toggleDropdown}>
+    <FiteringDiv onClick={toggleDropdown} ref={filterDivRef}>
       <img src={filterIcon} alt="필터 아이콘" />
       필터링
       {isOpen && (
-        <Dropdown>
+        <Dropdown ref={dropdownRef}>
           <div>색상</div>
           <ColorMatrix>
             {colors.map((color, index) => (
@@ -98,12 +136,12 @@ const FilteringDropdown = () => {
                 key={index}
                 bgColor={color}
                 isSelected={selectedColors.includes(color)}
-                onClick={() => handleCircleClick(color)}
+                onClick={(event) => handleCircleClick(event, color)}
                 isFilter={true} 
               />
             ))}
           </ColorMatrix>
-          <Button>적용하기</Button>
+          <Button onClick={handleApplyClick}>적용하기</Button>
         </Dropdown>
       )}
     </FiteringDiv>
