@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
-import axios from 'axios';
-import config from '../../../api/config';
+import { getNotesByFolder } from '../../../api/noteeditor/getNoteToFolder';
+import { addNoteToFolder } from '../../../api/noteeditor/addNote';
 
 const MenuBarContainer = styled.div.withConfig({
   shouldForwardProp: (prop) => prop !== 'isCollapsed',
@@ -80,7 +80,6 @@ const FavoriteTitle = styled.div`
   line-height: normal;
 `;
 
-
 const StarIcon = styled.div`
   width: 2rem;
   height: 2rem;
@@ -96,7 +95,6 @@ const NoteList = styled.div`
   width: 14rem;
   display: flex;
   padding: 0.5rem var(--UI-Component-xxxxxS, 0.25rem);
-
 
   align-items: center;
   gap: 0.5rem;
@@ -206,45 +204,19 @@ const colorMap = {
   rose: '#ED83B1'
 };
 
-const MenuBar = ({ isCollapsed, toggleMenuBar, selectedFolderId, onSelectNote }) => {
-  const [selectedNoteId, setSelectedNoteId] = useState(null);
+const MenuBar = ({ isCollapsed, toggleMenuBar, selectedFolderId, selectedNoteId, onSelectNote }) => {
+  const [selectedNote, setSelectedNote] = useState(selectedNoteId);
   const [notes, setNotes] = useState([]);
   const [folderName, setFolderName] = useState(''); // 폴더 이름 상태 추가
   const [folderColor, setFolderColor] = useState('gray'); // 폴더 색상 상태 추가 (기본값: gray)
 
   useEffect(() => {
     const fetchNotesAndFolderName = async () => {
-      const token = localStorage.getItem('accessToken');
-
-      if (!token) {
-        alert('로그인이 필요합니다.');
-        return;
-      }
-
       try {
-        const response = await axios.post(
-          `${config.apiBaseUrl}/notes/getNoteToFolder`,
-          {
-            folderId: selectedFolderId,
-            page: 0,
-            size: 20,
-            order: 'asc',
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              'Content-Type': 'application/json',
-            },
-          }
-        );
-
-        if (response.status === 200) {
-          setNotes(response.data.noteList); // 노트 목록 설정
-          setFolderName(response.data.folderName); // 폴더 이름 설정
-          setFolderColor(response.data.folderColor); // 폴더 색상 설정
-        } else {
-          console.error('노트 목록을 가져오는 데 실패했습니다:', response.status);
-        }
+        const data = await getNotesByFolder(selectedFolderId);
+        setNotes(data.noteList); // 노트 목록 설정
+        setFolderName(data.folderName); // 폴더 이름 설정
+        setFolderColor(data.folderColor); // 폴더 색상 설정
       } catch (error) {
         console.error('노트 목록을 가져오는 중 오류 발생:', error);
       }
@@ -255,50 +227,36 @@ const MenuBar = ({ isCollapsed, toggleMenuBar, selectedFolderId, onSelectNote })
     }
   }, [selectedFolderId]);
 
+
+
   const favoriteNotes = notes.filter(note => note.markState === 'ACTIVE');
   const folderIconColor = colorMap[folderColor] || colorMap.gray;
 
   const handleAddNote = async () => {
-    const token = localStorage.getItem('accessToken');
-  
-    if (!token) {
-      alert('토큰이 존재하지 않습니다. 다시 로그인해주세요.');
-      return;
-    }
-  
     try {
-      const response = await axios.get(`${config.apiBaseUrl}/notes/addNote`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const { noteId, createdAt } = await addNoteToFolder(selectedFolderId);
+      console.log('생성된 noteId:', noteId);
+
+      setNotes((prevNotes) => [
+        ...prevNotes,
+        {
+          noteId,
+          name: `제목없음`, // 기본 노트 이름 설정
+          isFavorite: false,
+          createdAt,
         },
-        params: {
-          folderId: selectedFolderId, 
-        },
-      });
-  
-      if (response.status === 200) {
-        const { noteId, createdAt } = response.data;
-        console.log('생성된 noteId:', noteId);
-  
-        setNotes((prevNotes) => [
-          ...prevNotes,
-          {
-            noteId,
-            name: `제목없음`, // 기본 노트 이름 설정
-            isFavorite: false,
-            createdAt,
-          },
-        ]);
-      } else {
-        console.error('노트 생성에 실패했습니다:', response.status);
-      }
+      ]);
     } catch (error) {
       console.error('노트 생성 중 오류 발생:', error);
     }
   };
-  
+
+  useEffect(() => {
+    setSelectedNote(selectedNoteId); // 초기 선택된 노트 설정
+  }, [selectedNoteId]);
+
   const handleClick = (note) => {
-    setSelectedNoteId(note.noteId);
+    setSelectedNote(note.noteId);
     onSelectNote(note.noteId); // 선택된 노트의 ID를 NoteEditor로 전달
   };
 
@@ -391,7 +349,6 @@ const MenuBar = ({ isCollapsed, toggleMenuBar, selectedFolderId, onSelectNote })
         </>
       )}
 
-
       <NoteContainer>
         {notes.filter((note) => !note.isFavorite).map((note) => (
           <NoteList
@@ -431,6 +388,7 @@ MenuBar.propTypes = {
   isCollapsed: PropTypes.bool.isRequired,
   toggleMenuBar: PropTypes.func.isRequired,
   selectedFolderId: PropTypes.number.isRequired, // 아카이브에서 선택된 폴더 ID
+  selectedNoteId: PropTypes.number, // 여기 추가
   onSelectNote: PropTypes.func.isRequired, 
 };
 
