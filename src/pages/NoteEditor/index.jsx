@@ -55,19 +55,41 @@ const NoteEditor = () => {
       const fetchNoteData = async () => {
         try {
           const data = await getNote(noteId);
-          setNoteData(data); // 가져온 노트 데이터를 상태에 저장
+          // NoteContext에 데이터를 저장합니다.
+          setNoteData(prevData => ({
+            ...prevData,
+            noteId: noteId,
+            noteName: data.noteName,
+            noteContent: data.noteContent,
+            markState: data.markState,
+            // 필요한 다른 데이터들 추가
+          }));
           console.log('Fetched Note Data:', data);
         } catch (error) {
           console.error('노트 데이터를 가져오는 중 오류가 발생했습니다:', error);
         }
       };
-
       fetchNoteData();
     }
   }, [noteId, setNoteData]);
 
-  const handleNoteSelect = (newNoteId) => {
-    setNoteId(newNoteId); // 새로운 노트 ID 설정
+  const handleNoteSelect = async (newNoteId) => {
+    try {
+      // 새로운 노트의 데이터를 가져옵니다.
+      const data = await getNote(newNoteId);
+  
+      // 노트 ID 및 관련된 모든 데이터를 업데이트합니다.
+      setNoteId(newNoteId);
+      setNoteData(prevData => ({
+        ...prevData,
+        noteId: newNoteId,
+        noteName: data.noteName,
+        noteContent: data.noteContent,
+        markState: data.markState,
+      }));
+    } catch (error) {
+      console.error('노트를 가져오는 중 오류가 발생했습니다:', error);
+    }
   };
 
   return (
@@ -78,11 +100,12 @@ const NoteEditor = () => {
           isCollapsed={isMenuCollapsed}
           toggleMenuBar={toggleMenuBar}
           selectedFolderId={folderId} // folderId를 MenuBar에 전달
+          selectedNoteId={noteId} // 초기 선택된 노트를 MenuBar에 전달
           onSelectNote={handleNoteSelect} // MenuBar에서 노트를 선택할 때 호출될 함수
         />
       </MenuBarWrapper>
       <ContentWrapper isMenuCollapsed={isMenuCollapsed}>
-        <Header isMenuCollapsed={isMenuCollapsed} toggleMenuBar={toggleMenuBar} editorView={editorView} />
+        <Header isMenuCollapsed={isMenuCollapsed} toggleMenuBar={toggleMenuBar} editorView={editorView} selectedFolderId={folderId} currentNoteId={noteId}/>
         <EditorWrapper>
           <Editor setEditorView={setEditorView} />
         </EditorWrapper>

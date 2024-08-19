@@ -10,10 +10,6 @@ export const getNote = async (noteId) => {
       throw new Error('로그인이 필요합니다.');
     }
 
-    // noteId와 API 경로를 출력하여 확인
-    console.log('Fetching note with ID:', noteId);
-    console.log('API URL:', `${config.apiBaseUrl}/notes/getNote`);
-
     // GET 요청으로 노트 데이터 가져오기
     const response = await axios.get(`${config.apiBaseUrl}/notes/getNote`, {
       headers: {

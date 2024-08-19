@@ -1,7 +1,7 @@
-import { useState } from 'react';
-import PropTypes from 'prop-types';
+import { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
 import { markNote } from '../../../../api/noteeditor/markNote';
+import { NoteContext } from '../../../../api/NoteContext';
 
 const StarButtonWrapper = styled.button`
   width: 2rem;
@@ -21,8 +21,16 @@ const StarButtonWrapper = styled.button`
   }
 `;
 
-const StarButton = ({ noteId }) => {
-  const [isActive, setIsActive] = useState(false);
+const StarButton = () => {
+  const { noteData, setNoteData } = useContext(NoteContext); // NoteContext 사용
+  const [isActive, setIsActive] = useState(noteData?.markState || false);
+
+  useEffect(() => {
+    if (noteData) {
+      // noteId가 변경될 때마다 markState를 업데이트
+      setIsActive(noteData.markState);
+    }
+  }, [noteData?.markState]);
 
   const handleMark = async () => {
     const token = localStorage.getItem('accessToken');
@@ -33,9 +41,15 @@ const StarButton = ({ noteId }) => {
     }
     
     try {
-      const response = await markNote(noteId, !isActive, token);
+      // 즐겨찾기 상태 토글
+      const newMarkState = !isActive;
+      const response = await markNote(noteData.noteId, newMarkState, token);
       if (response.isSuccess) {
-        setIsActive(!isActive);
+        setIsActive(newMarkState); // 상태 업데이트
+        setNoteData((prevData) => ({
+          ...prevData,
+          markState: newMarkState, // 전역 상태 업데이트
+        }));
         alert('즐겨찾기 상태가 변경되었습니다.');
       } else {
         alert('즐겨찾기 상태 변경에 실패했습니다.');
@@ -46,6 +60,10 @@ const StarButton = ({ noteId }) => {
     }
   };
 
+  if (!noteData) {
+    return null; // noteData가 없을 때는 아무것도 렌더링하지 않음
+  }
+
   return (
     <StarButtonWrapper $active={isActive} onClick={handleMark}>
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 20" fill="none">
@@ -53,10 +71,6 @@ const StarButton = ({ noteId }) => {
       </svg>
     </StarButtonWrapper>
   );
-};
-
-StarButton.propTypes = {
-  noteId: PropTypes.number.isRequired,
 };
 
 export default StarButton;

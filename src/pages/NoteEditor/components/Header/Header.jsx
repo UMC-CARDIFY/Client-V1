@@ -10,6 +10,8 @@ import StarButton from './StarButton';
 import SaveButton from './SaveButton';
 import SearchInput from './SearchInput';
 import CloseButton from './CloseButton';
+import { useContext } from 'react';
+import { NoteContext } from '../../../../api/NoteContext';
 
 const HeaderWrapper = styled.header`
   background: var(--Grays-White, #FFF);
@@ -80,18 +82,8 @@ const ToggleMenuButton = styled.button`
   }
 `;
 
-const Header = ({ isMenuCollapsed, toggleMenuBar, editorView = null }) => {
-  const data = [
-    'Document 1',
-    'Document 2',
-    'Folder A',
-    'Folder B',
-    'File XYZ',
-    'File ABC'
-  ];
-
-  const noteId = 1; // noteId 설정
-
+const Header = ({ isMenuCollapsed, toggleMenuBar, editorView = null, selectedForderId, currentNoteId }) => {
+  const { noteData } = useContext(NoteContext);
   const [isKebabMenuOpen, setIsKebabMenuOpen] = useState(false);
   const [isExportMenuOpen, setIsExportMenuOpen] = useState(false);
   const [isShareMenuOpen, setIsShareMenuOpen] = useState(false);
@@ -174,14 +166,14 @@ const Header = ({ isMenuCollapsed, toggleMenuBar, editorView = null }) => {
       console.log("EditorView or its state is not set in viewRef");
       return;
     }
-    const noteData = {
+    const noteDataToSave = {
       title: document.querySelector('div[contentEditable=true]').innerText, // 제목 가져오기
       content: editorView.state.doc.toJSON(), // ProseMirror의 상태를 JSON으로 직렬화
     };
 
     // ProseMirror의 상태를 JSON으로 직렬화하여 로그로 출력
     console.log("Document JSON:", JSON.stringify(editorView.state.doc.toJSON(), null, 2));
-    console.log("Note Data to Save:", noteData);
+    console.log("Note Data to Save:", noteDataToSave);
 
     // localStorage에서 토큰 가져오기
     const token = localStorage.getItem('accessToken');
@@ -192,9 +184,9 @@ const Header = ({ isMenuCollapsed, toggleMenuBar, editorView = null }) => {
 
     try {
         const response = await saveNote(
-            noteId,
-            noteData.title,
-            JSON.stringify(noteData.content),
+            currentNoteId,
+            noteDataToSave.title,
+            noteDataToSave.content,
             token
         );
         
@@ -232,7 +224,7 @@ const Header = ({ isMenuCollapsed, toggleMenuBar, editorView = null }) => {
             ref={kebabMenuRef}
             onShare={handleShareClick}
             onExport={handleExportClick}
-            noteId={noteId}
+            noteId={currentNoteId}
           />
         )}
         {isExportMenuOpen && (
@@ -249,12 +241,12 @@ const Header = ({ isMenuCollapsed, toggleMenuBar, editorView = null }) => {
             onShareToLibrary={handleShareToLibrary}
           />
         )}
-        <StarButton noteId={noteId} />
+        <StarButton />
         <NotificationText>저장되지 않은 변경 사항이 있습니다.</NotificationText>
         <SaveButton onSave={handleSave} />
       </LeftSection>
       <RightSection>
-        <SearchInput data={data} />
+        <SearchInput ForderId={selectedForderId}/>
         <CloseButton />
       </RightSection>
     </HeaderWrapper>
@@ -265,6 +257,8 @@ Header.propTypes = {
   isMenuCollapsed: PropTypes.bool.isRequired,
   toggleMenuBar: PropTypes.func.isRequired,
   editorView: PropTypes.object,
+  selectedForderId: PropTypes.number.isRequired,
+  currentNoteId: PropTypes.number.isRequired,
 };
 
 export default Header;
