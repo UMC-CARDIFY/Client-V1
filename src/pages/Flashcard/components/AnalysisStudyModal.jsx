@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import {difficultySelect} from '../../../api/flashcard/difficulty';
 import { colorMap } from './colorMap';
 import FolderIcon from './FolderIcon';
+import ConfirmModal from './ConfirmModal';
 
 // Styled components
 const ModalBackdrop = styled.div`
@@ -337,17 +338,10 @@ const AnalysisStudyModal = ({ onClose, studyCardSetId, noteName, folderName, col
       </ModalBackdrop>
 
       {showConfirmModal && (
-        <ConfirmModalBackdrop>
-          <ConfirmModalContent>
-            <p>나가면 저장되지 않습니다.</p>
-            <ConfirmModalButtonContainer>
-              <ConfirmButton onClick={handleCancelClose}>취소</ConfirmButton>
-              <ConfirmButton variant="confirm" onClick={handleConfirmClose}>
-                나가기
-              </ConfirmButton>
-            </ConfirmModalButtonContainer>
-          </ConfirmModalContent>
-        </ConfirmModalBackdrop>
+        <ConfirmModal
+            onConfirm={handleConfirmClose}
+            onCancel={handleCancelClose}
+        />
       )}
     </>
   );
