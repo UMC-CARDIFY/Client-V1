@@ -1,13 +1,14 @@
 import PropTypes from 'prop-types';
 import { deleteNote } from '../../../../../api/noteeditor/deleteNote';
-//import { useContext } from 'react';
-//import { NoteContext } from '../../../../../api/NoteContext';
+import { useContext } from 'react';
+import { NoteContext } from '../../../../../api/NoteContext';
 import { ModalOverlay, ModalContent, Title, Description, ButtonGroup, Button } from '../../../../../components/Modal/style/DeleteModalStyles';
 import  deleteIcon from '../../../../../../src/assets/deleteicon.svg';
 
-const DeleteMenu = ({ noteId, onClose }) => {
-  //const { noteData, setNoteData } = useContext(NoteContext);
-  console.log('삭제 노트 id: ', noteId);
+//const DeleteMenu = ({ noteId, onClose }) => {
+  const DeleteMenu = ({ onClose }) => {
+  const { noteData, setNoteData } = useContext(NoteContext);
+  //console.log('삭제 노트 id: ', noteId);
 
   const handleDelete = async () => {
     const token = localStorage.getItem('accessToken');
@@ -17,8 +18,9 @@ const DeleteMenu = ({ noteId, onClose }) => {
     }
 
     try {
-       const response = await deleteNote(noteId, token);
-        //const response = await deleteNote(noteData.noteId, token);
+       //const response = await deleteNote(noteId, token);
+        const response = await deleteNote(noteData.noteId, token);
+        console.log('삭제노트 id: ', noteData.noteId);
         if (response.isSuccess) {
           alert('노트가 성공적으로 삭제되었습니다.');
           onClose();
@@ -50,7 +52,7 @@ const DeleteMenu = ({ noteId, onClose }) => {
 };
 
 DeleteMenu.propTypes = {
-  noteId: PropTypes.number.isRequired,
+  //noteId: PropTypes.number.isRequired,
   onClose: PropTypes.func.isRequired,
 };
 
