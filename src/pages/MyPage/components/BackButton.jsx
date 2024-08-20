@@ -1,25 +1,20 @@
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { FiChevronLeft } from 'react-icons/fi';
+import backIcon from '../../../assets/backIcon.svg'
 
 const StyledBackButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 3rem;
-  height: 3rem;
+  width: 1.875rem;
+  height: 1.875rem;
+  flex-shrink: 0;
   background: none;
   border: none;
   cursor: pointer;
   margin-right: 1rem;
   font-size: 1.5rem;
   font-weight: bold;
-
-  @media screen and (max-width: 1024px) {
-    width: 2.5rem;
-    height: 2.5rem;
-    margin-right: 1.5rem;
-  }
 
   svg {
     width: 100%;
@@ -36,7 +31,7 @@ const BackButton = () => {
 
   return (
     <StyledBackButton onClick={handleBackClick}>
-      <FiChevronLeft />
+      <img src={backIcon} alt="backIcon" />
     </StyledBackButton>
   );
 };

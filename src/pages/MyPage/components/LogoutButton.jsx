@@ -1,47 +1,51 @@
+import { useState } from 'react';
 import styled from 'styled-components';
+import LogoutModal from './Modal/LogoutModal';
+import logoutIcon from '../../../assets/logout.svg';
 
-const LogoutButtonContainer = styled.button`
+const LogoutButtonContainer = styled.div`
   display: flex;
-  width: 40.25rem;
-  padding: 1rem;
-  justify-content: space-between;
   align-items: center;
-  flex-direction: column;
-  border: 1px solid #D9D9D9;
-  cursor: pointer;
-  margin-top: 1rem;
-
-  @media screen and (max-width: 1440px) {
-    width: 30rem;
-    padding: 0.75rem;
-    margin-top: 3rem;
-  }
-
-  @media screen and (max-width: 1024px) {
-   width: 29.625rem;  
-   padding: 0.5rem;
-   margin-top: 1rem;
-  }
-`;
-
-const Text = styled.span`
+  width: 100%;
+  height: 3.875rem;
+  gap: 1.0625rem;
+  flex-shrink: 0;
+  border: none;
+  border-radius: 0.625rem;
+  background: #F8F8F8;
   color: #000;
   font-family: Pretendard;
-  font-size: 1rem;
+  font-size: 1.25rem;
   font-style: normal;
-  font-weight: 300;
-  line-height: normal;
+  font-weight: 400;
+  line-height: 1.5625rem; /* 125% */
+  cursor: pointer;
+
+  &:hover {
+    background: #1C6BFF;
+    color: white;
+  }
 `;
 
 const LogoutButton = () => {
-  const handleLogout = () => {
-    console.log("Logout clicked");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleLogoutClick = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
   };
 
   return (
-    <LogoutButtonContainer onClick={handleLogout}>
-      <Text>로그아웃</Text>
-    </LogoutButtonContainer>
+    <>
+      <LogoutButtonContainer onClick={handleLogoutClick}>
+        <img src={logoutIcon} alt="logoutIcon" style={{margin: '0 0 0 1.5rem'}} />
+        로그아웃
+      </LogoutButtonContainer>
+      {isModalOpen && <LogoutModal onClose={closeModal} />}
+    </>
   );
 };
 
