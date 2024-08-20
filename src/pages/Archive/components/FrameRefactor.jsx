@@ -199,11 +199,15 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
     return folder ? folder.folderName : '폴더';
   };
 
-  const title = currentFolderId
+  const title = selectedTab === '폴더'
+  ? currentFolderId
     ? getCurrentFolderName(currentFolderId)
-    : selectedTab === '폴더'
-    ? '모든 폴더'
-    : '모든 노트';
+    : '모든 폴더'
+  : selectedTab === '노트'
+  ? '모든 노트'
+  : ' ';
+
+
 
   const handlePageChange = (selectedItem) => {
     if (selectedTab === '폴더') {
