@@ -27,8 +27,8 @@ const ModalContent = styled.div`
 `;
 
 const FormField = styled.div`
-  display:flex;
-  flex-direction:column;
+  display: flex;
+  flex-direction: column;
 `;
 
 const Input = styled.input`
@@ -109,8 +109,12 @@ const FolderModal = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => 
   }, [initialData]);
 
   const handleSubmit = () => {
-    if(!folderName) {
+    if (!folderName) {
       alert('폴더 이름을 입력해주세요.');
+      return;
+    }
+    if (!selectedColor) {
+      alert('색상을 선택해주세요.');
       return;
     }
     onSubmit({ folderName, selectedColor });
@@ -135,7 +139,6 @@ const FolderModal = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => 
     "#FD855F",
     "#ED83B1"
   ];
-
 
   return (
     <ModalOverlay>

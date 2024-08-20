@@ -1,10 +1,13 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import { SignIn, SignUp, VerifyEmail, CompleteSignUp, MyPage, Archive, Dashboard, PointPage, SubscriptionPage, NoteEditor, Flashcard, KaKaoCallback, Library } from "../pages";
 
 const Router = () => {
   return (
     <BrowserRouter>
       <Routes>
+        {/* 기본 경로에 접속했을 때 로그인 페이지로 리다이렉트 */}
+        <Route path="/" element={<Navigate to="/sign-in" replace />} />
+        
         <Route path='/sign-in' element={<SignIn />} />
         <Route path="/oauth2/callback/kakao" element={<KaKaoCallback />} />
         <Route path='/sign-up' element={<SignUp />} />
@@ -23,4 +26,4 @@ const Router = () => {
   );
 };
 
-export default Router
+export default Router;
