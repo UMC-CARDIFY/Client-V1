@@ -72,6 +72,7 @@ const CardSubtitle = styled.div`
   font-family: Pretendard;
   font-size: 0.75rem;
   font-weight: 400;
+  margin-bottom: 1.19rem;
 `;
 
 const Line = styled.div`
@@ -79,8 +80,8 @@ const Line = styled.div`
   height: 0.0625rem;
   background: #E8E8E8;
   align-self: center;
-  margin: 1.19rem 0 1rem;
-  z-index: 1; /* z-index 추가 */
+  margin-bottom: 1rem;
+  z-index: 1;
 `;
 
 const DayDiv = styled.div`
@@ -89,8 +90,6 @@ const DayDiv = styled.div`
   gap: 3rem;
   color: var(--Grays-Gray1, #646464);
   text-align: center;
-
-  /* Typo/Body 3 */
   font-family: Pretendard;
   font-size: 0.875rem;
   font-style: normal;
@@ -100,13 +99,13 @@ const DayDiv = styled.div`
 
 const Day = styled.div`
   display: flex;
-  width: 5rem;
+  width: 7.5rem;
   flex-direction: column;
   align-items: center;
   gap: 0.125rem;
 `;
 
-const Date = styled.div`
+const DateDay = styled.div`
   text-align: center;
   font-family: Pretendard;
   font-size: 0.875rem;
@@ -234,6 +233,9 @@ const FlashcardItem = ({ noteName, folderName, recentStudyDate, nextStudyDate, s
     setShowAnalysisStudyModal(false);  // Close the analysis study modal
   };
 
+  const formatRecentStudyDate = new Date(recentStudyDate).toISOString().replace('T', ' ').slice(0, 16);
+  const formatNextStudyDate = new Date(nextStudyDate).toISOString().split('T', ' ').slice(0, 16);
+
   return (
     <CardStackContainer>
       {/* 겹쳐진 카드 레이어들 */}
@@ -256,15 +258,15 @@ const FlashcardItem = ({ noteName, folderName, recentStudyDate, nextStudyDate, s
           </CardIconDiv>
           <CardTitle>{noteName}</CardTitle>
           <CardSubtitle>{folderName}</CardSubtitle>
+          <Line />
         </CardHeader>
-        <Line />
         <DayDiv>
           <Day>
-            {recentStudyDate ? <Date>{recentStudyDate}</Date> : <Date>-</Date>}
+            {recentStudyDate ? <DateDay>{formatRecentStudyDate}</DateDay> : <DateDay>-</DateDay>}
             <DateText>최근 학습일</DateText>
           </Day>
           <Day>
-            {nextStudyDate ? <Date>{nextStudyDate}</Date> : <Date>-</Date>}
+            {nextStudyDate ? <DateDay>{formatNextStudyDate}</DateDay> : <DateDay>-</DateDay>}
             <DateText>다음 학습일</DateText>
           </Day>
         </DayDiv>
