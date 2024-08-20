@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-
+import { useState, useEffect, useRef } from 'react';
 import WordCardButton from './components/ToolbarItem/WordCardButton';
 import BlankCardButton from './components/ToolbarItem/BlankCardButton';
 import MultiCardButton from './components/ToolbarItem/MultiCardButton';
@@ -44,21 +44,55 @@ const AddTextBlockButton = styled.button`
   }
 `;
 
-const ToolBar = ({ addCard, addHeading1, toggleBold, onSelectColor, viewRef, onSelectHighlightColor, isCardSelected, onAddTextBlock }) => {
-  console.log("ToolBar isCardSelected:", isCardSelected); // 상태 로그 출력
+const ToolBar = ({ addCard, addHeading, toggleBold, onSelectColor, viewRef, onSelectHighlightColor, isCardSelected, onAddTextBlock }) => {
+  const [activeDropDown, setActiveDropDown] = useState(null);
+  const dropDownRef = useRef(null);
+
+  const handleToggleDropDown = (dropdownName) => {
+    setActiveDropDown(prev => prev === dropdownName ? null : dropdownName);
+  };
+
+  const handleClickOutside = (event) => {
+    if (dropDownRef.current && !dropDownRef.current.contains(event.target)) {
+      setActiveDropDown(null);
+    }
+  };
+
+  useEffect(() => {
+    if (activeDropDown) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [activeDropDown]);
 
   return (
-    <ToolBarContainer>
+    <ToolBarContainer ref={dropDownRef}>
       <WordCardButton onClick={() => addCard('word_card')} />
-      <BlankCardButton onClick={() => addCard('blank')} />
-      <MultiCardButton onClick={() => addCard('multi')} />
-      <ImageCardButton onClick={() => addCard('image')} />
+      <BlankCardButton onClick={() => addCard('blank_card')} />
+      <MultiCardButton onClick={() => addCard('multi_card')} />
+      <ImageCardButton onClick={() => addCard('image_card')} />
       <Divider />
-      <HeadingButton onHeadingSelect={addHeading1} />
+      <HeadingButton 
+        addHeading={addHeading} 
+        isOpen={activeDropDown === 'heading'}
+        onToggle={() => handleToggleDropDown('heading')}  
+      />
       <BoldButton toggleBold={() => toggleBold(viewRef.current)} />
       <Divider />
-      <TextColorButton onSelectColor={onSelectColor} editorView={viewRef.current} />
-      <HighlightColorButton onSelectColor={onSelectHighlightColor} />
+      <TextColorButton
+        onSelectColor={onSelectColor}
+        isOpen={activeDropDown === 'textColor'}
+        onToggle={() => handleToggleDropDown('textColor')}
+      />
+      <HighlightColorButton
+        onSelectColor={onSelectHighlightColor}
+        isOpen={activeDropDown === 'highlightColor'}
+        onToggle={() => handleToggleDropDown('highlightColor')}
+      />
       <Divider />
       {isCardSelected && (
         <AddTextBlockButton onClick={onAddTextBlock}>
@@ -70,10 +104,9 @@ const ToolBar = ({ addCard, addHeading1, toggleBold, onSelectColor, viewRef, onS
   );
 };
 
-
 ToolBar.propTypes = {
   addCard: PropTypes.func.isRequired,
-  addHeading1: PropTypes.func.isRequired,
+  addHeading: PropTypes.func.isRequired,
   toggleBold: PropTypes.func.isRequired,
   onSelectColor: PropTypes.func.isRequired,
   onSelectHighlightColor: PropTypes.func.isRequired,

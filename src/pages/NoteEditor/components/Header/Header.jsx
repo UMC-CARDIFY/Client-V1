@@ -5,7 +5,11 @@ import KebabMenu from './KebabMenu/KebabMenu';
 import ExportMenu from './KebabMenu/ExportMenu';
 import ShareMenu from './KebabMenu/ShareMenu';
 //import { useSaveContext } from './SaveContext';
-import { saveNote } from '../../../api/noteeditor/saveNote'
+import { saveNote } from '../../../../api/noteeditor/saveNote'
+import StarButton from './StarButton';
+import SaveButton from './SaveButton';
+import SearchInput from './SearchInput';
+import CloseButton from './CloseButton';
 
 const HeaderWrapper = styled.header`
   background: var(--Grays-White, #FFF);
@@ -39,103 +43,6 @@ const KebabIcon = styled.button`
   }
 `;
 
-const CloseButton = styled.button`
-  width: var(--line-height-xl, 3rem);
-  height: var(--line-height-xl, 3rem);
-  flex-shrink: 0;
-  background: none;
-  border: none;
-  cursor: pointer;
-  margin-left: 0.5rem;
-  margin-right: 1.5rem;
-
-  svg {
-    width: 100%;
-    height: 100%;
-  }
-`;
-
-const SearchWrapper = styled.div`
-  display: flex;
-  width: 23.125rem;
-  padding: 0.5rem 0.75rem;
-  align-items: center;
-  gap: 0.75rem;
-  border-radius: 0.5rem;
-  background: var(--Main-BackGround, #F2F4F8);
-  box-shadow: 0px 4px 26px 0px rgba(0, 0, 0, 0.02), 0px 10px 60px 0px rgba(0, 74, 162, 0.03);
-  position: relative;
-`;
-
-const SearchIcon = styled.svg`
-  width: 1.5rem;
-  height: 1.5rem;
-  flex-shrink: 0;
-`;
-
-const SearchInput = styled.input`
-  border: none;
-  background: none;
-  outline: none;
-  color: var(--Grays-Gray2, #767676);
-  font-family: Pretendard;
-  font-size: 0.875rem;
-  font-style: normal;
-  font-weight: 500;
-  line-height: normal;
-  flex-grow: 1;
-
-  &::placeholder {
-    color: var(--Grays-Gray2, #767676);
-  }
-`;
-
-const SearchResultList = styled.div`
-  position: absolute;
-  top: 100%;
-  left: 0;
-  background: white;
-  width: 100%;
-  max-height: 200px;
-  overflow-y: auto;
-  box-shadow: 0px 4px 26px 0px rgba(0, 0, 0, 0.1);
-  border-radius: 0.5rem;
-  margin-top: 0.5rem;
-  z-index: 1;
-`;
-
-const SearchResultItem = styled.div`
-  padding: 12px 24px;
-  border-bottom: 1px solid #ddd;
-  cursor: pointer;
-
-  &:hover {
-    background: #f2f4f8;
-  }
-`;
-
-const StarButton = styled.button`
-  width: 2rem;
-  height: 2rem;
-  flex-shrink: 0;
-  background: none;
-  border: none;
-  cursor: pointer;
-
-  svg {
-    width: 100%;
-    height: 100%;
-    stroke-width: ${(props) => (props.$active ? '1.3px' : '1.3px')};
-    stroke: ${(props) => (props.$active ? 'rgba(255, 211, 56, 1)' : 'var(--Grays-Gray3, #B1B1B1)')};
-    fill: ${(props) => (props.$active ? 'rgba(255, 211, 56, 1)' : 'none')};
-  }
-`;
-
-StarButton.propTypes = {
-  $active: PropTypes.bool.isRequired,
-};
-
-
 const NotificationText = styled.span`
   color: var(--Grays-Gray3, #B1B1B1);
   margin-left: 1rem;
@@ -156,31 +63,6 @@ const LeftSection = styled.div`
   display: flex;
   align-items: center;
   position: relative;
-`;
-
-const SaveButton = styled.button`
-  display: inline-flex;
-  padding: var(--UI-Component-xxxxxS, 0.25rem) 0.75rem;
-  justify-content: center;
-  align-items: center;
-  gap: 0.5rem;
-  border-radius: 0.5rem;
-  background: var(--Main-BackGround, #F2F4F8);
-  border: none;
-  cursor: pointer;
-  margin-left: 1rem;
-
-  span {
-    color: var(--Semantic-Acitve, #699BF7);
-    text-align: right;
-
-    /* Typo/Body 2 */
-    font-family: Pretendard;
-    font-size: 0.9375rem;
-    font-style: normal;
-    font-weight: 500;
-    line-height: normal;
-  }
 `;
 
 const ToggleMenuButton = styled.button`
@@ -208,31 +90,14 @@ const Header = ({ isMenuCollapsed, toggleMenuBar, editorView = null }) => {
     'File ABC'
   ];
 
-  const [isStarActive, setIsStarActive] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [results, setResults] = useState([]);
+  const noteId = 1; // noteId 설정
+
   const [isKebabMenuOpen, setIsKebabMenuOpen] = useState(false);
   const [isExportMenuOpen, setIsExportMenuOpen] = useState(false);
   const [isShareMenuOpen, setIsShareMenuOpen] = useState(false);
   const kebabMenuRef = useRef(null);
   const exportMenuRef = useRef(null);
   const shareMenuRef = useRef(null);
-
-  const toggleStar = () => {
-    setIsStarActive(!isStarActive);
-  };
-
-  const handleSearch = (term) => {
-    setSearchTerm(term);
-    if (term === '') {
-      setResults([]);
-    } else {
-      const filteredResults = data.filter(item =>
-        item.toLowerCase().includes(term.toLowerCase())
-      );
-      setResults(filteredResults);
-    }
-  };
 
   const handleKebabClick = () => {
     setIsKebabMenuOpen(!isKebabMenuOpen);
@@ -251,9 +116,9 @@ const Header = ({ isMenuCollapsed, toggleMenuBar, editorView = null }) => {
   };
 
   const handleClickOutside = (event) => {
-    if (kebabMenuRef.current && !kebabMenuRef.current.contains(event.target)) {
-      setIsKebabMenuOpen(false);
-    }
+    //if (kebabMenuRef.current && !kebabMenuRef.current.contains(event.target)) {
+      //setIsKebabMenuOpen(false);
+    //}
     if (exportMenuRef.current && !exportMenuRef.current.contains(event.target)) {
       setIsExportMenuOpen(false);
     }
@@ -305,16 +170,13 @@ const Header = ({ isMenuCollapsed, toggleMenuBar, editorView = null }) => {
   // 노트 저장
   const handleSave = async () => {
     if (!editorView || !editorView.state) {
-        alert('Editor is not ready');
-        console.log("EditorView or its state is not set in viewRef");
-        return;
+      alert('Editor is not ready');
+      console.log("EditorView or its state is not set in viewRef");
+      return;
     }
-    
-    //const noteId = existingNoteId || 0;
-
     const noteData = {
-        title: document.querySelector('div[contentEditable=true]').innerText, // 제목 가져오기
-        content: editorView.state.doc.toJSON(), // ProseMirror의 상태를 JSON으로 직렬화
+      title: document.querySelector('div[contentEditable=true]').innerText, // 제목 가져오기
+      content: editorView.state.doc.toJSON(), // ProseMirror의 상태를 JSON으로 직렬화
     };
 
     // ProseMirror의 상태를 JSON으로 직렬화하여 로그로 출력
@@ -330,7 +192,7 @@ const Header = ({ isMenuCollapsed, toggleMenuBar, editorView = null }) => {
 
     try {
         const response = await saveNote(
-            0, //noteId
+            noteId,
             noteData.title,
             JSON.stringify(noteData.content),
             token
@@ -370,7 +232,7 @@ const Header = ({ isMenuCollapsed, toggleMenuBar, editorView = null }) => {
             ref={kebabMenuRef}
             onShare={handleShareClick}
             onExport={handleExportClick}
-            onDelete={() => alert('삭제 기능')}
+            noteId={noteId}
           />
         )}
         {isExportMenuOpen && (
@@ -387,41 +249,13 @@ const Header = ({ isMenuCollapsed, toggleMenuBar, editorView = null }) => {
             onShareToLibrary={handleShareToLibrary}
           />
         )}
-        <StarButton $active={isStarActive} onClick={toggleStar}>
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 20" fill="none">
-            <path d="M11.3026 16.2009C11.1133 16.1014 10.8871 16.1014 10.6978 16.2009L5.17609 19.1035L6.23071 12.9547C6.26688 12.7438 6.19694 12.5286 6.04368 12.3793L1.57487 8.02497L7.74838 7.12784C7.96006 7.09708 8.14305 6.96414 8.23774 6.77233L11.0001 1.17687L13.7616 6.77226C13.8563 6.9641 14.0393 7.09707 14.251 7.12784L20.4247 8.025L15.9567 12.3793C15.8035 12.5287 15.7336 12.7439 15.7698 12.9548L16.8253 19.1035L11.3026 16.2009ZM4.7098 19.3487C4.70991 19.3486 4.71001 19.3485 4.71012 19.3485L4.7098 19.3487ZM20.802 7.65727L20.8016 7.6577L20.802 7.65727Z" stroke={`${(props) => (props.active ? 'rgba(255, 211, 56, 1)' : '#B1B1B1')}`} strokeWidth="1.3" strokeLinejoin="round"/>
-          </svg>
-        </StarButton>
+        <StarButton noteId={noteId} />
         <NotificationText>저장되지 않은 변경 사항이 있습니다.</NotificationText>
-        <SaveButton onClick={handleSave}>
-          <span>저장하기</span>
-        </SaveButton>
+        <SaveButton onSave={handleSave} />
       </LeftSection>
       <RightSection>
-        <SearchWrapper>
-          <SearchIcon xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
-            <path d="M18 18L15.1047 15.1047M15.1047 15.1047C15.6 14.6094 15.9928 14.0215 16.2608 13.3744C16.5289 12.7273 16.6668 12.0338 16.6668 11.3334C16.6668 10.633 16.5289 9.93948 16.2608 9.2924C15.9928 8.64532 15.6 8.05737 15.1047 7.56212C14.6094 7.06687 14.0215 6.67401 13.3744 6.40598C12.7273 6.13795 12.0338 6 11.3334 6C10.633 6 9.93948 6.13795 9.2924 6.40598C8.64532 6.67401 8.05737 7.06687 7.56212 7.56212C6.56191 8.56233 6 9.9189 6 11.3334C6 12.7479 6.56191 14.1045 7.56212 15.1047C8.56233 16.1049 9.9189 16.6668 11.3334 16.6668C12.7479 16.6668 14.1045 16.1049 15.1047 15.1047Z" stroke="#767676" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
-          </SearchIcon>
-          <SearchInput
-            placeholder="폴더 내 검색"
-            value={searchTerm}
-            onChange={(e) => handleSearch(e.target.value)}
-          />
-          {results.length > 0 && (
-            <SearchResultList>
-              {results.map((result, index) => (
-                <SearchResultItem key={index}>
-                  {result}
-                </SearchResultItem>
-              ))}
-            </SearchResultList>
-          )}
-        </SearchWrapper>
-        <CloseButton>
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" fill="none">
-            <path fillRule="evenodd" clipRule="evenodd" d="M13.621 28.58C13.3007 28.9232 12.7628 28.9417 12.4196 28.6214C12.0764 28.3011 12.0579 27.7632 12.3782 27.42L18.8369 20.5L12.3782 13.58C12.0579 13.2368 12.0764 12.6989 12.4196 12.3786C12.7628 12.0583 13.3007 12.0768 13.621 12.42L19.9996 19.2542L26.3782 12.42C26.6985 12.0768 27.2364 12.0583 27.5796 12.3786C27.9228 12.6989 27.9413 13.2368 27.621 13.58L21.1623 20.5L27.621 27.42C27.9413 27.7632 27.9228 28.3011 27.5796 28.6214C27.2364 28.9417 26.6985 28.9232 26.3782 28.58L19.9996 21.7458L13.621 28.58Z" fill="#B1B1B1"/>
-          </svg>
-        </CloseButton>
+        <SearchInput data={data} />
+        <CloseButton />
       </RightSection>
     </HeaderWrapper>
   );
@@ -430,7 +264,6 @@ const Header = ({ isMenuCollapsed, toggleMenuBar, editorView = null }) => {
 Header.propTypes = {
   isMenuCollapsed: PropTypes.bool.isRequired,
   toggleMenuBar: PropTypes.func.isRequired,
-  active: PropTypes.bool,
   editorView: PropTypes.object,
 };
 
