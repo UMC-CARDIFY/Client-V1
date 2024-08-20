@@ -1,7 +1,9 @@
-import { forwardRef } from 'react';
+import PropTypes from 'prop-types'; // prop-types 패키지 임포트
+import { forwardRef, useState } from 'react';
 import styled from 'styled-components';
 import KebabIcon from '../../../assets/kebab.svg';
-import { deleteFolder, deleteNote } from '../../../api/archive'; // API 호출 함수 임포트
+import { deleteFolder, deleteNote } from '../../../api/archive';
+import DeleteConfirmModal from './DeleteConfirmModal'; // 모달 컴포넌트 임포트
 
 const MoreDivContainer = styled.div`
   position: relative;
@@ -69,10 +71,20 @@ const MoreButton = styled.div`
 
 const Icon = styled.img``;
 
-// eslint-disable-next-line react/display-name
-const MoreDiv = forwardRef(({ type, onEditClick, onDeleteClick, isActive, onMoreClick, itemId }, ref) => {
-  const handleDelete = async () => {
-    console.log('Deleting item with ID:', itemId); // Debugging line
+const MoreDiv = forwardRef(({ type, onEditClick, onDeleteClick, isActive, onMoreClick, itemId, itemName }, ref) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleDeleteClick = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleDeleteConfirm = async () => {
+    console.log('Deleting item with ID:', itemId);
+    
     try {
       if (type === 'note') {
         await deleteNote(itemId);
@@ -84,29 +96,51 @@ const MoreDiv = forwardRef(({ type, onEditClick, onDeleteClick, isActive, onMore
     } catch (error) {
       console.error('삭제 실패:', error);
     }
+    setIsModalOpen(false);
   };
-  
 
   return (
-    <MoreDivContainer ref={ref} onClick={onMoreClick}>
-      <MoreButton>
-        <Icon src={KebabIcon} />
-      </MoreButton>
-      {isActive && (
-        <Options>
-          {type === 'folder' && (
-            <>
-              <OptionEditButton onClick={onEditClick}>폴더 수정</OptionEditButton>
-              <OptionDeleteButton onClick={handleDelete}>폴더 삭제</OptionDeleteButton>
-            </>
-          )}
-          {type === 'note' && (
-            <NoteDeleteButton onClick={handleDelete}>노트 삭제</NoteDeleteButton>
-          )}
-        </Options>
-      )}
-    </MoreDivContainer>
+    <>
+      <MoreDivContainer ref={ref} onClick={onMoreClick}>
+        <MoreButton>
+          <Icon src={KebabIcon} />
+        </MoreButton>
+        {isActive && (
+          <Options>
+            {type === 'folder' && (
+              <>
+                <OptionEditButton onClick={onEditClick}>폴더 수정</OptionEditButton>
+                <OptionDeleteButton onClick={handleDeleteClick}>폴더 삭제</OptionDeleteButton>
+              </>
+            )}
+            {type === 'note' && (
+              <NoteDeleteButton onClick={handleDeleteClick}>노트 삭제</NoteDeleteButton>
+            )}
+          </Options>
+        )}
+      </MoreDivContainer>
+
+      <DeleteConfirmModal
+        isOpen={isModalOpen}
+        onClose={handleModalClose}
+        onConfirm={handleDeleteConfirm}
+        type={type}
+        itemName={itemName}
+      />
+    </>
   );
 });
+
+MoreDiv.displayName = 'MoreDiv';
+
+MoreDiv.propTypes = {
+  type: PropTypes.string.isRequired,     
+  onEditClick: PropTypes.func.isRequired,  
+  onDeleteClick: PropTypes.func.isRequired,
+  isActive: PropTypes.bool.isRequired,     
+  onMoreClick: PropTypes.func.isRequired,  
+  itemId: PropTypes.string.isRequired,     
+  itemName: PropTypes.string.isRequired,  
+};
 
 export default MoreDiv;

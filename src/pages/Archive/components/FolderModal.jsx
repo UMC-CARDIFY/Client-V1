@@ -20,10 +20,11 @@ const ModalOverlay = styled.div`
 const ModalContent = styled.div`
   background: white;
   padding: 32px 24px;
-  width: 318px;
+  min-width: 318px;
   height: 296px;  
   position: relative;
   box-sizing: border-box;
+  border-radius: 0.5rem;
 `;
 
 const FormField = styled.div`
@@ -32,7 +33,7 @@ const FormField = styled.div`
 `;
 
 const Input = styled.input`
-  width: 270px;
+  min-width: 270px;
   height: 39px;
   border: 1px solid #E7E7E7; 
   padding: 0 15px;
@@ -44,13 +45,14 @@ const Input = styled.input`
 const Button = styled.button`
   cursor: pointer;
   padding: 6px 14px;
-  border: 1px solid #DDD;
+  border: none;
   background: white;
   font-size: 12px;
   font-weight: 500; 
   display: flex;
   justify-content: center;
   align-items: center;
+  
 `;
 
 const Title = styled.div`
@@ -145,7 +147,7 @@ const FolderModal = ({ isOpen, onClose, onSubmit, initialData, isEditMode }) => 
       <ModalContent>
         <Title>{isEditMode ? '폴더 수정' : '폴더 추가'}</Title>
         <FormField>
-          <Label>폴더 이름</Label>
+          <Label>이름</Label>
           <Input
             type="text"
             value={folderName}

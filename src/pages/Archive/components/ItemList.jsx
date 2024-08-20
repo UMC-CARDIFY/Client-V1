@@ -106,6 +106,7 @@ const ItemList = ({
                 </div>
                 <MoreDiv
                   type="note"
+                  itemName={note.name}
                   onEditClick={() => handleEdit(note)}
                   onDeleteClick={() => handleDelete(note.noteId)}
                   isActive={activeMoreDiv === index}
@@ -177,7 +178,8 @@ const ItemList = ({
                   <div>최근 수정일</div>
                 </div>
                 <MoreDiv
-                  type={selectedTab === '폴더' ? 'folder' : 'note'}
+                  type={selectedTab==='폴더'? 'folder': 'note'}
+                  itemName={item.name}
                   onEditClick={() => handleEdit(item)}
                   onDeleteClick={() => handleDelete(item.id)}
                   isActive={activeMoreDiv === index}
