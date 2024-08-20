@@ -34,6 +34,13 @@ const PaginationContainer = styled.div`
       font-style: normal;
       font-weight: 600;
       line-height: normal;
+      border-radius: 0.25rem;
+      transition: background-color 0.3s ease, color 0.3s ease;
+
+      &:hover {
+        background-color:#F0F0F0;
+        color: #767676;
+      }
     }
 
     &.active .page-link {
@@ -48,6 +55,16 @@ const PreviousBtn = styled.div`
   width: 1.5rem;
   height: 1.5rem;
   flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  border-radius: 0.25rem;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: var(--Main-PrimaryLight4, #E7EFFF);
+  }
 `;
 
 const Pagination = ({ pageCount, handlePageChange }) => (
@@ -88,7 +105,6 @@ const Pagination = ({ pageCount, handlePageChange }) => (
     />
   </PaginationContainer>
 );
-
 
 Pagination.propTypes = {
   pageCount: PropTypes.number.isRequired,
