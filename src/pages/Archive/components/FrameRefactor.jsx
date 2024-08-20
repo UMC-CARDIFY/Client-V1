@@ -126,6 +126,9 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
   const [modalType, setModalType] = useState('');
   const [folderNotes, setFolderNotes] = useState([]);
   const [currentFolderId, setCurrentFolderId] = useState(null);
+  const [folderNotesPage, setFolderNotesPage] = useState(0);
+  const [folderNotesPageCount, setFolderNotesPageCount] = useState(0);
+
 
   // 필터링 상태를 폴더와 노트 각각 따로 저장
   const [folderFilterColors, setFolderFilterColors] = useState([]);
@@ -138,38 +141,40 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
   const fetchData = async () => {
     setLoading(true);
     setError(null);
-
+  
     try {
       const pageSize = getPageSize();
       let data;
-
+  
       if (selectedTab === '폴더') {
         if (folderFilterColors.length > 0) {
           const colorQuery = folderFilterColors.join(',');
-          data = await getFilteringFolder(colorQuery);
+          data = await getFilteringFolder(colorQuery, currentPageFolder, pageSize);
         } else {
           data = sortOption
             ? await getFolderSort(sortOption, currentPageFolder, pageSize)
             : await getFolders(currentPageFolder, pageSize);
         }
-
+  
         setFolders(data.foldersList || []);
         setPageCountFolder(data.totalPages || 0);
-
+  
         if (currentFolderId) {
-          const folderNotesData = await getNoteToFolder(currentFolderId);
+          const folderNotesData = await getNoteToFolder(currentFolderId, pageSize);
           setFolderNotes(folderNotesData.noteList || []);
+          setFolderNotesPageCount(folderNotesData.totalPage || 0);
+          console.log('folderNotesPage;',folderNotesPage)
         }
       } else if (selectedTab === '노트') {
         if (noteFilterColors.length > 0) {
           const colorQuery = noteFilterColors.join(',');
-          data = await getFilteringNote(colorQuery);
+          data = await getFilteringNote(colorQuery, currentPageNote, pageSize);
         } else {
           data = sortOption
             ? await getNoteSort(sortOption, currentPageNote, pageSize)
             : await getNotes(currentPageNote, pageSize);
         }
-
+  
         setNotes(data.noteList || []);
         setPageCountNote(data.totalPage || 0);
       }
@@ -180,6 +185,8 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
       setLoading(false);
     }
   };
+  
+  
 
   useEffect(() => {
     fetchData();
@@ -208,11 +215,20 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
 
   const handlePageChange = (selectedItem) => {
     if (selectedTab === '폴더') {
-      setCurrentPageFolder(selectedItem.selected);
-    } else if (selectedTab === '노트') {
+      if (currentFolderId) {
+        setFolderNotesPage(selectedItem.selected);
+        console.log('ddd',folderNotesPage)
+      }
+      else
+        setCurrentPageFolder(selectedItem.selected);
+      } else if (selectedTab === '노트') {
       setCurrentPageNote(selectedItem.selected);
     }
   };
+
+  // const handleFolderNotesPageChange = (selectedItem) => {
+  //   setFolderNotesPage(selectedItem.selected);
+  // };
 
   const handleSortOptionClick = (option) => {
     if (option) {
@@ -327,6 +343,8 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
       }
     : {};
 
+    
+
   return (
     <FrameContainer>
       <Header>
@@ -368,19 +386,30 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
           currentFolderId={currentFolderId}
         />
 
-        <PaginationContainer>
-          {selectedTab === '폴더' ? (
+<PaginationContainer>
+        {selectedTab === '폴더' ? (
+          <>
+          {!currentFolderId &&
             <Pagination
               pageCount={pageCountFolder}
               handlePageChange={handlePageChange}
             />
-          ) : (
-            <Pagination
-              pageCount={pageCountNote}
-              handlePageChange={handlePageChange}
-            />
-          )}
-        </PaginationContainer>
+          }
+
+            {currentFolderId && (
+              <Pagination
+                pageCount={folderNotesPageCount}
+                handlePageChange={handlePageChange}
+              />
+            )}
+          </>
+        ) : (
+          <Pagination
+            pageCount={pageCountNote}
+            handlePageChange={handlePageChange}
+          />
+        )}
+      </PaginationContainer>
       </Content>
       {showAddModal && (
         <FolderModal
