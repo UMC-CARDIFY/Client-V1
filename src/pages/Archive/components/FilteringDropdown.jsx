@@ -64,7 +64,7 @@ const Button = styled.button`
   cursor: pointer;
 `;
 
-const FilteringDropdown = () => {
+const FilteringDropdown = ({ onFilterApply }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedColors, setSelectedColors] = useState([]);
   const dropdownRef = useRef(null);
@@ -105,7 +105,7 @@ const FilteringDropdown = () => {
   const handleApplyClick = (event) => {
     event.stopPropagation();
     setIsOpen(false);
-    console.log('선택된 색상:', selectedColors);
+    onFilterApply(selectedColors);
   };
 
   const colorMap = {
@@ -118,10 +118,11 @@ const FilteringDropdown = () => {
     orange: '#FDB456',
     plum: '#D49AE9',
     coral: '#FD855F',
-    rose: '#ED83B1'
+    rose: '#ED83B1',
   };
 
-  const colors = Object.values(colorMap);
+  // 색상 이름만으로 배열을 구성합니다.
+  const colorNames = Object.keys(colorMap);
 
   return (
     <FiteringDiv onClick={toggleDropdown} ref={filterDivRef}>
@@ -131,13 +132,13 @@ const FilteringDropdown = () => {
         <Dropdown ref={dropdownRef}>
           <div>색상</div>
           <ColorMatrix>
-            {colors.map((color, index) => (
+            {colorNames.map((colorName) => (
               <Circle
-                key={index}
-                bgColor={color}
-                isSelected={selectedColors.includes(color)}
-                onClick={(event) => handleCircleClick(event, color)}
-                isFilter={true} 
+                key={colorName}
+                bgColor={colorMap[colorName]}
+                isSelected={selectedColors.includes(colorName)}
+                onClick={(event) => handleCircleClick(event, colorName)}
+                isFilter={true}
               />
             ))}
           </ColorMatrix>
