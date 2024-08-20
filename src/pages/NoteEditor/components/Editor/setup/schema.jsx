@@ -8,15 +8,15 @@ const mySchema = new Schema({
       group: 'block',
       content: 'inline*',
       attrs: {
-        question: { default: '' },
-        answer: { default: '' },
+        question_front: { default: '' },
+        answer: { default: [''] },  // 배열
       },
       parseDOM: [{
         tag: 'div.word-card',
         getAttrs(dom) {
           return {
-            question: dom.querySelector('.question').innerText,
-            answer: dom.querySelector('.answer').innerText,
+            question_front: dom.querySelector('.question').innerText,
+            answer: [dom.querySelector('.answer').innerText],  // 배열로 저장
           };
         }
       }],
@@ -24,6 +24,69 @@ const mySchema = new Schema({
         return ['div', { class: 'word-card' }, 0]; // NodeView가 이 div를 기반으로 사용
       }
     },
+    blank_card: {
+      group: 'block',
+      content: 'inline*',
+      attrs: {
+        question_front: { default: '' },  // 빈칸 앞 text
+        question_back: { default: '' },   // 빈칸 뒤 text
+        answer: { default: [''] },  // 배열
+      },
+      parseDOM: [{
+        tag: 'div.blank-card',
+        getAttrs(dom) {
+          return {
+            question_front: dom.querySelector('.question_front').innerText,
+            question_back: dom.querySelector('.question_back').innerText,
+            answer: [dom.querySelector('.answer').innerText],  // 배열로 저장
+          };
+        }
+      }],
+      toDOM() {
+        return ['div', { class: 'blank-card' }, 0];
+      }
+    },
+    multi_card: {
+      group: 'block',
+      content: 'inline*',
+      attrs: {
+        question_front: { default: '' },
+        answer: { default: [''] },  // 기본 값으로 빈 배열 설정
+      },
+      parseDOM: [{
+        tag: 'div.multi-card',
+        getAttrs(dom) {
+          const question_front = dom.querySelector('.question').innerText;
+    
+          // .answer 클래스를 가진 모든 요소를 가져와서 그 텍스트를 배열로 만듭니다.
+          const answerNodes = dom.querySelectorAll('.answer');
+          const answers = Array.from(answerNodes).map(node => node.innerText);
+    
+          return {
+            question_front,
+            answer: answers,  // 배열 형태로 저장
+          };
+        }
+      }],
+      toDOM() {
+        return ['div', { class: 'multi-card' }, 0];
+      }
+    }, 
+    heading: {
+      attrs: { level: { default: 1 } },
+      content: "inline*",
+      group: "block",
+      defining: true,
+      parseDOM: [
+        { tag: "h1", attrs: { level: 1 } },
+        { tag: "h2", attrs: { level: 2 } },
+        { tag: "h3", attrs: { level: 3 } },
+      ],
+      toDOM(node) { return ["h" + node.attrs.level, 0] }
+    },
+    //기본노드 정의
+    paragraph: basicSchema.spec.nodes.get('paragraph'),
+    text: basicSchema.spec.nodes.get('text'),
     bullet_list: {
       content: 'list_item+',
       group: 'block',

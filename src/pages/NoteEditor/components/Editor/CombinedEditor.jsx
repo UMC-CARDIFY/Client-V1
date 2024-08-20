@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState, useContext } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';  
 import { EditorState, TextSelection } from 'prosemirror-state';
@@ -13,6 +13,13 @@ import 'prosemirror-view/style/prosemirror.css';
 import { myInputRules } from './Markdown/inputRules';
 import mySchema from './setup/schema';
 import WordCardView from './setup/wordcardView';
+import WordCardPreviewModal from '../Cards/PreviewModal/wordcardPreview';
+import BlankCardView from './setup/blankcardView';
+import BlankCardPreviewModal from '../Cards/PreviewModal/blankcardPreview';
+import MultiCardView from './setup/multicardView';
+import MultiCardPreviewModal from '../Cards/PreviewModal/multicardPreview';
+import FlashcardButton from './FlashcardButton';
+import { NoteContext } from '../../../../api/NoteContext';
 
 const ContentArea = styled.div`
   flex: 1;
@@ -83,18 +90,6 @@ const TitleInput = styled.div`
   }
 `;
 
-const TransformFlashcard = styled.div`
-  display: flex;
-  width: 4rem;
-  padding: 1.25rem 1.0625rem 1.25rem 0;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 0.5rem;
-  flex-shrink: 0;
-  cursor: pointer;
-`;
-
 const Divider = styled.div`
   height: 1px;
   background: #B1B1B1;
@@ -107,78 +102,184 @@ const Divider = styled.div`
 const CombinedEditor = ({ viewRef }) => {  
   const contentRef = useRef(null);
   const titleRef = useRef(null);
+  const { noteData, setNoteData } = useContext(NoteContext); // NoteContext 사용
+  // 모달 열림/닫힘 상태와 question/answer 데이터를 관리
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalType, setModalType] = useState(null);
+  const [modalQuestion, setModalQuestion] = useState('');
+  const [modalAnswer, setModalAnswer] = useState('');
+  const [modalQuestionBack, setModalQuestionBack] = useState('');
+
+  const openModal = (type, question_front = '', answer = '', question_back = '') => {
+    setModalType(type);
+    setModalQuestion(question_front);
+    setModalAnswer(answer);
+    setModalQuestionBack(question_back);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => setIsModalOpen(false);
+  
 
   useEffect(() => {
-    if (contentRef.current) {
-      const doc = mySchema.node('doc', null, 
-        mySchema.node('bullet_list', null, 
-          mySchema.node('list_item', null, 
-            mySchema.node('paragraph', null)
+    if (!contentRef.current || viewRef.current) {
+      console.log('ContentRef is null or ViewRef is not null. Skipping initialization.');
+      return;
+    }
+    //console.log('Initializing editor with noteData:', noteData);
+
+    let doc;
+    try {
+      if (noteData && noteData.noteContent) {
+        let jsonString = noteData.noteContent;
+        jsonString = jsonString.replace(/\\/g, ''); 
+        let jsonObject = JSON.parse(jsonString);
+
+        // 문서 구조를 검사하고 불완전한 구조가 있으면 기본 구조로 대체
+      if (!jsonObject || !jsonObject.content || !Array.isArray(jsonObject.content)) {
+        throw new Error('Invalid document structure');
+      }
+        doc = mySchema.nodeFromJSON(jsonObject);
+      } else {
+        console.log('No noteData found or it is empty. Creating default doc structure.');
+        doc = mySchema.node('doc', null, 
+          mySchema.node('bullet_list', null, 
+            mySchema.node('list_item', null, 
+              mySchema.node('paragraph', null)
+            )
           )
-        )
-      );
+        );
+      }
+    } catch (error) {
+      console.error('Error while creating document structure:', error);
+      // 기본 구조로 대체
+        doc = mySchema.node('doc', null, 
+          mySchema.node('bullet_list', null, 
+            mySchema.node('list_item', null, 
+              mySchema.node('paragraph', null)
+            )
+          )
+        );
+      }
 
-      const state = EditorState.create({
-        schema: mySchema,
-        doc,
-        plugins: [
-          keymap({
-            'Tab': (state, dispatch) => {
-              return sinkListItem(mySchema.nodes.list_item)(state, dispatch);
-            },
-            'Shift-Tab': (state, dispatch) => {
-              const { $from } = state.selection;
-              const depth = $from.depth;
-
-              if (depth === 3) {
-                return false;
-              }
-              return liftListItem(mySchema.nodes.list_item)(state, dispatch);
-            },
-            'Enter': (state, dispatch) => {
+    const state = EditorState.create({
+      doc,
+      schema: mySchema,
+      plugins: [
+        keymap({
+          'Tab': (state, dispatch) => {
+            return sinkListItem(mySchema.nodes.list_item)(state, dispatch);
+          },
+          'Shift-Tab': (state, dispatch) => {
+            const { $from } = state.selection;
+            const depth = $from.depth;
+  
+            if (depth === 3) {
+              return false;
+            }
+            return liftListItem(mySchema.nodes.list_item)(state, dispatch);
+          },
+          'Enter': (state, dispatch) => {
               const { $from } = state.selection;
               const parent = $from.node(-1);
+              //console.log('Current parent node type:', parent.type.name);
+              
               if (parent.type === mySchema.nodes.list_item) {
-                return splitListItem(mySchema.nodes.list_item)(state, dispatch);
+                  //return splitListItem(mySchema.nodes.list_item)(state, dispatch);
+                  handleEnterKey(viewRef);
+                  return true; 
               } else if (parent.type === mySchema.nodes.paragraph) {
-                handleEnterKey(viewRef);
-                return true;
+                  handleEnterKey(viewRef);
+                  return true;
+              } else if (parent.type === mySchema.nodes.word_card || parent.type === mySchema.nodes.blank_card || parent.type === mySchema.nodes.multi_card) {
+                  console.warn('Enter key pressed inside a card node, ignoring.');
+                  return false;
               } else {
-                return wrapInList(mySchema.nodes.bullet_list)(state, dispatch);
+                  console.warn('Unexpected node type, Enter key ignored:', parent.type);
+                  return false;
               }
-            },
-          }),
-          keymap(baseKeymap),
-          history(),
-          dropCursor(),
-          gapCursor(),
-          myInputRules(mySchema),
-        ]
-      });
-
-   viewRef.current = new EditorView(contentRef.current, {
-            state,
-            nodeViews: {
-              word_card: (node, view, getPos) => new WordCardView(node, view, getPos),
-            },
-            dispatchTransaction(transaction) {
-              const newState = viewRef.current.state.apply(transaction);
-              viewRef.current.updateState(newState);
-              console.log('New state:', JSON.stringify(newState.doc.toJSON(), null, 2));
+          },
+          'Shift-Enter': (state, dispatch) => {
+            const textNode = state.schema.text("\n");
+        
+            if (dispatch) {
+              const tr = state.tr.replaceSelectionWith(textNode, false);
+              dispatch(tr.scrollIntoView());
             }
-        });
+            return true;
+          },
+          'Backspace': (state, dispatch) => handleBackspaceInCard(state, dispatch),  // 백스페이스
+        }),
+        keymap(baseKeymap),
+        history(),
+        dropCursor(),
+        gapCursor(),
+        myInputRules(mySchema),
+      ]
+    });
+    
+    try {
+      viewRef.current = new EditorView(contentRef.current, {
+        state,
+        nodeViews: {
+          word_card(node, view, getPos) {
+            return new WordCardView(node, view, getPos, openModal);
+          },
+          blank_card(node, view, getPos) {
+            return new BlankCardView(node, view, getPos, openModal);
+          },
+          multi_card(node, view, getPos) {
+            return new MultiCardView(node, view, getPos, openModal);
+          }
+        },
+        dispatchTransaction(transaction) {
+          //console.log('Transaction dispatched');
+          const newState = viewRef.current.state.apply(transaction);
+          viewRef.current.updateState(newState);
+          console.log('New state:', JSON.stringify(newState.doc.toJSON(), null, 2));
+        }
+      });
+    } catch (error) {
+      console.error('Error during editor initialization:', error);
+    }
+    
+    console.log('Editor view initialized.');
+    
+    return () => {
+      if (viewRef.current) {
+        console.log('Destroying editor view.');
+        viewRef.current.destroy();
+        viewRef.current = null; // 에디터를 해제하고 참조를 null로 설정
+      }
+    };
+  }, [contentRef, noteData, viewRef]);
+  
+  /*
+   // 새로운 useEffect 훅 추가
+   useEffect(() => {
+    // 노트 데이터를 불러온 후 추가로 문서 끝에 빈 텍스트 노드를 삽입
+    if (viewRef.current) {
+      const { state, dispatch } = viewRef.current;
+      const { tr } = state;
 
-        //viewRef.current = view;
-        window.viewRef = viewRef; //데이터 값 들어오게 하려고 추가한 코드
-
-        return () => {
-            viewRef.current.destroy();
-        };
-    } 
-  }, [viewRef]);
+      // 문서의 마지막 위치에 빈 텍스트 노드 추가
+      tr.insert(state.doc.content.size, state.schema.text('\n'));
+      dispatch(tr);
+    }
+  }, [noteData, viewRef]);
+  */
 
   useEffect(() => {
     const node = titleRef.current;
+
+    // noteData가 변경될 때마다 title을 업데이트
+    if (noteData && noteData.noteName) {
+      node.innerText = noteData.noteName;
+      node.classList.remove('empty'); // noteName이 있을 때 empty 클래스를 제거
+    } else {
+      node.innerText = '';
+      node.classList.add('empty'); // noteName이 없을 때 empty 클래스를 추가
+    }
 
     const handleInput = () => {
       if (node.innerText === '') {
@@ -202,7 +303,7 @@ const CombinedEditor = ({ viewRef }) => {
       node.removeEventListener('input', handleInput);
       node.removeEventListener('keydown', handleKeyDown);
     };
-  }, []);
+  }, [noteData]); // noteData가 변경될 때마다 이 useEffect가 실행됨
 
   return (
     <>
@@ -212,20 +313,36 @@ const CombinedEditor = ({ viewRef }) => {
           data-placeholder="제목 없음"
           ref={titleRef}
           className="empty"
-        ></TitleInput>
-        <TransformFlashcard>
-          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="26" viewBox="0 0 32 26" fill="none">
-            <path d="M7.81846 6.2672L7.99227 5.35878L8.6875 1.7251L30.3901 5.65605L27.6092 20.1908L24.8964 19.6994L24.2182 19.5766" stroke="#B1B1B1" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-            <rect x="1.61035" y="7.2749" width="22" height="17" stroke="#B1B1B1" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-            <line x1="6.71035" y1="14.1749" x2="18.5104" y2="14.1749" stroke="#B1B1B1" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-            <line x1="6.71035" y1="18.1749" x2="14.5104" y2="18.1749" stroke="#B1B1B1" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </TransformFlashcard>
+        >
+        </TitleInput>
+        <FlashcardButton />
       </TitleDiv>
       <Divider />
       <ContentArea>
         <div ref={contentRef}></div>
       </ContentArea>
+      {isModalOpen && modalType === 'word_card' && (
+        <WordCardPreviewModal 
+          question={modalQuestion} 
+          answer={[modalAnswer]} 
+          onClose={closeModal}
+        />
+      )}
+      {isModalOpen && modalType === 'blank_card' && (
+        <BlankCardPreviewModal 
+          question_front={modalQuestion}  // 앞부분 텍스트 전달
+          answer={modalAnswer} 
+          question_back={modalQuestionBack}  // 뒷부분 텍스트 전달
+          onClose={closeModal}
+        />
+      )}
+      {isModalOpen && modalType === 'multi_card' && (
+        <MultiCardPreviewModal 
+          question={modalQuestion} 
+          answer={modalAnswer} 
+          onClose={closeModal}
+        />
+      )}
     </>
   );
 };
@@ -237,23 +354,40 @@ export const handleEnterKey = (viewRef) => {
   const { tr, selection } = state;
   const { $from } = selection;
 
-  // 현재 선택된 위치가 속한 리스트 아이템의 마지막 위치를 찾습니다.
-  const endOfListItem = $from.end($from.depth);
+  // 현재 위치에서 부모 list_item을 찾아봅니다.
+  const parentListItem = $from.node($from.depth - 1);
 
-  // 새로운 텍스트 노드를 만듭니다.
-  const paragraphNode = mySchema.nodes.paragraph.create();
+  if (parentListItem.type === mySchema.nodes.list_item) {
+    if ($from.pos === $from.end()) {
+      // 커서가 리스트 아이템 끝에 있는 경우, 새로운 아이템을 동일한 리스트 레벨에 추가합니다.
+      const newListItem = mySchema.nodes.list_item.create(
+        {}, // 필요한 속성을 지정할 수 있습니다.
+        mySchema.nodes.paragraph.create()
+      );
 
-  // 새로운 텍스트 노드를 리스트 아이템의 끝 다음에 삽입합니다.
-  tr.insert(endOfListItem + 1, paragraphNode);
+      tr.insert($from.after($from.depth - 1), newListItem);
+      
+      // 새로운 list_item 뒤에 커서를 이동합니다.
+      const resolvedPos = tr.doc.resolve($from.after($from.depth - 1) + 1);
+      tr.setSelection(TextSelection.near(resolvedPos));
+    } else {
+      // 커서가 리스트 아이템 중간에 있는 경우, 기존 아이템을 쪼개서 새로운 리스트 아이템을 만듭니다.
+      splitListItem(mySchema.nodes.list_item)(state, dispatch);
+    }
+  } else {
+    // 그 외의 경우, 새로운 paragraph를 생성합니다.
+    const newNode = mySchema.nodes.paragraph.create();
+    tr.insert($from.end(), newNode);
 
-  // 새로운 텍스트 블록 뒤에 커서를 이동합니다.
-  tr.setSelection(TextSelection.near(tr.doc.resolve(endOfListItem + 2)));
+    // 새로운 paragraph 뒤로 커서를 이동합니다.
+    tr.setSelection(TextSelection.near(tr.doc.resolve($from.end() + 2)));
+  }
 
   dispatch(tr.scrollIntoView());
   viewRef.current.focus();
 };
 
-export const addCard = (viewRef) => {
+export const addCard = (viewRef, type) => {
   if (!viewRef.current) return;
 
   const { state, dispatch } = viewRef.current;
@@ -263,8 +397,28 @@ export const addCard = (viewRef) => {
   // 현재 리스트 아이템의 마지막 위치를 찾습니다.
   const endOfListItem = $from.end($from.depth);
 
-  // 새 카드 노드를 만듭니다.
-  const node = mySchema.nodes.word_card.create();
+  let node;
+
+  // 카드 타입에 따라 카드 노드 생성
+  switch (type) {
+    case 'word_card':
+      node = mySchema.nodes.word_card.create();
+      break;
+    case 'blank_card':
+      node = mySchema.nodes.blank_card.create();
+      break;
+    case 'multi_card':
+      node = mySchema.nodes.multi_card.create();
+      break;
+    /*
+    case 'image_card':
+      node = mySchema.nodes.image_card.create();
+      break;
+    */
+    default:
+      console.error('Unknown card type: ${type}');
+      return;
+  }
 
   // 새로운 카드를 리스트 아이템의 끝 다음에 삽입합니다.
   tr.insert(endOfListItem + 1, node);

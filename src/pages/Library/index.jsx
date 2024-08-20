@@ -53,6 +53,7 @@ const SearchInput = styled.input`
   flex: 1;
   padding-left: 2rem;
   border-radius: 0.5rem 0rem 0rem 0.5rem;
+
   border: none;
   &:focus {
     outline: none;
@@ -78,6 +79,7 @@ const SearchIcon = styled.div`
   width: 2.75rem;
   height: 2.75rem;
   flex-shrink: 0;
+
 `;
 
 const DropdownWrapper = styled.div`
@@ -99,6 +101,7 @@ const DropdownHeader = styled.div`
   font-size: 1.125rem;
   font-style: normal;
   font-weight: 600;
+
   line-height: normal;
   display: flex;
   align-items: center;
@@ -106,6 +109,7 @@ const DropdownHeader = styled.div`
   cursor: pointer;
   box-sizing: border-box;
   gap: 0.5rem;
+
 `;
 
 const DropdownArrow = styled.img`
@@ -203,7 +207,7 @@ const SelectNoteListSection = styled.div`
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   overflow: auto;
-  height: 32.4375rem;
+  height: 32.4375rem; /* 29.4375rem */
 `;
 
 const SelectedCategoriesWrapper = styled.div`
@@ -213,6 +217,7 @@ const SelectedCategoriesWrapper = styled.div`
   margin-top: 0.81rem;
   margin-bottom: 1.56rem;
   height: 1.5rem;
+
 `;
 
 const SelectedCategoryTag = styled.div`
@@ -244,6 +249,7 @@ export const Library = () => {
   const [appliedCategories, setAppliedCategories] = useState([]);
   const [appliedSearchQuery, setAppliedSearchQuery] = useState('');
   const [showResults, setShowResults] = useState(false);
+
   const [selectedCategory, setSelectedCategory] = useState(null);
 
   const handleCategoryClick = (category) => {
@@ -274,6 +280,7 @@ export const Library = () => {
   const handleCategorySelect = (category) => {
     if (category === '전체 카테고리') {
       setSelectedCategories(['전체 카테고리']);
+
       setIsDropdownOpen(false);
     } else {
       const isAlreadySelected = selectedCategories.includes(category);
@@ -281,6 +288,7 @@ export const Library = () => {
         setSelectedCategories(selectedCategories.filter(item => item !== category));
       } else {
         setSelectedCategories([...selectedCategories.filter(cat => cat !== '전체 카테고리'), category]);
+
       }
     }
   };
@@ -289,6 +297,7 @@ export const Library = () => {
     const allSelectableCategories = categories.filter(cat => cat !== '전체 카테고리');
     if (selectedCategories.length === allSelectableCategories.length) {
       setSelectedCategories(['전체 카테고리']);
+
     }
   }, [selectedCategories]);
 
@@ -367,6 +376,7 @@ export const Library = () => {
               <SelectedCategoriesWrapper>
                 {selectedCategories.map((category, index) =>
                   category !== '전체 카테고리' ? (
+
                     <SelectedCategoryTag key={index}>
                       <RemoveButton onClick={() => removeCategory(category)}>
                         <img src={removeButtonsvg} alt="remove" />
@@ -382,6 +392,7 @@ export const Library = () => {
                   <NoteList
                     searchQuery={appliedSearchQuery}
                     categories={appliedCategories}
+
                     showAllNotes={isAllCategoriesSelected}
                   />
                 </SelectNoteListSection>
@@ -404,6 +415,7 @@ export const Library = () => {
                 selectedCategory={selectedCategory}
                 onBackClick={() => setIsViewAllCategory(false)}
                 onCategoryClick={handleCategoryClick}
+
               />
             </>
           )}

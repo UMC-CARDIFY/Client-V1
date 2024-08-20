@@ -1,15 +1,16 @@
 import axiosInstance from '..';
 
-export const getNoteSort = async (order) => {
+export const getNoteSort = async (order, page = 0, size = 6) => {
   try {
-    const response = await axiosInstance.get(`/folders/notes/sort?order=${order}`);
-    console.log(response.data);
+    const response = await axiosInstance.get(`folders/notes/sort`, {
+      params: { order, page, size }
+    });
+    console.log('Get Note Sort Response:', response.data);
     return response.data;
   } catch (error) {
-    console.error(error);
+    console.error('Error fetching sorted notes:', error);
     throw error;
   }
-
 };
 
 export default getNoteSort;
