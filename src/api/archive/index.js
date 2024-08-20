@@ -12,3 +12,4 @@ export { default as getNoteSort } from './getNoteSort';
 export { default as addNote } from './addNote';
 export { default as getFilteringFolder } from './getFilteringFolder';
 export { default as getFilteringNote } from './getFilteringNote';
+export { default as getFolderFilterSort } from './getFolderFilterSort';

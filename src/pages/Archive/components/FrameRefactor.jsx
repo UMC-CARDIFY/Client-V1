@@ -1,9 +1,7 @@
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
 import {
-  getFolders,
-  getFolderSort,
+  getFolderFilterSort,
   getNotes,
   getNoteSort,
   deleteFolder,
@@ -13,7 +11,7 @@ import {
   addFolder,
   editFolder,
   getNoteToFolder,
-  getFilteringFolder,
+  // getFilteringFolder,
   getFilteringNote
 } from '../../../api/archive';
 
@@ -131,8 +129,6 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
   const [folderFilterColors, setFolderFilterColors] = useState([]);
   const [noteFilterColors, setNoteFilterColors] = useState([]);
 
-  const navigate = useNavigate();
-
   const getPageSize = () => window.innerWidth < 1440 ? 5 : 6;
 
   const fetchData = async () => {
@@ -144,14 +140,12 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
       let data;
   
       if (selectedTab === '폴더') {
-        if (folderFilterColors.length > 0) {
-          const colorQuery = folderFilterColors.join(',');
-          data = await getFilteringFolder(colorQuery, currentPageFolder, pageSize);
-        } else {
-          data = sortOption
-            ? await getFolderSort(sortOption, currentPageFolder, pageSize)
-            : await getFolders(currentPageFolder, pageSize);
-        }
+        if (selectedTab === '폴더') {
+          const colorQuery = folderFilterColors.length > 0 ? folderFilterColors.join(',') : '';
+          const order = sortOption || '';
+          data = await getFolderFilterSort(colorQuery, order, currentPageFolder, pageSize);
+        } 
+        
   
         setFolders(data.foldersList || []);
         setPageCountFolder(data.totalPages || 0);
