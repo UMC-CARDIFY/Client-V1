@@ -1,3 +1,10 @@
+<<<<<<< HEAD
 <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36" fill="none">
   <path d="M15.3008 12.1499L20.7008 17.9999L15.3008 23.8499" stroke="#1A1A1A" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/>
+=======
+
+<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36" fill="none">
+  <path d="M15.3008 12.1499L20.7008 17.9999L15.3008 23.8499" stroke="#1A1A1A" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/>
+
+>>>>>>> develop
 </svg>
