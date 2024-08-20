@@ -46,6 +46,10 @@ const CloseButton = styled.button`
   border: none;
   cursor: pointer;
 
+  &:hover {
+    background: var(--Grays-Gray8, #F4F4F4);
+  }
+
   svg {
     fill: #B1B1B1;
   }
