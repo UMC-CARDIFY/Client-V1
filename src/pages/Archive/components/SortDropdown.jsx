@@ -60,11 +60,10 @@ const DropdownItem = styled.div`
 
 const FolderDropdown = styled(Dropdown)`
   width: 8.375rem;
-  width: 8.375rem;
 `;
 
 const NoteDropdown = styled(Dropdown)`
-  /* 노트 탭에 대한 추가 스타일링을 여기에 추가 */
+  width: 8.375rem;
 `;
 
 const SortDropdown = ({ onSortOptionClick, selectedTab }) => {
@@ -104,16 +103,16 @@ const SortDropdown = ({ onSortOptionClick, selectedTab }) => {
         {isOpen && (
             selectedTab === '폴더' ? (
                 <FolderDropdown>
-                    <DropdownItem onClick={() => handleSortOptionClick('asc')}>폴더 오름차순</DropdownItem>
-                    <DropdownItem onClick={() => handleSortOptionClick('desc')}>폴더 내림차순</DropdownItem>
+                    <DropdownItem onClick={() => handleSortOptionClick('asc')}>폴더 이름 ↑</DropdownItem>
+                    <DropdownItem onClick={() => handleSortOptionClick('desc')}>폴더 이름 ↓</DropdownItem>
                     <DropdownItem onClick={() => handleSortOptionClick('edit-newest')}>수정일 - 최신순</DropdownItem>
                     <DropdownItem onClick={() => handleSortOptionClick('edit-oldest')}>수정일 - 오래된 순</DropdownItem>
                 </FolderDropdown>
             ) : (
                 <NoteDropdown>
-                    <DropdownItem onClick={() => handleSortOptionClick('asc')}>노트 오름차순</DropdownItem>
-                    <DropdownItem onClick={() => handleSortOptionClick('desc')}>노트 내림차순</DropdownItem>
-                    <DropdownItem onClick={() => handleSortOptionClick('edit-newest')}>수정일 - 최신순</DropdownItem>
+                    <DropdownItem onClick={() => handleSortOptionClick('asc')}>노트 이름 ↑</DropdownItem>
+                    <DropdownItem onClick={() => handleSortOptionClick('desc')}>노트 이름 ↓</DropdownItem>
+                    <DropdownItem onClick={() => handleSortOptionClick('edit-newest') }>수정일 - 최신순</DropdownItem>
                     <DropdownItem onClick={() => handleSortOptionClick('edit-oldest')}>수정일 - 오래된 순</DropdownItem>
                 </NoteDropdown>
             )
