@@ -12,9 +12,7 @@ import {
   markNote,
   addFolder,
   editFolder,
-  getNoteToFolder,
-  getFilteringFolder,
-  getFilteringNote  // 필터링된 노트를 가져오는 API 호출
+  getNoteToFolder // 함수 가져오기
 } from '../../../api/archive';
 
 import FolderModal from './FolderModal';
@@ -43,7 +41,7 @@ const FrameContainer = styled.div`
   }
 
   @media (max-width: 1440px) {
-    max-width: 60rem;
+    max-width: 48rem;
   }
 `;
 
@@ -105,7 +103,7 @@ const colorMap = {
 
 const getColorNameByCode = (colorCode) => {
   const colorEntry = Object.entries(colorMap).find(([key, code]) => code === colorCode);
-  return colorEntry ? colorEntry[0] : 'defaultColorName';
+  return colorEntry ? colorEntry[0] : 'defaultColorName'; // 색상 이름 반환
 };
 
 const Frame = ({ selectedTab, setSelectedTab }) => {
@@ -123,9 +121,8 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [modalType, setModalType] = useState('');
-  const [folderNotes, setFolderNotes] = useState([]);
-  const [currentFolderId, setCurrentFolderId] = useState(null);
-  const [filterColors, setFilterColors] = useState([]);
+  const [folderNotes, setFolderNotes] = useState([]); // 폴더의 노트를 저장할 상태
+  const [currentFolderId, setCurrentFolderId] = useState(null); // 현재 폴더 ID 상태 관리
 
   const navigate = useNavigate();
 
@@ -140,31 +137,22 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
       let data;
 
       if (selectedTab === '폴더') {
-        if (filterColors.length > 0) {
-          const colorQuery = filterColors.join(',');
-          data = await getFilteringFolder(colorQuery);
-        } else {
-          data = sortOption
-            ? await getFolderSort(sortOption, currentPageFolder, pageSize)
-            : await getFolders(currentPageFolder, pageSize);
-        }
+        data = sortOption
+          ? await getFolderSort(sortOption, currentPageFolder, pageSize)
+          : await getFolders(currentPageFolder, pageSize);
 
         setFolders(data.foldersList || []);
         setPageCountFolder(data.totalPages || 0);
 
+        // 폴더 ID가 존재하면 해당 폴더의 노트를 가져옵니다.
         if (currentFolderId) {
           const folderNotesData = await getNoteToFolder(currentFolderId);
           setFolderNotes(folderNotesData.noteList || []);
         }
       } else if (selectedTab === '노트') {
-        if (filterColors.length > 0) {
-          const colorQuery = filterColors.join(',');
-          data = await getFilteringNote(colorQuery);
-        } else {
-          data = sortOption
-            ? await getNoteSort(sortOption, currentPageNote, pageSize)
-            : await getNotes(currentPageNote, pageSize);
-        }
+        data = sortOption
+          ? await getNoteSort(sortOption, currentPageNote, pageSize)
+          : await getNotes(currentPageNote, pageSize);
 
         setNotes(data.noteList || []);
         setPageCountNote(data.totalPage || 0);
@@ -179,23 +167,12 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
 
   useEffect(() => {
     fetchData();
-  }, [selectedTab, currentPageFolder, currentPageNote, sortOption, currentFolderId, filterColors]);
+  }, [selectedTab, currentPageFolder, currentPageNote, sortOption, currentFolderId]);
 
   useEffect(() => {
     console.log('현재 폴더 ID:', currentFolderId);
     console.log('폴더의 노트:', folderNotes);
   }, [folderNotes, currentFolderId, selectedTab]);
-
-  const getCurrentFolderName = (folderId) => {
-    const folder = folderNotes.find(note => note.folderId === folderId);
-    return folder ? folder.folderName : '폴더';
-  };
-
-  const title = currentFolderId
-    ? getCurrentFolderName(currentFolderId)
-    : selectedTab === '폴더'
-    ? '모든 폴더'
-    : '모든 노트';
 
   const handlePageChange = (selectedItem) => {
     if (selectedTab === '폴더') {
@@ -233,22 +210,14 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
     setActiveMoreDiv(activeMoreDiv === index ? null : index);
   };
 
-  const handleMarkStatus = async (folder) => {
-    try {
-      await markFolder(folder.folderId, folder.markState === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE');
-      fetchData();
-    } catch (error) {
-      console.error('폴더 즐겨찾기 상태 변경에 실패했습니다:', error);
-    }
+  const handleMarkStatus = (folder) => {
+    markFolder(folder.folderId, folder.markState === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE')
+      .then(() => fetchData());
   };
 
-  const handleMarkNoteStatus = async (note) => {
-    try {
-      await markNote(note.noteId, note.markState === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE');
-      fetchData();
-    } catch (error) {
-      console.error('노트 즐겨찾기 상태 변경에 실패했습니다:', error);
-    }
+  const handleMarkNoteStatus = (note) => {
+    markNote(note.noteId, note.markState === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE')
+      .then(() => fetchData());
   };
 
   const closeModal = () => {
@@ -271,52 +240,62 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
           selectedColor: colorName,
         });
       }
-
-      fetchData();
-      closeModal();
+ 
+      fetchData(); // 폴더 목록 새로고침
+      setShowAddModal(false);
     } catch (error) {
       console.error('폴더 추가/수정에 실패했습니다:', error);
     }
   };
 
+  const handleFolderClick = async (folderId) => {
+    console.log('handleFolderClick 호출됨, 폴더 ID:', folderId);
+    try {
+      if (folderId === undefined) {
+        throw new Error('폴더 ID가 undefined입니다.');
+      }
+      setCurrentFolderId(folderId);
+      const data = await getNoteToFolder(folderId);
+      setFolderNotes(data.noteList || []);
+      console.log('폴더의 노트 결과:', data.noteList);
+    } catch (error) {
+      console.error('폴더의 노트를 가져오는 데 실패했습니다:', error);
+    }
+  };
+
   const getItemsToShow = () => {
     if (selectedTab === '폴더') {
-      return folders;
+      return currentFolderId ? folderNotes : folders;
     } else if (selectedTab === '노트') {
       return notes;
     }
     return [];
   };
 
-  const handleFolderClick = (folderId) => {
-    setCurrentFolderId(folderId);
-    setSelectedTab('노트');
-  };
-
-  const handleFilterApply = (colors) => {
-    setFilterColors(colors);
-  };
+  const initialData = selectedItem
+    ? {
+        folderName: selectedItem.folderName || '',
+        selectedColor: selectedItem.selectedColor || '',
+      }
+    : {};
 
   return (
     <FrameContainer>
       <Header>
-        <h3>{title}</h3>
+        <h3>{selectedTab === '폴더' ? '모든 폴더' : '모든 노트'}</h3>
         <ButtonContainer>
           <SortDropdown 
             onSortOptionClick={handleSortOptionClick} 
             selectedTab={selectedTab} 
           />
-          <FilteringDropdown onFilterApply={handleFilterApply} />
-          {selectedTab !== '노트' && (
-            <AddButton
-              selectedTab={selectedTab}
-              setSelectedItem={setSelectedItem}
-              setShowAddModal={setShowAddModal}
-              setModalType={setModalType}
-              addFolderIcon={addFolderIcon}
-              currentFolderId={currentFolderId}
-            />
-          )}
+          <FilteringDropdown />
+          <AddButton
+            selectedTab={selectedTab}
+            setSelectedItem={setSelectedItem}
+            setShowAddModal={setShowAddModal}
+            setModalType={setModalType}
+            addFolderIcon={addFolderIcon}
+          />
         </ButtonContainer>
         <Line />
       </Header>
@@ -330,11 +309,9 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
           handleDelete={handleDelete}
           handleMoreClick={handleMoreClick}
           activeMoreDiv={activeMoreDiv}
-          moveItem={handleFolderClick}
-          onFolderClick={selectedTab === '폴더' ? handleFolderClick : undefined}
-          currentFolderId={currentFolderId}
+          moveItem={handleFolderClick} // handleFolderClick을 전달
+          onFolderClick={selectedTab === '폴더' ? handleFolderClick : undefined} // onFolderClick을 전달
         />
-
         <PaginationContainer>
           {selectedTab === '폴더' ? (
             <Pagination
