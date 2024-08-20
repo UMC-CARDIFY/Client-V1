@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 
 const SwitchContainer = styled.label`
   position: relative;
   display: inline-block;
   width: 2.75rem;
   height: 1.5rem;
-
+  margin: 0 2.25rem 0 0.5rem;
   input {
     display: none;
   }
@@ -60,6 +61,10 @@ const Switch = ({ onChange }) => {
       <span className="slider"></span>
     </SwitchContainer>
   );
+};
+
+Switch.propTypes = {
+  onChange: PropTypes.func,
 };
 
 export default Switch;
