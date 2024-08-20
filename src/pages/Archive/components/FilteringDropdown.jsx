@@ -101,6 +101,7 @@ const CloseButton = styled.img`
 const FilteringDropdown = ({ onFilterApply, type, selectedTab }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedColors, setSelectedColors] = useState([]);
+  const [filtersApplied, setFiltersApplied] = useState(false);
   const dropdownRef = useRef(null);
   const filterDivRef = useRef(null);
 
@@ -124,6 +125,7 @@ const FilteringDropdown = ({ onFilterApply, type, selectedTab }) => {
 
   useEffect(() => {
     setSelectedColors([]);
+    setFiltersApplied(false);
   }, [selectedTab]);
 
   const toggleDropdown = (event) => {
@@ -133,6 +135,8 @@ const FilteringDropdown = ({ onFilterApply, type, selectedTab }) => {
 
   const handleCircleClick = (event, color) => {
     event.stopPropagation();
+    if (filtersApplied) return; // 필터가 적용되었으면 색상 변경 불가
+
     setSelectedColors(prevSelectedColors =>
       prevSelectedColors.includes(color)
         ? prevSelectedColors.filter(c => c !== color)
@@ -143,13 +147,15 @@ const FilteringDropdown = ({ onFilterApply, type, selectedTab }) => {
   const handleApplyClick = (event) => {
     event.stopPropagation();
     setIsOpen(false);
+    setFiltersApplied(true);
     onFilterApply(selectedColors, type);
   };
 
   const handleClearColors = (event) => {
     event.stopPropagation();
     setSelectedColors([]);
-    onFilterApply([], type); // 선택된 필터 초기화
+    setFiltersApplied(false);
+    onFilterApply([], type);
   };
 
   const colorMap = {
@@ -177,7 +183,7 @@ const FilteringDropdown = ({ onFilterApply, type, selectedTab }) => {
       isOpen={isOpen} 
       hasSelectedColors={selectedColors.length > 0}
     >
-      {selectedColors.length > 0 ? (
+      {filtersApplied && selectedColors.length > 0 ? (
         <SelectedColorsContainer>
           <CloseButton src={closeIcon} alt="Clear filter" onClick={handleClearColors} />
           {visibleColors.map(colorName => (
@@ -193,7 +199,7 @@ const FilteringDropdown = ({ onFilterApply, type, selectedTab }) => {
           필터링
         </>
       )}
-      {isOpen && (
+      {isOpen && !filtersApplied && (
         <Dropdown ref={dropdownRef}>
           <div>색상</div>
           <ColorMatrix>
