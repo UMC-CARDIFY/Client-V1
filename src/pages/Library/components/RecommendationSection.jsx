@@ -3,10 +3,6 @@ import viewAllIcon from '../../../assets/viewAllIcon.svg';
 import science from '../../../assets/category/science.svg';
 import { getTopCategory } from '../../../api/library/getTopCategory';
 import { useEffect, useState } from 'react';
-<<<<<<< HEAD
-=======
-
->>>>>>> develop
 
 const RecommendationContainer = styled.div`
   margin-bottom: 2.19rem;
@@ -141,10 +137,6 @@ const RecommendationSection = ({ onViewAllClick, onCategoryClick }) => {
         <ViewAllSVG>
           <img src={viewAllIcon} alt="viewAllIcon" />
           </ViewAllSVG>
-<<<<<<< HEAD
-=======
-
->>>>>>> develop
         </ViewAllButton>
       </RecommendationTitleDiv>
 
