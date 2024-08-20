@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import modalClose from '../../../assets/modalClose.svg';
-import { download } from '../../../api/library/download';
+import { useState } from 'react';
+import FolderSelectModal from './SelectFolderModal';
 
 const ModalBackdrop = styled.div`
   position: fixed;
@@ -12,7 +13,7 @@ const ModalBackdrop = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 10;
 `;
 
 const ModalContent = styled.div`
@@ -82,15 +83,29 @@ const NoteModal = ({ show, onClose, title, content, isContainCard, libraryId }) 
   if (!show) return null;
   console.log(isContainCard);
 
+  const [isFolderSelectModal, setIsFolderSelectModal] = useState(false);
+  const [isDownloadContain, setIsDownloadContain] = useState(false);
+
+    const handleModalClose = () => {
+        setIsFolderSelectModal(false);
+    }
+
     const downloadContain = async () => {
         console.log('download');
-        //const data =  await download(libraryId, 47, 'true');
-        //console.log(data);
-        // 폴더 선택 기능 추가
+        // 폴더 선택 모달창
+        setIsFolderSelectModal(true);
+        setIsDownloadContain(true);
     }
 
     const downloadNotContain =  async () => {
         console.log('download not flash');
+        setIsFolderSelectModal(true);
+        setIsDownloadContain(false);
+    }
+
+    const gotoNoteEditor = async () => {
+        console.log('goto note editor');
+        // 내가 다운받은 노트 에디터로 이동
     }
 
   return (
@@ -115,7 +130,7 @@ const NoteModal = ({ show, onClose, title, content, isContainCard, libraryId }) 
           </>
                 ) : isContainCard === 'ContainCard' ? (
                     <>
-                <DownloadButton>
+                <DownloadButton onClick={gotoNoteEditor}>
                     노트 에디터로 이동
                 </DownloadButton>
                 </>
@@ -124,13 +139,20 @@ const NoteModal = ({ show, onClose, title, content, isContainCard, libraryId }) 
                     <DownloadButton  onClick={downloadContain}>
                     플래시카드 포함 100P
                 </DownloadButton>
-                <DownloadButton>
+                <DownloadButton onClick={gotoNoteEditor}>
                     노트 에디터로 이동
                 </DownloadButton>
                 </>
             )} 
         </DownloadDiv>
       </ModalContent>
+
+      <FolderSelectModal 
+      isOpen={isFolderSelectModal} onClose={handleModalClose}
+      libraryId={libraryId}
+      isDownloadContain={isDownloadContain}
+       />
+
     </ModalBackdrop>
   );
 };
