@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { fetchFolders } from '../../api/addNote/fetchFolders'; // API 함수 임포트
+import { fetchFolders } from '../../api/common/selectFolderModal/fetchFolders';
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -121,8 +121,8 @@ const FolderItemContainer = styled.div`
   cursor: pointer;
   border-radius: 0.25rem;
   background-color: var(--Grays-White, #FFF);
-  flex-direction: row; /* 요소들을 가로로 정렬 */
-  width: 100%; /* 전체 너비를 차지하도록 설정 */
+  flex-direction: row; 
+  width: 100%; 
   
   &:hover {
     background: var(--Grays-Gray8, #F4F4F4);
@@ -218,8 +218,8 @@ const FolderItem = ({ name, count, color, markState }) => {
 FolderItem.propTypes = {
   name: PropTypes.string.isRequired,
   count: PropTypes.number.isRequired,
-  color: PropTypes.string.isRequired, // color prop 추가
-  markState: PropTypes.string.isRequired, // markState prop 추가
+  color: PropTypes.string.isRequired, 
+  markState: PropTypes.string.isRequired, 
 };
 
 
@@ -229,8 +229,8 @@ const FolderSelectModal = ({ isOpen, onClose }) => {
   useEffect(() => {
     const loadFolders = async () => {
       try {
-        const data = await fetchFolders(); // API 호출
-        setFolders(data); // 폴더 목록 상태 업데이트
+        const data = await fetchFolders();
+        setFolders(data); 
       } catch (error) {
         console.error('폴더 목록을 가져오는 중 오류가 발생했습니다.');
       }

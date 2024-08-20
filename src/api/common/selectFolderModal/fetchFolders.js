@@ -1,12 +1,11 @@
 import axios from 'axios';
-import config from '../../api/config';
+import config from '../../config';
 
-// 폴더 목록을 조회하는 함수
 export const fetchFolders = async ( ) => {
   try {
     const response = await axios.get(`${config.apiBaseUrl}/folders`, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('accessToken')}`, // Authorization 토큰 추가
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}`, 
       },
     });
 
