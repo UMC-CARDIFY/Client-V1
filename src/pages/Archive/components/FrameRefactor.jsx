@@ -146,7 +146,7 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
         setPageCountFolder(data.totalPages || 0);
   
         if (currentFolderId) {
-          const folderNotesData = await getNoteToFolder(currentFolderId, folderNotesPage, pageSize);
+          const folderNotesData = await getNoteToFolder(currentFolderId, folderNotesPage, pageSize,order);
           setFolderNotes(folderNotesData.noteList || []);
           setFolderNotesPageCount(folderNotesData.totalPage || 0);
         }
