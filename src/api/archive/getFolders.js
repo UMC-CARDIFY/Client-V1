@@ -2,7 +2,7 @@ import axiosInstance from '..';
 
 export const getFolders = async (page = 0, size = 6) => {
   try {
-    const response = await axiosInstance.get(`/folders`, {
+    const response = await axiosInstance.get(`/folders/sort-filter`, {
       params: { page, size }
     });
     console.log(response.data);

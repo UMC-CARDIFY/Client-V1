@@ -4,7 +4,6 @@ import note from '../../../assets/note.svg';
 import userIcon from '../../../assets/userIcon.svg';
 import { getNote } from '../../../api/library/getNote';
 import  {checkDownload} from '../../../api/library/checkDownload';
-import { getFolders } from '../../../api/library/download';
 import NoteModal from './NoteModal';
 
 const NoteItemContainer = styled.div`
@@ -99,11 +98,8 @@ const NoteItem = ({ noteName, categoryName, cntCard, userName, uploadAt, noteId,
     setShowModal(true);
 
     const download = await checkDownload(libraryId);
-    console.log(download.isDownload);
+    console.log(download);
     setIsContainCard(download.isDownload);
-
-    const folders = await getFolders();
-    console.log(folders);
   };
 
   return (
@@ -147,7 +143,7 @@ const NoteItem = ({ noteName, categoryName, cntCard, userName, uploadAt, noteId,
         content={noteContent}
         isContainCard={isContainCard}
         libraryId={libraryId}
-        forderId={noteId}
+        folderId={noteId}
       />
     </>
   );
