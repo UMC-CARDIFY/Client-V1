@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import Circle from './Circle'; 
 import filterIcon from '../../../assets/filterIcon.svg';
+import closeIcon from '../../../assets/closeIcon.svg'; // X 버튼 아이콘
 
 const FilteringDiv = styled.div`
   display: flex;
@@ -11,7 +12,7 @@ const FilteringDiv = styled.div`
   align-items: center;
   gap: 0.3125rem;
   border-radius: 0.3125rem;
-  background: ${({ isOpen }) => (isOpen ? '#DCE8FF' : '#ECEFF4')};
+  background: ${({ isOpen, hasSelectedColors }) => (isOpen || hasSelectedColors ? '#DCE8FF' : '#ECEFF4')};
   color: var(--Grays-Black, #1A1A1A);
   font-family: Pretendard;
   font-size: 0.875rem;
@@ -20,7 +21,7 @@ const FilteringDiv = styled.div`
   line-height: normal;
 
   &:hover {
-    background: ${({ isOpen }) => (isOpen ? '#DCE8FF' : '#E3EAF6')};
+    background: ${({ isOpen, hasSelectedColors }) => (isOpen || hasSelectedColors ? '#DCE8FF' : '#E3EAF6')};
   }
 
   &:active {
@@ -72,6 +73,31 @@ const Button = styled.button`
   cursor: pointer;
 `;
 
+const SelectedColorsContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+`;
+
+const SelectedColorCircle = styled.div`
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: ${({ color }) => color};
+`;
+
+const ExtraColors = styled.span`
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--Grays-Black, #1A1A1A);
+`;
+
+const CloseButton = styled.img`
+  width: 12px;
+  height: 12px;
+  cursor: pointer;
+`;
+
 const FilteringDropdown = ({ onFilterApply, type, selectedTab }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedColors, setSelectedColors] = useState([]);
@@ -120,6 +146,12 @@ const FilteringDropdown = ({ onFilterApply, type, selectedTab }) => {
     onFilterApply(selectedColors, type);
   };
 
+  const handleClearColors = (event) => {
+    event.stopPropagation();
+    setSelectedColors([]);
+    onFilterApply([], type); // 선택된 필터 초기화
+  };
+
   const colorMap = {
     blue: '#6698F5',
     ocean: '#5AA6C7',
@@ -134,11 +166,33 @@ const FilteringDropdown = ({ onFilterApply, type, selectedTab }) => {
   };
 
   const colorNames = Object.keys(colorMap);
+  const maxVisibleColors = 3;
+  const visibleColors = selectedColors.slice(0, maxVisibleColors);
+  const extraColorCount = selectedColors.length - maxVisibleColors;
 
   return (
-    <FilteringDiv onClick={toggleDropdown} ref={filterDivRef} isOpen={isOpen}>
-      <img src={filterIcon} alt="필터 아이콘" />
-      필터링
+    <FilteringDiv 
+      onClick={toggleDropdown} 
+      ref={filterDivRef} 
+      isOpen={isOpen} 
+      hasSelectedColors={selectedColors.length > 0}
+    >
+      {selectedColors.length > 0 ? (
+        <SelectedColorsContainer>
+          <CloseButton src={closeIcon} alt="Clear filter" onClick={handleClearColors} />
+          {visibleColors.map(colorName => (
+            <SelectedColorCircle key={colorName} color={colorMap[colorName]} />
+          ))}
+          {extraColorCount > 0 && (
+            <ExtraColors>+{extraColorCount}</ExtraColors>
+          )}
+        </SelectedColorsContainer>
+      ) : (
+        <>
+          <img src={filterIcon} alt="필터 아이콘" />
+          필터링
+        </>
+      )}
       {isOpen && (
         <Dropdown ref={dropdownRef}>
           <div>색상</div>
