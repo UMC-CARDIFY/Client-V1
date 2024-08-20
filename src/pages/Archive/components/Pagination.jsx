@@ -27,7 +27,6 @@ const PaginationContainer = styled.div`
       align-items: center;
       flex-shrink: 0;
       cursor: pointer;
-      padding: 10px;
       text-decoration: none;
       color: var(--Grays-Gray3, #B1B1B1);
       font-family: Pretendard;
@@ -38,8 +37,9 @@ const PaginationContainer = styled.div`
     }
 
     &.active .page-link {
-      background: #EAEAEA;
-      color: var(--Grays-Black, #1A1A1A);
+      border-radius: 0.25rem;
+      background: var(--Main-PrimaryLight4, #E7EFFF);
+      color: #0F62FE;
     }
   }
 `;
