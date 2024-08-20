@@ -1,11 +1,7 @@
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
 import {
-  getFolders,
-  getFolderSort,
-  getNotes,
-  getNoteSort,
+  getFolderFilterSort,
   deleteFolder,
   deleteNote,
   markFolder,
@@ -13,8 +9,7 @@ import {
   addFolder,
   editFolder,
   getNoteToFolder,
-  getFilteringFolder,
-  getFilteringNote
+  getNoteFilterSort
 } from '../../../api/archive';
 
 import FolderModal from './FolderModal';
@@ -131,8 +126,6 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
   const [folderFilterColors, setFolderFilterColors] = useState([]);
   const [noteFilterColors, setNoteFilterColors] = useState([]);
 
-  const navigate = useNavigate();
-
   const getPageSize = () => window.innerWidth < 1440 ? 5 : 6;
 
   const fetchData = async () => {
@@ -144,32 +137,24 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
       let data;
   
       if (selectedTab === '폴더') {
-        if (folderFilterColors.length > 0) {
-          const colorQuery = folderFilterColors.join(',');
-          data = await getFilteringFolder(colorQuery, currentPageFolder, pageSize);
-        } else {
-          data = sortOption
-            ? await getFolderSort(sortOption, currentPageFolder, pageSize)
-            : await getFolders(currentPageFolder, pageSize);
-        }
+        // 폴더 관련 데이터 가져오기
+        const colorQuery = folderFilterColors.length > 0 ? folderFilterColors.join(',') : '';
+        const order = sortOption || '';
+        data = await getFolderFilterSort(colorQuery, order, currentPageFolder, pageSize);
   
         setFolders(data.foldersList || []);
         setPageCountFolder(data.totalPages || 0);
   
         if (currentFolderId) {
-          const folderNotesData = await getNoteToFolder(currentFolderId, folderNotesPage, pageSize);
+          const folderNotesData = await getNoteToFolder(currentFolderId, folderNotesPage, pageSize,order);
           setFolderNotes(folderNotesData.noteList || []);
           setFolderNotesPageCount(folderNotesData.totalPage || 0);
         }
       } else if (selectedTab === '노트') {
-        if (noteFilterColors.length > 0) {
-          const colorQuery = noteFilterColors.join(',');
-          data = await getFilteringNote(colorQuery, currentPageNote, pageSize);
-        } else {
-          data = sortOption
-            ? await getNoteSort(sortOption, currentPageNote, pageSize)
-            : await getNotes(currentPageNote, pageSize);
-        }
+        // 노트 관련 데이터 가져오기
+        const colorQuery = noteFilterColors.length > 0 ? noteFilterColors.join(',') : '';
+        const order = sortOption || '';
+        data = await getNoteFilterSort(colorQuery, order, currentPageNote, pageSize);
   
         setNotes(data.noteList || []);
         setPageCountNote(data.totalPage || 0);
@@ -181,6 +166,7 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
       setLoading(false);
     }
   };
+  
   
   useEffect(() => {
     fetchData();
@@ -199,11 +185,15 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
     return folder ? folder.folderName : '폴더';
   };
 
-  const title = currentFolderId
+  const title = selectedTab === '폴더'
+  ? currentFolderId
     ? getCurrentFolderName(currentFolderId)
-    : selectedTab === '폴더'
-    ? '모든 폴더'
-    : '모든 노트';
+    : '모든 폴더'
+  : selectedTab === '노트'
+  ? '모든 노트'
+  : ' ';
+
+
 
   const handlePageChange = (selectedItem) => {
     if (selectedTab === '폴더') {
