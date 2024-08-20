@@ -88,6 +88,7 @@ const SortDropdown = ({ onSortOptionClick, selectedTab }) => {
 
   const handleSortOptionClick = (option) => {
     const optionWithTab = `${selectedTab};${option}`;
+    console.log(optionWithTab)
     setSelectedOption(option); 
     if (onSortOptionClick) {
       onSortOptionClick(optionWithTab); 
@@ -117,7 +118,7 @@ const SortDropdown = ({ onSortOptionClick, selectedTab }) => {
     event.stopPropagation();
     setSelectedOption(null); // 상태를 초기 상태로 변경
     if (onSortOptionClick) {
-      onSortOptionClick(`${selectedTab};initial`); // 초기 상태로 API 호출
+      onSortOptionClick(`${selectedTab};edit-newest`); // 초기 상태로 API 호출
     }
     setIsOpen(false);
   };
