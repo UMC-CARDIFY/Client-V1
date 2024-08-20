@@ -2,8 +2,6 @@ import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import {
   getFolderFilterSort,
-  getNotes,
-  getNoteSort,
   deleteFolder,
   deleteNote,
   markFolder,
@@ -11,8 +9,7 @@ import {
   addFolder,
   editFolder,
   getNoteToFolder,
-  // getFilteringFolder,
-  getFilteringNote
+  getNoteFilterSort
 } from '../../../api/archive';
 
 import FolderModal from './FolderModal';
@@ -140,12 +137,10 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
       let data;
   
       if (selectedTab === '폴더') {
-        if (selectedTab === '폴더') {
-          const colorQuery = folderFilterColors.length > 0 ? folderFilterColors.join(',') : '';
-          const order = sortOption || '';
-          data = await getFolderFilterSort(colorQuery, order, currentPageFolder, pageSize);
-        } 
-        
+        // 폴더 관련 데이터 가져오기
+        const colorQuery = folderFilterColors.length > 0 ? folderFilterColors.join(',') : '';
+        const order = sortOption || '';
+        data = await getFolderFilterSort(colorQuery, order, currentPageFolder, pageSize);
   
         setFolders(data.foldersList || []);
         setPageCountFolder(data.totalPages || 0);
@@ -156,14 +151,10 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
           setFolderNotesPageCount(folderNotesData.totalPage || 0);
         }
       } else if (selectedTab === '노트') {
-        if (noteFilterColors.length > 0) {
-          const colorQuery = noteFilterColors.join(',');
-          data = await getFilteringNote(colorQuery, currentPageNote, pageSize);
-        } else {
-          data = sortOption
-            ? await getNoteSort(sortOption, currentPageNote, pageSize)
-            : await getNotes(currentPageNote, pageSize);
-        }
+        // 노트 관련 데이터 가져오기
+        const colorQuery = noteFilterColors.length > 0 ? noteFilterColors.join(',') : '';
+        const order = sortOption || '';
+        data = await getNoteFilterSort(colorQuery, order, currentPageNote, pageSize);
   
         setNotes(data.noteList || []);
         setPageCountNote(data.totalPage || 0);
@@ -175,6 +166,7 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
       setLoading(false);
     }
   };
+  
   
   useEffect(() => {
     fetchData();
