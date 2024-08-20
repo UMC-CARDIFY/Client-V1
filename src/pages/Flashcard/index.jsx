@@ -144,6 +144,7 @@ export const Flashcard = () => {
                   studyStatus={card.studyStatus}
                   recentStudyDate={card.recentStudyDate}
                   studyCardSetId={card.studyCardSetId}
+                  markStatus={card.markStatus}
                  />
               )
               )) : (

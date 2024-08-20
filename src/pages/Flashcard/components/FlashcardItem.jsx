@@ -7,6 +7,7 @@ import studycommon from '../../../assets/flashcard/studycommon.svg';
 import studymore from '../../../assets/flashcard/studymore.svg';
 import statistics from '../../../assets/flashcard/statistics.svg';
 import moreoptions from '../../../assets/flashcard/moreoptions.svg';
+import star from '../../../assets/flashcard/star.svg';
 import CommonStudyModal from './CommonStudyModal';
 import AnalysisStudyModal from './AnalysisStudyModal';
 import { colorMap } from './colorMap';
@@ -59,12 +60,13 @@ const CardIconDiv = styled.div`
 
 const CardTitle = styled.div`
   color: var(--Grays-Black, #1A1A1A);
-  text-align: center;
   font-family: Pretendard;
   font-size: 1.25rem;
   font-weight: 600;
   margin-bottom: 0.25rem;
+  text-align: center;
 `;
+
 
 const CardSubtitle = styled.div`
   color: var(--Grays-Black, #1A1A1A);
@@ -149,10 +151,17 @@ const Button = styled.button`
   font-weight: 500;
 `;
 
-const StatusBadge = styled.div`
+
+const StatusDiv = styled.div`
   position: absolute;
   top: 2rem;
   left: 2.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  `;
+
+const StatusBadge = styled.div`
   display: inline-flex;
   padding: 0.375rem 1rem;
   align-items: center;
@@ -163,6 +172,10 @@ const StatusBadge = styled.div`
   font-family: Pretendard;
   font-size: 0.75rem;
   font-weight: 500;
+`;
+
+const StarIconWrapper = styled.div`
+width: 2rem;
 `;
 
 const MoreOptions = styled.div`
@@ -193,7 +206,7 @@ const DeleteButton = styled.div`
   font-weight: 500;
 `;
 
-const FlashcardItem = ({ noteName, folderName, recentStudyDate, nextStudyDate, studyStatus, color, studyCardSetId }) => {
+const FlashcardItem = ({ noteName, folderName, recentStudyDate, nextStudyDate, studyStatus, color, studyCardSetId, markStatus }) => {
 
   const [showDeleteButton, setShowDeleteButton] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -247,7 +260,14 @@ const FlashcardItem = ({ noteName, folderName, recentStudyDate, nextStudyDate, s
       
       {/* 실제 콘텐츠를 담고 있는 카드 */}
       <ForegroundCard>
+      <StatusDiv>
         <StatusBadge status={studyStatus}>{studyStatus}</StatusBadge>
+        {markStatus === "ACTIVE" && (
+    <StarIconWrapper>
+      <img src={star} alt="star" />
+    </StarIconWrapper>
+  )}
+  </StatusDiv>
         <MoreOptions onClick={toggleDeleteButton}>
           <img src={moreoptions} alt="더보기" />
         </MoreOptions>
@@ -259,7 +279,7 @@ const FlashcardItem = ({ noteName, folderName, recentStudyDate, nextStudyDate, s
           <CardIconDiv>
             <CardIcon color={colorMap[color]} />
           </CardIconDiv>
-          <CardTitle>{noteName}</CardTitle>
+    <CardTitle>{noteName}</CardTitle>
           <CardSubtitle>{folderName}</CardSubtitle>
           <Line />
         </CardHeader>
