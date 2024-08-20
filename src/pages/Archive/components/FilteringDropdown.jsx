@@ -64,7 +64,7 @@ const Button = styled.button`
   cursor: pointer;
 `;
 
-const FilteringDropdown = ({ onFilterApply, type }) => {
+const FilteringDropdown = ({ onFilterApply, type, selectedTab }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedColors, setSelectedColors] = useState([]);
   const dropdownRef = useRef(null);
@@ -87,6 +87,11 @@ const FilteringDropdown = ({ onFilterApply, type }) => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
+  useEffect(() => {
+    // 탭이 변경될 때 selectedColors를 초기화
+    setSelectedColors([]);
+  }, [selectedTab]);
 
   const toggleDropdown = (event) => {
     event.stopPropagation();
@@ -121,7 +126,6 @@ const FilteringDropdown = ({ onFilterApply, type }) => {
     rose: '#ED83B1',
   };
 
-  // 색상 이름만으로 배열을 구성합니다.
   const colorNames = Object.keys(colorMap);
 
   return (

@@ -127,7 +127,7 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
   const [folderNotes, setFolderNotes] = useState([]);
   const [currentFolderId, setCurrentFolderId] = useState(null);
 
-  // 폴더와 노트 각각의 필터링 상태
+  // 필터링 상태를 폴더와 노트 각각 따로 저장
   const [folderFilterColors, setFolderFilterColors] = useState([]);
   const [noteFilterColors, setNoteFilterColors] = useState([]);
 
@@ -186,9 +186,14 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
   }, [selectedTab, currentPageFolder, currentPageNote, sortOption, currentFolderId, folderFilterColors, noteFilterColors]);
 
   useEffect(() => {
-    console.log('현재 폴더 ID:', currentFolderId);
-    console.log('폴더의 노트:', folderNotes);
-  }, [folderNotes, currentFolderId, selectedTab]);
+    if (selectedTab === '폴더') {
+      // 폴더 탭으로 변경되면 필터링 상태 유지
+      setNoteFilterColors([]); // 노트 필터링 상태 초기화
+    } else if (selectedTab === '노트') {
+      // 노트 탭으로 변경되면 필터링 상태 유지
+      setFolderFilterColors([]); // 폴더 필터링 상태 초기화
+    }
+  }, [selectedTab]);
 
   const getCurrentFolderName = (folderId) => {
     const folder = folderNotes.find(note => note.folderId === folderId);
@@ -283,8 +288,6 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
     }
   };
 
-
-  
   const getItemsToShow = () => {
     if (selectedTab === '폴더') {
       return currentFolderId ? folderNotes : folders;
@@ -293,11 +296,6 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
     }
     return [];
   };
-
-  // const handleFolderClick = (folderId) => {
-  //   setCurrentFolderId(folderId);
-  //   setSelectedTab('노트');
-  // };
 
   const handleFilterApply = (colors) => {
     if (selectedTab === '폴더') {
@@ -322,14 +320,12 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
     }
   };
 
-
   const initialData = selectedItem
     ? {
         folderName: selectedItem.folderName || '',
         selectedColor: selectedItem.selectedColor || '',
       }
     : {};
-
 
   return (
     <FrameContainer>
@@ -340,7 +336,10 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
             onSortOptionClick={handleSortOptionClick} 
             selectedTab={selectedTab} 
           />
-          <FilteringDropdown onFilterApply={handleFilterApply} />
+          <FilteringDropdown 
+            onFilterApply={handleFilterApply} 
+            selectedTab={selectedTab} // 추가: 현재 탭을 FilteringDropdown에 전달
+          />
           {selectedTab !== '노트' && (
             <AddButton
               selectedTab={selectedTab}
