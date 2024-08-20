@@ -184,7 +184,7 @@ const NoteCount = styled.span`
 `;
 
 const colorMap = {
-  blue1: '#6698F5',
+  blue: '#6698F5',
   ocean: '#5AA6C7',
   lavedar: '#949AEC',
   gray: '#A9A9A9',

@@ -3,7 +3,7 @@ import config from '../../config';
 
 export const fetchFolders = async ( ) => {
   try {
-    const response = await axios.get(`${config.apiBaseUrl}/folders`, {
+    const response = await axios.get(`${config.apiBaseUrl}/folders/sort-filter`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('accessToken')}`, 
       },
