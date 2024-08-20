@@ -1,10 +1,12 @@
 import axiosInstance from '..';
 
-export const getNoteToFolder = async (folderId,  size) => {
+export const getNoteToFolder = async (folderId,  page,size, order) => {
     try {
         const response = await axiosInstance.post('/notes/getNoteToFolder', {
             folderId,
-            size
+            page,
+            size,
+            order
         });
         console.log(folderId,  size)
         console.log(response.data);

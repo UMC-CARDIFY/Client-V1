@@ -1,10 +1,12 @@
 import axiosInstance from '..'; 
 
-export const getFilteringFolder = async (color) => {
+export const getFolderFilterSort = async (color, order, page, size) => {
   try {
-    // 쿼리 파라미터를 객체 형태로 전달
-    const response = await axiosInstance.get('folders/filter', {
+    const response = await axiosInstance.get('folders/sort-filter', {
         params:{
+            size: size,
+            page: page,
+            order: order,
             color:color
         }
     });
@@ -15,4 +17,4 @@ export const getFilteringFolder = async (color) => {
   }
 };
 
-export default getFilteringFolder;
+export default getFolderFilterSort;
