@@ -232,8 +232,11 @@ const FlashcardItem = ({ noteName, folderName, recentStudyDate, nextStudyDate, s
   const closeAnalysisStudyModal = () => {
     setShowAnalysisStudyModal(false);  // Close the analysis study modal
   };
+  const formatRecentStudyDate = new Date(new Date(recentStudyDate).getTime() + 18 * 60 * 60 * 1000)
+  .toISOString()
+  .replace('T', ' ')
+  .slice(0, 16);
 
-  const formatRecentStudyDate = new Date(recentStudyDate).toISOString().replace('T', ' ').slice(0, 16);
   const formatNextStudyDate = new Date(nextStudyDate).toISOString().split('T', ' ').slice(0, 16);
 
   return (

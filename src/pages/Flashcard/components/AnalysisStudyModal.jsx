@@ -336,6 +336,8 @@ const AnalysisStudyModal = ({ onClose, studyCardSetId, noteName, folderName, col
           onClose={handleStatisticsClose}
           studyCardSetId={studyCardSetId}
           color={color}
+            noteName={noteName}
+            folderName={folderName}
         />
       )}
       </>

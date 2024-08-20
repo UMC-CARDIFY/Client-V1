@@ -5,7 +5,8 @@ import down from '../../../assets/flashcard/down.svg';
 import right from '../../../assets/flashcard/right.svg';
 import graphStudy from '../../../api/flashcard/graphStudy';
 import { colorMap } from './colorMap';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import logStudy from '../../../api/flashcard/logStudy';
 
 const ModalBackdrop = styled.div`
   position: fixed;
@@ -24,47 +25,46 @@ const ModalTitle = styled.div`
   margin-top: 4.03rem;
   margin-bottom: 0.44rem;
   color: var(--Grays-Black, #1A1A1A);
-font-family: Pretendard;
-font-size: 1.5rem;
-font-style: normal;
-font-weight: 700;
-line-height: normal;
+  font-family: Pretendard;
+  font-size: 1.5rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
 `;
 
 const FolderIconContainer = styled.div`
   margin-bottom: 1rem;
-    display: flex;  
-    gap: 0.5rem;
+  display: flex;
+  gap: 0.5rem;
 `;
 
 const FolderText = styled.div`
-color: var(--Grays-Gray2, #767676);
-font-family: Pretendard;
-font-size: 1.125rem;
-font-style: normal;
-font-weight: 600;
-line-height: normal;
+  color: var(--Grays-Gray2, #767676);
+  font-family: Pretendard;
+  font-size: 1.125rem;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
 `;
 
 const ModalContent = styled.div`
   width: 47.5rem;
-height: 22.5rem;
-flex-shrink: 0;
-border-radius: 0.75rem;
-background: var(--Grays-White, #FFF);
+  height: auto;
+  flex-shrink: 0;
+  border-radius: 0.75rem;
+  background: var(--Grays-White, #FFF);
   padding: 3rem;
   text-align: center;
   margin-top: 3.09rem;
   display: flex;
   flex-direction: column;
   gap: 2.5rem;
-
   color: var(--Grays-Gray1, #646464);
-font-family: Pretendard;
-font-size: 0.875rem;
-font-style: normal;
-font-weight: 500;
-line-height: normal;
+  font-family: Pretendard;
+  font-size: 0.875rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
 `;
 
 const StatisticsItem = styled.div`
@@ -93,27 +93,27 @@ const Count = styled.div`
 `;
 
 const ButtonContainer = styled.div`
-width: 47.5rem;
+  width: 47.5rem;
   display: flex;
   gap: 1rem;
   margin-top: 1.5rem;
 `;
 
 const ActionButton = styled.div`
-display: flex;
-width: 23.25rem;
-padding: 1rem 6.8125rem 1rem 8.625rem;
-align-items: center;
-gap: 0.5rem;
-border-radius: 0.75rem;
-background: var(--Grays-White, #FFF);
-
-color: var(--Grays-Black, #1A1A1A);
-font-family: Pretendard;
-font-size: 0.9375rem;
-font-style: normal;
-font-weight: 600;
-line-height: normal;
+  display: flex;
+  width: 23.25rem;
+  padding: 1rem 6.8125rem 1rem 8.625rem;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 0.75rem;
+  background: var(--Grays-White, #FFF);
+  color: var(--Grays-Black, #1A1A1A);
+  font-family: Pretendard;
+  font-size: 0.9375rem;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  cursor: pointer;
 `;
 
 const CloseButton = styled.div`
@@ -129,73 +129,131 @@ const CloseButton = styled.div`
 `;
 
 const IconDiv = styled.div`
-width: 2rem;
-height: 2rem;
-flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  flex-shrink: 0;
 `;
 
-const StatisticsModal = ({ onClose, studyCardSetId, color }) => {
+const LogContainer = styled.div`
+  width: 47.5rem;
+  background: var(--Grays-White, #FFF);
+  padding: 1rem;
+  border-radius: 0.75rem;
+  margin-top: 1rem;
+  max-height: 20rem;
+  overflow-y: auto;
+`;
 
-    // 통계 api 연결
-    useEffect(() => {
-        const fetchGraphStudy = async () => {
-            try {
-                const response = await graphStudy(studyCardSetId);
-                console.log(response);
-            } catch (error) {
-                console.error(error);
-            }
-        }
-        fetchGraphStudy();
-    }, [studyCardSetId]);
+const LogItem = styled.div`
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--Grays-Gray1, #646464);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--Grays-Black, #1A1A1A);
+
+  &:last-child {
+    border-bottom: none;
+  }
+`;
+
+const StatisticsModal = ({ onClose, studyCardSetId, color, folderName, noteName }) => {
+  const [data, setData] = useState();
+  const [log, setLog] = useState();
+  const [logVisible, setLogVisible] = useState(false);
+
+  useEffect(() => {
+    const fetchGraphStudy = async () => {
+      try {
+        const response = await graphStudy(studyCardSetId);
+        console.log(response);
+        setData(response);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchGraphStudy();
+  }, [studyCardSetId]);
+
+  const viewLog = async () => {
+    const data = await logStudy(studyCardSetId, 0);
+    console.log(data.content);
+    setLog(data.content);
+    setLogVisible((prev) => !prev);
+  };
 
   return (
     <ModalBackdrop>
-        <CloseButton onClick={onClose}>
-            <img src={closeCard} alt="close" />
-        </CloseButton>
-        <ModalTitle>1차시 단어</ModalTitle>
-        <FolderIconContainer>
-          <FolderIcon color={colorMap[color]} />
-          <FolderText>폴더 name</FolderText>
-        </FolderIconContainer>
+      <CloseButton onClick={onClose}>
+        <img src={closeCard} alt="close" />
+      </CloseButton>
+      <ModalTitle>{noteName}</ModalTitle>
+      <FolderIconContainer>
+        <FolderIcon color={colorMap[color]} />
+        <FolderText>{folderName}</FolderText>
+      </FolderIconContainer>
       <ModalContent>
-        <StatisticsItem>
-          <DifficultyLabel>어려움</DifficultyLabel>
-          <BarContainer color="#FFE1E1"></BarContainer>
-          <Count>0개 100%</Count>
-        </StatisticsItem>
-        <StatisticsItem>
-          <DifficultyLabel>알맞음</DifficultyLabel>
-          <BarContainer color="#CEEFE3"></BarContainer>
-          <Count>10개 1%</Count>
-        </StatisticsItem>
-        <StatisticsItem>
-          <DifficultyLabel>쉬움</DifficultyLabel>
-          <BarContainer color="#CDDEFF"></BarContainer>
-          <Count>1개 20%</Count>
-        </StatisticsItem>
-        <StatisticsItem>
-          <DifficultyLabel>패스</DifficultyLabel>
-          <BarContainer color="#F2DEF9"></BarContainer>
-          <Count>10개 44%</Count>
-        </StatisticsItem>
+        {data && (
+          <>
+            <StatisticsItem>
+              <DifficultyLabel>어려움</DifficultyLabel>
+              <BarContainer color="#FFE1E1"></BarContainer>
+              <Count>{data.hardCardsNumber}개 {data.hardCardsPercent}%</Count>
+            </StatisticsItem>
+            <StatisticsItem>
+              <DifficultyLabel>알맞음</DifficultyLabel>
+              <BarContainer color="#CEEFE3"></BarContainer>
+              <Count>{data.normalCardsNumber}개 {data.normalCardsPercent}%</Count>
+            </StatisticsItem>
+            <StatisticsItem>
+              <DifficultyLabel>쉬움</DifficultyLabel>
+              <BarContainer color="#CDDEFF"></BarContainer>
+              <Count>{data.easyCardsNumber}개 {data.easyCardsPercent}%</Count>
+            </StatisticsItem>
+            <StatisticsItem>
+              <DifficultyLabel>패스</DifficultyLabel>
+              <BarContainer color="#F2DEF9"></BarContainer>
+              <Count>{data.passCardsNumber}개 {data.passCardsPercent}%</Count>
+            </StatisticsItem>
+          </>
+        )}
       </ModalContent>
 
       <ButtonContainer>
-          <ActionButton variant="primary" onClick={onClose}>학습 기록 보기
-                <IconDiv>
-                    <img src={down} alt
-                    ="down" />
-                </IconDiv>
-          </ActionButton>
-          <ActionButton onClick={onClose}>학습하러 가기
-                <IconDiv>
-                    <img src={right} alt
-                    ="right" />
-                </IconDiv>
-          </ActionButton>
-        </ButtonContainer>
+        <ActionButton variant="primary" onClick={viewLog}>
+          학습 기록 보기
+          <IconDiv>
+            <img src={down} alt="down" />
+          </IconDiv>
+        </ActionButton>
+        <ActionButton onClick={onClose}>
+          학습하러 가기
+          <IconDiv>
+            <img src={right} alt="right" />
+          </IconDiv>
+        </ActionButton>
+      </ButtonContainer>
+
+      {logVisible && log && (
+        <LogContainer>
+          {log.map((item, index) => (
+            <LogItem key={index}>
+                <div>
+                    {item.studyDate}
+                </div>
+                <div>
+                    학습일
+                </div>
+                
+                <div>
+                    {item.cardNumber}
+                </div>
+                <div>
+                학습한 카드 개수
+                </div>
+            </LogItem>
+          ))}
+        </LogContainer>
+      )}
     </ModalBackdrop>
   );
 };
