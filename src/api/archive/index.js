@@ -10,3 +10,5 @@ export { default as markFolder } from './markFolder';
 export { default as markNote } from './markNote';
 export { default as getNoteSort } from './getNoteSort';
 export { default as addNote } from './addNote';
+export { default as getFilteringFolder } from './getFilteringFolder';
+export { default as getFilteringNote } from './getFilteringNote';

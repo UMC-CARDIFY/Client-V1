@@ -13,7 +13,8 @@ import {
   addFolder,
   editFolder,
   getNoteToFolder,
-  getFilteringFolder
+  getFilteringFolder,
+  getFilteringNote  // 필터링된 노트를 가져오는 API 호출
 } from '../../../api/archive';
 
 import FolderModal from './FolderModal';
@@ -156,9 +157,14 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
           setFolderNotes(folderNotesData.noteList || []);
         }
       } else if (selectedTab === '노트') {
-        data = sortOption
-          ? await getNoteSort(sortOption, currentPageNote, pageSize)
-          : await getNotes(currentPageNote, pageSize);
+        if (filterColors.length > 0) {
+          const colorQuery = filterColors.join(',');
+          data = await getFilteringNote(colorQuery);
+        } else {
+          data = sortOption
+            ? await getNoteSort(sortOption, currentPageNote, pageSize)
+            : await getNotes(currentPageNote, pageSize);
+        }
 
         setNotes(data.noteList || []);
         setPageCountNote(data.totalPage || 0);

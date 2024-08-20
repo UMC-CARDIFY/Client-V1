@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import Circle from './Circle'; 
 import filterIcon from '../../../assets/filterIcon.svg';
 
-const FiteringDiv = styled.div`
+const FilteringDiv = styled.div`
   display: flex;
   cursor: pointer;
   position: relative;
@@ -64,7 +64,7 @@ const Button = styled.button`
   cursor: pointer;
 `;
 
-const FilteringDropdown = ({ onFilterApply }) => {
+const FilteringDropdown = ({ onFilterApply, type }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedColors, setSelectedColors] = useState([]);
   const dropdownRef = useRef(null);
@@ -105,7 +105,7 @@ const FilteringDropdown = ({ onFilterApply }) => {
   const handleApplyClick = (event) => {
     event.stopPropagation();
     setIsOpen(false);
-    onFilterApply(selectedColors);
+    onFilterApply(selectedColors, type);
   };
 
   const colorMap = {
@@ -125,7 +125,7 @@ const FilteringDropdown = ({ onFilterApply }) => {
   const colorNames = Object.keys(colorMap);
 
   return (
-    <FiteringDiv onClick={toggleDropdown} ref={filterDivRef}>
+    <FilteringDiv onClick={toggleDropdown} ref={filterDivRef}>
       <img src={filterIcon} alt="필터 아이콘" />
       필터링
       {isOpen && (
@@ -145,7 +145,7 @@ const FilteringDropdown = ({ onFilterApply }) => {
           <Button onClick={handleApplyClick}>적용하기</Button>
         </Dropdown>
       )}
-    </FiteringDiv>
+    </FilteringDiv>
   );
 };
 
