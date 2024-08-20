@@ -109,7 +109,6 @@ const getColorNameByCode = (colorCode) => {
 };
 
 const Frame = ({ selectedTab, setSelectedTab }) => {
-  // 상태 변수 정의
   const [folders, setFolders] = useState([]);
   const [notes, setNotes] = useState([]);
   const [currentPageFolder, setCurrentPageFolder] = useState(0);
@@ -129,8 +128,6 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
   const [folderNotesPage, setFolderNotesPage] = useState(0);
   const [folderNotesPageCount, setFolderNotesPageCount] = useState(0);
 
-
-  // 필터링 상태를 폴더와 노트 각각 따로 저장
   const [folderFilterColors, setFolderFilterColors] = useState([]);
   const [noteFilterColors, setNoteFilterColors] = useState([]);
 
@@ -160,10 +157,9 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
         setPageCountFolder(data.totalPages || 0);
   
         if (currentFolderId) {
-          const folderNotesData = await getNoteToFolder(currentFolderId, pageSize);
+          const folderNotesData = await getNoteToFolder(currentFolderId, folderNotesPage, pageSize);
           setFolderNotes(folderNotesData.noteList || []);
           setFolderNotesPageCount(folderNotesData.totalPage || 0);
-          console.log('folderNotesPage;',folderNotesPage)
         }
       } else if (selectedTab === '노트') {
         if (noteFilterColors.length > 0) {
@@ -186,19 +182,15 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
     }
   };
   
-  
-
   useEffect(() => {
     fetchData();
-  }, [selectedTab, currentPageFolder, currentPageNote, sortOption, currentFolderId, folderFilterColors, noteFilterColors]);
+  }, [selectedTab, currentPageFolder, currentPageNote, sortOption, currentFolderId, folderNotesPage, folderFilterColors, noteFilterColors]);
 
   useEffect(() => {
     if (selectedTab === '폴더') {
-      // 폴더 탭으로 변경되면 필터링 상태 유지
-      setNoteFilterColors([]); // 노트 필터링 상태 초기화
+      setNoteFilterColors([]);
     } else if (selectedTab === '노트') {
-      // 노트 탭으로 변경되면 필터링 상태 유지
-      setFolderFilterColors([]); // 폴더 필터링 상태 초기화
+      setFolderFilterColors([]);
     }
   }, [selectedTab]);
 
@@ -217,18 +209,13 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
     if (selectedTab === '폴더') {
       if (currentFolderId) {
         setFolderNotesPage(selectedItem.selected);
-        console.log('ddd',folderNotesPage)
-      }
-      else
+      } else {
         setCurrentPageFolder(selectedItem.selected);
-      } else if (selectedTab === '노트') {
+      }
+    } else if (selectedTab === '노트') {
       setCurrentPageNote(selectedItem.selected);
     }
   };
-
-  // const handleFolderNotesPageChange = (selectedItem) => {
-  //   setFolderNotesPage(selectedItem.selected);
-  // };
 
   const handleSortOptionClick = (option) => {
     if (option) {
@@ -322,15 +309,14 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
   };
 
   const handleFolderClick = async (folderId) => {
-    console.log('handleFolderClick 호출됨, 폴더 ID:', folderId);
     try {
       if (folderId === undefined) {
         throw new Error('폴더 ID가 undefined입니다.');
       }
       setCurrentFolderId(folderId);
-      const data = await getNoteToFolder(folderId);
+      const data = await getNoteToFolder(folderId, folderNotesPage, getPageSize());
       setFolderNotes(data.noteList || []);
-      console.log('폴더의 노트 결과:', data.noteList);
+      setFolderNotesPageCount(data.totalPage || 0);
     } catch (error) {
       console.error('폴더의 노트를 가져오는 데 실패했습니다:', error);
     }
@@ -343,8 +329,6 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
       }
     : {};
 
-    
-
   return (
     <FrameContainer>
       <Header>
@@ -356,7 +340,7 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
           />
           <FilteringDropdown 
             onFilterApply={handleFilterApply} 
-            selectedTab={selectedTab} // 추가: 현재 탭을 FilteringDropdown에 전달
+            selectedTab={selectedTab}
           />
           {selectedTab !== '노트' && (
             <AddButton
@@ -386,30 +370,29 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
           currentFolderId={currentFolderId}
         />
 
-<PaginationContainer>
-        {selectedTab === '폴더' ? (
-          <>
-          {!currentFolderId &&
+        <PaginationContainer>
+          {selectedTab === '폴더' ? (
+            <>
+              {!currentFolderId && (
+                <Pagination
+                  pageCount={pageCountFolder}
+                  handlePageChange={handlePageChange}
+                />
+              )}
+              {currentFolderId && (
+                <Pagination
+                  pageCount={folderNotesPageCount}
+                  handlePageChange={handlePageChange}
+                />
+              )}
+            </>
+          ) : (
             <Pagination
-              pageCount={pageCountFolder}
+              pageCount={pageCountNote}
               handlePageChange={handlePageChange}
             />
-          }
-
-            {currentFolderId && (
-              <Pagination
-                pageCount={folderNotesPageCount}
-                handlePageChange={handlePageChange}
-              />
-            )}
-          </>
-        ) : (
-          <Pagination
-            pageCount={pageCountNote}
-            handlePageChange={handlePageChange}
-          />
-        )}
-      </PaginationContainer>
+          )}
+        </PaginationContainer>
       </Content>
       {showAddModal && (
         <FolderModal
