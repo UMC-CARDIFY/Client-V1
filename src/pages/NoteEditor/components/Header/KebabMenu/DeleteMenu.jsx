@@ -5,10 +5,8 @@ import { NoteContext } from '../../../../../api/NoteContext';
 import { ModalOverlay, ModalContent, Title, Description, ButtonGroup, Button } from '../../../../../components/Modal/style/DeleteModalStyles';
 import  deleteIcon from '../../../../../../src/assets/deleteicon.svg';
 
-//const DeleteMenu = ({ noteId, onClose }) => {
   const DeleteMenu = ({ onClose }) => {
-  const { noteData, setNoteData } = useContext(NoteContext);
-  //console.log('삭제 노트 id: ', noteId);
+  const { noteData } = useContext(NoteContext);
 
   const handleDelete = async () => {
     const token = localStorage.getItem('accessToken');
@@ -18,9 +16,9 @@ import  deleteIcon from '../../../../../../src/assets/deleteicon.svg';
     }
 
     try {
-       //const response = await deleteNote(noteId, token);
         const response = await deleteNote(noteData.noteId, token);
         console.log('삭제노트 id: ', noteData.noteId);
+
         if (response.isSuccess) {
           alert('노트가 성공적으로 삭제되었습니다.');
           onClose();
@@ -40,7 +38,7 @@ import  deleteIcon from '../../../../../../src/assets/deleteicon.svg';
           <img src={deleteIcon} alt="deleteIcon" style={{ marginRight: '0.75rem' }} />
           노트 삭제
         </Title>
-        <Description>‘노트 이름’을 삭제하시겠습니까? </Description>
+        <Description>‘{noteData.noteName}’을 삭제하시겠습니까? </Description>
         <Description> 이 노트 안의 플래시카드도 함께 삭제됩니다.</Description>
         <ButtonGroup>
             <Button onClick={onClose}>취소</Button>
@@ -52,7 +50,6 @@ import  deleteIcon from '../../../../../../src/assets/deleteicon.svg';
 };
 
 DeleteMenu.propTypes = {
-  //noteId: PropTypes.number.isRequired,
   onClose: PropTypes.func.isRequired,
 };
 
