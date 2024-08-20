@@ -1,33 +1,59 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import CardIcon from './CardIcon';
 import DeleteModal from './DeleteModal';
 import styled from 'styled-components';
+import studycommon from '../../../assets/flashcard/studycommon.svg';
+import studymore from '../../../assets/flashcard/studymore.svg';
+import statistics from '../../../assets/flashcard/statistics.svg';
+import moreoptions from '../../../assets/flashcard/moreoptions.svg';
+import CommonStudyModal from './CommonStudyModal';
+import AnalysisStudyModal from './AnalysisStudyModal';
+import { colorMap } from './colorMap';
 
-const CardContainer = styled.div`
+// 겹쳐진 카드들을 감싸는 컨테이너
+const CardStackContainer = styled.div`
   position: relative;
   width: 29rem;
   height: 17.25rem;
-  flex-shrink: 0;
-  border-radius: 0.5rem;
-  box-shadow: 0px 4px 26px 0px rgba(0, 0, 0, 0.02), 0px 10px 60px 0px rgba(0, 74, 162, 0.03);
-  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+// 각각의 카드 레이어
+const CardLayer = styled.div`
+  position: absolute;
+  width: ${({ width }) => width};
+  height: ${({ height }) => height};
+  border-radius: 0.75rem;
+  background: var(--Grays-White, #FFF);
+  box-shadow: 0 4px 26px rgba(0, 0, 0, 0.02), 0 10px 60px rgba(0, 74, 162, 0.03);
+  opacity: ${({ opacity }) => opacity};
+  transform: ${({ translate }) => translate};
+`;
+
+// 메인 콘텐츠를 담고 있는 카드
+const ForegroundCard = styled.div`
+  position: relative;
+  width: 29rem;
+  height: 16rem;
+  border-radius: 0.75rem;
+  background: var(--Grays-White, #FFF);
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  padding: 2rem 1.5rem 2.5rem 2.5rem;
+  padding: 2.5rem 1.5rem 2.5rem 2.5rem;
   box-sizing: border-box;
 `;
 
 const CardHeader = styled.div`
   display: flex;
   flex-direction: column;
-  margin-bottom: 1.25rem;
+  align-items: center;
 `;
 
 const CardIconDiv = styled.div`
-  align-self: center;
   margin-bottom: 0.5rem;
 `;
 
@@ -46,25 +72,40 @@ const CardSubtitle = styled.div`
   font-family: Pretendard;
   font-size: 0.75rem;
   font-weight: 400;
+  margin-bottom: 1.19rem;
+`;
+
+const Line = styled.div`
+  width: 23rem;
+  height: 0.0625rem;
+  background: #E8E8E8;
+  align-self: center;
+  margin-bottom: 1rem;
+  z-index: 1;
 `;
 
 const DayDiv = styled.div`
   display: inline-flex;
   align-items: center;
   gap: 3rem;
-  margin: 0 0 1.25rem;
+  color: var(--Grays-Gray1, #646464);
+  text-align: center;
+  font-family: Pretendard;
+  font-size: 0.875rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
 `;
 
 const Day = styled.div`
   display: flex;
-  width: 5rem;
+  width: 7.5rem;
   flex-direction: column;
   align-items: center;
   gap: 0.125rem;
 `;
 
-const Date = styled.div`
-  color: var(--Grays-Black, #1A1A1A);
+const DateDay = styled.div`
   text-align: center;
   font-family: Pretendard;
   font-size: 0.875rem;
@@ -86,6 +127,12 @@ const CardFooter = styled.div`
   gap: 0.5rem;
 `;
 
+const ButtonContainer = styled.div`
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+`;
+
 const Button = styled.button`
   display: flex;
   padding: 0.5rem 1rem;
@@ -102,22 +149,6 @@ const Button = styled.button`
   font-weight: 500;
 `;
 
-const Line = styled.div`
-  width: 23rem;
-  height: 0.0625rem;
-  background: #E8E8E8;
-  align-self: center;
-`;
-
-const MoreOptions = styled.div`
-  width: 1.75rem;
-  height: 1.75rem;
-  cursor: pointer;
-  position: absolute;
-  top: 2.25rem;
-  right: 1.5rem;
-`;
-
 const StatusBadge = styled.div`
   position: absolute;
   top: 2rem;
@@ -132,6 +163,15 @@ const StatusBadge = styled.div`
   font-family: Pretendard;
   font-size: 0.75rem;
   font-weight: 500;
+`;
+
+const MoreOptions = styled.div`
+  width: 1.75rem;
+  height: 1.75rem;
+  cursor: pointer;
+  position: absolute;
+  top: 1.5rem;
+  right: 1.25rem;
 `;
 
 const DeleteButton = styled.div`
@@ -153,9 +193,12 @@ const DeleteButton = styled.div`
   font-weight: 500;
 `;
 
-const FlashcardItem = ({ note, folder, recentDate, nextDate, status, color }) => {
+const FlashcardItem = ({ noteName, folderName, recentStudyDate, nextStudyDate, studyStatus, color, studyCardSetId }) => {
+
   const [showDeleteButton, setShowDeleteButton] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [showCommonStudyModal, setShowCommonStudyModal] = useState(false); 
+  const [showAnalysisStudyModal, setShowAnalysisStudyModal] = useState(false);
 
   const toggleDeleteButton = () => {
     setShowDeleteButton((prev) => !prev);
@@ -174,54 +217,111 @@ const FlashcardItem = ({ note, folder, recentDate, nextDate, status, color }) =>
     setShowModal(false);
   };
 
+  const handleCommonStudyClick = () => {
+    setShowCommonStudyModal(true);  // Show the general study modal
+  };
+
+  const closeCommonStudyModal = () => {
+    setShowCommonStudyModal(false);  // Close the general study modal
+  };
+
+  const handleAnalysisStudyClick = () => {
+    setShowAnalysisStudyModal(true);  // Show the analysis study modal
+  };
+
+  const closeAnalysisStudyModal = () => {
+    setShowAnalysisStudyModal(false);  // Close the analysis study modal
+  };
+  const formatRecentStudyDate = new Date(new Date(recentStudyDate).getTime() + 18 * 60 * 60 * 1000)
+  .toISOString()
+  .replace('T', ' ')
+  .slice(0, 16);
+
+  const formatNextStudyDate = new Date(nextStudyDate).toISOString().split('T', ' ').slice(0, 16);
+
   return (
-    <CardContainer>
-      <CardHeader>
-        <CardIconDiv>
-          <CardIcon color={color} />
-        </CardIconDiv>
-        <CardTitle>{note}</CardTitle>
-        <CardSubtitle>{folder}</CardSubtitle>
-      </CardHeader>
-      <Line />
-      <DayDiv>
-        <Day>
-          <Date>{recentDate}</Date>
-          <DateText>최근 학습일</DateText>
-        </Day>
-        <Day>
-          <Date>{nextDate}</Date>
-          <DateText>다음 학습일</DateText>
-        </Day>
-      </DayDiv>
-      <CardFooter>
-        <Button>일반학습</Button>
-        <Button>분석학습</Button>
-        <Button>학습통계</Button>
-      </CardFooter>
+    <CardStackContainer>
+      {/* 겹쳐진 카드 레이어들 */}
+      <CardLayer width="27.875rem" height="15.375rem" opacity="0.3" translate="translateY(1.5rem)" />
+      <CardLayer width="28.5rem" height="15.75rem" opacity="0.7" translate="translateY(0.75rem)" />
+      
+      {/* 실제 콘텐츠를 담고 있는 카드 */}
+      <ForegroundCard>
+        <StatusBadge status={studyStatus}>{studyStatus}</StatusBadge>
+        <MoreOptions onClick={toggleDeleteButton}>
+          <img src={moreoptions} alt="더보기" />
+        </MoreOptions>
+        <DeleteButton show={showDeleteButton} onClick={handleDelete}>
+          카드 삭제
+        </DeleteButton>
 
-      <StatusBadge status={status}>{status}</StatusBadge>
+        <CardHeader>
+          <CardIconDiv>
+            <CardIcon color={colorMap[color]} />
+          </CardIconDiv>
+          <CardTitle>{noteName}</CardTitle>
+          <CardSubtitle>{folderName}</CardSubtitle>
+          <Line />
+        </CardHeader>
+        <DayDiv>
+          <Day>
+            {recentStudyDate ? <DateDay>{formatRecentStudyDate}</DateDay> : <DateDay>-</DateDay>}
+            <DateText>최근 학습일</DateText>
+          </Day>
+          <Day>
+            {nextStudyDate ? <DateDay>{formatNextStudyDate}</DateDay> : <DateDay>-</DateDay>}
+            <DateText>다음 학습일</DateText>
+          </Day>
+        </DayDiv>
+        <CardFooter>
+          <ButtonContainer>
+          <Button onClick={handleCommonStudyClick}>
+            <img src={studycommon} alt="일반학습" />
+          일반학습</Button>
+            <Button onClick={handleAnalysisStudyClick}>
+              <img src={studymore} alt="분석학습" />
+              분석학습</Button>
+          <Button>
+            <img src={statistics} alt="학습통계" />
+              학습통계
+          </Button>
+          </ButtonContainer>
+        </CardFooter>
+      </ForegroundCard>
 
-      <MoreOptions onClick={toggleDeleteButton}>
-        {/* More Options SVG */}
-      </MoreOptions>
-
-      <DeleteButton show={showDeleteButton} onClick={handleDelete}>
-        카드 삭제
-      </DeleteButton>
-
+      {/* 삭제 모달 */}
       {showModal && <DeleteModal onClose={cancelDelete} onConfirm={confirmDelete} />}
-    </CardContainer>
+
+      {/* 일반학습 모달 */}
+          {showCommonStudyModal && (
+        <CommonStudyModal onClose={closeCommonStudyModal}
+        studyCardSetId= {studyCardSetId}
+        noteName={noteName}
+        color={color}
+        folderName={folderName}
+         />
+      )}
+
+      {/* 분석학습 모달 */}
+      {showAnalysisStudyModal && (
+        <AnalysisStudyModal onClose={closeAnalysisStudyModal}
+        studyCardSetId= {studyCardSetId}
+        noteName={noteName}
+        color={color}
+        folderName={folderName}
+         />
+      )}
+
+    </CardStackContainer>
   );
 };
 
-// PropTypes for Type Checking
 FlashcardItem.propTypes = {
-  note: PropTypes.string.isRequired,
-  folder: PropTypes.string.isRequired,
-  recentDate: PropTypes.string.isRequired,
-  nextDate: PropTypes.string.isRequired,
-  status: PropTypes.oneOf(['학습 중', '학습 전', '영구 보관']).isRequired,
+  noteName: PropTypes.string.isRequired,
+  folderName: PropTypes.string.isRequired,
+  recentStudyDate: PropTypes.string.isRequired,
+  nextStudyDate: PropTypes.string.isRequired,
+  studyStatus: PropTypes.oneOf(['학습 중', '학습 전', '영구 보관']).isRequired,
   color: PropTypes.string.isRequired,
 };
 
