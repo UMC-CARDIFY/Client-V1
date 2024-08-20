@@ -12,7 +12,9 @@ import {
   markNote,
   addFolder,
   editFolder,
-  getNoteToFolder // 함수 가져오기
+  getNoteToFolder,
+  getFilteringFolder,
+  getFilteringNote
 } from '../../../api/archive';
 
 import FolderModal from './FolderModal';
@@ -41,7 +43,7 @@ const FrameContainer = styled.div`
   }
 
   @media (max-width: 1440px) {
-    max-width: 48rem;
+    max-width: 60rem;
   }
 `;
 
@@ -103,10 +105,11 @@ const colorMap = {
 
 const getColorNameByCode = (colorCode) => {
   const colorEntry = Object.entries(colorMap).find(([key, code]) => code === colorCode);
-  return colorEntry ? colorEntry[0] : 'defaultColorName'; // 색상 이름 반환
+  return colorEntry ? colorEntry[0] : 'defaultColorName';
 };
 
 const Frame = ({ selectedTab, setSelectedTab }) => {
+  // 상태 변수 정의
   const [folders, setFolders] = useState([]);
   const [notes, setNotes] = useState([]);
   const [currentPageFolder, setCurrentPageFolder] = useState(0);
@@ -121,8 +124,12 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [modalType, setModalType] = useState('');
-  const [folderNotes, setFolderNotes] = useState([]); // 폴더의 노트를 저장할 상태
-  const [currentFolderId, setCurrentFolderId] = useState(null); // 현재 폴더 ID 상태 관리
+  const [folderNotes, setFolderNotes] = useState([]);
+  const [currentFolderId, setCurrentFolderId] = useState(null);
+
+  // 폴더와 노트 각각의 필터링 상태
+  const [folderFilterColors, setFolderFilterColors] = useState([]);
+  const [noteFilterColors, setNoteFilterColors] = useState([]);
 
   const navigate = useNavigate();
 
@@ -137,22 +144,31 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
       let data;
 
       if (selectedTab === '폴더') {
-        data = sortOption
-          ? await getFolderSort(sortOption, currentPageFolder, pageSize)
-          : await getFolders(currentPageFolder, pageSize);
+        if (folderFilterColors.length > 0) {
+          const colorQuery = folderFilterColors.join(',');
+          data = await getFilteringFolder(colorQuery);
+        } else {
+          data = sortOption
+            ? await getFolderSort(sortOption, currentPageFolder, pageSize)
+            : await getFolders(currentPageFolder, pageSize);
+        }
 
         setFolders(data.foldersList || []);
         setPageCountFolder(data.totalPages || 0);
 
-        // 폴더 ID가 존재하면 해당 폴더의 노트를 가져옵니다.
         if (currentFolderId) {
           const folderNotesData = await getNoteToFolder(currentFolderId);
           setFolderNotes(folderNotesData.noteList || []);
         }
       } else if (selectedTab === '노트') {
-        data = sortOption
-          ? await getNoteSort(sortOption, currentPageNote, pageSize)
-          : await getNotes(currentPageNote, pageSize);
+        if (noteFilterColors.length > 0) {
+          const colorQuery = noteFilterColors.join(',');
+          data = await getFilteringNote(colorQuery);
+        } else {
+          data = sortOption
+            ? await getNoteSort(sortOption, currentPageNote, pageSize)
+            : await getNotes(currentPageNote, pageSize);
+        }
 
         setNotes(data.noteList || []);
         setPageCountNote(data.totalPage || 0);
@@ -167,12 +183,23 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
 
   useEffect(() => {
     fetchData();
-  }, [selectedTab, currentPageFolder, currentPageNote, sortOption, currentFolderId]);
+  }, [selectedTab, currentPageFolder, currentPageNote, sortOption, currentFolderId, folderFilterColors, noteFilterColors]);
 
   useEffect(() => {
     console.log('현재 폴더 ID:', currentFolderId);
     console.log('폴더의 노트:', folderNotes);
   }, [folderNotes, currentFolderId, selectedTab]);
+
+  const getCurrentFolderName = (folderId) => {
+    const folder = folderNotes.find(note => note.folderId === folderId);
+    return folder ? folder.folderName : '폴더';
+  };
+
+  const title = currentFolderId
+    ? getCurrentFolderName(currentFolderId)
+    : selectedTab === '폴더'
+    ? '모든 폴더'
+    : '모든 노트';
 
   const handlePageChange = (selectedItem) => {
     if (selectedTab === '폴더') {
@@ -210,14 +237,22 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
     setActiveMoreDiv(activeMoreDiv === index ? null : index);
   };
 
-  const handleMarkStatus = (folder) => {
-    markFolder(folder.folderId, folder.markState === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE')
-      .then(() => fetchData());
+  const handleMarkStatus = async (folder) => {
+    try {
+      await markFolder(folder.folderId, folder.markState === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE');
+      fetchData();
+    } catch (error) {
+      console.error('폴더 즐겨찾기 상태 변경에 실패했습니다:', error);
+    }
   };
 
-  const handleMarkNoteStatus = (note) => {
-    markNote(note.noteId, note.markState === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE')
-      .then(() => fetchData());
+  const handleMarkNoteStatus = async (note) => {
+    try {
+      await markNote(note.noteId, note.markState === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE');
+      fetchData();
+    } catch (error) {
+      console.error('노트 즐겨찾기 상태 변경에 실패했습니다:', error);
+    }
   };
 
   const closeModal = () => {
@@ -240,11 +275,35 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
           selectedColor: colorName,
         });
       }
- 
-      fetchData(); // 폴더 목록 새로고침
-      setShowAddModal(false);
+
+      fetchData();
+      closeModal();
     } catch (error) {
       console.error('폴더 추가/수정에 실패했습니다:', error);
+    }
+  };
+
+
+  
+  const getItemsToShow = () => {
+    if (selectedTab === '폴더') {
+      return currentFolderId ? folderNotes : folders;
+    } else if (selectedTab === '노트') {
+      return notes;
+    }
+    return [];
+  };
+
+  // const handleFolderClick = (folderId) => {
+  //   setCurrentFolderId(folderId);
+  //   setSelectedTab('노트');
+  // };
+
+  const handleFilterApply = (colors) => {
+    if (selectedTab === '폴더') {
+      setFolderFilterColors(colors);
+    } else if (selectedTab === '노트') {
+      setNoteFilterColors(colors);
     }
   };
 
@@ -263,14 +322,6 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
     }
   };
 
-  const getItemsToShow = () => {
-    if (selectedTab === '폴더') {
-      return currentFolderId ? folderNotes : folders;
-    } else if (selectedTab === '노트') {
-      return notes;
-    }
-    return [];
-  };
 
   const initialData = selectedItem
     ? {
@@ -279,23 +330,27 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
       }
     : {};
 
+
   return (
     <FrameContainer>
       <Header>
-        <h3>{selectedTab === '폴더' ? '모든 폴더' : '모든 노트'}</h3>
+        <h3>{title}</h3>
         <ButtonContainer>
           <SortDropdown 
             onSortOptionClick={handleSortOptionClick} 
             selectedTab={selectedTab} 
           />
-          <FilteringDropdown />
-          <AddButton
-            selectedTab={selectedTab}
-            setSelectedItem={setSelectedItem}
-            setShowAddModal={setShowAddModal}
-            setModalType={setModalType}
-            addFolderIcon={addFolderIcon}
-          />
+          <FilteringDropdown onFilterApply={handleFilterApply} />
+          {selectedTab !== '노트' && (
+            <AddButton
+              selectedTab={selectedTab}
+              setSelectedItem={setSelectedItem}
+              setShowAddModal={setShowAddModal}
+              setModalType={setModalType}
+              addFolderIcon={addFolderIcon}
+              currentFolderId={currentFolderId}
+            />
+          )}
         </ButtonContainer>
         <Line />
       </Header>
@@ -309,9 +364,11 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
           handleDelete={handleDelete}
           handleMoreClick={handleMoreClick}
           activeMoreDiv={activeMoreDiv}
-          moveItem={handleFolderClick} // handleFolderClick을 전달
-          onFolderClick={selectedTab === '폴더' ? handleFolderClick : undefined} // onFolderClick을 전달
+          moveItem={handleFolderClick}
+          onFolderClick={selectedTab === '폴더' ? handleFolderClick : undefined}
+          currentFolderId={currentFolderId}
         />
+
         <PaginationContainer>
           {selectedTab === '폴더' ? (
             <Pagination
