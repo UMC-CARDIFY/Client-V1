@@ -222,16 +222,38 @@ FolderItem.propTypes = {
   markState: PropTypes.string.isRequired, 
 };
 
+const decomposeHangul = (text) => {
+  const initialConsonants = [
+    'ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'
+  ];
+  const medialVowels = [
+    'ㅏ', 'ㅐ', 'ㅑ', 'ㅒ', 'ㅓ', 'ㅔ', 'ㅕ', 'ㅖ', 'ㅗ', 'ㅘ', 'ㅙ', 'ㅚ', 'ㅛ', 'ㅜ', 'ㅝ', 'ㅞ', 'ㅟ', 'ㅠ', 'ㅡ', 'ㅢ', 'ㅣ'
+  ];
+  const finalConsonants = [
+    '', 'ㄱ', 'ㄲ', 'ㄳ', 'ㄴ', 'ㄵ', 'ㄶ', 'ㄷ', 'ㄹ', 'ㄺ', 'ㄻ', 'ㄼ', 'ㄽ', 'ㄾ', 'ㄿ', 'ㅀ', 'ㅁ', 'ㅂ', 'ㅄ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'
+  ];
+  
+  return text.split('').map((char) => {
+    const code = char.charCodeAt(0) - 44032;
+    if (code >= 0 && code <= 11171) {
+      const initial = initialConsonants[Math.floor(code / 588)];
+      const medial = medialVowels[Math.floor((code % 588) / 28)];
+      const final = finalConsonants[code % 28];
+      return initial + medial + final;
+    }
+    return char;
+  }).join('');
+};
 
 const FolderSelectModal = ({ isOpen, onClose }) => {
   const [folders, setFolders] = useState([]);
-  const [searchTerm, setSearchTerm] = useState(''); 
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     const loadFolders = async () => {
       try {
         const data = await fetchFolders();
-        setFolders(data); 
+        setFolders(data);
       } catch (error) {
         console.error('폴더 목록을 가져오는 중 오류가 발생했습니다.');
       }
@@ -242,9 +264,12 @@ const FolderSelectModal = ({ isOpen, onClose }) => {
     }
   }, [isOpen]);
 
-  const filteredFolders = folders.filter((folder) =>
-    folder.name.toLowerCase().includes(searchTerm.toLowerCase()) 
-  );
+  const filteredFolders = folders.filter((folder) => {
+    const decomposedFolderName = decomposeHangul(folder.name);
+    const decomposedSearchTerm = decomposeHangul(searchTerm);
+
+    return decomposedFolderName.includes(decomposedSearchTerm);
+  });
 
   if (!isOpen) return null;
 
