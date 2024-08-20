@@ -1,5 +1,7 @@
+import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { fetchFolders } from '../../api/addNote/fetchFolders'; // API 함수 임포트
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -69,7 +71,7 @@ const SearchContainer = styled.div`
   flex-shrink: 0;
   border-bottom: 1px solid var(--grays-gray-5-divider, #E8E8E8);
   margin-top: 1.5rem;
-  margin: 1.5rem auto;
+  margin-bottom: 0.5rem;
 `;
 
 const SearchIcon = styled.div`
@@ -100,8 +102,145 @@ const SearchInput = styled.input`
   }
 `;
 
+const FolderListContainer = styled.div`
+  display: flex;
+  width: 48rem;
+  height: 26.3125rem;
+  padding: var(--UI-Component-None, 0rem) 0.5rem;
+  flex-direction: column;
+  align-items: flex-start;
+  flex-shrink: 0;
+  overflow-y: auto; /* 내용이 많을 경우 스크롤 허용 */
+  margin: 0 auto; /* 좌우 기준 중앙 정렬 */
+`;
+
+const FolderItemContainer = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0;
+  cursor: pointer;
+  border-radius: 0.25rem;
+  background-color: var(--Grays-White, #FFF);
+  flex-direction: row; /* 요소들을 가로로 정렬 */
+  width: 100%; /* 전체 너비를 차지하도록 설정 */
+  
+  &:hover {
+    background: var(--Grays-Gray8, #F4F4F4);
+  }
+`;
+
+const FavoriteIcon = styled.div`
+  display: flex;
+  align-items: flex-start;
+  align-self: stretch;
+  border-radius: 0.25rem;
+  background: transparent;
+  width: 2rem;
+  height: 2rem;
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+`;
+
+const FolderIcon = styled.div`
+  width: 1.5rem;
+  height: 1.5rem;
+  flex-shrink: 0;
+  margin-right: var(--font-size-md, 1rem);
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+`;
+
+const FolderName = styled.p`
+  margin: 0;
+  font-family: Pretendard;
+  font-size: 0.875rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  color: var(--Grays-Black, #1A1A1A);
+`;
+
+const NoteCount = styled.span`
+  margin-left: 0.2rem;
+  color: var(--Grays-Gray3, #B1B1B1);
+  font-family: Pretendard;
+  font-size: 0.875rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+`;
+
+const colorMap = {
+  blue1: '#6698F5',
+  ocean: '#5AA6C7',
+  lavedar: '#949AEC',
+  gray: '#A9A9A9',
+  mint: '#77CEC6',
+  sage: '#AECA99',
+  orange: '#FDB456',
+  plum: '#D49AE9',
+  coral: '#FD855F',
+  rose: '#ED83B1'
+};
+
+const FolderItem = ({ name, count, color, markState }) => {
+  const folderColor = colorMap[color] || '#A9A9A9'; 
+  const isFavorite = markState === 'ACTIVE';
+
+  return (
+    <FolderItemContainer>
+      <FavoriteIcon>
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill={isFavorite ? "#FFD338" : "transparent"} stroke={isFavorite ? "none" : "#B1B1B1"}>
+          <path d="M15.9998 20.2527L12.4225 22.1332C12.2024 22.2489 11.9452 22.062 11.9873 21.8169L12.6705 17.8333L9.77531 15.0123C9.5972 14.8388 9.69544 14.5363 9.94153 14.5006L13.9412 13.9193L15.7308 10.2943C15.8409 10.0714 16.1588 10.0714 16.2688 10.2943L18.0578 13.9193L22.0576 14.5006C22.3036 14.5363 22.4019 14.8387 22.2238 15.0123L19.3292 17.8333L20.013 21.8169C20.0551 22.0619 19.7979 22.2489 19.5777 22.1332L15.9998 20.2527Z" />
+        </svg>
+      </FavoriteIcon>
+      <FolderIcon>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill={folderColor}>
+          <path d="M4.8 19.2C4.305 19.2 3.8814 19.0239 3.5292 18.6717C3.177 18.3195 3.0006 17.8956 3 17.4V6.6C3 6.105 3.1764 5.6814 3.5292 5.3292C3.882 4.977 4.3056 4.8006 4.8 4.8H10.2L12 6.6H19.2C19.695 6.6 20.1189 6.7764 20.4717 7.1292C20.8245 7.482 21.0006 7.9056 21 8.4V17.4C21 17.895 20.8239 18.3189 20.4717 18.6717C20.1195 19.0245 19.6956 19.2006 19.2 19.2H4.8Z" />
+        </svg>
+      </FolderIcon>
+      <FolderName>
+        {name} <NoteCount>({count})</NoteCount>
+      </FolderName>
+    </FolderItemContainer>
+  );
+};
+
+FolderItem.propTypes = {
+  name: PropTypes.string.isRequired,
+  count: PropTypes.number.isRequired,
+  color: PropTypes.string.isRequired, // color prop 추가
+  markState: PropTypes.string.isRequired, // markState prop 추가
+};
+
 
 const FolderSelectModal = ({ isOpen, onClose }) => {
+  const [folders, setFolders] = useState([]);
+
+  useEffect(() => {
+    const loadFolders = async () => {
+      try {
+        const data = await fetchFolders(); // API 호출
+        setFolders(data); // 폴더 목록 상태 업데이트
+      } catch (error) {
+        console.error('폴더 목록을 가져오는 중 오류가 발생했습니다.');
+      }
+    };
+
+    if (isOpen) {
+      loadFolders();
+    }
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   return (
@@ -121,6 +260,17 @@ const FolderSelectModal = ({ isOpen, onClose }) => {
           </SearchIcon>
           <SearchInput placeholder="폴더명을 검색하세요." />
         </SearchContainer>
+        <FolderListContainer>
+          {folders.map((folder) => (
+            <FolderItem
+              key={folder.folderId}
+              name={folder.name}
+              count={folder.getNoteCount}
+              color={folder.color}
+              markState={folder.markState} 
+            />
+          ))}
+        </FolderListContainer>
       </ModalContainer>
     </ModalOverlay>
   );
