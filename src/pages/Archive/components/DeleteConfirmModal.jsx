@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import DeleteIcon from '../../../assets/deleteIcon.svg';
+import PropTypes from 'prop-types';
 
 const ModalBackground = styled.div`
   position: fixed;
@@ -90,7 +91,7 @@ const DeleteConfirmModal = ({ isOpen, onClose, onConfirm, type, itemName }) => {
     <ModalBackground aria-modal="true">
       <ModalContainer>
         <ModalTitleDiv>
-          <img src={DeleteIcon} alt="Delete Icon" /> {/* alt 추가 */}
+          <img src={DeleteIcon} alt="Delete Icon" /> 
           <ModalTitle>
             {type === 'folder' ? '폴더 삭제' : '노트 삭제'}
           </ModalTitle>
@@ -107,5 +108,14 @@ const DeleteConfirmModal = ({ isOpen, onClose, onConfirm, type, itemName }) => {
     </ModalBackground>
   );
 };
+
+DeleteConfirmModal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onConfirm: PropTypes.func.isRequired,
+  type: PropTypes.oneOf(['folder', 'note']).isRequired,
+  itemName: PropTypes.string.isRequired,
+};
+
 
 export default DeleteConfirmModal;
