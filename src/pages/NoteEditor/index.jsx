@@ -20,6 +20,7 @@ const MenuBarWrapper = styled.div.withConfig({
   width: 15rem;
   transition: transform 0.3s ease-in-out;
   transform: ${({ isCollapsed }) => (isCollapsed ? 'translateX(-15rem)' : 'translateX(0)')};
+  z-index: 1000;
 `;
 
 const ContentWrapper = styled.div.withConfig({

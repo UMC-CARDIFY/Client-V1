@@ -23,7 +23,7 @@ const HeaderWrapper = styled.header`
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  
+  z-index: 999;
   @media (max-width: 768px) {
     flex-direction: column;
     align-items: flex-start;
