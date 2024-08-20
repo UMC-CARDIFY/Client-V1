@@ -1,5 +1,9 @@
 import styled from 'styled-components';
 import viewAllIcon from '../../../assets/viewAllIcon.svg';
+import science from '../../../assets/category/science.svg';
+import { getTopCategory } from '../../../api/library/getTopCategory';
+import { useEffect, useState } from 'react';
+
 
 const RecommendationContainer = styled.div`
   margin-bottom: 2.19rem;
@@ -42,50 +46,86 @@ const ViewAllButton = styled.div`
   line-height: normal;
   display: flex;
   cursor: pointer;
-  gap: 0.63rem;
+  align-items: center;
+`;
+
+const ViewAllSVG = styled.div`
+width: 2.25rem;
+height: 2.25rem;
+flex-shrink: 0;
 `;
 
 const RecommendItems = styled.div`
   display: flex;
-  gap: 2.13rem;
+  width: 100%;
+  gap: 1.5rem;
 `;
 
 const RecommendItemContainer = styled.div`
-  min-width: 17.94313rem;
-  height: 10.4375rem;
-  flex-shrink: 0;
-  flex: 1;
-  padding: 2rem;
-  border-radius: 0.625rem;
-  background: var(--White, #FFF);
+width: 19rem;
+height: 12.25rem;
+flex-shrink: 0;
+  border-radius: 0.75rem;
+background: var(--Grays-White, #FFF);
+padding: 2.3rem 4rem 1rem 4rem;
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
-const dummyData = [
-  {
-    category: '언어',
-    noteCount: '120',
-  },
-  {
-    category: '취업 · 수험',
-    noteCount: '103',
-  },
-  {
-    category: '컴퓨터 · IT',
-    noteCount: '85',
-  }
-];
+const CategoryIcon = styled.div`
+width: 5.0625rem;
+height: 5.0625rem;
+flex-shrink: 0;
+margin-bottom: 1.5rem;
+`;
 
-const RecommendItem = ({ category, noteCount, onClick }) => {
+const CategoryName = styled.div`
+color: var(--Grays-Gray1, #646464);
+text-align: center;
+font-family: Pretendard;
+font-size: 1.125rem;
+font-style: normal;
+font-weight: 600;
+line-height: normal;
+margin-bottom: 0.5rem;
+`;
+
+const CategoryCnt = styled.div`
+color: var(--Grays-Gray1, #646464);
+text-align: center;
+font-family: Pretendard;
+font-size: 0.75rem;
+font-style: normal;
+font-weight: 500;
+line-height: normal;
+`;
+
+const RecommendItem = ({ categoryName, cntNote, onClick }) => {
   return (
-    <RecommendItemContainer onClick={() => onClick(category)}>
-      <p>{category}</p>
-      <p>노트 {noteCount}개</p>
+    <RecommendItemContainer onClick={() => onClick(categoryName)}>
+      <CategoryIcon>
+        <img src={science} alt="science" />
+      </CategoryIcon>
+      <CategoryName>{categoryName}</CategoryName>
+      <CategoryCnt>{cntNote}개의 노트</CategoryCnt>
     </RecommendItemContainer>
   );
 };
 
 const RecommendationSection = ({ onViewAllClick, onCategoryClick }) => {
+  const [topCategory, setTopCategory] = useState([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await getTopCategory();
+      setTopCategory(data);
+    };
+    fetchData();
+  }, []);
+  
+  console.log(topCategory);
+
   return (
     <RecommendationContainer>
       <RecommendationTitleDiv>
@@ -95,19 +135,22 @@ const RecommendationSection = ({ onViewAllClick, onCategoryClick }) => {
         </RecommendationSubTitle>
         <ViewAllButton onClick={onViewAllClick}>
           전체 보기
+        <ViewAllSVG>
           <img src={viewAllIcon} alt="viewAllIcon" />
+          </ViewAllSVG>
+
         </ViewAllButton>
       </RecommendationTitleDiv>
 
       <RecommendItems>
-        {dummyData.map((data, index) => (
-          <RecommendItem 
-            key={index} 
-            category={data.category} 
-            noteCount={data.noteCount} 
-            onClick={onCategoryClick} // 여기서 클릭 이벤트를 처리합니다.
-          />
-        ))}
+      { topCategory.length > 0 && topCategory.map((data, index) => (
+        <RecommendItem
+          key={index}
+          categoryName={data.categoryName} 
+          cntNote={data.cntNote} 
+          onClick={onCategoryClick}
+        />
+      ))}
       </RecommendItems>
     </RecommendationContainer>
   );

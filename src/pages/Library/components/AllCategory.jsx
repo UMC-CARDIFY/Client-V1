@@ -1,8 +1,12 @@
 import styled from 'styled-components';
-import { useState } from 'react';
-import note from '../../../assets/note.svg';
-import userIcon from '../../../assets/userIcon.svg';
-import sortIcon from '../../../assets/sortIcon.svg';  // 정렬 아이콘 가져오기
+import { useState, useEffect } from 'react';
+import sortIcon from '../../../assets/sortIcon.svg';
+import backButton from '../../../assets/backButton.svg';
+import science from '../../../assets/category/science.svg';
+import { getCategory } from '../../../api/library/getCategory';
+import { getNoteToCategory } from '../../../api/library/getNoteToCategory'; // 특정 카테고리의 노트 데이터를 가져오는 API
+
+import NoteItem from './NoteItem';
 
 const CategoryItemsContainer = styled.div`
   display: flex;
@@ -17,15 +21,44 @@ const CategoryItems = styled.div`
 `;
 
 const CategoryItemContainer = styled.div`
-  min-width: 17.94313rem;
-  max-width: 17.94313rem;
-  height: 10.4375rem;
-  flex-shrink: 0;
-  flex: 1;
-  padding: 2rem;
-  border-radius: 0.625rem;
-  background: var(--White, #FFF);
+width: 16rem; /* 19rem */
+height: 12.25rem;
+flex-shrink: 0;
+  border-radius: 0.75rem;
+background: var(--Grays-White, #FFF);
+padding: 2.3rem 4rem 1rem 4rem;
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const CategoryIcon = styled.div`
+width: 5.0625rem;
+height: 5.0625rem;
+flex-shrink: 0;
+margin-bottom: 1.5rem;
+`;
+
+const CategoryName = styled.div`
+color: var(--Grays-Gray1, #646464);
+text-align: center;
+font-family: Pretendard;
+font-size: 1.125rem;
+font-style: normal;
+font-weight: 600;
+line-height: normal;
+margin-bottom: 0.5rem;
+`;
+
+const CategoryCnt = styled.div`
+color: var(--Grays-Gray1, #646464);
+text-align: center;
+font-family: Pretendard;
+font-size: 0.75rem;
+font-style: normal;
+font-weight: 500;
+line-height: normal;
 `;
 
 const NoteContainer = styled.div`
@@ -34,111 +67,37 @@ const NoteContainer = styled.div`
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   overflow: auto;
-  height: 32.4375rem; /* 29.4375rem */
-`;
-
-const NoteItemContainer = styled.div`
-  display: grid;
-  grid-template-columns: 2rem 0.5rem 5fr 3fr 2fr 3fr 2fr;
-  align-items: center;
-  padding: 1.25rem 0 1rem 1.75rem;
-  cursor: pointer;
-
-  & > div {
-    display: flex;
-    align-items: center;
-  }
-
-  & > div:nth-child(1) {
-    width: 2rem;
-    height: 2rem;
-  }
-
-  & > div:nth-child(2) {
-    margin-left: 0.94rem;
-  }
-
-  & > div:nth-child(3) {
-    margin-left: 1.12rem;
-  }
-
-  & > div:nth-child(3),
-  & > div:nth-child(4),
-  & > div:nth-child(5),
-  & > div:nth-child(7) {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  & > div:nth-child(3) p:first-child,
-  & > div:nth-child(4) p:first-child,
-  & > div:nth-child(5) p:first-child,
-  & > div:nth-child(7) p:first-child {
-    color: #1A1A1A;
-    font-family: Inter;
-    font-size: 0.875rem;
-    font-style: normal;
-    font-weight: 600;
-    line-height: normal;
-    margin-bottom: 0.5rem;
-  }
-
-  & > div:nth-child(3) p:last-child,
-  & > div:nth-child(4) p:last-child,
-  & > div:nth-child(5) p:last-child,
-  & > div:nth-child(7) p:last-child {
-    color: #696969;
-    font-family: Inter;
-    font-size: 0.75rem;
-    font-style: normal;
-    font-weight: 500;
-    line-height: normal;
-    margin: 0;
-  }
-
-  & > div:nth-child(6) {
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  & > div:nth-child(6) img {
-  }
-
-  & > div:nth-child(6) p {
-    color: #696969;
-    font-family: Pretendard;
-    font-size: 0.75rem;
-    font-style: normal;
-    font-weight: 500;
-    line-height: normal;
-  }
-`;
-
-const Line = styled.div`
-  width: 0.0625rem;
-  height: 2.4375rem;
-  background: #E9E9E9;
+  height: 32.4375rem;
 `;
 
 const AllCategoryTitleDiv = styled.div`
   position: relative;
-  gap: 0.75rem;
+  gap: 0.5rem;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   margin-bottom: 3.81rem;
 `;
 
 const AllCategoryText = styled.div`
-  color: #1A1A1A;
-  text-align: center;
-  font-family: Inter;
-  font-size: 2.1875rem;
-  font-weight: 700;
+color: var(--Grays-Black, #1A1A1A);
+font-family: Pretendard;
+font-size: 1rem;
+font-style: normal;
+font-weight: 500;
+line-height: normal;
+cursor: pointer;
 `;
 
 const SortMenu = styled.div`
   position: relative;
+
+  color: var(--Grays-Black, #1A1A1A);
+font-family: Pretendard;
+font-size: 0.875rem;
+font-style: normal;
+font-weight: 500;
+line-height: normal;
 `;
 
 const SortHeader = styled.div`
@@ -153,26 +112,24 @@ const SortHeader = styled.div`
   padding: 0.1875rem 0.5rem 0.1875rem 0.4375rem;
   align-items: center;
   gap: 0.375rem;
-  border-radius: 0.125rem;
-  background: #FFF;
+  border-radius: 0.3125rem;
+background: var(--grays-gray-5-divider, #E8E8E8);
 `;
 
 const SortIcon = styled.img`
-  cursor: pointer;
-  margin-left: auto;
 `;
 
 const SortDropdown = styled.ul`
   position: absolute;
-  top: 100%;
+  top: -1.5rem;
   right: 0;
-  background: #FFF;
-  border: 1px solid #E9E9E9;
-  box-shadow: 0px 4px 26.7px rgba(0, 0, 0, 0.02), 0px 10px 60px rgba(0, 74, 162, 0.03);
+  border-radius: 0.5rem;
+  background: var(--Grays-White, #FFF);
+  border: 1px solid var(--grays-gray-5-divider, #E8E8E8);
+box-shadow: 0px 4px 26px 0px rgba(0, 0, 0, 0.02), 0px 10px 60px 0px rgba(0, 74, 162, 0.03);
   border-radius: 0.625rem;
-  padding: 0.5rem 0;
+  padding: 0;
   list-style: none;
-  width: 12rem;
 `;
 
 const SortDropdownItem = styled.li`
@@ -181,80 +138,66 @@ const SortDropdownItem = styled.li`
   &:hover {
     background-color: #F2F4F8;
   }
+    display: flex;
+padding: 1.0625rem 1rem;
+align-items: center;
+gap: 0.5rem;
+align-self: stretch;
+
+border-bottom: 1px solid var(--grays-gray-5-divider, #E8E8E8);
+&:last-child {
+  border-bottom: none;
+}
 `;
 
 const BackButton = styled.div`
-  position: absolute;
-  left: 0;
-  top: 0;
-  color: #1A1A1A;
+width: 2.25rem;
+height: 2.25rem;
+flex-shrink: 0;
   cursor: pointer;
 `;
 
-const categories = ['언어', '취업 · 수험', '컴퓨터 · IT', '과학', '경제 · 경영'];
-
-const notesData = {
-  '언어': [
-    { title: 'JLPT N1 단어', date: '2023-08-15', category: '언어', cardCount: '45', author: '호두' },
-    { title: 'TOPIK 고급 단어', date: '2023-08-12', category: '언어', cardCount: '39', author: '체리' },
-  ],
-  '취업 · 수험': [
-    { title: 'NCS 모의고사', date: '2023-07-21', category: '취업 · 수험', cardCount: '50', author: '사과' },
-    { title: '공무원 한국사', date: '2023-07-18', category: '취업 · 수험', cardCount: '100', author: '바나나' },
-  ],
-  '컴퓨터 · IT': [
-    { title: '컴활 필기 1급', date: '2023-07-14', category: '컴퓨터 · IT', cardCount: '30', author: '체리' },
-    { title: '정보처리기사', date: '2023-07-10', category: '컴퓨터 · IT', cardCount: '25', author: '복숭아' },
-  ],
-  '과학': [
-    { title: '물리학 기초', date: '2023-07-07', category: '과학', cardCount: '20', author: '호두' },
-    { title: '화학 기초', date: '2023-07-05', category: '과학', cardCount: '15', author: '사과' },
-  ],
-  '경제 · 경영': [],
-};
-
-const CategoryItem = ({ title, onClick }) => {
+const CategoryItem = ({ title, cntNote, onClick }) => {
   return (
     <CategoryItemContainer onClick={() => onClick(title)}>
-      <p>{title}</p>
+            <CategoryIcon>
+        <img src={science} alt="science" />
+      </CategoryIcon>
+      <CategoryName>{title}</CategoryName>
+      <CategoryCnt>{cntNote}개의 노트</CategoryCnt>
     </CategoryItemContainer>
   );
 };
 
-const NoteItem = ({ title, date, category, cardCount, author }) => {
-  return (
-    <NoteItemContainer>
-      <div>
-        <img src={note} alt="note" />
-      </div>
-      <Line />
-      <div>
-        <p>{title}</p>
-        <p>노트</p>
-      </div>
-      <div>
-        <p>{category}</p>
-        <p>카테고리</p>
-      </div>
-      <div>
-        <p>{cardCount ? `${cardCount}개` : '-'}</p>
-        <p>카드 개수</p>
-      </div>
-      <div>
-        <img src={userIcon} alt="userIcon" />
-        <p>{author}</p>
-      </div>
-      <div>
-        <p>{date}</p>
-        <p>업로드일</p>
-      </div>
-    </NoteItemContainer>
-  );
-};
-
 const AllCategory = ({ selectedCategory, onBackClick }) => {
+  const [categories, setCategories] = useState([]);
+  const [notes, setNotes] = useState([]);
   const [currentCategory, setCurrentCategory] = useState(selectedCategory || null);
   const [showSortMenu, setShowSortMenu] = useState(false);
+  const [sortOption, setSortOption] = useState('asc');
+  const [cntNote, setCntNote] = useState([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const data = await getCategory();
+      const categoryNames = data.map(item => item.categoryName);
+      const categoryCntNote = data.map(item => item.cntNote);
+      setCntNote(categoryCntNote);
+      setCategories(categoryNames);
+    };
+    fetchCategories();
+  }, []);
+
+  useEffect(() => {
+    if (currentCategory) {
+      const fetchNotes = async () => {
+        const data = await getNoteToCategory(currentCategory, sortOption);
+        setNotes(data);
+        console.log(data);
+      };
+      fetchNotes();
+    }
+  }, [currentCategory, sortOption]);
 
   const handleCategoryClick = (category) => {
     setCurrentCategory(category);
@@ -267,6 +210,17 @@ const AllCategory = ({ selectedCategory, onBackClick }) => {
   const handleSortSelection = (sortType) => {
     console.log(`Selected sort type: ${sortType}`);
     setShowSortMenu(false);
+    if(sortType === '다운로드 수 ↑') {
+      setSortOption('download');
+    } else if(sortType === '노트 이름 ↑') {
+      setSortOption('asc');
+    } else if(sortType === '노트 이름 ↓') {
+      setSortOption('desc');
+    } else if(sortType === '업로드일 - 최신 순') {
+      setSortOption('upload-newest');
+    } else if(sortType === '업로드일 - 오래된 순') {
+      setSortOption('upload-oldest');
+    }
   };
 
   return (
@@ -275,31 +229,37 @@ const AllCategory = ({ selectedCategory, onBackClick }) => {
         {currentCategory ? (
           <>
             <BackButton onClick={() => setCurrentCategory(null)}>
-              ← 뒤로 가기
+              <img src={backButton} alt="뒤로 가기" />
             </BackButton>
-            <AllCategoryText>
+            <AllCategoryText onClick={() => setCurrentCategory(null)}>
               {currentCategory}
             </AllCategoryText>
           </>
         ) : (
           <>
-            <BackButton onClick={onBackClick}>← 뒤로 가기</BackButton>
-            <AllCategoryText>전체 카테고리</AllCategoryText>
+                      <BackButton onClick={onBackClick}>
+              <img src={backButton} alt="뒤로 가기" />
+            </BackButton>
+            <AllCategoryText onClick={onBackClick}>전체 카테고리 보기</AllCategoryText>
           </>
         )}
       </AllCategoryTitleDiv>
 
       {!currentCategory ? (
+        /* 전체 카테고리 목록 */
         <CategoryItems>
-          {categories.map((category, index) => (
+          {categories.length > 0 && 
+          categories.map((category, index) => (
             <CategoryItem
               key={index}
               title={category}
+              cntNote={cntNote[index]}
               onClick={handleCategoryClick}
             />
           ))}
         </CategoryItems>
       ) : (
+        /* 특정 카테고리의 노트 목록 */
         <>
           <SortMenu>
             <SortHeader onClick={toggleSortMenu}>
@@ -307,26 +267,31 @@ const AllCategory = ({ selectedCategory, onBackClick }) => {
             </SortHeader>
             {showSortMenu && (
               <SortDropdown>
+                <SortDropdownItem onClick={() => handleSortSelection('다운로드 수 ↑')}>인기순</SortDropdownItem>
                 <SortDropdownItem onClick={() => handleSortSelection('노트 이름 ↑')}>노트 이름 ↑</SortDropdownItem>
                 <SortDropdownItem onClick={() => handleSortSelection('노트 이름 ↓')}>노트 이름 ↓</SortDropdownItem>
                 <SortDropdownItem onClick={() => handleSortSelection('업로드일 - 최신 순')}>업로드일 - 최신 순</SortDropdownItem>
                 <SortDropdownItem onClick={() => handleSortSelection('업로드일 - 오래된 순')}>업로드일 - 오래된 순</SortDropdownItem>
-                <SortDropdownItem onClick={() => handleSortSelection('다운로드 수 ↑')}>다운로드 수 ↑</SortDropdownItem>
               </SortDropdown>
             )}
           </SortMenu>
 
           <NoteContainer>
-            {notesData[currentCategory].map((note, index) => (
-              <NoteItem
+            {notes.length === 0 ? (
+              <div>해당 카테고리에 노트가 없습니다.</div>
+            ) : (
+              notes.map((note, index) => (
+                <NoteItem
                 key={index}
-                title={note.title}
-                date={note.date}
-                category={note.category}
-                cardCount={note.cardCount}
-                author={note.author}
+                noteName={note.noteName}
+                categoryName={note.categoryName}
+                cntCard={note.cntCard}
+                userName={note.userName}
+                uploadAt={note.uploadAt}
+                noteId={note.noteId} // Note ID 전달
               />
-            ))}
+              ))
+            )}
           </NoteContainer>
         </>
       )}
