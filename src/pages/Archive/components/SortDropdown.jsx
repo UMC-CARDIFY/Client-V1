@@ -11,13 +11,22 @@ const SortDiv = styled.div`
   align-items: center;
   gap: 0.375rem;
   border-radius: 0.3125rem;
-  background: var(--Main-Button, #ECEFF4);
+  background: ${({ isOpen }) => (isOpen ? '#DCE8FF' : '#ECEFF4')};
   color: var(--Grays-Black, #1A1A1A);
   font-family: Pretendard;
   font-size: 0.875rem;
   font-style: normal;
   font-weight: 500;
   line-height: normal;
+
+&:hover {
+    background: ${({ isOpen }) => (isOpen ? '#DCE8FF' : '#E3EAF6')}; 
+  }
+
+  &:active {
+    background: ##DCE8FF
+  }
+
 `;
 
 const Dropdown = styled.div`
@@ -75,7 +84,7 @@ const SortDropdown = ({ onSortOptionClick, selectedTab }) => {
   };
 
   const handleSortOptionClick = (option) => {
-    const optionWithTab = `${selectedTab};${option}`; // 선택된 탭과 옵션을 결합
+    const optionWithTab = `${selectedTab};${option}`; 
     console.log(`Selected sort option: ${optionWithTab}`);
     if (onSortOptionClick) {
       onSortOptionClick(optionWithTab); // 결합된 옵션 전달
@@ -97,7 +106,7 @@ const SortDropdown = ({ onSortOptionClick, selectedTab }) => {
   }, []);
 
   return (
-    <SortDiv onClick={toggleDropdown} ref={dropdownRef}>
+    <SortDiv onClick={toggleDropdown} ref={dropdownRef} isOpen={isOpen}>
         <img src={Sort} alt="Sort Icon"/>
         정렬
         {isOpen && (

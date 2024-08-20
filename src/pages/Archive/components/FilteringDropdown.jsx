@@ -11,13 +11,21 @@ const FilteringDiv = styled.div`
   align-items: center;
   gap: 0.3125rem;
   border-radius: 0.3125rem;
-  background: var(--Main-Button, #ECEFF4);
+  background: ${({ isOpen }) => (isOpen ? '#DCE8FF' : '#ECEFF4')};
   color: var(--Grays-Black, #1A1A1A);
   font-family: Pretendard;
   font-size: 0.875rem;
   font-style: normal;
   font-weight: 500;
   line-height: normal;
+
+  &:hover {
+    background: ${({ isOpen }) => (isOpen ? '#DCE8FF' : '#E3EAF6')};
+  }
+
+  &:active {
+    background: #DCE8FF;
+  }
 `;
 
 const Dropdown = styled.div`
@@ -89,20 +97,19 @@ const FilteringDropdown = ({ onFilterApply, type, selectedTab }) => {
   }, []);
 
   useEffect(() => {
-    // 탭이 변경될 때 selectedColors를 초기화
     setSelectedColors([]);
   }, [selectedTab]);
 
   const toggleDropdown = (event) => {
     event.stopPropagation();
-    setIsOpen(!isOpen);
+    setIsOpen(prev => !prev);
   };
 
   const handleCircleClick = (event, color) => {
     event.stopPropagation();
-    setSelectedColors((prevSelectedColors) =>
+    setSelectedColors(prevSelectedColors =>
       prevSelectedColors.includes(color)
-        ? prevSelectedColors.filter((c) => c !== color)
+        ? prevSelectedColors.filter(c => c !== color)
         : [...prevSelectedColors, color]
     );
   };
@@ -129,7 +136,7 @@ const FilteringDropdown = ({ onFilterApply, type, selectedTab }) => {
   const colorNames = Object.keys(colorMap);
 
   return (
-    <FilteringDiv onClick={toggleDropdown} ref={filterDivRef}>
+    <FilteringDiv onClick={toggleDropdown} ref={filterDivRef} isOpen={isOpen}>
       <img src={filterIcon} alt="필터 아이콘" />
       필터링
       {isOpen && (
