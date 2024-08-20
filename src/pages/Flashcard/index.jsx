@@ -148,7 +148,7 @@ export const Flashcard = () => {
                  />
               )
               )) : (
-                <p>데이터가 없습니다.</p>
+                <p>학습할 카드가 없습니다.</p>
               )}
             </Flashcards>
           </FlashcardContainer>
