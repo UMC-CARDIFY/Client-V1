@@ -41,7 +41,7 @@ const FrameContainer = styled.div`
   }
 
   @media (max-width: 1440px) {
-    max-width: 48rem;
+    max-width: 60rem;
   }
 `;
 

@@ -23,10 +23,6 @@ const ContentArea = styled.div`
   align-items: center;
   height: 100%; 
   background: var(--Main-BackGround, #F2F4F8);
-  gap: 2rem;
-
-
-
 `;
 
 
@@ -52,14 +48,18 @@ export const Archive = () => {
       <MenuBar />
       <Vcontainer>
         <TopBar title='아카이브' subtitle='노트 작성 및 관리' setSelectedTab={setSelectedTab} selectedTab={selectedTab} />
+        <ContentArea>
         <Frame selectedTab={selectedTab} />
+        </ContentArea>
       </Vcontainer>
       </Laptop>
       <Tablet>
       <MenuBar />
       <Vcontainer>
         <TopBar title='아카이브' subtitle='노트 작성 및 관리' setSelectedTab={setSelectedTab} selectedTab={selectedTab} />
+        <ContentArea>
         <Frame selectedTab={selectedTab} />
+        </ContentArea>
       </Vcontainer>
       </Tablet>
     </Container>
