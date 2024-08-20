@@ -19,6 +19,7 @@ const ModalBackdrop = styled.div`
   flex-direction: column;
   align-items: center;
   z-index: 1000;
+  overflow-y: scroll;
 `;
 
 const ModalTitle = styled.div`
@@ -58,38 +59,56 @@ const ModalContent = styled.div`
   margin-top: 3.09rem;
   display: flex;
   flex-direction: column;
-  gap: 2.5rem;
+  gap: 2.6rem;
   color: var(--Grays-Gray1, #646464);
   font-family: Pretendard;
   font-size: 0.875rem;
   font-style: normal;
   font-weight: 500;
   line-height: normal;
+  box-sizing: border-box;
 `;
 
 const StatisticsItem = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  width: 100%;
+  height: 2.5rem;
 `;
 
 const DifficultyLabel = styled.div`
   display: flex;
   align-items: center;
-  font-size: 1.125rem;
-  font-weight: 500;
+  width: 4.5rem;
+  color: var(--Grays-Gray2, #767676);
+font-family: Pretendard;
+font-size: 0.875rem;
+font-style: normal;
+font-weight: 500;
+line-height: normal;
+`;
+
+const BarContainerWrapper = styled.div`
+  width: 31rem;  /* The width of the bar container wrapper */
 `;
 
 const BarContainer = styled.div`
-  flex-grow: 1;
-  height: 1rem;
+  height: 2rem;
+  border-radius: 0.125rem 0.5rem 0.5rem 0.125rem;
   background: ${({ color }) => color};
-  margin: 0 1rem;
+  width: ${({ widthPercent }) => widthPercent || '0%'};
+  transition: width 0.3s ease;  /* Optional: Smooth transition */
 `;
 
 const Count = styled.div`
-  font-size: 1.125rem;
-  font-weight: 500;
+  margin-left: auto; /* Push the count to the right */
+  color: var(--Grays-Gray2, #767676);
+font-family: Pretendard;
+font-size: 0.875rem;
+font-style: normal;
+font-weight: 500;
+line-height: normal;
 `;
 
 const ButtonContainer = styled.div`
@@ -101,8 +120,8 @@ const ButtonContainer = styled.div`
 
 const ActionButton = styled.div`
   display: flex;
-  width: 23.25rem;
-  padding: 1rem 6.8125rem 1rem 8.625rem;
+  width: 100%;
+  padding: 1rem;
   align-items: center;
   gap: 0.5rem;
   border-radius: 0.75rem;
@@ -114,12 +133,13 @@ const ActionButton = styled.div`
   font-weight: 600;
   line-height: normal;
   cursor: pointer;
+  justify-content: center;
 `;
 
 const CloseButton = styled.div`
-  position: absolute;
-  top: 2.5rem;
-  right: 2.5rem;
+  position: fixed;
+  top: 3rem;
+  right: 3rem;
   background: none;
   border: none;
   cursor: pointer;
@@ -135,25 +155,58 @@ const IconDiv = styled.div`
 `;
 
 const LogContainer = styled.div`
-  width: 47.5rem;
-  background: var(--Grays-White, #FFF);
-  padding: 1rem;
-  border-radius: 0.75rem;
-  margin-top: 1rem;
-  max-height: 20rem;
-  overflow-y: auto;
+display: flex;
+width: 23.25rem;
+padding: 1.5rem 3rem;
+flex-direction: column;
+justify-content: center;
+align-items: flex-start;
+gap: 1.5rem;
+flex-shrink: 0;
+border-radius: 0.75rem;
+background: #FFF;
+box-sizing: border-box;
+margin-top: 1rem;
+margin-left: -24rem;
 `;
 
 const LogItem = styled.div`
-  padding: 0.5rem 0;
-  border-bottom: 1px solid var(--Grays-Gray1, #646464);
-  font-size: 0.875rem;
-  font-weight: 500;
   color: var(--Grays-Black, #1A1A1A);
+font-family: Pretendard;
+font-size: 0.75rem;
+font-style: normal;
+font-weight: 500;
+line-height: normal;
+display: flex;
+`;
 
-  &:last-child {
-    border-bottom: none;
-  }
+const DateDiv = styled.div`
+width: 10.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    `;
+
+const Line = styled.div`
+width: 0.0625rem;
+height: 2rem;
+background: #E8E8E8;
+margin-right: 1.5rem;
+`;
+
+const CntDiv = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    `;
+
+const SmallText = styled.div`
+color: #696969;
+font-family: Pretendard;
+font-size: 0.625rem;
+font-style: normal;
+font-weight: 500;
+line-height: normal;
 `;
 
 const StatisticsModal = ({ onClose, studyCardSetId, color, folderName, noteName }) => {
@@ -181,6 +234,14 @@ const StatisticsModal = ({ onClose, studyCardSetId, color, folderName, noteName 
     setLogVisible((prev) => !prev);
   };
 
+  const formattedDate = (date) => {
+    const dateObj = new Date(date);
+    const year = dateObj.getFullYear();
+    const month = String(dateObj.getMonth() + 1).padStart(2, '0'); // Adds a leading zero if necessary
+    const day = String(dateObj.getDate()).padStart(2, '0'); // Adds a leading zero if necessary
+    return `${year}-${month}-${day}`;
+  };
+
   return (
     <ModalBackdrop>
       <CloseButton onClick={onClose}>
@@ -196,22 +257,30 @@ const StatisticsModal = ({ onClose, studyCardSetId, color, folderName, noteName 
           <>
             <StatisticsItem>
               <DifficultyLabel>어려움</DifficultyLabel>
-              <BarContainer color="#FFE1E1"></BarContainer>
+              <BarContainerWrapper>
+              <BarContainer color="#FFE1E1" widthPercent={`${data.hardCardsPercent}%`} />
+                </BarContainerWrapper>
               <Count>{data.hardCardsNumber}개 {data.hardCardsPercent}%</Count>
             </StatisticsItem>
             <StatisticsItem>
               <DifficultyLabel>알맞음</DifficultyLabel>
-              <BarContainer color="#CEEFE3"></BarContainer>
+              <BarContainerWrapper>
+              <BarContainer color="#CEEFE3" widthPercent={`${data.normalCardsPercent}%`} />
+                </BarContainerWrapper>
               <Count>{data.normalCardsNumber}개 {data.normalCardsPercent}%</Count>
             </StatisticsItem>
             <StatisticsItem>
               <DifficultyLabel>쉬움</DifficultyLabel>
-              <BarContainer color="#CDDEFF"></BarContainer>
+              <BarContainerWrapper>
+              <BarContainer color="#CDDEFF" widthPercent={`${data.easyCardsPercent}%`} />
+                </BarContainerWrapper>
               <Count>{data.easyCardsNumber}개 {data.easyCardsPercent}%</Count>
             </StatisticsItem>
             <StatisticsItem>
               <DifficultyLabel>패스</DifficultyLabel>
-              <BarContainer color="#F2DEF9"></BarContainer>
+              <BarContainerWrapper>
+              <BarContainer color="#F2DEF9" widthPercent={`${data.passCardsPercent}%`} />
+                </BarContainerWrapper>
               <Count>{data.passCardsNumber}개 {data.passCardsPercent}%</Count>
             </StatisticsItem>
           </>
@@ -237,24 +306,29 @@ const StatisticsModal = ({ onClose, studyCardSetId, color, folderName, noteName 
         <LogContainer>
           {log.map((item, index) => (
             <LogItem key={index}>
+              <DateDiv>
                 <div>
-                    {item.studyDate}
+                  {formattedDate(item.studyDate)}
                 </div>
+                <SmallText>
+                  학습일
+                </SmallText>
+              </DateDiv>
+              <Line />
+              <CntDiv>
                 <div>
-                    학습일
+                  {item.cardNumber}
                 </div>
-                
-                <div>
-                    {item.cardNumber}
-                </div>
-                <div>
-                학습한 카드 개수
-                </div>
+                <SmallText>
+                  학습한 카드 개수
+                </SmallText>
+              </CntDiv>
             </LogItem>
           ))}
         </LogContainer>
       )}
     </ModalBackdrop>
+    
   );
 };
 
