@@ -1,10 +1,9 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import styled from 'styled-components';
 import Editor from './components/Editor';
 import Header from './components/Header/Header';
 import MenuBar from './components/MenuBar';
 import { useLocation } from 'react-router-dom';
-import { useEffect } from 'react';
 import { getNote } from '../../api/noteeditor/getNote';
 import { NoteContext } from '../../api/NoteContext';
 
@@ -20,7 +19,7 @@ const MenuBarWrapper = styled.div.withConfig({
   width: 15rem;
   transition: transform 0.3s ease-in-out;
   transform: ${({ isCollapsed }) => (isCollapsed ? 'translateX(-15rem)' : 'translateX(0)')};
-  z-index: 1000;
+
 `;
 
 const ContentWrapper = styled.div.withConfig({
@@ -31,7 +30,7 @@ const ContentWrapper = styled.div.withConfig({
   flex-grow: 1;
   overflow: hidden;
   transition: margin-left 0.3s ease-in-out;
-  margin-left: ${({ isMenuCollapsed }) => (isMenuCollapsed ? '-15rem' : '3rem')};
+  margin-left: ${({ isMenuCollapsed }) => (isMenuCollapsed ? '-15rem' : '4rem')};
 `;
 
 const EditorWrapper = styled.div`
@@ -41,8 +40,12 @@ const EditorWrapper = styled.div`
 
 const NoteEditor = () => {
   const location = useLocation();
-  const { noteId: initialNoteId, folderId } = location.state || {}; // folderId를 가져옴
-  const [noteId, setNoteId] = useState(initialNoteId);
+  const searchParams = new URLSearchParams(location.search);
+  const folderId = searchParams.get('folderId');
+  const noteId = searchParams.get('noteId');
+  console.log(' 폴더아이디: ', folderId, '노트아이디: ', noteId);
+  //const { noteId: initialNoteId, folderId } = location.state || {}; // folderId를 가져옴
+  //const [noteId, setNoteId] = useState(initialNoteId);
   const { noteData, setNoteData } = useContext(NoteContext);
   const [isMenuCollapsed, setIsMenuCollapsed] = useState(false);
   const [editorView, setEditorView] = useState(null);
@@ -50,6 +53,15 @@ const NoteEditor = () => {
   const toggleMenuBar = () => {
     setIsMenuCollapsed(!isMenuCollapsed);
   };
+
+  // 폴더 ID와 노트 ID를 전역 상태 관리에 저장
+  useEffect(() => {
+    setNoteData(prevData => ({
+      ...prevData,
+      folderId: folderId,
+      noteId: noteId,
+    }));
+  }, [folderId, noteId, setNoteData]);
 
   useEffect(() => {
     if (noteId) {
@@ -80,7 +92,6 @@ const NoteEditor = () => {
       const data = await getNote(newNoteId);
   
       // 노트 ID 및 관련된 모든 데이터를 업데이트합니다.
-      setNoteId(newNoteId);
       setNoteData(prevData => ({
         ...prevData,
         noteId: newNoteId,
@@ -106,7 +117,13 @@ const NoteEditor = () => {
         />
       </MenuBarWrapper>
       <ContentWrapper isMenuCollapsed={isMenuCollapsed}>
-        <Header isMenuCollapsed={isMenuCollapsed} toggleMenuBar={toggleMenuBar} editorView={editorView} selectedFolderId={folderId} currentNoteId={noteId}/>
+        <Header 
+          isMenuCollapsed={isMenuCollapsed} 
+          toggleMenuBar={toggleMenuBar} 
+          editorView={editorView} 
+          selectedFolderId={folderId} 
+          currentNoteId={noteId}
+        />
         <EditorWrapper>
           <Editor setEditorView={setEditorView} />
         </EditorWrapper>

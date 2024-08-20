@@ -196,7 +196,7 @@ const CombinedEditor = ({ viewRef }) => {
                   return false;
               }
           },
-          //'Backspace': (state, dispatch) => handleBackspaceInCard(state, dispatch),  // 백스페이스
+          'Backspace': (state, dispatch) => handleBackspaceInCard(state, dispatch),  // 백스페이스
         }),
         keymap(baseKeymap),
         history(),
