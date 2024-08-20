@@ -199,7 +199,7 @@ const FolderItem = ({ name, count, color, markState }) => {
   return (
     <FolderItemContainer>
       <FavoriteIcon>
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill={isFavorite ? "#FFD338" : "transparent"} stroke={isFavorite ? "none" : "#B1B1B1"}>
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill={isFavorite ? "#FFD338" : "transparent"} stroke={isFavorite ? "#FFD338" : "#B1B1B1"}>
           <path d="M15.9998 20.2527L12.4225 22.1332C12.2024 22.2489 11.9452 22.062 11.9873 21.8169L12.6705 17.8333L9.77531 15.0123C9.5972 14.8388 9.69544 14.5363 9.94153 14.5006L13.9412 13.9193L15.7308 10.2943C15.8409 10.0714 16.1588 10.0714 16.2688 10.2943L18.0578 13.9193L22.0576 14.5006C22.3036 14.5363 22.4019 14.8387 22.2238 15.0123L19.3292 17.8333L20.013 21.8169C20.0551 22.0619 19.7979 22.2489 19.5777 22.1332L15.9998 20.2527Z" />
         </svg>
       </FavoriteIcon>
