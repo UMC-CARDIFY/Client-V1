@@ -1,8 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
-import axios from 'axios';
-import config from '../../../api/config';
+import { getNotesByFolder } from '../../../api/noteeditor/getNoteToFolder';
+import { addNoteToFolder } from '../../../api/noteeditor/addNote';
+import { NoteContext } from '../../../api/NoteContext';
+import { getNote } from '../../../api/noteeditor/getNote';
 
 const MenuBarContainer = styled.div.withConfig({
   shouldForwardProp: (prop) => prop !== 'isCollapsed',
@@ -80,7 +83,6 @@ const FavoriteTitle = styled.div`
   line-height: normal;
 `;
 
-
 const StarIcon = styled.div`
   width: 2rem;
   height: 2rem;
@@ -97,7 +99,6 @@ const NoteList = styled.div`
   display: flex;
   padding: 0.5rem var(--UI-Component-xxxxxS, 0.25rem);
 
-
   align-items: center;
   gap: 0.5rem;
   margin-top: var(--UI-Component-xxxxxS, 0.25rem);
@@ -110,11 +111,12 @@ const NoteList = styled.div`
   font-family: Pretendard;
   font-size: 0.875rem;
   font-style: normal;
-  font-weight: 500;
+  font-weight: 400;
   line-height: normal;
 
   &:hover {
     background-color: #ffffff;
+    color: var(--Grays-Black, #1A1A1A);
   }
 
   &.selected {
@@ -207,44 +209,27 @@ const colorMap = {
 };
 
 const MenuBar = ({ isCollapsed, toggleMenuBar, selectedFolderId, onSelectNote }) => {
-  const [selectedNoteId, setSelectedNoteId] = useState(null);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { noteData, setNoteData } = useContext(NoteContext);
   const [notes, setNotes] = useState([]);
+  const [favoriteNotes, setFavoriteNotes] = useState([]);
   const [folderName, setFolderName] = useState(''); // 폴더 이름 상태 추가
   const [folderColor, setFolderColor] = useState('gray'); // 폴더 색상 상태 추가 (기본값: gray)
 
+  // 현재 URL에서 noteId를 가져와 숫자로 변환
+  const selectedNoteId = Number(new URLSearchParams(location.search).get('noteId'));
+
   useEffect(() => {
     const fetchNotesAndFolderName = async () => {
-      const token = localStorage.getItem('accessToken');
-
-      if (!token) {
-        alert('로그인이 필요합니다.');
-        return;
-      }
-
       try {
-        const response = await axios.post(
-          `${config.apiBaseUrl}/notes/getNoteToFolder`,
-          {
-            folderId: selectedFolderId,
-            page: 0,
-            size: 20,
-            order: 'asc',
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              'Content-Type': 'application/json',
-            },
-          }
-        );
-
-        if (response.status === 200) {
-          setNotes(response.data.noteList); // 노트 목록 설정
-          setFolderName(response.data.folderName); // 폴더 이름 설정
-          setFolderColor(response.data.folderColor); // 폴더 색상 설정
-        } else {
-          console.error('노트 목록을 가져오는 데 실패했습니다:', response.status);
-        }
+        const data = await getNotesByFolder(selectedFolderId);
+        setNotes(data.noteList); // 노트 목록 설정
+        setFolderName(data.folderName); // 폴더 이름 설정
+        setFolderColor(data.folderColor); // 폴더 색상 설정
+        // favoriteNotes 업데이트
+        const favoriteNotes = data.noteList.filter(note => note.noteId === noteData.noteId ? noteData.markState : note.markState === 'ACTIVE' || note.markState === true);
+        setFavoriteNotes(favoriteNotes);
       } catch (error) {
         console.error('노트 목록을 가져오는 중 오류 발생:', error);
       }
@@ -255,51 +240,63 @@ const MenuBar = ({ isCollapsed, toggleMenuBar, selectedFolderId, onSelectNote })
     }
   }, [selectedFolderId]);
 
-  const favoriteNotes = notes.filter(note => note.markState === 'ACTIVE');
+  
+  useEffect(() => {
+    if (noteData.noteId) {
+      setNotes(prevNotes => {
+        const updatedNotes = prevNotes.map(note =>
+          note.noteId === noteData.noteId ? { ...note, markState: noteData.markState } : note
+        );
+        // favoriteNotes 업데이트
+        const updatedFavoriteNotes = updatedNotes.filter(note => note.noteId === noteData.noteId ? noteData.markState : note.markState === 'ACTIVE' || note.markState === true);
+        setFavoriteNotes(updatedFavoriteNotes);
+        return updatedNotes;
+      });
+    }
+  }, [noteData]);
+
+  //const favoriteNotes = notes.filter(note => note.markState === 'ACTIVE' || note.markState === true);
   const folderIconColor = colorMap[folderColor] || colorMap.gray;
 
   const handleAddNote = async () => {
-    const token = localStorage.getItem('accessToken');
-  
-    if (!token) {
-      alert('토큰이 존재하지 않습니다. 다시 로그인해주세요.');
-      return;
-    }
-  
     try {
-      const response = await axios.get(`${config.apiBaseUrl}/notes/addNote`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        params: {
-          folderId: selectedFolderId, 
-        },
-      });
-  
-      if (response.status === 200) {
-        const { noteId, createdAt } = response.data;
-        console.log('생성된 noteId:', noteId);
-  
-        setNotes((prevNotes) => [
-          ...prevNotes,
-          {
-            noteId,
-            name: `제목없음`, // 기본 노트 이름 설정
-            isFavorite: false,
-            createdAt,
-          },
-        ]);
-      } else {
-        console.error('노트 생성에 실패했습니다:', response.status);
-      }
+      const { noteId, createdAt } = await addNoteToFolder(selectedFolderId);
+
+      const newNote = {
+        noteId,
+        name: `제목없음`, 
+        markState: false,
+        createdAt,
+      };
+
+      setNotes((prevNotes) => [...prevNotes, newNote]);
+
+      // 새로 추가된 노트를 선택하도록 처리
+      handleClick(newNote);
     } catch (error) {
       console.error('노트 생성 중 오류 발생:', error);
     }
   };
-  
-  const handleClick = (note) => {
-    setSelectedNoteId(note.noteId);
-    onSelectNote(note.noteId); // 선택된 노트의 ID를 NoteEditor로 전달
+
+  const handleClick = async (note) => {
+    try {
+      // 새로운 노트의 데이터를 가져옵니다.
+      const data = await getNote(note.noteId);
+
+      // 노트 ID 및 관련된 모든 데이터를 업데이트합니다.
+      setNoteData(prevData => ({
+        ...prevData,
+        noteId: note.noteId,
+        noteName: data.noteName,
+        noteContent: data.noteContent,
+        markState: data.markState,
+      }));
+    } catch (error) {
+      console.error('노트를 가져오는 중 오류가 발생했습니다:', error);
+    }
+
+    onSelectNote(note.noteId);
+    navigate(`/note-editor?folderId=${selectedFolderId}&noteId=${note.noteId}`);
   };
 
   return (
@@ -391,7 +388,6 @@ const MenuBar = ({ isCollapsed, toggleMenuBar, selectedFolderId, onSelectNote })
         </>
       )}
 
-
       <NoteContainer>
         {notes.filter((note) => !note.isFavorite).map((note) => (
           <NoteList
@@ -413,8 +409,8 @@ const MenuBar = ({ isCollapsed, toggleMenuBar, selectedFolderId, onSelectNote })
       <AddButton onClick={handleAddNote}>
         <PlusIcon>
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-          <rect x="4.16699" y="9.58325" width="11.6667" height="1" fill="#646464"/>
-          <rect x="10.417" y="4.16675" width="11.6667" height="1" transform="rotate(90 10.417 4.16675)" fill="#646464"/>
+            <rect x="4.16699" y="9.58325" width="11.6667" height="1" fill="#646464"/>
+            <rect x="10.417" y="4.16675" width="11.6667" height="1" transform="rotate(90 10.417 4.16675)" fill="#646464"/>
           </svg>
         </PlusIcon>
         추가

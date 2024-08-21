@@ -72,6 +72,31 @@ const mySchema = new Schema({
         return ['div', { class: 'multi-card' }, 0];
       }
     }, 
+    image_card: {
+      group: 'block',
+      content: 'inline*',  // 이미지 카드에 텍스트가 포함될 수 있습니다.
+      attrs: {
+        src: { default: '' },
+        alt: { default: '' },
+        overlays: { default: [] },  // 사각형 영역을 나타내는 데이터
+      },
+      parseDOM: [{
+        tag: 'div.image-card',
+        getAttrs(dom) {
+          const img = dom.querySelector('img');
+          return {
+            src: img.getAttribute('src'),
+            alt: img.getAttribute('alt'),
+            overlays: JSON.parse(dom.getAttribute('data-overlays') || '[]'),  // 사각형 데이터 파싱
+          };
+        }
+      }],
+      toDOM(node) {
+        return ['div', { class: 'image-card', 'data-overlays': JSON.stringify(node.attrs.overlays) }, 
+          ['img', { src: node.attrs.src, alt: node.attrs.alt }], 0
+        ];
+      }
+    },
     heading: {
       attrs: { level: { default: 1 } },
       content: "inline*",

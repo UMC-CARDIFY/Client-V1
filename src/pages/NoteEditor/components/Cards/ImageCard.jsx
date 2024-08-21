@@ -53,8 +53,6 @@ const ModalOverlay = styled.div`
 
 const ModalContent = styled.div`
   position: relative;
-  width: 100%;
-  height: 100%;
   max-width: 65rem;
   max-height: 40.5rem;
   display: flex;
@@ -128,13 +126,13 @@ const ImageCardContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  width: ${({ imageWidth }) => `${imageWidth}px` || 'auto'}; /* 이미지 width로 설정 */
   border-radius: 0.5rem;
   border: 1px solid var(--grays-gray-5-divider, #E8E8E8);
 `;
 
 const ImageCardImage = styled.img`
   pointer-events: none; /* 이미지 수정 불가 */
-  max-width: 100%;
   max-height: 100%;
   object-fit: contain;
 `;
@@ -178,8 +176,11 @@ const ImageCard = () => {
   const [isCreated, setIsCreated] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [scale, setScale] = useState({ x: 1, y: 1 });
+  
+  const [imageWidth, setImageWidth] = useState(0); // 이미지 width 상태
+  const [savedImageCard, setSavedImageCard] = useState(null); // Store the saved image card
 
-  const { setSaveImageCard } = useSaveContext(); // Context에서 setSaveImageCard 함수 가져오기
+  //const { setSaveImageCard } = useSaveContext(); // Context에서 setSaveImageCard 함수 가져오기
 
   const handleCardClick = () => {
     fileInputRef.current.click();
@@ -200,6 +201,7 @@ const ImageCard = () => {
         img.src = e.target.result;
         img.onload = () => {
           setImage(img);
+          setImageWidth(img.width); // 이미지 width 설정
           setIsModalOpen(true);
         };
       };
@@ -280,6 +282,11 @@ const handleMouseMove = (event) => {
         height: rect.height / scale.y,
       })),
     };
+
+    setSavedImageCard({ imageFile, imageCard });
+    setIsModalOpen(false); // Close modal
+    setIsCreated(true); // Image card created
+
     // 저장 기능을 Context에 등록
     setSaveImageCard(() => async () => {
       try {
@@ -306,7 +313,42 @@ const handleMouseMove = (event) => {
       */
   };
 
-  // 이미지 카드 불러오기
+    // 저장된 이미지 카드 불러오기
+    const getImage = () => {
+      if (!savedImageCard) {
+        alert('No saved image card found.');
+        return;
+      }
+
+      const { imageFile, imageCard } = savedImageCard;
+
+      const img = new Image();
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        img.src = e.target.result;
+        img.onload = () => {
+          setImage(img);
+          setImageWidth(img.width); // Set image width
+          const imageScale = {
+            x: img.width / imageCard.baseImageWidth,
+            y: img.height / imageCard.baseImageHeight,
+          };
+          setScale(imageScale);  // Store image scale
+          setRectangles(imageCard.overlays.map(overlay => ({
+            x: overlay.positionOfX * imageScale.x,
+            y: overlay.positionOfY * imageScale.y,
+            width: overlay.width * imageScale.x,
+            height: overlay.height * imageScale.y,
+          })));
+          setIsCreated(true);
+        };
+      };
+      reader.readAsDataURL(imageFile);
+      setIsModalOpen(true);
+    }
+
+/*
+  // 서버에서 이미지 카드 불러오기
   const getImage = async (cardId) => {
     try {
       const imageCard = await getImageCard(cardId);
@@ -314,6 +356,7 @@ const handleMouseMove = (event) => {
       img.src = imageCard.imgUrl;
       img.onload = () => {
           setImage(img);
+          setImageWidth(img.width); // 이미지 width 설정
           const imageScale = {
               x: img.width / imageCard.baseImageWidth,
               y: img.height / imageCard.baseImageHeight,
@@ -332,7 +375,7 @@ const handleMouseMove = (event) => {
       alert('이미지 카드 불러오기에 실패했습니다.');
   }
 };
-
+*/
   useEffect(() => {
     if (isModalOpen && canvasRef.current && image) {
         const canvas = canvasRef.current;

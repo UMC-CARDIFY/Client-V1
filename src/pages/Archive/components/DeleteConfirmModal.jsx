@@ -1,4 +1,6 @@
 import styled from 'styled-components';
+import DeleteIcon from '../../../assets/deleteicon.svg';
+import PropTypes from 'prop-types';
 
 const ModalBackground = styled.div`
   position: fixed;
@@ -10,111 +12,94 @@ const ModalBackground = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1000;
 `;
 
 const ModalContainer = styled.div`
-display: flex;
-width: 29.5rem;
-padding: 2rem 2rem 1.5rem 2rem;
-flex-direction: column;
-align-items: flex-start;
-background: var(--Grays-White, #FFF);
-box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.04), 0px 4px 20px 0px rgba(0, 0, 0, 0.06);
-
+  display: flex;
+  width: 29.5rem;
+  padding: 2rem 2rem 1.5rem 2rem;
+  flex-direction: column;
+  align-items: flex-start;
+  background: var(--Grays-White, #FFF);
+  box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.04), 0px 4px 20px 0px rgba(0, 0, 0, 0.06);
+  border-radius: 8px;
 `;
 
 const ModalTitleDiv = styled.div`
-display: flex;
-gap: 0.75rem;
-align-items: center;
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+  gap: 0.75rem;
 `;
 
-const DeleteIcon = styled.div`
-width: var(--line-height-2xs, 1.25rem);
-height: var(--line-height-2xs, 1.25rem);
-flex-shrink: 0;
-stroke-width: 2px;
-stroke: var(--Semantic-Alert, #EA1215);
-
-`;
-
-const ModalTitle = styled.h2`
-  color: var(--Semantic-Alert, #EA1215);
-font-family: Pretendard;
-font-size: 1.25rem;
-font-style: normal;
-font-weight: 700;
-line-height: normal;
+const ModalTitle = styled.p`
+  color: #EA1215;
+  font-size: 1.25rem;
+  font-style: normal;
+  font-weight: 700;
+  margin: 0;
+  display: flex;
+  align-items: center; /* 텍스트와 아이콘의 세로 정렬을 맞추기 위해 추가 */
 `;
 
 const ModalMessage = styled.p`
-width: 25.5rem;
+  width: 25.5rem;
   color: var(--Grays-Black, #1A1A1A);
-font-family: Pretendard;
-font-size: 1rem;
-font-style: normal;
-font-weight: 400;
-line-height: normal;
+  font-family: Pretendard;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
 `;
 
 const ModalButtonDiv = styled.div`
-display: flex;
-width: 100%;
-justify-content: flex-end;
-align-items: center;
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+  align-items: center;
   margin-top: 1.5rem;
+  gap: 0.5rem; 
 `;
 
 const ModalButton = styled.button`
   display: flex;
-padding: var(--UI-Component-None, 0.4375rem) var(--UI-Component-None, 0.875rem) var(--UI-Component-None, 0.375rem) var(--UI-Component-None, 0.875rem);
-justify-content: center;
-align-items: center;
+  padding: 0.4375rem 0.875rem;
+  justify-content: center;
+  align-items: center;
   background: #fff;
-  border: 1px solid #DDD;
+  border: none;
   color: var(--Grays-Black, #1A1A1A);
-font-family: Pretendard;
-font-size: 1rem;
-font-style: normal;
-font-weight: 400;
-line-height: normal;
-cursor: pointer;
+  font-family: Pretendard;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  cursor: pointer;
+  border-radius: 4px;
+
+
+  &:hover {
+    background: var(--Grays-Gray7, #F0F0F0);
+  }
 `;
 
 const DeleteConfirmModal = ({ isOpen, onClose, onConfirm, type, itemName }) => {
   if (!isOpen) return null;
 
   return (
-    <ModalBackground>
+    <ModalBackground aria-modal="true">
       <ModalContainer>
-        {type === 'folder' && (
-          <>
-            <ModalTitleDiv>
-            <DeleteIcon><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22" fill="none">
-  <path d="M11 13V5M11 17V15M11 1C5.477 1 1 5.477 1 11C1 16.523 5.477 21 11 21C16.523 21 21 16.523 21 11C21 5.477 16.523 1 11 1Z" stroke="#EA1215" strokeWidth="2"/>
-</svg></DeleteIcon>
-            <ModalTitle>폴더 삭제</ModalTitle>
-            </ModalTitleDiv>
-            <ModalMessage>
-              '{itemName}'을 삭제하시겠습니까?<br />
-              이 폴더 안의 노트도 함께 삭제됩니다.
-            </ModalMessage>
-          </>
-        )}
-        {type === 'note' && (
-          <>
-          <ModalTitleDiv>
-          <DeleteIcon><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22" fill="none">
-  <path d="M11 13V5M11 17V15M11 1C5.477 1 1 5.477 1 11C1 16.523 5.477 21 11 21C16.523 21 21 16.523 21 11C21 5.477 16.523 1 11 1Z" stroke="#EA1215" strokeWidth="2"/>
-</svg></DeleteIcon>
-            <ModalTitle>노트 삭제</ModalTitle>
-            </ModalTitleDiv>
-            <ModalMessage>
-              '{itemName}'을 삭제하시겠습니까?<br />
-              이 노트 안의 플래시카드도 함께 삭제됩니다.
-            </ModalMessage>
-          </>
-        )}
+        <ModalTitleDiv>
+          <img src={DeleteIcon} alt="Delete Icon" /> 
+          <ModalTitle>
+            {type === 'folder' ? '폴더 삭제' : '노트 삭제'}
+          </ModalTitle>
+        </ModalTitleDiv>
+        <ModalMessage>
+          '{itemName}'을 삭제하시겠습니까?<br />
+          {type === 'folder' ? '이 폴더 안의 노트도 함께 삭제됩니다.' : '이 노트 안의 플래시카드도 함께 삭제됩니다.'}
+        </ModalMessage>
         <ModalButtonDiv>
           <ModalButton onClick={onClose}>취소</ModalButton>
           <ModalButton onClick={onConfirm}>확인</ModalButton>
@@ -123,5 +108,14 @@ const DeleteConfirmModal = ({ isOpen, onClose, onConfirm, type, itemName }) => {
     </ModalBackground>
   );
 };
+
+DeleteConfirmModal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onConfirm: PropTypes.func.isRequired,
+  type: PropTypes.oneOf(['folder', 'note']).isRequired,
+  itemName: PropTypes.string.isRequired,
+};
+
 
 export default DeleteConfirmModal;

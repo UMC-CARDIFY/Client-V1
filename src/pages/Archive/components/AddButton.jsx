@@ -9,7 +9,7 @@ const StyledButton = styled.button`
   align-items: center;
   gap: 0.3125rem;
   border-radius: 0.3125rem;
-  background: var(--Main-Button, #ECEFF4);
+  background: #ECEFF4;
   border: none;
   cursor: pointer;
 
@@ -17,6 +17,16 @@ const StyledButton = styled.button`
     width: 1rem;
     height: 1rem;
   }
+
+      &:hover {
+    background: #E3EAF6; 
+  }
+
+  &:active {
+    background:#DCE8FF; 
+  }
+    
+  
 `;
 
 const AddButton = ({ selectedTab, setSelectedItem, setShowAddModal, setModalType, addFolderIcon, currentFolderId }) => {

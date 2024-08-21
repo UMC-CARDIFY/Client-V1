@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import deleteNote from '../../../api/flashcard/deleteNote';
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -46,7 +47,7 @@ const CancelButton = styled(Button)`
   color: #333;
 `;
 
-const DeleteModal = ({ onClose, onConfirm }) => (
+const DeleteModal = ({ onClose, onConfirm,  }) => (
   <ModalOverlay>
     <ModalContent>
       <h2>정말 삭제하시겠습니까?</h2>

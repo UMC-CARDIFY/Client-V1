@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom'; // 1. Import useNavigate
 import styled from 'styled-components';
 import MarkStateIcon from '../../../assets/markStateIcon.svg';
 import MarkStateActive from '../../../assets/MarkStateActive.svg';
@@ -65,8 +66,10 @@ const ItemList = ({
   activeMoreDiv,
   moveItem,
   onFolderClick,
-  currentFolderId // 현재 폴더 아이디를 prop으로 받음
+  currentFolderId
 }) => {
+  const navigate = useNavigate();
+
   return (
     <>
       {currentFolderId ? (
@@ -82,7 +85,12 @@ const ItemList = ({
                 />
                 <NoteIcon color={colorMap[note.folderColor]} />
                 <Line />
-                <div>{note.name}</div>
+                <div
+                  style={{ cursor: 'pointer' }} 
+                  onClick={() => navigate(`/note-editor?folderId=${currentFolderId}&noteId=${note.noteId}`)} 
+                >
+                  {note.name}
+                </div>
               </LeftData>
               <FlexSpacer />
               <RightData>
@@ -98,6 +106,7 @@ const ItemList = ({
                 </div>
                 <MoreDiv
                   type="note"
+                  itemName={note.name}
                   onEditClick={() => handleEdit(note)}
                   onDeleteClick={() => handleDelete(note.noteId)}
                   isActive={activeMoreDiv === index}
@@ -116,15 +125,19 @@ const ItemList = ({
           items.map((item, index) => (
             <Data key={`${selectedTab}-${item.id || index}`}>
               <LeftData>
-              {selectedTab === '폴더' ? (<img
-                  src={item.markState === 'ACTIVE' ? MarkStateActive : MarkStateIcon}
-                  alt='즐겨찾기'
-                  onClick={() => handleMarkStatus(item)}
-                />):(<img
-                  src={item.markState === 'ACTIVE' ? MarkStateActive : MarkStateIcon}
-                  alt='즐겨찾기'
-                  onClick={() => handleMarkNoteStatus(item)}
-                />)}
+                {selectedTab === '폴더' ? (
+                  <img
+                    src={item.markState === 'ACTIVE' ? MarkStateActive : MarkStateIcon}
+                    alt='즐겨찾기'
+                    onClick={() => handleMarkStatus(item)}
+                  />
+                ) : (
+                  <img
+                    src={item.markState === 'ACTIVE' ? MarkStateActive : MarkStateIcon}
+                    alt='즐겨찾기'
+                    onClick={() => handleMarkNoteStatus(item)}
+                  />
+                )}
                 {selectedTab === '폴더' ? (
                   <>
                     <FolderIcon fill={colorMap[item.color]} />
@@ -144,7 +157,11 @@ const ItemList = ({
                   <>
                     <NoteIcon color={colorMap[item.folderColor]} />
                     <Line />
-                    <div>{item.name}</div>
+                    <div
+                    style={{ cursor: 'pointer' }} 
+                    onClick={() => navigate(`/note-editor?folderId=${item.folderId}&noteId=${item.noteId}`)} 
+                  >
+                  {item.name}</div>
                   </>
                 )}
               </LeftData>
@@ -162,6 +179,7 @@ const ItemList = ({
                 </div>
                 <MoreDiv
                   type={selectedTab==='폴더'? 'folder': 'note'}
+                  itemName={item.name}
                   onEditClick={() => handleEdit(item)}
                   onDeleteClick={() => handleDelete(item.id)}
                   isActive={activeMoreDiv === index}

@@ -20,7 +20,7 @@ class WordCardView {
     this.dom.className = 'word-card';
     this.dom.style.border = '1px solid #ddd';
     this.dom.style.padding = '1.25rem';
-    this.dom.style.paddingRight = '3rem';
+    this.dom.style.paddingRight = '4.5rem';
     this.dom.style.borderRadius = '4px';
     this.dom.style.display = 'flex';
     this.dom.style.flexDirection = 'column';
@@ -137,12 +137,13 @@ class WordCardView {
 
     this.arrowDiv = document.createElement('div');
     this.arrowDiv.className = 'arrow';
+    this.arrowDiv.style.alignSelf = 'flex-start';
     this.arrowDiv.style.color = '#000';
-    this.arrowDiv.style.marginRight = '0.5rem';
     this.arrowDiv.innerText = '→';
 
     this.answerDiv = document.createElement('div');
     this.answerDiv.className = 'answer';
+    this.answerDiv.style.marginLeft = '1rem';
     this.answerDiv.contentEditable = true;
     this.answerDiv.style.color = this.node.attrs.answer[0] ? '#000' : '#aaa';
     this.answerDiv.style.outline = 'none'; 
@@ -195,13 +196,13 @@ class WordCardView {
   }
 
   updateAttrs() {
-    const question = this.questionDiv.innerText.trim();
+    const question_front = this.questionDiv.innerText.trim();
     const answer = [this.answerDiv.innerText.trim()];
 
-    if (question !== this.node.attrs.question_front || answer[0] !== this.node.attrs.answer[0]) {
+    if (question_front !== this.node.attrs.question_front || answer[0] !== this.node.attrs.answer[0]) {
       this.view.dispatch(
         this.view.state.tr.setNodeMarkup(this.getPos(), null, {
-          question,
+          question_front,
           answer,
         })
       );

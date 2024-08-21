@@ -10,7 +10,7 @@ class MultiCardView {
       this.dom.className = 'multi-card';
       this.dom.style.border = '1px solid #ddd';
       this.dom.style.padding = '1.25rem';
-      this.dom.style.paddingRight = '3rem';
+      this.dom.style.paddingRight = '4.5rem';
       this.dom.style.borderRadius = '4px';
       this.dom.style.display = 'flex';
       this.dom.style.flexDirection = 'column';
@@ -128,19 +128,22 @@ class MultiCardView {
     //불렛
     const bulletDiv = document.createElement('div');
     bulletDiv.className = 'bullet';
-    bulletDiv.style.display = 'inline-block';
+    bulletDiv.style.display = 'block';
+    bulletDiv.style.position = 'fixed';
     bulletDiv.style.width = '0.375rem'; 
     bulletDiv.style.height = '0.375rem';  
     bulletDiv.style.backgroundColor = '#000';  
     bulletDiv.style.borderRadius = '50%';  
-    bulletDiv.style.marginRight = '1rem';  
-
+    bulletDiv.style.padding= '0';
+    bulletDiv.style.alignSelf = 'flex-start';
+    bulletDiv.style.marginTop = '0.45rem';
     const containerDiv = document.createElement('div');
     containerDiv.style.display = 'flex';
     containerDiv.style.alignItems = 'center';
 
     const answerDiv = document.createElement('div');
     answerDiv.className = 'answer';
+    answerDiv.style.marginLeft = '1rem';
     answerDiv.contentEditable = true;
     answerDiv.style.color = answer ? '#000' : '#aaa';
     answerDiv.style.outline = 'none';
@@ -210,13 +213,13 @@ class MultiCardView {
   }
   
   updateAttrs() {
-      const question = this.questionDiv.innerText.trim();
+      const question_front = this.questionDiv.innerText.trim();
       const answer = this.answerDivs.map(div => div.innerText.trim());
 
-      if (question !== this.node.attrs.question_front || JSON.stringify(answer) !== JSON.stringify(this.node.attrs.answer)) {
+      if (question_front !== this.node.attrs.question_front || JSON.stringify(answer) !== JSON.stringify(this.node.attrs.answer)) {
           this.view.dispatch(
               this.view.state.tr.setNodeMarkup(this.getPos(), null, {
-                  question,
+                  question_front,
                   answer,
               })
           );
