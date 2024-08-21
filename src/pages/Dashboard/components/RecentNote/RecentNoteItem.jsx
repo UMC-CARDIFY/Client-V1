@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
 const NoteContainer = styled.div`
   display: flex;
@@ -41,14 +42,14 @@ const DateInfoContainer = styled.div`
 `;
 
 const NoteInfo = styled.div`
-overflow: hidden;
-color: var(--Grays-Black, #1A1A1A);
-text-overflow: ellipsis;
-font-family: Pretendard;
-font-size: 0.875rem;
-font-style: normal;
-font-weight: 500;
-line-height: normal;
+  overflow: hidden;
+  color: var(--Grays-Black, #1A1A1A);
+  text-overflow: ellipsis;
+  font-family: Pretendard;
+  font-size: 0.875rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
 `;
 
 const SubText = styled.div`
@@ -74,7 +75,10 @@ const LastModified = styled.div`
 const PlaceholderBox = styled.div`
   width: 2rem;
   height: 2rem;
+  cursor: pointer; 
 `;
+
+
 
 const colorMap = {
   blue: '#6698F5',
@@ -89,8 +93,9 @@ const colorMap = {
   rose: '#ED83B1',
 };
 
-const RecentNoteItem = ({ folderName, noteName, lastModified, folderColor }) => {
-  const fillColor = colorMap[folderColor] || '#A9A9A9'; 
+const RecentNoteItem = ({ folderName, noteName, lastModified, folderColor, noteId, folderId }) => {
+  const navigate = useNavigate();
+  const fillColor = colorMap[folderColor] || '#A9A9A9';
 
   return (
     <NoteContainer>
@@ -115,7 +120,7 @@ const RecentNoteItem = ({ folderName, noteName, lastModified, folderColor }) => 
         <SubText>최근 수정일</SubText>
       </DateInfoContainer>
       <Divider />
-      <PlaceholderBox>
+      <PlaceholderBox onClick={() => navigate(`/note-editor?folderId=${folderId}&noteId=${noteId}`)}>
         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
           <rect width="32" height="32" rx="12" fill="#F0F0F0"/>
           <path d="M15 12L19 16.5L15 21" stroke="#1A1A1A" strokeWidth="1.5" strokeLinecap="square"/>
@@ -129,7 +134,9 @@ RecentNoteItem.propTypes = {
   folderName: PropTypes.string.isRequired,
   noteName: PropTypes.string.isRequired,
   lastModified: PropTypes.string.isRequired,
-  folderColor: PropTypes.string.isRequired, 
+  folderColor: PropTypes.string.isRequired,
+  noteId: PropTypes.number.isRequired, // 추가
+  folderId: PropTypes.number.isRequired, // 추가
 };
 
 export default RecentNoteItem;

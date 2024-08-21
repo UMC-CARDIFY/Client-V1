@@ -79,6 +79,8 @@ const RecentNotes = () => {
             noteName={note.name.length > 8 ? `${note.name.substring(0, 8)}...` : note.name}
             lastModified={note.editDate}
             folderColor={note.folderColor} 
+            noteId={note.noteId} // 전달
+            folderId={note.folderId} // 전달
           />
         ))}
       </RecentNotesContainer>
