@@ -144,10 +144,11 @@ export const Flashcard = () => {
                   studyStatus={card.studyStatus}
                   recentStudyDate={card.recentStudyDate}
                   studyCardSetId={card.studyCardSetId}
+                  markStatus={card.markStatus}
                  />
               )
               )) : (
-                <p>데이터가 없습니다.</p>
+                <p>학습할 카드가 없습니다.</p>
               )}
             </Flashcards>
           </FlashcardContainer>

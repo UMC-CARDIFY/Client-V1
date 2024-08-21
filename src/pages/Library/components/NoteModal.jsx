@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import modalClose from '../../../assets/modalClose.svg';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import FolderSelectModal from './SelectFolderModal';
 
 const ModalBackdrop = styled.div`
@@ -21,8 +22,6 @@ const ModalContent = styled.div`
   position: relative;
   width: 61.3125rem;
   height: 42.8125rem;
-  flex-shrink: 0;
-  height: 45.5rem;
   flex-shrink: 0;
 `;
 
@@ -79,82 +78,81 @@ const DownloadButton = styled.button`
   cursor: ${(props) => (props.disabled ? '' : 'pointer')};
 `;
 
-const NoteModal = ({ show, onClose, title, content, isContainCard, libraryId }) => {
-  if (!show) return null;
-  console.log(isContainCard);
-
-  const [isFolderSelectModal, setIsFolderSelectModal] = useState(false);
-  const [isDownloadContain, setIsDownloadContain] = useState(false);
-
+const NoteModal = ({ show, onClose, title, content, isContainCard, libraryId,noteId, folderId }) => {
+    const navigate = useNavigate();
+  
+    const [isFolderSelectModal, setIsFolderSelectModal] = useState(false);
+    const [isDownloadContain, setIsDownloadContain] = useState(false);
+  
+    if (!show) return null;
+  
     const handleModalClose = () => {
-        setIsFolderSelectModal(false);
-    }
-
+      setIsFolderSelectModal(false);
+    };
+  
     const downloadContain = async () => {
-        console.log('download');
-        // 폴더 선택 모달창
-        setIsFolderSelectModal(true);
-        setIsDownloadContain(true);
-    }
-
-    const downloadNotContain =  async () => {
-        console.log('download not flash');
-        setIsFolderSelectModal(true);
-        setIsDownloadContain(false);
-    }
-
-    const gotoNoteEditor = async () => {
-        console.log('goto note editor');
-        // 내가 다운받은 노트 에디터로 이동
-    }
-
-  return (
-    <ModalBackdrop onClick={onClose}>
-      <ModalContent onClick={e => e.stopPropagation()}>
-        <NoteDiv>
-          <CloseButton onClick={onClose}>
-            <img src={modalClose} alt="close" />
-          </CloseButton>
-          <ModalTitle>{title}</ModalTitle>
-          <ModalBody>{content}</ModalBody>
-        </NoteDiv>
-        <DownloadDiv>
+      setIsFolderSelectModal(true);
+      setIsDownloadContain(true);
+    };
+  
+    const downloadNotContain = async () => {
+      setIsFolderSelectModal(true);
+      setIsDownloadContain(false);
+    };
+  
+    const myNote = async () => {
+      navigate(`/note-editor?folderId=${folderId}&noteId=${noteId}`);
+    };
+  
+    return (
+      <ModalBackdrop onClick={onClose}>
+        <ModalContent onClick={(e) => e.stopPropagation()}>
+          <NoteDiv>
+            <CloseButton onClick={onClose}>
+              <img src={modalClose} alt="close" />
+            </CloseButton>
+            <ModalTitle>{title}</ModalTitle>
+            <ModalBody>{content}</ModalBody>
+          </NoteDiv>
+          <DownloadDiv>
             {isContainCard === 'None' ? (
-            <>
-            <DownloadButton onClick={downloadContain}>
-            플래시카드 포함 300P
-          </DownloadButton>
-          <DownloadButton  onClick={downloadNotContain}>
-            플래시카드 미포함 200P
-          </DownloadButton>
-          </>
-                ) : isContainCard === 'ContainCard' ? (
-                    <>
-                <DownloadButton onClick={gotoNoteEditor}>
-                    노트 에디터로 이동
+              <>
+                <DownloadButton onClick={downloadContain}>
+                  플래시카드 포함 300P
                 </DownloadButton>
-                </>
-                ) : (
-                    <>
-                    <DownloadButton  onClick={downloadContain}>
-                    플래시카드 포함 100P
+                <DownloadButton onClick={downloadNotContain}>
+                  플래시카드 미포함 200P
                 </DownloadButton>
-                <DownloadButton onClick={gotoNoteEditor}>
-                    노트 에디터로 이동
+              </>
+            ) : isContainCard === 'ContainCard' ? (
+              <DownloadButton onClick={downloadContain}>
+                새로운 노트로 저장
+              </DownloadButton>
+            ) : isContainCard === 'Upload' ? (
+              <DownloadButton onClick={myNote}>
+                공유 중인 노트로 이동
+              </DownloadButton>
+            ) : (
+              <>
+                <DownloadButton onClick={downloadContain}>
+                  플래시카드 포함 100P
                 </DownloadButton>
-                </>
-            )} 
-        </DownloadDiv>
-      </ModalContent>
-
-      <FolderSelectModal 
-      isOpen={isFolderSelectModal} onClose={handleModalClose}
-      libraryId={libraryId}
-      isDownloadContain={isDownloadContain}
-       />
-
-    </ModalBackdrop>
-  );
-};
+                <DownloadButton onClick={downloadNotContain}>
+                  새로운 노트로 저장
+                </DownloadButton>
+              </>
+            )}
+          </DownloadDiv>
+        </ModalContent>
+  
+        <FolderSelectModal 
+          isOpen={isFolderSelectModal} 
+          onClose={handleModalClose}
+          libraryId={libraryId}
+          isDownloadContain={isDownloadContain}
+        />
+      </ModalBackdrop>
+    );
+  };
 
 export default NoteModal;
