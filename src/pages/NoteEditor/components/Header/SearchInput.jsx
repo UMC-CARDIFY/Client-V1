@@ -8,6 +8,7 @@ const SearchWrapper = styled.div`
   display: flex;
   width: 23.125rem;
   padding: 0.5rem 0.75rem;
+  box-sizing: border-box;
   align-items: center;
   gap: 0.75rem;
   border-radius: 0.5rem;
@@ -23,6 +24,7 @@ const SearchIcon = styled.svg`
 `;
 
 const SearchInput = styled.input`
+  box-sizing: border-box;
   border: none;
   background: none;
   outline: none;
@@ -92,6 +94,14 @@ const Img = styled.img`
    justify-content: flex-end;
 `;
 
+const NoResults = styled.div`
+  padding: 0.75rem 1.5rem;
+  box-sizing: border-box;
+  width: 100%;
+  color: var(--Grays-Gray2, #767676);
+  background: #FFF;
+`;
+
 const Search = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -131,13 +141,12 @@ const Search = () => {
     }
   };
 
-
   const highlightText = (text, searchTerm) => {
     if (!searchTerm) return text;
     const parts = text.split(new RegExp(`(${searchTerm})`, 'gi'));
     return parts.map((part, index) =>
       part.toLowerCase() === searchTerm.toLowerCase() ? (
-        <span key={index} style={{ color: '#007bff', fontWeight: 'bold' }}>
+        <span key={index} style={{ color: '#0F62FE' }}>
           {part}
         </span>
       ) : (
@@ -164,25 +173,29 @@ const Search = () => {
         onChange={(e) => handleSearch(e.target.value)}
         onFocus={() => searchTerm && setIsDropdownOpen(true)} // input 클릭 시 드롭다운 열기
       />
-      {isDropdownOpen && results.length > 0 && (
+      {isDropdownOpen && (
         <SearchResultList>
-          {results.map((result) => (
-            <NoteDiv key={result.noteId}>
-              <SearchResultItemTitle onClick={() => handleResultClick(result.noteId)}>
-                <div>{result.noteName}</div>
-                <Img src={arrow} alt='arrow'/>
-              </SearchResultItemTitle>
-              {result.textList.length > 0 ? (
-                result.textList.map((text, index) => (
-                  <NoteContent key={index}>
-                    {highlightText(text, searchTerm)}
-                  </NoteContent>
-                ))
-              ) : (
-                '내용 없음'
-              )}
-            </NoteDiv>
-          ))}
+          {results.length > 0 ? (
+            results.map((result) => (
+              <NoteDiv key={result.noteId}>
+                <SearchResultItemTitle onClick={() => handleResultClick(result.noteId)}>
+                  <div>{result.noteName}</div>
+                  <Img src={arrow} alt='arrow'/>
+                </SearchResultItemTitle>
+                {result.textList.length > 0 ? (
+                  result.textList.map((text, index) => (
+                    <NoteContent key={index}>
+                      {highlightText(text, searchTerm)}
+                    </NoteContent>
+                  ))
+                ) : (
+                  '내용 없음'
+                )}
+              </NoteDiv>
+            ))
+          ) : (
+            <NoResults>검색 결과가 없습니다.</NoResults>
+          )}
         </SearchResultList>
       )}
     </SearchWrapper>
