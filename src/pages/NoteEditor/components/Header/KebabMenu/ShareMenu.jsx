@@ -1,7 +1,10 @@
-import { forwardRef, useState } from 'react';
+import { forwardRef, useState, useContext } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import { NoteContext } from '../../../../../api/NoteContext';
+import { cancelShare } from '../../../../../api/noteeditor/cancelShare';
 import LibraryIcon from '../../../../../assets/shareLibrary.svg';
+
 
 const ShareMenuWrapper = styled.div`
   position: absolute;
@@ -105,6 +108,9 @@ const ShareMenuButton = styled.button`
 // eslint-disable-next-line react/display-name
 const ShareMenu = forwardRef(({ onShareToLibrary }, ref) => {
   const [selectedCategories, setSelectedCategories] = useState([]);
+  const [shared, setShared] = useState(false);
+  const { noteData } = useContext(NoteContext); // NoteContext 사용
+
 
   const handleCategoryClick = (category) => {
     setSelectedCategories((prevSelected) => {
@@ -115,13 +121,24 @@ const ShareMenu = forwardRef(({ onShareToLibrary }, ref) => {
         // 최대 3개의 카테고리 선택 가능
         return [...prevSelected, category];
       }
-      console.log('카테고리 ', prevSelected);
       return prevSelected; // 이미 3개 선택되었으면 아무 작업도 안 함
     });
   };
 
-  const handleShareToLibrary = () => {
-    onShareToLibrary(selectedCategories);
+  const handleShareToLibrary = async () => {
+    if (shared) {
+      try {
+        await cancelShare(noteData.noteId);
+        setShared(false);
+        setSelectedCategories([]); // 공유 취소 후 선택된 카테고리 초기화
+        console.log('공유취소성공');
+      } catch (error) {
+        console.error('공유 취소 중 오류 발생:', error);
+      }
+    } else {
+      onShareToLibrary(selectedCategories);
+      setShared(true);
+    }
   };
 
   return (
@@ -129,101 +146,113 @@ const ShareMenu = forwardRef(({ onShareToLibrary }, ref) => {
       <Title>공유하기</Title>
       <SubTitle>* 최대 3개 선택</SubTitle>
       <CategoryDiv>
-        <CategoryRow>
-          <CategoryButton
-            onClick={() => handleCategoryClick('과학')}
-            selected={selectedCategories.includes('과학')}
-          >
-            과학
-          </CategoryButton>
-          <CategoryButton
-            onClick={() => handleCategoryClick('기술 · 공학')}
-            selected={selectedCategories.includes('기술 · 공학')}
-          >
-            기술 · 공학
-          </CategoryButton>
-          <CategoryButton
-            onClick={() => handleCategoryClick('경제 · 경영')}
-            selected={selectedCategories.includes('경제 · 경영')}
-          >
-            경제 · 경영
-          </CategoryButton>
-        </CategoryRow>
+        {shared ? (
+          <CategoryRow>
+            {selectedCategories.map((category) => (
+              <CategoryButton key={category} selected>
+                {category}
+              </CategoryButton>
+            ))}
+          </CategoryRow>
+        ) : (
+          <>
+            <CategoryRow>
+              <CategoryButton
+                onClick={() => handleCategoryClick('과학')}
+                selected={selectedCategories.includes('과학')}
+              >
+                과학
+              </CategoryButton>
+              <CategoryButton
+                onClick={() => handleCategoryClick('기술 · 공학')}
+                selected={selectedCategories.includes('기술 · 공학')}
+              >
+                기술 · 공학
+              </CategoryButton>
+              <CategoryButton
+                onClick={() => handleCategoryClick('경제 · 경영')}
+                selected={selectedCategories.includes('경제 · 경영')}
+              >
+                경제 · 경영
+              </CategoryButton>
+            </CategoryRow>
 
-        <CategoryRow>
-          <CategoryButton
-            onClick={() => handleCategoryClick('컴퓨터 · IT')}
-            selected={selectedCategories.includes('컴퓨터 · IT')}
-          >
-            컴퓨터 · IT
-          </CategoryButton>
-          <CategoryButton
-            onClick={() => handleCategoryClick('언어')}
-            selected={selectedCategories.includes('언어')}
-          >
-            언어
-          </CategoryButton>
-          <CategoryButton
-            onClick={() => handleCategoryClick('일반 상식')}
-            selected={selectedCategories.includes('일반 상식')}
-          >
-            일반 상식
-          </CategoryButton>
-        </CategoryRow>
+            <CategoryRow>
+              <CategoryButton
+                onClick={() => handleCategoryClick('컴퓨터 · IT')}
+                selected={selectedCategories.includes('컴퓨터 · IT')}
+              >
+                컴퓨터 · IT
+              </CategoryButton>
+              <CategoryButton
+                onClick={() => handleCategoryClick('언어')}
+                selected={selectedCategories.includes('언어')}
+              >
+                언어
+              </CategoryButton>
+              <CategoryButton
+                onClick={() => handleCategoryClick('일반 상식')}
+                selected={selectedCategories.includes('일반 상식')}
+              >
+                일반 상식
+              </CategoryButton>
+            </CategoryRow>
 
-        <CategoryRow>
-          <CategoryButton
-            onClick={() => handleCategoryClick('인문')}
-            selected={selectedCategories.includes('인문')}
-          >
-            인문
-          </CategoryButton>
-          <CategoryButton
-            onClick={() => handleCategoryClick('예술')}
-            selected={selectedCategories.includes('예술')}
-          >
-            예술
-          </CategoryButton>
-          <CategoryButton
-            onClick={() => handleCategoryClick('역사 · 문화')}
-            selected={selectedCategories.includes('역사 · 문화')}
-          >
-            역사 · 문화
-          </CategoryButton>
-          <CategoryButton
-            onClick={() => handleCategoryClick('수학')}
-            selected={selectedCategories.includes('수학')}
-          >
-            수학
-          </CategoryButton>
-        </CategoryRow>
+            <CategoryRow>
+              <CategoryButton
+                onClick={() => handleCategoryClick('인문')}
+                selected={selectedCategories.includes('인문')}
+              >
+                인문
+              </CategoryButton>
+              <CategoryButton
+                onClick={() => handleCategoryClick('예술')}
+                selected={selectedCategories.includes('예술')}
+              >
+                예술
+              </CategoryButton>
+              <CategoryButton
+                onClick={() => handleCategoryClick('역사 · 문화')}
+                selected={selectedCategories.includes('역사 · 문화')}
+              >
+                역사 · 문화
+              </CategoryButton>
+              <CategoryButton
+                onClick={() => handleCategoryClick('수학')}
+                selected={selectedCategories.includes('수학')}
+              >
+                수학
+              </CategoryButton>
+            </CategoryRow>
 
-        <CategoryRow>
-          <CategoryButton
-            onClick={() => handleCategoryClick('취업 · 수험')}
-            selected={selectedCategories.includes('취업 · 수험')}
-          >
-            취업 · 수험
-          </CategoryButton>
-          <CategoryButton
-            onClick={() => handleCategoryClick('기타')}
-            selected={selectedCategories.includes('기타')}
-          >
-            기타
-          </CategoryButton>
-          <CategoryButton
-            onClick={() => handleCategoryClick('정치 · 사회')}
-            selected={selectedCategories.includes('정치 · 사회')}
-          >
-            정치 · 사회
-          </CategoryButton>
-        </CategoryRow>
+            <CategoryRow>
+              <CategoryButton
+                onClick={() => handleCategoryClick('취업 · 수험')}
+                selected={selectedCategories.includes('취업 · 수험')}
+              >
+                취업 · 수험
+              </CategoryButton>
+              <CategoryButton
+                onClick={() => handleCategoryClick('기타')}
+                selected={selectedCategories.includes('기타')}
+              >
+                기타
+              </CategoryButton>
+              <CategoryButton
+                onClick={() => handleCategoryClick('정치 · 사회')}
+                selected={selectedCategories.includes('정치 · 사회')}
+              >
+                정치 · 사회
+              </CategoryButton>
+            </CategoryRow>
+          </>
+        )}
       </CategoryDiv>
 
       <ButtonWrapper>
-        <ShareMenuButton onClick={handleShareToLibrary} disabled={selectedCategories.length === 0}>
-          <img src={LibraryIcon} alt="LibraryIcon" style={{padding: '0'}} />
-          자료실에 공유
+      <ShareMenuButton onClick={handleShareToLibrary} disabled={selectedCategories.length === 0 && !shared}>
+      <img src={LibraryIcon} alt="LibraryIcon" style={{padding: '0'}} />
+          {shared ? '공유 취소' : '자료실에 공유'}
         </ShareMenuButton>
       </ButtonWrapper>
     </ShareMenuWrapper>
