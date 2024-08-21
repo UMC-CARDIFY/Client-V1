@@ -15,7 +15,7 @@ const ShareMenuWrapper = styled.div`
   background: var(--Grays-White, #FFF);
   box-shadow: 0px 4px 26px 0px rgba(0, 0, 0, 0.02), 0px 10px 60px 0px rgba(0, 74, 162, 0.03);
   z-index: 10;
-  padding: 1.5rem 1.5rem;
+  padding: 1.5rem 1.4rem;
   box-sizing: border-box;
 `;
 
@@ -55,17 +55,18 @@ const CategoryButton = styled.div`
   justify-content: center;
   align-items: center;
   border-radius: var(--font-size-xs, 0.8125rem);
-  background: #F6F6F6;
-  color: var(--Grays-Gray3, #B1B1B1);
+  background: ${(props) => (props.selected ? '#4A89FF' : '#f6f6f6')};
+  color: ${(props) => (props.selected ? '#fff' : 'var(--Grays-Gray3, #B1B1B1)')};
   font-family: Pretendard;
   font-size: 0.75rem;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
   cursor: pointer;
+  transition: 0.2s;
 
   &:hover {
-    background: #F0F0F0;
+    background: ${(props) => (props.selected ? '#4A89FF' : '#F0F0F0')};
   }
 `;
 
@@ -84,56 +85,143 @@ const ShareMenuButton = styled.button`
   align-items: center;
   gap: 0.38rem;
   border-radius: 0.25rem;
-  background: var(--Main-BackGround, #F0F0F0);
   border: none;
   cursor: pointer;
-  color: #B1B1B1;
+  backgroud: ${(props) => (props.disabled ? '#F0F0F0' : '#ECEFF4')};
+  color: ${(props) => (props.disabled ? '#b1b1b1' : '#646464')};
   font-family: Pretendard;
   font-size: 0.75rem;
   font-style: normal;
   font-weight: 500;
   line-height: normal;
+
+  pointer-events: ${(props) => (props.disabled ? 'none' : 'auto')};
+
+  &: hover{
+    background: ${(props) => (props.disabled ? '#F0F0F0' : '#E6EAF1')};
+  }
 `;
 
 // eslint-disable-next-line react/display-name
 const ShareMenu = forwardRef(({ onShareToLibrary }, ref) => {
+  const [selectedCategories, setSelectedCategories] = useState([]);
 
+  const handleCategoryClick = (category) => {
+    setSelectedCategories((prevSelected) => {
+      if (prevSelected.includes(category)) {
+        // 이미 선택된 카테고리를 다시 클릭하면 제거
+        return prevSelected.filter((item) => item !== category);
+      } else if (prevSelected.length < 3) {
+        // 최대 3개의 카테고리 선택 가능
+        return [...prevSelected, category];
+      }
+      console.log('카테고리 ', prevSelected);
+      return prevSelected; // 이미 3개 선택되었으면 아무 작업도 안 함
+    });
+  };
+
+  const handleShareToLibrary = () => {
+    onShareToLibrary(selectedCategories);
+  };
 
   return (
     <ShareMenuWrapper ref={ref}>
-      <Title>
-         공유하기
-      </Title>
+      <Title>공유하기</Title>
       <SubTitle>* 최대 3개 선택</SubTitle>
       <CategoryDiv>
         <CategoryRow>
-          <CategoryButton>과학 </CategoryButton>
-          <CategoryButton>기술·공학 </CategoryButton>
-          <CategoryButton>경제·경영 </CategoryButton>
+          <CategoryButton
+            onClick={() => handleCategoryClick('과학')}
+            selected={selectedCategories.includes('과학')}
+          >
+            과학
+          </CategoryButton>
+          <CategoryButton
+            onClick={() => handleCategoryClick('기술 · 공학')}
+            selected={selectedCategories.includes('기술 · 공학')}
+          >
+            기술 · 공학
+          </CategoryButton>
+          <CategoryButton
+            onClick={() => handleCategoryClick('경제 · 경영')}
+            selected={selectedCategories.includes('경제 · 경영')}
+          >
+            경제 · 경영
+          </CategoryButton>
         </CategoryRow>
 
         <CategoryRow>
-          <CategoryButton>컴퓨터·IT </CategoryButton>
-          <CategoryButton>언어 </CategoryButton>
-          <CategoryButton>일반 상식 </CategoryButton>
+          <CategoryButton
+            onClick={() => handleCategoryClick('컴퓨터 · IT')}
+            selected={selectedCategories.includes('컴퓨터 · IT')}
+          >
+            컴퓨터 · IT
+          </CategoryButton>
+          <CategoryButton
+            onClick={() => handleCategoryClick('언어')}
+            selected={selectedCategories.includes('언어')}
+          >
+            언어
+          </CategoryButton>
+          <CategoryButton
+            onClick={() => handleCategoryClick('일반 상식')}
+            selected={selectedCategories.includes('일반 상식')}
+          >
+            일반 상식
+          </CategoryButton>
         </CategoryRow>
 
         <CategoryRow>
-          <CategoryButton>인문 </CategoryButton>
-          <CategoryButton>예술 </CategoryButton>
-          <CategoryButton>역사·문화 </CategoryButton>
-          <CategoryButton>수학 </CategoryButton>
+          <CategoryButton
+            onClick={() => handleCategoryClick('인문')}
+            selected={selectedCategories.includes('인문')}
+          >
+            인문
+          </CategoryButton>
+          <CategoryButton
+            onClick={() => handleCategoryClick('예술')}
+            selected={selectedCategories.includes('예술')}
+          >
+            예술
+          </CategoryButton>
+          <CategoryButton
+            onClick={() => handleCategoryClick('역사 · 문화')}
+            selected={selectedCategories.includes('역사 · 문화')}
+          >
+            역사 · 문화
+          </CategoryButton>
+          <CategoryButton
+            onClick={() => handleCategoryClick('수학')}
+            selected={selectedCategories.includes('수학')}
+          >
+            수학
+          </CategoryButton>
         </CategoryRow>
 
         <CategoryRow>
-          <CategoryButton>취업·수험 </CategoryButton>
-          <CategoryButton>기타 </CategoryButton>
-          <CategoryButton>정치·사회 </CategoryButton>
+          <CategoryButton
+            onClick={() => handleCategoryClick('취업 · 수험')}
+            selected={selectedCategories.includes('취업 · 수험')}
+          >
+            취업 · 수험
+          </CategoryButton>
+          <CategoryButton
+            onClick={() => handleCategoryClick('기타')}
+            selected={selectedCategories.includes('기타')}
+          >
+            기타
+          </CategoryButton>
+          <CategoryButton
+            onClick={() => handleCategoryClick('정치 · 사회')}
+            selected={selectedCategories.includes('정치 · 사회')}
+          >
+            정치 · 사회
+          </CategoryButton>
         </CategoryRow>
       </CategoryDiv>
 
       <ButtonWrapper>
-        <ShareMenuButton onClick={onShareToLibrary}>
+        <ShareMenuButton onClick={handleShareToLibrary} disabled={selectedCategories.length === 0}>
           <img src={LibraryIcon} alt="LibraryIcon" style={{padding: '0'}} />
           자료실에 공유
         </ShareMenuButton>
