@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   MyPageContainer, Header, ContentDiv, LeftSection, RightSection, AlarmSection,
@@ -6,7 +6,7 @@ import {
   InfoSection, FlexRow, SectionText, PointText, InfoText, NotificationText,
   InstagramId, AttendanceImage, Divider
 } from './styles/MyPageStyles'; 
-
+import { getMyPageInfo } from '../../api/mypage/getMypage';
 import Switch from './components/Switch';
 import ProfileSection from './components/ProfileSection';
 import BackButton from './components/BackButton';
@@ -22,19 +22,38 @@ import angleRight from '../../assets/angleRight.svg';
 
 export const MyPage = () => {
   const navigate = useNavigate();
+  const [profileData, setProfileData] = useState(null);
   const [isNotificationOn, setIsNotificationOn] = useState(false);
   const [showTermsModal, setShowTermsModal] = useState(false);
   const [showPrivacyModal, setShowPrivacyModal] = useState(false);
   const [showAttendanceModal, setShowAttendanceModal] = useState(false);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getMyPageInfo();
+        setProfileData(data);
+      } catch (error) {
+        console.error('Error fetching profile info:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (!profileData) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <MyPageContainer>
       <Header>
-        <BackButton />마이페이지
+        <BackButton />
+        마이페이지 
       </Header>
       <ContentDiv>
         <LeftSection>
-          <ProfileSection />
+          <ProfileSection nickname={profileData.name} email={profileData.email} />
           <LogoutButton />
         </LeftSection>
         <RightSection>
@@ -55,7 +74,7 @@ export const MyPage = () => {
             <SectionText>내 포인트</SectionText>
             </FlexRow>
             <FlexRow>
-             <PointText onClick={() => navigate('point')}>9,500P</PointText>
+             <PointText onClick={() => navigate('point')}>{profileData.point}</PointText>
              <img src={angleRight} alt="angleRight" onClick={() => navigate('point')} style={{margin: '0 2rem 0 2.5rem', cursor: 'pointer'}} />
              </FlexRow>
           </PointSection>
