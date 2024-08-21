@@ -42,6 +42,7 @@ const SvgIcon = styled.svg`
 `;
 
 const colors = [
+  { color: '#FFF', hoverBorderColor: '#FBFBFB' }, // White
   { color: '#E6F1FB', hoverBorderColor: '#CDE3F7' }, // Light Blue
   { color: '#FEEEEE', hoverBorderColor: '#FDDDDD' }, // Light Red
   { color: '#FFF4E5', hoverBorderColor: '#FFEDBD' }, // Light Yellow

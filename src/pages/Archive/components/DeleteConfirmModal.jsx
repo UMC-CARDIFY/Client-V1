@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import DeleteIcon from '../../../assets/deleteIcon.svg';
+import DeleteIcon from '../../../assets/deleteicon.svg';
 import PropTypes from 'prop-types';
 
 const ModalBackground = styled.div`

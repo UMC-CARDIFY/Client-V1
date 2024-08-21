@@ -2,7 +2,6 @@ import { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import KebabMenu from './KebabMenu/KebabMenu';
-import ExportMenu from './KebabMenu/ExportMenu';
 import ShareMenu from './KebabMenu/ShareMenu';
 //import { useSaveContext } from './SaveContext';
 import { saveNote } from '../../../../api/noteeditor/saveNote'
@@ -10,6 +9,8 @@ import StarButton from './StarButton';
 import SaveButton from './SaveButton';
 import SearchInput from './SearchInput';
 import CloseButton from './CloseButton';
+import { useContext } from 'react';
+import { NoteContext } from '../../../../api/NoteContext';
 
 const HeaderWrapper = styled.header`
   background: var(--Grays-White, #FFF);
@@ -22,7 +23,7 @@ const HeaderWrapper = styled.header`
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  
+  z-index: 999;
   @media (max-width: 768px) {
     flex-direction: column;
     align-items: flex-start;
@@ -80,34 +81,16 @@ const ToggleMenuButton = styled.button`
   }
 `;
 
-const Header = ({ isMenuCollapsed, toggleMenuBar, editorView = null }) => {
-  const data = [
-    'Document 1',
-    'Document 2',
-    'Folder A',
-    'Folder B',
-    'File XYZ',
-    'File ABC'
-  ];
-
-  const noteId = 1; // noteId 설정
-
+const Header = ({ isMenuCollapsed, toggleMenuBar, editorView = null, selectedForderId, currentNoteId }) => {
+  const { noteData } = useContext(NoteContext);
   const [isKebabMenuOpen, setIsKebabMenuOpen] = useState(false);
-  const [isExportMenuOpen, setIsExportMenuOpen] = useState(false);
   const [isShareMenuOpen, setIsShareMenuOpen] = useState(false);
   const kebabMenuRef = useRef(null);
-  const exportMenuRef = useRef(null);
   const shareMenuRef = useRef(null);
 
   const handleKebabClick = () => {
     setIsKebabMenuOpen(!isKebabMenuOpen);
-    setIsExportMenuOpen(false); // Hide export menu if it's open
     setIsShareMenuOpen(false); // Hide share menu if it's open
-  };
-
-  const handleExportClick = () => {
-    setIsKebabMenuOpen(false);
-    setIsExportMenuOpen(true);
   };
 
   const handleShareClick = () => {
@@ -116,19 +99,16 @@ const Header = ({ isMenuCollapsed, toggleMenuBar, editorView = null }) => {
   };
 
   const handleClickOutside = (event) => {
-    //if (kebabMenuRef.current && !kebabMenuRef.current.contains(event.target)) {
-      //setIsKebabMenuOpen(false);
-    //}
-    if (exportMenuRef.current && !exportMenuRef.current.contains(event.target)) {
-      setIsExportMenuOpen(false);
-    }
+    /*if (kebabMenuRef.current && !kebabMenuRef.current.contains(event.target)) {
+      setIsKebabMenuOpen(false);
+    }*/
     if (shareMenuRef.current && !shareMenuRef.current.contains(event.target)) {
       setIsShareMenuOpen(false);
     }
   };
 
   useEffect(() => {
-    if (isKebabMenuOpen || isExportMenuOpen || isShareMenuOpen) {
+    if (isKebabMenuOpen || isShareMenuOpen) {
       document.addEventListener('mousedown', handleClickOutside);
     } else {
       document.removeEventListener('mousedown', handleClickOutside);
@@ -137,15 +117,7 @@ const Header = ({ isMenuCollapsed, toggleMenuBar, editorView = null }) => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isKebabMenuOpen, isExportMenuOpen, isShareMenuOpen]);
-
-  const handleExportPDF = () => {
-    alert('PDF로 내보내기');
-  };
-
-  const handleExportCSV = () => {
-    alert('CSV로 내보내기');
-  };
+  }, [isKebabMenuOpen, isShareMenuOpen]);
 
   const handleCopyLink = () => {
     alert('링크가 복사되었습니다.');
@@ -174,14 +146,15 @@ const Header = ({ isMenuCollapsed, toggleMenuBar, editorView = null }) => {
       console.log("EditorView or its state is not set in viewRef");
       return;
     }
-    const noteData = {
-      title: document.querySelector('div[contentEditable=true]').innerText, // 제목 가져오기
-      content: editorView.state.doc.toJSON(), // ProseMirror의 상태를 JSON으로 직렬화
+    const noteDataToSave = {
+      title: document.querySelector('div[contentEditable=true]').innerText || '제목없음',
+      content: noteData.noteContent,  // 최신 상태의 noteContent를 가져옴
     };
+    //console.log(noteData.noteContent);
 
     // ProseMirror의 상태를 JSON으로 직렬화하여 로그로 출력
-    console.log("Document JSON:", JSON.stringify(editorView.state.doc.toJSON(), null, 2));
-    console.log("Note Data to Save:", noteData);
+    //console.log("Document JSON:", JSON.stringify(editorView.state.doc.toJSON(), null, 2));
+    console.log("Note Data to Save:", noteDataToSave);
 
     // localStorage에서 토큰 가져오기
     const token = localStorage.getItem('accessToken');
@@ -192,23 +165,20 @@ const Header = ({ isMenuCollapsed, toggleMenuBar, editorView = null }) => {
 
     try {
         const response = await saveNote(
-            noteId,
-            noteData.title,
-            JSON.stringify(noteData.content),
+            currentNoteId,
+            noteDataToSave.title,
+            noteDataToSave.content,
             token
         );
-        
-        console.log("Response from server:", response);
-
         if (response.isSuccess) {
-            alert('저장이 완료되었습니다.');
+          alert('저장이 완료되었습니다.');
         } else {
-            alert('저장에 실패했습니다.');
+          alert('저장에 실패했습니다.');
         }
-    } catch (error) {
-        alert(error.message);
-        console.log("Error during save:", error);
-    }
+      } catch (error) {
+        console.error("API Error Response:", error.response);
+        alert(`저장에 실패했습니다: ${error.message}`);
+      }
 };
 
   return (
@@ -231,15 +201,7 @@ const Header = ({ isMenuCollapsed, toggleMenuBar, editorView = null }) => {
           <KebabMenu
             ref={kebabMenuRef}
             onShare={handleShareClick}
-            onExport={handleExportClick}
-            noteId={noteId}
-          />
-        )}
-        {isExportMenuOpen && (
-          <ExportMenu
-            ref={exportMenuRef}
-            onExportPDF={handleExportPDF}
-            onExportCSV={handleExportCSV}
+            noteId={currentNoteId}
           />
         )}
         {isShareMenuOpen && (
@@ -249,12 +211,12 @@ const Header = ({ isMenuCollapsed, toggleMenuBar, editorView = null }) => {
             onShareToLibrary={handleShareToLibrary}
           />
         )}
-        <StarButton noteId={noteId} />
+        <StarButton />
         <NotificationText>저장되지 않은 변경 사항이 있습니다.</NotificationText>
         <SaveButton onSave={handleSave} />
       </LeftSection>
       <RightSection>
-        <SearchInput data={data} />
+        <SearchInput ForderId={selectedForderId}/>
         <CloseButton />
       </RightSection>
     </HeaderWrapper>
@@ -265,6 +227,8 @@ Header.propTypes = {
   isMenuCollapsed: PropTypes.bool.isRequired,
   toggleMenuBar: PropTypes.func.isRequired,
   editorView: PropTypes.object,
+  selectedForderId: PropTypes.number.isRequired,
+  currentNoteId: PropTypes.number.isRequired,
 };
 
 export default Header;
