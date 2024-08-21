@@ -74,7 +74,7 @@ export const MyPage = () => {
             <SectionText>내 포인트</SectionText>
             </FlexRow>
             <FlexRow>
-             <PointText onClick={() => navigate('point')}>{profileData.point}</PointText>
+             <PointText onClick={() => navigate('point')}>{profileData.point}P</PointText>
              <img src={angleRight} alt="angleRight" onClick={() => navigate('point')} style={{margin: '0 2rem 0 2.5rem', cursor: 'pointer'}} />
              </FlexRow>
           </PointSection>
