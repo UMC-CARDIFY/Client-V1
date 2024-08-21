@@ -5,14 +5,15 @@ const OuterContainer = styled.div`
   display: flex;
   justify-content: center;
   width: 100%;
-  padding: 10rem 0;
+  height: 100%;
+  padding: 8rem 0;
   
   @media screen and (max-width: 1440px) {
-    padding: 9.37rem 0;
+    padding: 7em 0;
   }
 
-  @media screen and (max-width: 1024px) {
-    padding: 7.37rem 0;
+  @media screen and (max-width: 1200px) {
+    padding: 6.8rem 0;
   }
 `;
 
@@ -37,7 +38,7 @@ const Header = styled.div`
   align-items: center;
   gap: 0.5rem;
   align-self: flex-start;
-  margin-left: -4.5rem;
+  margin-left: -3.5rem;
 `;
 
 const ContentContainer = styled.div`
@@ -59,62 +60,18 @@ const OptionContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
+  gap: 1.25rem;
   width: 100%; 
 `;
 
-const PointOption = styled.button`
+const PointHistory = styled.div`
   display: flex;
-  width: 100%;
-  padding: 2rem; 
+  width: 100%; 
   justify-content: space-between;
   align-items: center;
   border-radius: 0.5rem;
   border: 1px solid var(--B1B1B1, #B1B1B1);
   background: #FFF;
-  cursor: pointer;
-
-  @media screen and (max-width: 1440px) {
-    padding: 1.75rem 2rem; 
-  }
-
-  @media screen and (max-width: 1024px) {
-    padding: 1.25rem 2rem; 
-  }
-`;
-
-const Username = styled.span`
-  color: #000;
-  font-family: Pretendard;
-  font-size: 1.5rem;
-  font-style: normal;
-  font-weight: 300;
-  line-height: normal;
-
-  @media screen and (max-width: 1024px) {
-    font-size: 1rem;
-  }
-`;
-
-const UserPoint = styled.span`
-  color: var(--main-blue, #0F62FE);
-  font-family: Pretendard;
-  font-size: 2.5rem;
-  font-style: normal;
-  font-weight: 500;
-  line-height: normal;
-  align-self: flex-start;
-
-  @media screen and (max-width: 1024px) {
-    font-size: 2rem;
-  }
-`;
-
-const Divider = styled.div`
-  width: 100%;
-  height: 1px;
-  background: #B1B1B1;
-  margin: 1rem 0;
 `;
 
 const Text = styled.span`
@@ -125,77 +82,96 @@ const Text = styled.span`
   font-weight: 300;
   line-height: normal;
 
-  @media screen and (max-width: 1024px) {
-    font-size: 1rem;
+  @media screen and (max-width: 1200px) {
+    font-size: 1.5em;
   }
 `;
 
-const Text2 = styled.span`
+const PointText = styled(Text)`
+  margin-right: 2rem;
+`;
+
+const Divider = styled.div`
+  width: 100%;
+  height: 1px;
+  background: #B1B1B1;
+  margin: 1rem 0 1.5rem 0;
+`;
+
+const HistoryTitle = styled.span`
   color: #000;
   font-family: Pretendard;
-  font-size: 1.5rem;
+  font-size: 1.125rem;
   font-style: normal;
   font-weight: 600;
   line-height: normal;
+`
 
-  @media screen and (max-width: 1024px) {
-    font-size: 1rem;
-  }
-`;
-
-const ChargeText = styled.p`
-  color: #000;
+const DateText = styled.span`
+  color: #C7C7C7;
   font-family: Pretendard;
-  font-size: 1rem;
+  font-size: 0.75rem;
   font-style: normal;
-  font-weight: 400;
+  font-weight: 300;
   line-height: normal;
   align-self: flex-start;
-  margin: 1rem 0 2rem 0;
-
-  @media screen and (max-width: 1024px) {
-    margin: 1rem 0;
-  }
-
 `;
 
-const PointPage = () => {
+const FlexDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.38rem;
+  margin: 1.25rem 0 1.25rem 2rem;
+`
 
+const PointPage = () => {
   return (
     <OuterContainer>
       <InnerContainer>
         <Header>
           <BackButton />
-          <Username>이름</Username>
-          <Text>님의 포인트</Text>
+          <Text>이름 님의 포인트 사용 내역 </Text>
         </Header>
         <ContentContainer>
           <Section>
-            <UserPoint>30P</UserPoint>
             <Divider />
-            <ChargeText>포인트 충전</ChargeText>
           </Section>
           <OptionContainer>
-            <PointOption>
-              <Text>1000P</Text>
-              <Text2>1,000원</Text2>
-            </PointOption>
-            <PointOption>
-              <Text>2000P</Text>
-              <Text2>2,000원</Text2>
-            </PointOption>
-            <PointOption>
-              <Text>3000P</Text>
-              <Text2>3,000원</Text2>
-            </PointOption>
-            <PointOption>
-              <Text>5000P</Text>
-              <Text2>5,000원</Text2>
-            </PointOption>
-            <PointOption>
-              <Text>10000P</Text>
-              <Text2>10,000원</Text2>
-            </PointOption>
+            <PointHistory>
+              <FlexDiv>
+              <HistoryTitle>기출 정리와 해설</HistoryTitle>
+              <DateText>2024-08-10</DateText>
+              </FlexDiv>
+              <PointText>200P</PointText>
+            </PointHistory>
+            <PointHistory>
+              <FlexDiv>
+              <HistoryTitle>기출 정리와 해설</HistoryTitle>
+              <DateText>2024-08-10</DateText>
+              </FlexDiv>
+              <PointText>200P</PointText>
+            </PointHistory>
+            <PointHistory>
+              <FlexDiv>
+              <HistoryTitle>기출 정리와 해설</HistoryTitle>
+              <DateText>2024-08-10</DateText>
+              </FlexDiv>
+              <PointText>200P</PointText>
+            </PointHistory>
+            <PointHistory>
+              <FlexDiv>
+              <HistoryTitle>기출 정리와 해설</HistoryTitle>
+              <DateText>2024-08-10</DateText>
+              </FlexDiv>
+              <PointText>200P</PointText>
+            </PointHistory>
+            <PointHistory>
+              <FlexDiv>
+              <HistoryTitle>기출 정리와 해설</HistoryTitle>
+              <DateText>2024-08-10</DateText>
+              </FlexDiv>
+              <PointText>200P</PointText>
+            </PointHistory>
           </OptionContainer>
         </ContentContainer>
       </InnerContainer>
