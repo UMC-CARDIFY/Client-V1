@@ -53,6 +53,7 @@ const HighlightedAnswer = styled.span`
 const MultiCardPreviewModal = ({ question, answer, onClose }) => {
   const [isOpen, setIsOpen] = useState(true);
   const [clickedStates, setClickedStates] = useState(answer.map(() => false));
+  const [hoveredIndex, setHoveredIndex] = useState(null);
 
   const handleClose = () => {
     setIsOpen(false);
@@ -75,6 +76,14 @@ const MultiCardPreviewModal = ({ question, answer, onClose }) => {
     });
   };
 
+  const handleMouseEnter = (index) => {
+    setHoveredIndex(index);
+  };
+
+  const handleMouseLeave = () => {
+    setHoveredIndex(null);
+  };
+
   if (!isOpen) return null; 
 
   return (
@@ -95,16 +104,21 @@ const MultiCardPreviewModal = ({ question, answer, onClose }) => {
           <CardFront>{question}</CardFront>
           <AnswerList>
             {answer.map((ans, index) => (
-              <CardBack key={index}>
-                <BulletIcon src={bulletIcon} alt="bulletIcon" />
-                <span style={{border: '1px solid #CDDDFF'}}>
-                  {ans}
-                </span>
-                <HighlightedAnswer
-                  isClicked={clickedStates[index]}
-                  onClick={() => handleToggleClick(index)}
-                >
-                </HighlightedAnswer>
+              <CardBack
+                key={index}
+                onMouseEnter={() => handleMouseEnter(index)}
+                onMouseLeave={handleMouseLeave}
+              >
+              <BulletIcon src={bulletIcon} alt="bulletIcon" />
+              <span style={{border: '1px solid #CDDDFF'}}>
+                {ans}
+              </span>
+              <HighlightedAnswer
+                isClicked={clickedStates[index]}
+                isHovered={hoveredIndex === index}
+                onClick={() => handleToggleClick(index)}
+              >
+              </HighlightedAnswer>
               </CardBack>
             ))}
           </AnswerList>
