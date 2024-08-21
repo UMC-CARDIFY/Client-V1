@@ -289,6 +289,7 @@ const AllCategory = ({ selectedCategory, onBackClick }) => {
                 userName={note.userName}
                 uploadAt={note.uploadAt}
                 noteId={note.noteId} // Note ID 전달
+                isDownload={note.isDownload}
               />
               ))
             )}
