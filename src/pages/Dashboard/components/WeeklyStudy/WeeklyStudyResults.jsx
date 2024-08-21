@@ -31,12 +31,12 @@ const Container = styled.div`
 `;
 
 const Title = styled.div`
-color: var(--Grays-Black, #1A1A1A);
-font-family: Pretendard;
-font-size: 1.125rem;
-font-style: normal;
-font-weight: 500;
-line-height: normal;
+  color: var(--Grays-Black, #1A1A1A);
+  font-family: Pretendard;
+  font-size: 1.125rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
   margin-bottom: 0.44rem;
 `;
 
@@ -47,12 +47,12 @@ const Header = styled.div`
 `;
 
 const GraphTitle = styled.div`
-color: var(--Grays-Gray1, #646464);
-font-family: Pretendard;
-font-size: 0.75rem;
-font-style: normal;
-font-weight: 400;
-line-height: normal;
+  color: var(--Grays-Gray1, #646464);
+  font-family: Pretendard;
+  font-size: 0.75rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
 `;
 
 const Legend = styled.div`
@@ -75,12 +75,12 @@ const LegendBox = styled.div`
 `;
 
 const LegendLabel = styled.div`
-color: var(--Grays-Gray1, #646464);
-font-family: Pretendard;
-font-size: 0.75rem;
-font-style: normal;
-font-weight: 400;
-line-height: normal;
+  color: var(--Grays-Gray1, #646464);
+  font-family: Pretendard;
+  font-size: 0.75rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
 `;
 
 const BarGraphContainer = styled.div`

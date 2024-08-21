@@ -5,12 +5,12 @@ const CardContainer = styled.div`
   display: flex;
   align-items: center;
   padding: 1rem;
-  margin-top: 1rem;
-width: 16.0625rem;
-gap: 1.5rem;
-border-radius: 0.5rem;
-background: linear-gradient(90deg, #F6F6F6 0%, #F0F0F0 100%);
-box-sizing: border-box;
+  margin-bottom: 0.75rem;
+  width: 100%;
+  gap: 1.5rem;
+  border-radius: 0.5rem;
+  background: linear-gradient(90deg, #F6F6F6 0%, #F0F0F0 100%);
+  box-sizing: border-box;
 `;
 
 const CardIcon = styled.div`
@@ -25,11 +25,11 @@ const CardDetails = styled.div`
 
 const CardTitle = styled.div`
   color: var(--Grays-Gray2, #767676);
-font-family: Pretendard;
-font-size: 0.875rem;
-font-style: normal;
-font-weight: 500;
-line-height: normal;
+  font-family: Pretendard;
+  font-size: 0.875rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
 `;
 
 const CardSubtitle = styled.div`
