@@ -3,6 +3,7 @@ import modalClose from '../../../assets/modalClose.svg';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import FolderSelectModal from './SelectFolderModal';
+import NotePreview from './NotePreview';
 
 const ModalBackdrop = styled.div`
   position: fixed;
@@ -112,7 +113,9 @@ const NoteModal = ({ show, onClose, title, content, isContainCard, libraryId,not
               <img src={modalClose} alt="close" />
             </CloseButton>
             <ModalTitle>{title}</ModalTitle>
-            <ModalBody>{content}</ModalBody>
+            <ModalBody>
+              <NotePreview content={content} /> 
+            </ModalBody>
           </NoteDiv>
           <DownloadDiv>
             {isContainCard === 'None' ? (
