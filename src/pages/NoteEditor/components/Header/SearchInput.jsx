@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import postNoteSearch from '../../../../api/noteeditor/postNoteSearch';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const SearchWrapper = styled.div`
   display: flex;
@@ -61,20 +63,32 @@ const SearchResultItem = styled.div`
   }
 `;
 
-const Search = ({ data }) => {
+const Search = () => {
+  const location = useLocation(); 
+  const navigate = useNavigate(); // 페이지 이동을 위한 hook
+  const searchParams = new URLSearchParams(location.search); 
+  const folderId = searchParams.get('folderId'); 
   const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState([]);
 
-  const handleSearch = (term) => {
+  const handleSearch = async (term) => {
     setSearchTerm(term);
     if (term === '') {
       setResults([]);
     } else {
-      const filteredResults = data.filter(item =>
-        item.toLowerCase().includes(term.toLowerCase())
-      );
-      setResults(filteredResults);
+      try {
+        const { noteList } = await postNoteSearch(folderId, term);
+        setResults(noteList); 
+      } catch (error) {
+        console.error("Error fetching search results:", error);
+        setResults([]); 
+      }
     }
+  };
+
+  const handleResultClick = (noteId) => {
+    // 클릭 시 noteId를 기반으로 해당 노트로 이동
+    navigate(`/note-editor?folderId=${folderId}&noteId=${noteId}`);
   };
 
   return (
@@ -89,9 +103,9 @@ const Search = ({ data }) => {
       />
       {results.length > 0 && (
         <SearchResultList>
-          {results.map((result, index) => (
-            <SearchResultItem key={index}>
-              {result}
+          {results.map((result) => (
+            <SearchResultItem key={result.noteId} onClick={() => handleResultClick(result.noteId)}>
+              {result.noteName || '제목없음'} {/* 노트 제목 표시 */}
             </SearchResultItem>
           ))}
         </SearchResultList>
@@ -101,7 +115,7 @@ const Search = ({ data }) => {
 };
 
 Search.propTypes = {
-  data: PropTypes.arrayOf(PropTypes.string).isRequired,
+  folderId: PropTypes.string.isRequired,
 };
 
 export default Search;
