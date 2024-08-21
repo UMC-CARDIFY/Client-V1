@@ -285,6 +285,7 @@ const FolderSelectModal = ({ isOpen, onClose, libraryId, isDownloadContain }) =>
 
   const handleFolderClick = async (folderId) => {
     console.log(folderId);
+    console.log(isDownloadContain);
     try {
         const data = await download(libraryId, folderId, isDownloadContain);
         console.log(data); // new noteId
