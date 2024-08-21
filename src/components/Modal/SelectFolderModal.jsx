@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { fetchFolders } from '../../api/common/selectFolderModal/fetchFolders';
+import { useNavigate } from 'react-router-dom';
+import { writeNote } from '../../api/common/selectFolderModal/writeNote';
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -196,12 +198,12 @@ const colorMap = {
   rose: '#ED83B1'
 };
 
-const FolderItem = ({ name, count, color, markState }) => {
+const FolderItem = ({ name, count, color, markState, onClick }) => {
   const folderColor = colorMap[color] || '#A9A9A9'; 
   const isFavorite = markState === 'ACTIVE';
 
   return (
-    <FolderItemContainer>
+    <FolderItemContainer onClick={onClick}> {/* 여기에 onClick 전달 */}
       <FavoriteIcon>
         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill={isFavorite ? "#FFD338" : "transparent"} stroke={isFavorite ? "#FFD338" : "#B1B1B1"}>
           <path d="M15.9998 20.2527L12.4225 22.1332C12.2024 22.2489 11.9452 22.062 11.9873 21.8169L12.6705 17.8333L9.77531 15.0123C9.5972 14.8388 9.69544 14.5363 9.94153 14.5006L13.9412 13.9193L15.7308 10.2943C15.8409 10.0714 16.1588 10.0714 16.2688 10.2943L18.0578 13.9193L22.0576 14.5006C22.3036 14.5363 22.4019 14.8387 22.2238 15.0123L19.3292 17.8333L20.013 21.8169C20.0551 22.0619 19.7979 22.2489 19.5777 22.1332L15.9998 20.2527Z" />
@@ -224,6 +226,7 @@ FolderItem.propTypes = {
   count: PropTypes.number.isRequired,
   color: PropTypes.string.isRequired, 
   markState: PropTypes.string.isRequired, 
+  onClick: PropTypes.func.isRequired,  // 추가
 };
 
 const decomposeHangul = (text) => {
@@ -252,6 +255,7 @@ const decomposeHangul = (text) => {
 const FolderSelectModal = ({ isOpen, onClose }) => {
   const [folders, setFolders] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const navigate = useNavigate(); // useNavigate 훅 사용
 
   useEffect(() => {
     const loadFolders = async () => {
@@ -267,6 +271,23 @@ const FolderSelectModal = ({ isOpen, onClose }) => {
       loadFolders();
     }
   }, [isOpen]);
+
+  const handleFolderClick = async (folderId) => {
+    try {
+        const note = await writeNote(folderId);
+        console.log('API Response:', note);  // 로깅 추가
+        // API 응답의 성공 여부를 확인하는 로직이 올바른지 검토
+        if (note.noteId) {  // noteId가 있는지 확인하는 조건으로 변경
+            console.log('Navigating to:', `/note-editor?folderId=${folderId}&noteId=${note.noteId}`);  // 내비게이션 전 로깅
+            navigate(`/note-editor?folderId=${folderId}&noteId=${note.noteId}`);
+        } else {
+            console.error('Note creation failed:', note);
+        }
+    } catch (error) {
+        console.error('노트 작성 중 오류가 발생했습니다:', error);
+    }
+};
+
 
   const filteredFolders = folders.filter((folder) => {
     const decomposedFolderName = decomposeHangul(folder.name);
@@ -306,6 +327,7 @@ const FolderSelectModal = ({ isOpen, onClose }) => {
               count={folder.getNoteCount}
               color={folder.color}
               markState={folder.markState} 
+              onClick={() => handleFolderClick(folder.folderId)}
             />
           ))}
         </FolderListContainer>
