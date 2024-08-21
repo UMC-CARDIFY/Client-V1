@@ -238,13 +238,19 @@ const StatisticsModal = ({ onClose, studyCardSetId, color, folderName, noteName 
     setLogVisible((prev) => !prev);
   };
 
-  const formattedDate = (date) => {
+  const formatDate = (date) => {
     const dateObj = new Date(date);
+    dateObj.setHours(dateObj.getHours() + 9);
+  
     const year = dateObj.getFullYear();
-    const month = String(dateObj.getMonth() + 1).padStart(2, '0'); // Adds a leading zero if necessary
-    const day = String(dateObj.getDate()).padStart(2, '0'); // Adds a leading zero if necessary
-    return `${year}-${month}-${day}`;
+    const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+    const day = String(dateObj.getDate()).padStart(2, '0');
+    const hours = String(dateObj.getHours()).padStart(2, '0');
+    const minutes = String(dateObj.getMinutes()).padStart(2, '0');
+  
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
   };
+  
 
   return (
     <ModalBackdrop>
@@ -312,7 +318,7 @@ const StatisticsModal = ({ onClose, studyCardSetId, color, folderName, noteName 
             <LogItem key={index}>
               <DateDiv>
                 <div>
-                  {formattedDate(item.studyDate)}
+                  {formatDate(item.studyDate)}
                 </div>
                 <SmallText>
                   학습일

@@ -258,15 +258,18 @@ const FlashcardItem = ({ noteName, folderName, recentStudyDate, nextStudyDate, s
     setShowAnalysisStudyModal(false);  // Close the analysis study modal
   };
 
-  const formatRecentStudyDate = new Date(new Date(recentStudyDate).getTime() + 9 * 60 * 60 * 1000)
-  .toISOString()
-  .replace('T', ' ')
-  .slice(0, 16);
-
-  const formatNextStudyDate = new Date(new Date(nextStudyDate).getTime() + 9 * 60 * 60 * 1000)
-  .toISOString()
-  .replace('T', ' ')
-  .slice(0, 16);
+  const formatDate = (date) => {
+    const dateObj = new Date(date);
+    dateObj.setHours(dateObj.getHours() + 9);
+  
+    const year = dateObj.getFullYear();
+    const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+    const day = String(dateObj.getDate()).padStart(2, '0');
+    const hours = String(dateObj.getHours()).padStart(2, '0');
+    const minutes = String(dateObj.getMinutes()).padStart(2, '0');
+  
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
+  };
 
   const handleStatisticsOpen = () => {
     setShowStatisticsModal(true); 
@@ -309,11 +312,11 @@ const FlashcardItem = ({ noteName, folderName, recentStudyDate, nextStudyDate, s
         </CardHeader>
         <DayDiv>
           <Day>
-            {recentStudyDate ? <DateDay>{formatRecentStudyDate}</DateDay> : <DateDay>-</DateDay>}
+            {recentStudyDate ? <DateDay>{formatDate(recentStudyDate)}</DateDay> : <DateDay>-</DateDay>}
             <DateText>최근 학습일</DateText>
           </Day>
           <Day>
-            {nextStudyDate ? <DateDay>{formatNextStudyDate}</DateDay> : <DateDay>-</DateDay>}
+            {nextStudyDate ? <DateDay>{formatDate(nextStudyDate)}</DateDay> : <DateDay>-</DateDay>}
             <DateText>다음 학습일</DateText>
           </Day>
         </DayDiv>
