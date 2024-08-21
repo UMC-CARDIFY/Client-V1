@@ -1,6 +1,6 @@
 import { useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { ColorPaletteItem, ColorDropDownButton, ColorDropDownMenu } from './style/ToolbarStyles';
+import { ColorPaletteItem, ColorDropDownButton, TextColorDropDownMenu } from './style/ToolbarStyles';
 import ColorPalette from './ColorPalette/TextColorPalette';
 
 const TextColorButton = ({ onSelectColor, isOpen, onToggle }) => {
@@ -56,9 +56,9 @@ const TextColorButton = ({ onSelectColor, isOpen, onToggle }) => {
       </ColorPaletteItem>
 
       {isOpen && 
-        <ColorDropDownMenu>
+        <TextColorDropDownMenu>
           <ColorPalette onSelectColor={onSelectColor} />
-        </ColorDropDownMenu>
+        </TextColorDropDownMenu>
       }
     </>
   );
