@@ -317,7 +317,7 @@ const FlashcardItem = ({ noteName, folderName, recentStudyDate, nextStudyDate, s
       </ForegroundCard>
 
       {/* 삭제 모달 */}
-      {showModal && <DeleteModal onClose={cancelDelete} onConfirm={confirmDelete} />}
+      {showModal && <DeleteModal onClose={cancelDelete} onConfirm={confirmDelete} noteName={noteName} />}
 
       {/* 일반학습 모달 */}
           {showCommonStudyModal && (

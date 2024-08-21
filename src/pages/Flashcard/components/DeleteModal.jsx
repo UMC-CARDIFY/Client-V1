@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import deleteNote from '../../../api/flashcard/deleteNote';
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -8,7 +7,7 @@ const ModalOverlay = styled.div`
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.5);
+  background: var(--Main-Overlay, rgba(0, 0, 0, 0.30));
   display: flex;
   justify-content: center;
   align-items: center;
@@ -16,44 +15,82 @@ const ModalOverlay = styled.div`
 `;
 
 const ModalContent = styled.div`
-  background: white;
-  padding: 2rem;
-  border-radius: 0.5rem;
-  box-shadow: 0px 4px 26px rgba(0, 0, 0, 0.1);
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  width: 29.5rem;
+  padding: 2rem 2rem 1.5rem 2rem;
+  background: #FFF;
+  box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.04), 0px 4px 20px 0px rgba(0, 0, 0, 0.06);
+`;
+
+const Icon = styled.div`
+  width: 1.5rem;
+  height: 1.5rem;
+`;
+
+const Title = styled.div`
+  display: flex;
+  align-items: center;
+  color: var(--alert, #EA1215);
+  font-family: Pretendard;
+  font-size: 1.25rem;
+  font-weight: 700;
+  gap: 0.75rem;
+`;
+
+const Content = styled.div`
+  color: var(--kakao-logo, #000);
+  font-family: Pretendard;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  margin-top: 1rem;
 `;
 
 const ModalButtons = styled.div`
   display: flex;
-  justify-content: space-between;
-  margin-top: 1rem;
+  justify-content: flex-end;
+  width: 100%;
+  margin-top: 1.5rem;
+
+  color: var(--kakao-logo, #000);
+font-family: Pretendard;
+font-size: 1rem;
+font-style: normal;
+font-weight: 400;
+line-height: normal;
 `;
 
-const Button = styled.button`
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 0.5rem;
+const Button = styled.div`
+  border: 1px solid #DDD;
   cursor: pointer;
-  color: white;
-  font-weight: bold;
+  padding: 0.4375rem 1rem;
+  text-align: center;
+  background: #FFF;
 `;
 
 const ConfirmButton = styled(Button)`
-  background: #FF6B6B;
 `;
 
 const CancelButton = styled(Button)`
-  background: #E0E0E0;
-  color: #333;
 `;
 
-const DeleteModal = ({ onClose, onConfirm,  }) => (
+const DeleteModal = ({ onClose, onConfirm, noteName }) => (
   <ModalOverlay>
     <ModalContent>
-      <h2>정말 삭제하시겠습니까?</h2>
+      <Title>
+        <Icon>
+          <img src="/icons/alert.svg" alt="" />
+        </Icon>
+        카드 삭제
+      </Title>
+      <Content>
+        ‘{noteName}’을 삭제하시겠습니까?<br />
+        이 플래시카드를 생성한 노트도 함께 삭제됩니다.
+      </Content>
       <ModalButtons>
-        <ConfirmButton onClick={onConfirm}>삭제</ConfirmButton>
         <CancelButton onClick={onClose}>취소</CancelButton>
+        <ConfirmButton onClick={onConfirm}>확인</ConfirmButton>
       </ModalButtons>
     </ModalContent>
   </ModalOverlay>
@@ -62,6 +99,7 @@ const DeleteModal = ({ onClose, onConfirm,  }) => (
 DeleteModal.propTypes = {
   onClose: PropTypes.func.isRequired,
   onConfirm: PropTypes.func.isRequired,
+  noteName: PropTypes.string.isRequired,
 };
 
 export default DeleteModal;
