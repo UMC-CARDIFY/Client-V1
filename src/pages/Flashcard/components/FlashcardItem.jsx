@@ -12,6 +12,7 @@ import CommonStudyModal from './CommonStudyModal';
 import AnalysisStudyModal from './AnalysisStudyModal';
 import StatisticsModal from './StatisticsModal';
 import { colorMap } from './colorMap';
+import deleteCardSet from '../../../api/flashcard/deleteCardSet';
 
 // 겹쳐진 카드들을 감싸는 컨테이너
 const CardStackContainer = styled.div`
@@ -224,6 +225,15 @@ const FlashcardItem = ({ noteName, folderName, recentStudyDate, nextStudyDate, s
   };
 
   const confirmDelete = () => {
+    // Delete the card
+    const deleteCard = async () => {
+      try {
+        await deleteCardSet(studyCardSetId);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    deleteCard();
     console.log('카드가 삭제되었습니다.');
     setShowModal(false);
   };
