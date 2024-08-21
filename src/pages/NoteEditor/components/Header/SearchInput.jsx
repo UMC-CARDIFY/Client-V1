@@ -43,23 +43,44 @@ const SearchResultList = styled.div`
   top: 100%;
   left: 0;
   background: white;
-  width: 100%;
-  max-height: 200px;
+  max-height: 26.125rem;
   overflow-y: auto;
-  box-shadow: 0px 4px 26px 0px rgba(0, 0, 0, 0.1);
-  border-radius: 0.5rem;
-  margin-top: 0.5rem;
+  margin-top: 1.25rem;
   z-index: 1;
+  display: flex;
+  width: 23rem;
+  align-items: center;
+  flex-direction: column;
+  border-radius: 0.3125rem;
+  border: 1px solid var(--grays-gray-5-divider, #E8E8E8);
+  box-shadow: 0px 4px 26px 0px rgba(0, 0, 0, 0.02), 0px 10px 60px 0px rgba(0, 74, 162, 0.03);
+  box-sizing: border-box;
 `;
 
-const SearchResultItem = styled.div`
-  padding: 12px 24px;
-  border-bottom: 1px solid #ddd;
+const SearchResultItemTitle = styled.div`
+  padding: 0.75rem 1.5rem;
+  border-bottom: 1px solid var(--grays-gray-5-divider, #E8E8E8);
+  background: #F5F6F9;
   cursor: pointer;
+  width: 100%;
+  box-sizing: border-box;
 
   &:hover {
     background: #f2f4f8;
   }
+`;
+
+const NoteContent = styled.div`
+  padding: 12px 24px;
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
+  width: 100%;
+  box-sizing: border-box;
+`;
+
+const NoteDiv =styled.div`
+  width: 100%;
+  
 `;
 
 const Search = () => {
@@ -70,6 +91,7 @@ const Search = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [expandedNoteId, setExpandedNoteId] = useState(null);
   const dropdownRef = useRef(null);
 
   const handleSearch = async (term) => {
@@ -101,6 +123,10 @@ const Search = () => {
     }
   };
 
+  const toggleExpand = (noteId) => {
+    setExpandedNoteId(prevId => (prevId === noteId ? null : noteId)); // 클릭된 노트를 확장하거나 닫기
+  };
+
   useEffect(() => {
     document.addEventListener('click', handleClickOutside);
     return () => {
@@ -122,9 +148,18 @@ const Search = () => {
       {isDropdownOpen && results.length > 0 && (
         <SearchResultList>
           {results.map((result) => (
-            <SearchResultItem key={result.noteId} onClick={() => handleResultClick(result.noteId)}>
-              {result.noteName || '제목없음'}
-            </SearchResultItem>
+            <NoteDiv key={result.noteId}>
+              <SearchResultItemTitle onClick={() => handleResultClick(result.noteId)}>
+                {result.noteName}
+              </SearchResultItemTitle>
+              {result.textList.length > 0 ? (
+                    result.textList.map((text, index) => (
+                      <NoteContent key={index}>{text}</NoteContent>
+                    ))
+                  ) : (
+                    '내용 없음'
+                  )}
+            </NoteDiv>
           ))}
         </SearchResultList>
       )}
