@@ -1,10 +1,16 @@
 import { useState } from 'react';
-import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { Overlay, ModalContainer, ModalHeader, ModalContent, PreviewTitle, CloseButton, PreviewIcon } from './style/CardPreviewModalStyles';
+import { 
+  Overlay, ModalContainer, ModalHeader, ModalContent, PreviewTitle, CloseButton, PreviewIcon,
+  CardContent, CardFront, CardBack, HighlightedAnswer, ArrowIcon
+ } from './style/CardPreviewModalStyles';
+import rightArrow from '../../../../../assets/noteEditor/rightArrow.svg';
+import cardPreviewIcon from '../../../../../assets/noteEditor/cardPreview.svg';
 
 const WordCardPreviewModal = ({ question, answer, onClose }) => {
   const [isOpen, setIsOpen] = useState(true); 
+  const [isHovered, setIsHovered] = useState(false);
+  const [isClicked, setIsClicked] = useState(false);
 
   const handleClose = () => {
     setIsOpen(false);
@@ -13,18 +19,25 @@ const WordCardPreviewModal = ({ question, answer, onClose }) => {
     }
   };
 
+  const handleToggleClick = () => {
+    setIsClicked(!isClicked);
+  };
+
+  const handleOverlayClick = (e) => {
+    if (e.target === e.currentTarget) {
+      handleClose();
+    }
+  };
+  
   if (!isOpen) return null; // 모달이 닫혔을 때는 아무것도 렌더링하지 않음
 
   return (
-    <Overlay>
+    <Overlay onClick={handleOverlayClick}>
       <ModalContainer>
         <ModalHeader>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <PreviewIcon>
-              <svg xmlns="http://www.w3.org/2000/svg" width="23" height="17" viewBox="0 0 23 17" fill="none">
-                <path d="M11.2841 3.6369L10.842 3.1948L9.07361 1.42639L2 8.5L9.07361 15.5736L10.842 13.8052L11.2841 13.3631" stroke="#6A9CFC" strokeWidth="1.5"/>
-                <rect x="6.85352" y="8.5" width="10.0036" height="10.0036" transform="rotate(-45 6.85352 8.5)" stroke="#0F62FE" strokeWidth="1.5"/>
-              </svg>
+              <img src={cardPreviewIcon} alt="cardPreviewIcon" />
             </PreviewIcon>
             <PreviewTitle>미리보기</PreviewTitle>
           </div>
@@ -35,8 +48,22 @@ const WordCardPreviewModal = ({ question, answer, onClose }) => {
           </CloseButton> 
         </ModalHeader>
         <ModalContent>
-          <p><strong>문제:</strong> {question} </p>
-          <p><strong>정답:</strong> {answer[0]} </p>
+          <CardContent>
+            <CardFront>{question} </CardFront>
+            <ArrowIcon> 
+              <img src={rightArrow} alt="rightArrow" />
+            </ArrowIcon>
+            <CardBack>
+              {answer[0]}
+              <HighlightedAnswer 
+                isClicked={isClicked}
+                isHovered={isHovered}
+                onMouseEnter={() => setIsHovered(true)} 
+                onMouseLeave={() => setIsHovered(false)}
+                onClick={handleToggleClick}
+              />
+            </CardBack>
+          </CardContent>
         </ModalContent>
       </ModalContainer>
     </Overlay>     
