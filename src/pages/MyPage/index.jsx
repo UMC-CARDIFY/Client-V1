@@ -1,6 +1,12 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components'; 
+import {
+  MyPageContainer, Header, ContentDiv, LeftSection, RightSection, AlarmSection,
+  PointSection, AttendanceSection, AttendanceLeftSection, AttendanceRightSection,
+  InfoSection, FlexRow, SectionText, PointText, InfoText, NotificationText,
+  InstagramId, AttendanceImage, Divider
+} from './styles/MyPageStyles'; 
+
 import Switch from './components/Switch';
 import ProfileSection from './components/ProfileSection';
 import BackButton from './components/BackButton';
@@ -13,184 +19,6 @@ import alarmIcon from '../../assets/alarmIcon.svg';
 import instagramIcon from '../../assets/instagram.svg';
 import pointIcon from '../../assets/pointIcon.svg';
 import angleRight from '../../assets/angleRight.svg';
-
-const MyPageContainer = styled.div`
-  display: flex;  
-  width: 100%;
-  height: 100%;
-  flex-direction: column;
-  align-items: center;
-`;
-
-const Header = styled.header`
-  display: flex;
-  align-items: center;
-  position: relative;
-  align-self: flex-start;
-  color: #000;
-  font-family: pretendard;
-  font-size: 1.125rem;
-  font-style: normal;
-  font-weight: 300;
-  line-height: normal;
-  margin : 8rem 0 4rem 27rem;
-
-  @media screen and (max-width: 1440px) {
-    margin-left: 12.5rem;
-  }
-
-  @media screen and (max-width: 1200px) {
-    margin-left: 5rem;
-  }
-`;
-
-const ContentDiv = styled.div`
-  display: flex;
-  align-items: center;
-  width: 59rem;
-  height: 33rem;
-  gap: 1.5rem;
-`;
-
-const LeftSection = styled.div`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.25rem;
-`;
-
-const RightSection = styled.div`
-  flex: 2;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.25rem;
-`;
-
-const AlarmSection = styled.div`
-  display: flex;
-  align-items: center;
-  width: 100%;
-  height: 5rem;
-  flex-shrink: 0;
-  border: none;
-  border-radius: 0.625rem;
-  background: #F8F8F8;
-  justify-content: space-between;
-`;
-
-const PointSection = styled.div`
-  display: flex;
-  align-items: center;
-  width: 100%;
-  height: 5rem;
-  flex-shrink: 0;
-  border: none;
-  border-radius: 0.625rem;
-  background: #F8F8F8;
-  justify-content: space-between;
-`;
-
-const AttendanceSection = styled.div`
-  display: flex;
-  align-items: center;
-  width: 100%;
-  height: 14.25rem;
-  flex-shrink: 0;
-  border: none;
-  border-radius: 0.625rem;
-  background: #F8F8F8;
-`;
-
-const AttendanceLeftSection = styled.div`
-  flex: 2;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  margin-left: 2.5rem;
-`;
-
-const AttendanceRightSection = styled.div`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.25rem;
-`;
-
-const InfoSection = styled.div`
-  display: flex;
-  align-items: center;
-  width: 100%;
-  height: 3.875rem;
-  flex-shrink: 0;
-  border: none;
-  border-radius: 0.625rem;
-  background: #F8F8F8;
-  justify-content: space-between;
-`
-const FlexRow = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const SectionText = styled.span`
-  color: #000;
-  font-family: Pretendard;
-  font-size: 1.25rem;
-  font-style: normal;
-  font-weight: 400;
-`;
-const PointText = styled(SectionText)`
-  font-size: 1.45725rem;
-  cursor: pointer;
-`
-const InfoText = styled(SectionText)`
-  color: #5B5B5B;
-  font-size: 1rem;
-  line-height: 1.5625rem;
-  cursor: pointer;
-
-  &:hover {
-    color: darkblue;
-  }
-`;
-const NotificationText = styled(SectionText)`
-  color: var(--Grays-Black, #1A1A1A);
-  font-size: 1rem;
-  font-weight: 300;
-  line-height: normal;
-`;
-const InstagramId = styled.a`
-  color: #5B5B5B;
-  font-family: Pretendard;
-  font-size: 1.1575rem;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 1.80856rem; 
-  cursor: pointer;
-
-  &:hover {
-    color: darkblue;
-  }
-`;
-
-const AttendanceImage = styled.div`
-  width: 8.19113rem;
-  height: 7.4375rem;
-  flex-shrink: 0;
-  border-radius: 0.625rem;
-  background: #E0DEDE;
-`;
-
-const Divider = styled.div`
-  top: 50%;
-  left: 50%;
-  width: 0.0625rem;
-  height: 2.3125rem;
-  background: #B2B2B2;
-`
 
 export const MyPage = () => {
   const navigate = useNavigate();
