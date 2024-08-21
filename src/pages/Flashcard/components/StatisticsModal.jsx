@@ -94,12 +94,16 @@ const BarContainerWrapper = styled.div`
 `;
 
 const BarContainer = styled.div`
+  max-width: 35rem; 
   height: 2rem;
   border-radius: 0.125rem 0.5rem 0.5rem 0.125rem;
   background: ${({ color }) => color};
-  width: ${({ widthPercent }) => widthPercent || '0%'};
-  transition: width 0.3s ease;  /* Optional: Smooth transition */
+  margin: 0 1rem;
+  align-self: flex-start;
+  width: ${({ widthPercent }) => (parseInt(widthPercent) === 0 ? '2%' : `${widthPercent}`)}; 
 `;
+
+
 
 const Count = styled.div`
   margin-left: auto; /* Push the count to the right */
