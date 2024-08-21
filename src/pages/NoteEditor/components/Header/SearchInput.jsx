@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import PropTypes from 'prop-types';
+import { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import postNoteSearch from '../../../../api/noteeditor/postNoteSearch';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -64,35 +63,53 @@ const SearchResultItem = styled.div`
 `;
 
 const Search = () => {
-  const location = useLocation(); 
-  const navigate = useNavigate(); // 페이지 이동을 위한 hook
-  const searchParams = new URLSearchParams(location.search); 
-  const folderId = searchParams.get('folderId'); 
+  const location = useLocation();
+  const navigate = useNavigate();
+  const searchParams = new URLSearchParams(location.search);
+  const folderId = searchParams.get('folderId');
   const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState([]);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
   const handleSearch = async (term) => {
     setSearchTerm(term);
     if (term === '') {
       setResults([]);
+      setIsDropdownOpen(false); // 검색어가 없으면 드롭다운 닫기
     } else {
       try {
         const { noteList } = await postNoteSearch(folderId, term);
-        setResults(noteList); 
+        setResults(noteList);
+        setIsDropdownOpen(true); // 검색 결과가 있으면 드롭다운 열기
       } catch (error) {
         console.error("Error fetching search results:", error);
-        setResults([]); 
+        setResults([]);
+        setIsDropdownOpen(false); // 오류 발생 시 드롭다운 닫기
       }
     }
   };
 
   const handleResultClick = (noteId) => {
-    // 클릭 시 noteId를 기반으로 해당 노트로 이동
     navigate(`/note-editor?folderId=${folderId}&noteId=${noteId}`);
+    setIsDropdownOpen(false); // 결과 클릭 시 드롭다운 닫기
   };
 
+  const handleClickOutside = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setIsDropdownOpen(false); // 외부 클릭 시 드롭다운 닫기
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, []);
+
   return (
-    <SearchWrapper>
+    <SearchWrapper ref={dropdownRef}>
       <SearchIcon xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
         <path d="M18 18L15.1047 15.1047M15.1047 15.1047C15.6 14.6094 15.9928 14.0215 16.2608 13.3744C16.5289 12.7273 16.6668 12.0338 16.6668 11.3334C16.6668 10.633 16.5289 9.93948 16.2608 9.2924C15.9928 8.64532 15.6 8.05737 15.1047 7.56212C14.6094 7.06687 14.0215 6.67401 13.3744 6.40598C12.7273 6.13795 12.0338 6 11.3334 6C10.633 6 9.93948 6.13795 9.2924 6.40598C8.64532 6.67401 8.05737 7.06687 7.56212 7.56212C6.56191 8.56233 6 9.9189 6 11.3334C6 12.7479 6.56191 14.1045 7.56212 15.1047C8.56233 16.1049 9.9189 16.6668 11.3334 16.6668C12.7479 16.6668 14.1045 16.1049 15.1047 15.1047Z" stroke="#767676" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
       </SearchIcon>
@@ -100,22 +117,19 @@ const Search = () => {
         placeholder="폴더 내 검색"
         value={searchTerm}
         onChange={(e) => handleSearch(e.target.value)}
+        onFocus={() => searchTerm && setIsDropdownOpen(true)} // input 클릭 시 드롭다운 열기
       />
-      {results.length > 0 && (
+      {isDropdownOpen && results.length > 0 && (
         <SearchResultList>
           {results.map((result) => (
             <SearchResultItem key={result.noteId} onClick={() => handleResultClick(result.noteId)}>
-              {result.noteName || '제목없음'} {/* 노트 제목 표시 */}
+              {result.noteName || '제목없음'}
             </SearchResultItem>
           ))}
         </SearchResultList>
       )}
     </SearchWrapper>
   );
-};
-
-Search.propTypes = {
-  folderId: PropTypes.string.isRequired,
 };
 
 export default Search;
