@@ -128,15 +128,19 @@ class MultiCardView {
     //불렛
     const bulletDiv = document.createElement('div');
     bulletDiv.className = 'bullet';
-    bulletDiv.style.display = 'block';
-    bulletDiv.style.position = 'fixed';
-    bulletDiv.style.width = '0.375rem'; 
-    bulletDiv.style.height = '0.375rem';  
+    bulletDiv.style.display = 'inline-block';
+    bulletDiv.style.position = 'absolute';
+    bulletDiv.style.width = '6px'; 
+    bulletDiv.style.height = '6px';  
     bulletDiv.style.backgroundColor = '#000';  
     bulletDiv.style.borderRadius = '50%';  
     bulletDiv.style.padding= '0';
     bulletDiv.style.alignSelf = 'flex-start';
     bulletDiv.style.marginTop = '0.45rem';
+    bulletDiv.style.marginLeft = '0.1rem';
+    bulletDiv.style.flexShrink = '0';
+    bulletDiv.style.boxSizing = 'border-box';  
+    
     const containerDiv = document.createElement('div');
     containerDiv.style.display = 'flex';
     containerDiv.style.alignItems = 'center';
