@@ -207,7 +207,6 @@ const Header = ({ isMenuCollapsed, toggleMenuBar, editorView = null, selectedFor
         {isShareMenuOpen && (
           <ShareMenu
             ref={shareMenuRef}
-            onCopyLink={handleCopyLink}
             onShareToLibrary={handleShareToLibrary}
           />
         )}
