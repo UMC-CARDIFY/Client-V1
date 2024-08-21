@@ -27,7 +27,7 @@ export const ModalContainer = styled.div`
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 1000;
-  padding: 2.5rem 5rem;
+  padding: 2rem 3rem;
 `;
 
 export const ModalHeader = styled.div`
@@ -41,12 +41,12 @@ export const ModalHeader = styled.div`
 export const ModalContent = styled.div`
   flex: 1 1 auto;
   overflow-y: auto;
-
   font-family: Pretendard;
   font-size: 1.25rem;
   font-style: normal;
   font-weight: 300;
   line-height: normal;
+  padding: 2.75rem 2rem;
 `;
 
 export const PreviewTitle = styled.p`
@@ -62,6 +62,7 @@ export const CloseButton = styled.button`
   width: 2.5rem;
   height: 2.5rem;
   flex-shrink: 0;
+  padding: 0;
   background: none;
   border: none;
   cursor: pointer;
@@ -81,4 +82,51 @@ export const PreviewIcon = styled.div`
   justify-content: center;
   align-items: center;
   margin-right: 0.5rem;
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+`;
+
+export const CardContent = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+export const CardFront = styled.div`
+  text-align: center;
+`;
+
+export const CardBack = styled(CardFront)`
+  position: relative;
+  padding: 0 1rem;
+`;
+
+export const HighlightedAnswer = styled.span`
+  background-color: #CDDDFF;
+  color: #CDDDFF;
+  border-radius: 0.125rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: ${(props) => (props.isClicked || props.isHovered ? 0 : 1)};
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+`;
+
+export const ArrowIcon = styled.div`
+  display: flex;
+  width: 1.1875rem;
+  height: 1.1875rem;
+  margin: 0.25rem 0.75rem;
+  align-items: center;
+  justify-content: center;
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
 `;
