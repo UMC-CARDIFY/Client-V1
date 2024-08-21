@@ -102,18 +102,16 @@ const StyledCalendar = styled(Calendar)`
     font-weight: 400;
   }
   .react-calendar__tile {
-    border-radius: 50%;
+    aspect-ratio: 1 / 1;
+    width: 2.7rem;
+    height: auto; 
+    display: flex;
     align-items: center;
     justify-content: center;
-    height: 2.7rem;
     background: none;
-    &:hover {
-      background: var(--Grays-Gray8, #F4F4F4);
-    }
-    &:focus {
-      background: var(--Grays-Gray7, #F0F0F0);
-    }
+    border-radius: 50%;
   }
+  
   .react-calendar__tile--now {
     color: #0F62FE; 
 
@@ -152,7 +150,6 @@ const StyledCalendar = styled(Calendar)`
     }
     
   }
-
   .react-calendar__month-view__days__day--neighboringMonth {
     visibility: hidden;
   }
