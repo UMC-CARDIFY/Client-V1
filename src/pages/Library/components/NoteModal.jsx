@@ -103,11 +103,6 @@ const NoteModal = ({ show, onClose, title, content, isContainCard, libraryId }) 
         setIsDownloadContain(false);
     }
 
-    const gotoNoteEditor = async () => {
-        console.log('goto note editor');
-        // 내가 다운받은 노트 에디터로 이동
-    }
-
   return (
     <ModalBackdrop onClick={onClose}>
       <ModalContent onClick={e => e.stopPropagation()}>
@@ -130,8 +125,8 @@ const NoteModal = ({ show, onClose, title, content, isContainCard, libraryId }) 
           </>
                 ) : isContainCard === 'ContainCard' ? (
                     <>
-                <DownloadButton onClick={gotoNoteEditor}>
-                    노트 에디터로 이동
+                <DownloadButton onClick={downloadContain}>
+                새로운 노트로 저장
                 </DownloadButton>
                 </>
                 ) : (
@@ -139,8 +134,8 @@ const NoteModal = ({ show, onClose, title, content, isContainCard, libraryId }) 
                     <DownloadButton  onClick={downloadContain}>
                     플래시카드 포함 100P
                 </DownloadButton>
-                <DownloadButton onClick={gotoNoteEditor}>
-                    노트 에디터로 이동
+                <DownloadButton onClick={downloadNotContain}>
+                새로운 노트로 저장
                 </DownloadButton>
                 </>
             )} 
