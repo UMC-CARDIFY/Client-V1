@@ -11,26 +11,35 @@ import NoteItem from './NoteItem';
 const CategoryItemsContainer = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 2rem;
 `;
 
 const CategoryItems = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2.13rem;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4rem 3rem;
 `;
 
 const CategoryItemContainer = styled.div`
-width: 16rem; /* 19rem */
-height: 12.25rem;
+  width: 100%
 flex-shrink: 0;
   border-radius: 0.75rem;
 background: var(--Grays-White, #FFF);
-padding: 2.3rem 4rem 1rem 4rem;
+padding: 3.25rem 3.68rem 3.75rem 3.75rem;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   align-items: center;
+
+
+  @media (min-width: 1440px) and (max-width: 1680px) {
+    padding: 3.25rem 3.68rem 3.75rem 3.75rem;
+  }
+
+  @media (max-width: 1440px) {
+    padding: 3.25rem 3.68rem 3.75rem 3.75rem;
+  }
+
+
 `;
 
 const CategoryIcon = styled.div`

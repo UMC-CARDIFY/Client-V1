@@ -28,9 +28,20 @@ const ContentArea = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%; 
-  padding: 3.56rem 4.8rem 3.5rem 4.1rem;
+  padding: 4rem 6.5rem;
   background: var(--Main-BackGround, #F2F4F8);
   overflow: auto;
+
+
+  @media (min-width: 1440px) and (max-width: 1680px) {
+    padding: 3rem 5rem;
+  }
+
+  @media (max-width: 1440px) {
+    padding: 2.5rem 3.5rem;
+  }
+
+
 `;
 
 // const ContentArea = styled.div`
