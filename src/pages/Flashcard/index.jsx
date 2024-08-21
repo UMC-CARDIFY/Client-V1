@@ -20,8 +20,6 @@ const MainContent = styled.div`
 
 const ContentArea = styled.div`
   display: flex;
-  justify-content: center; /* 수평 중앙 정렬 */
-  align-items: center; /* 수직 중앙 정렬 */
   height: auto;
   background: var(--Main-BackGround, #F2F4F8);
   padding-top: 5rem;
@@ -30,8 +28,6 @@ const ContentArea = styled.div`
 
 const FlashcardContainer = styled.div`
   display: flex;
-  justify-content: center; /* 수평 중앙 정렬 */
-  align-items: center; /* 수직 중앙 정렬 */
   flex-direction: column;
   @media (min-width: 768px) {
     padding-left: 10rem;
@@ -51,12 +47,10 @@ const Flashcards = styled.div`
 
   @media (min-width: 768px) {
     width: 100%;
-    justify-content: flex-start; /* 큰 화면에서도 왼쪽부터 정렬 */
   }
 
   @media (min-width: 1024px) {
     width: 100%;
-    justify-content: flex-start; /* 큰 화면에서도 왼쪽부터 정렬 */
     gap: 1.5rem; /* 카드 간격 조정 */
   }
 `;
@@ -95,6 +89,14 @@ const SortButton = styled(OptionButton)`
   padding: 0.1875rem 0.375rem 0.1875rem 0.4375rem;
   gap: 0.375rem;
 `;
+
+const NoData = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 10rem;
+  `;
 
 export const Flashcard = () => {
   const [cards, setCards] = useState([]);
@@ -148,7 +150,7 @@ export const Flashcard = () => {
                  />
               )
               )) : (
-                <p>학습할 카드가 없습니다.</p>
+                <NoData>학습할 카드가 없습니다.</NoData>
               )}
               
             </Flashcards>
