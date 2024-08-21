@@ -16,7 +16,7 @@ line-height: normal;
 display: flex;
 justify-content: center;
 align-items: center;
-height: 100%;
+margin-top: 12rem;
   `;
 
 const NoResultIcon = styled.div`
@@ -42,8 +42,6 @@ const NoteList = ({ searchQuery, categories = [], showAllNotes = false }) => {
         const data = await searchLib(searchQuery, categories); // 카테고리를 배열로 전달
         setNotes(data);
         console.log(data);
-        console.log('notes',notes)
-        console.log('notes',notes.isDownload)
       };
       fetchSearchData();
   }, [searchQuery, categories]);
@@ -56,7 +54,6 @@ const NoteList = ({ searchQuery, categories = [], showAllNotes = false }) => {
             key={index}
             noteName={note.noteName}
             categoryName={note.categoryName}
-            isDownload={note.isDownload}
             cntCard={note.cntCard}
             userName={note.userName}
             uploadAt={note.uploadAt}
