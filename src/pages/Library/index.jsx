@@ -15,6 +15,7 @@ const Container = styled.div`
   display: flex;
   width: 100%;
   height: 100vh;
+  overflow: hidden;
 `;
 
 const Vcontainer = styled.div`
@@ -26,9 +27,33 @@ const Vcontainer = styled.div`
 const ContentArea = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 3.56rem 4.8rem 3.5rem 4.1rem;
+  height: 100%; 
+  padding: 4rem 6.5rem;
   background: var(--Main-BackGround, #F2F4F8);
+  overflow: auto;
+
+
+  @media (min-width: 1440px) and (max-wi
+  
+  
+  dth: 1680px) {
+    padding: 3rem 5rem;
+  }
+
+  @media (max-width: 1440px) {
+    padding: 2.5rem 3.5rem;
+  }
+
+
 `;
+
+// const ContentArea = styled.div`
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   height: 100%; 
+//   background: var(--Main-BackGround, #F2F4F8);
+// `;
 
 const SearchSection = styled.div`
   display: flex;
