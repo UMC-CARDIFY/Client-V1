@@ -26,9 +26,18 @@ const Vcontainer = styled.div`
 const ContentArea = styled.div`
   display: flex;
   flex-direction: column;
+  height: 100%; 
   padding: 3.56rem 4.8rem 3.5rem 4.1rem;
   background: var(--Main-BackGround, #F2F4F8);
 `;
+
+// const ContentArea = styled.div`
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   height: 100%; 
+//   background: var(--Main-BackGround, #F2F4F8);
+// `;
 
 const SearchSection = styled.div`
   display: flex;

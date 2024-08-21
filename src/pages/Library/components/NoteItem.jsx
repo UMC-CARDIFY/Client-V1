@@ -83,7 +83,29 @@ gap: 0.5rem;
 const DateDiv = styled.div`
 `;
 
-const NoteItem = ({ noteName, categoryName, cntCard, userName, uploadAt, noteId, libraryId }) => {
+const Tag= styled.div`
+  padding: 0.125rem 0.375rem;
+  justify-content: center;
+  align-items: center;
+  border-radius: 0.25rem;
+  background: #E7EFFF;
+  color: #0F62FE;
+  font-family: Pretendard;
+  font-size: 0.625rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+`;
+
+const TitleContainer = styled.div`
+  display: flex;
+  gap: 0.44rem;
+
+`;
+
+const NoteItem = ({ noteName, categoryName, cntCard, userName, uploadAt, noteId, libraryId, isDownload }) => {
+  console.log("NoteItem Props: ", { noteName, categoryName, cntCard, userName, uploadAt, noteId, libraryId, isDownload });
+  
   const [showModal, setShowModal] = useState(false);
   const [noteContent, setNoteContent] = useState('');
   const [isContainCard, setIsContainCard] = useState('');
@@ -104,6 +126,7 @@ const NoteItem = ({ noteName, categoryName, cntCard, userName, uploadAt, noteId,
     setFolderId(download.folderId);
   };
 
+
   return (
     <>
       <NoteItemContainer onClick={handleClick}>
@@ -112,18 +135,26 @@ const NoteItem = ({ noteName, categoryName, cntCard, userName, uploadAt, noteId,
         </NoteIcon>
         <Line />
         <Name>
-            <Title>{noteName}</Title>
-            <Sub>노트</Sub> 
+          <TitleContainer>
+            <Title>
+            {noteName} 
+          </Title>
+          {isDownload &&
+           <Tag>저장완료</Tag>
+           }
+          </TitleContainer>
+
+          <Sub>노트</Sub>
         </Name>
         <Line />
         <Category>
-            <Title>{formattedCategoryName}</Title>
-            <Sub>카테고리</Sub>
+          <Title>{formattedCategoryName}</Title>
+          <Sub>카테고리</Sub>
         </Category>
         <Line />
         <Cnt>
-            <Title>{cntCard ? `${cntCard}개` : '-'}</Title>
-            <Sub>카드 개수</Sub>
+          <Title>{cntCard ? `${cntCard}개` : '-'}</Title>
+          <Sub>카드 개수</Sub>
         </Cnt>
         <Line />
         <User>
@@ -132,8 +163,8 @@ const NoteItem = ({ noteName, categoryName, cntCard, userName, uploadAt, noteId,
         </User>
         <Line />
         <DateDiv>
-            <Title>{formattedDate}</Title>
-            <Sub>업로드 날짜</Sub>
+          <Title>{formattedDate}</Title>
+          <Sub>업로드 날짜</Sub>
         </DateDiv>
       </NoteItemContainer>
 
@@ -153,3 +184,5 @@ const NoteItem = ({ noteName, categoryName, cntCard, userName, uploadAt, noteId,
 };
 
 export default NoteItem;
+
+
