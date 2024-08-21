@@ -11,26 +11,44 @@ import NoteItem from './NoteItem';
 const CategoryItemsContainer = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 2rem;
 `;
 
 const CategoryItems = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2.13rem;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4rem 3rem;
+   width: 100%
 `;
 
 const CategoryItemContainer = styled.div`
-width: 16rem; /* 19rem */
-height: 12.25rem;
+  width: 100%
 flex-shrink: 0;
   border-radius: 0.75rem;
 background: var(--Grays-White, #FFF);
-padding: 2.3rem 4rem 1rem 4rem;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   align-items: center;
+  height: 16.5rem;
+  align-items:center;
+  display:flex;
+  justify-content:center;
+
+  @media  (max-width: 1680px) {
+    height: 13rem;
+  }
+
+      &:hover {
+      background: #F4F4F4; 
+    }
+
+      &:active {
+      background: #F0F0F0; 
+    }
+
+
+
+
 `;
 
 const CategoryIcon = styled.div`
@@ -289,6 +307,8 @@ const AllCategory = ({ selectedCategory, onBackClick }) => {
                 userName={note.userName}
                 uploadAt={note.uploadAt}
                 noteId={note.noteId} // Note ID 전달
+                isDownload={note.isDownload}
+                libraryId={note.libraryId}
               />
               ))
             )}
