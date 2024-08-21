@@ -10,6 +10,7 @@ import moreoptions from '../../../assets/flashcard/moreoptions.svg';
 import star from '../../../assets/flashcard/star.svg';
 import CommonStudyModal from './CommonStudyModal';
 import AnalysisStudyModal from './AnalysisStudyModal';
+import StatisticsModal from './StatisticsModal';
 import { colorMap } from './colorMap';
 
 // 겹쳐진 카드들을 감싸는 컨테이너
@@ -212,6 +213,7 @@ const FlashcardItem = ({ noteName, folderName, recentStudyDate, nextStudyDate, s
   const [showModal, setShowModal] = useState(false);
   const [showCommonStudyModal, setShowCommonStudyModal] = useState(false); 
   const [showAnalysisStudyModal, setShowAnalysisStudyModal] = useState(false);
+  const [showStatisticsModal, setShowStatisticsModal] = useState(false);
 
   const toggleDeleteButton = () => {
     setShowDeleteButton((prev) => !prev);
@@ -245,8 +247,18 @@ const FlashcardItem = ({ noteName, folderName, recentStudyDate, nextStudyDate, s
   const closeAnalysisStudyModal = () => {
     setShowAnalysisStudyModal(false);  // Close the analysis study modal
   };
+
   const formatRecentStudyDate = new Date(recentStudyDate).toISOString().replace('T', ' ').slice(0, 16);
   const formatNextStudyDate = new Date(nextStudyDate).toISOString().split('T', ' ').slice(0, 16);
+
+  const handleStatisticsOpen = () => {
+    setShowStatisticsModal(true); 
+  };
+
+  const handleStatisticsClose = () => {
+    setShowStatisticsModal(false); 
+  };
+
   return (
     <CardStackContainer>
       {/* 겹쳐진 카드 레이어들 */}
@@ -296,7 +308,7 @@ const FlashcardItem = ({ noteName, folderName, recentStudyDate, nextStudyDate, s
             <Button onClick={handleAnalysisStudyClick}>
               <img src={studymore} alt="분석학습" />
               분석학습</Button>
-          <Button>
+          <Button onClick={handleStatisticsOpen}>
             <img src={statistics} alt="학습통계" />
               학습통계
           </Button>
@@ -325,6 +337,16 @@ const FlashcardItem = ({ noteName, folderName, recentStudyDate, nextStudyDate, s
         color={color}
         folderName={folderName}
          />
+      )}
+
+{showStatisticsModal && (
+        <StatisticsModal
+          onClose={handleStatisticsClose}
+          studyCardSetId={studyCardSetId}
+          color={color}
+            noteName={noteName}
+            folderName={folderName}
+        />
       )}
 
     </CardStackContainer>
