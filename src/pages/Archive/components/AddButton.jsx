@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
-import { addNote } from '../../../api/archive'; // API 호출 함수 임포트
+import { addNote } from '../../../api/archive';
+import AddIcon from '../../../assets/addIcon.svg';
 
 const StyledButton = styled.button`
   display: flex;
@@ -12,6 +13,11 @@ const StyledButton = styled.button`
   background: #ECEFF4;
   border: none;
   cursor: pointer;
+  color: #1A1A1A;
+  font-size: 0.875rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
 
   img {
     width: 1rem;
@@ -29,7 +35,7 @@ const StyledButton = styled.button`
   
 `;
 
-const AddButton = ({ selectedTab, setSelectedItem, setShowAddModal, setModalType, addFolderIcon, currentFolderId }) => {
+const AddButton = ({ selectedTab, setSelectedItem, setShowAddModal, setModalType, currentFolderId }) => {
   const navigate = useNavigate();
 
   const handleClick = async () => {
@@ -52,7 +58,7 @@ const AddButton = ({ selectedTab, setSelectedItem, setShowAddModal, setModalType
 
   return (
     <StyledButton onClick={handleClick}>
-      <img src={addFolderIcon} alt={selectedTab === '폴더' && currentFolderId ? '노트 추가' : '폴더 추가'} />
+      <img src={AddIcon} alt={selectedTab === '폴더' && currentFolderId ? '노트 추가' : '폴더 추가'} />
       {selectedTab === '폴더' && currentFolderId ? '노트 추가' : '폴더 추가'}
     </StyledButton>
   );

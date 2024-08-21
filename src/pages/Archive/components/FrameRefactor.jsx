@@ -18,7 +18,6 @@ import SortDropdown from './SortDropdown';
 import FilteringDropdown from './FilteringDropdown';
 import Pagination from './Pagination';
 import ItemList from './ItemList';
-import addFolderIcon from '../../../assets/addFoldersvg.svg';
 import AddButton from './AddButton';
 
 const FrameContainer = styled.div`
@@ -338,7 +337,6 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
               setSelectedItem={setSelectedItem}
               setShowAddModal={setShowAddModal}
               setModalType={setModalType}
-              addFolderIcon={addFolderIcon}
               currentFolderId={currentFolderId}
             />
           )}

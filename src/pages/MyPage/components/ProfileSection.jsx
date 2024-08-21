@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import editNickname from '../../../assets/editNickname.svg';
 import editprofileImage from '../../../assets/editprofileImage.svg';
+import PropTypes from 'prop-types';
 
 const SectionContainer = styled.div`
   display: flex;
@@ -30,7 +31,7 @@ const ProfileImage = styled.div`
   flex-shrink: 0;
 `;
 
-const EditIcon = styled.div`
+const EditImageIcon = styled.div`
   position: absolute;
   bottom: 0;
   right: 0;
@@ -69,22 +70,27 @@ const Email = styled.span`
   line-height: normal;
 `;
 
-const ProfileSection = () => {
+const ProfileSection = ({ nickname, email }) => {
   return (
     <SectionContainer>
       <ProfileImageContainer>
         <ProfileImage />
-        <EditIcon>
+        <EditImageIcon>
           <img src={editprofileImage} alt="editprofileImage" />
-        </EditIcon>
+        </EditImageIcon>
       </ProfileImageContainer>
       <NicknameContainer>
-        <Nickname>도라</Nickname>
-        <img src={editNickname} alt="editNickname" />
+        <Nickname>{nickname}</Nickname>
+          <img src={editNickname} alt="editNickname" />
       </NicknameContainer>
-      <Email>test@gmail.com</Email>
+      <Email>{email}</Email>
     </SectionContainer>
   );
 };
+
+ProfileSection.propTypes = {
+  nickname: PropTypes.string.isRequired,
+  email: PropTypes.string.isRequired,
+}
 
 export default ProfileSection;
