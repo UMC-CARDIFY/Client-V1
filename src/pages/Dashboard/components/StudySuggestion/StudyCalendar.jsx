@@ -134,8 +134,7 @@ const StyledCalendar = styled(Calendar)`
 
    &:hover {
     background: #D8E6FF;
-  }
-  
+   }
   }
   .react-calendar__tile--hasCards.react-calendar__tile--active { 
     border-radius: 50%;
@@ -185,6 +184,7 @@ const CardsContainer = styled.div`
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+  padding-bottom: 2rem;
 
   &::-webkit-scrollbar {
     width: 0.5rem;
