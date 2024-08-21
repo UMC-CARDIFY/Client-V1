@@ -101,6 +101,7 @@ export const CardFront = styled.div`
 export const CardBack = styled(CardFront)`
   position: relative;
   padding: 0 1rem;
+  border: 1px solid var(--Main-PrimaryLight2, #CDDDFF);
 `;
 
 export const HighlightedAnswer = styled.span`

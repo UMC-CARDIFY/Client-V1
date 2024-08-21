@@ -47,7 +47,7 @@ const HighlightedAnswer = styled.span`
   opacity: ${(props) => (props.isClicked || props.isHovered ? 0 : 1)};
   cursor: pointer;
   transition: opacity 0.3s ease;
-  margin-left: 1rem;
+  margin-left: 1.4rem;
 `;
 
 const MultiCardPreviewModal = ({ question, answer, onClose }) => {
@@ -96,7 +96,10 @@ const MultiCardPreviewModal = ({ question, answer, onClose }) => {
           <AnswerList>
             {answer.map((ans, index) => (
               <CardBack key={index}>
-                <BulletIcon src={bulletIcon} alt="bulletIcon" />{ans}
+                <BulletIcon src={bulletIcon} alt="bulletIcon" />
+                <span style={{border: '1px solid #CDDDFF'}}>
+                  {ans}
+                </span>
                 <HighlightedAnswer
                   isClicked={clickedStates[index]}
                   onClick={() => handleToggleClick(index)}
