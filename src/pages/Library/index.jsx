@@ -33,7 +33,10 @@ const ContentArea = styled.div`
   overflow: auto;
 
 
-  @media (min-width: 1440px) and (max-width: 1680px) {
+  @media (min-width: 1440px) and (max-wi
+  
+  
+  dth: 1680px) {
     padding: 3rem 5rem;
   }
 
