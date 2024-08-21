@@ -150,6 +150,7 @@ export const Flashcard = () => {
               )) : (
                 <p>학습할 카드가 없습니다.</p>
               )}
+              
             </Flashcards>
           </FlashcardContainer>
         </ContentArea>

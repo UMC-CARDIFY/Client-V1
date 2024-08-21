@@ -5,6 +5,7 @@ import studyCardSet from '../../../api/flashcard/studyCardSet';
 import { useEffect, useState } from 'react';
 import FolderIcon from './FolderIcon';
 import { colorMap } from './colorMap';
+import { useNavigate } from 'react-router-dom';
 
 const ModalBackdrop = styled.div`
   position: fixed;
@@ -171,12 +172,18 @@ const CommonStudyModal = ({ onClose, studyCardSetId, noteName, folderName, color
   const [totalPage, setTotalPage] = useState(1);
   const [currentPage, setCurrentPage] = useState(0);
   const [revealedAnswers, setRevealedAnswers] = useState({});
+  const [noteId, setNoteId] = useState(0);
+  const [folderId, setFolderId] = useState(0);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
       const response = await studyCardSet(studyCardSetId, currentPage);
       setContent(response.content);
       setTotalPage(response.totalPages);
+      setNoteId(response.content[0].noteId);
+      setFolderId(response.content[0].folderId);
     };
     fetchData();
   }, [currentPage]);
@@ -203,6 +210,11 @@ const CommonStudyModal = ({ onClose, studyCardSetId, noteName, folderName, color
       ...prevRevealed,
       [index]: !prevRevealed[index], // 클릭 시 토글
     }));
+  };
+
+  const goToNoteEditor = () => {
+    navigate(`/note-editor?folderId=${folderId}&noteId=${noteId}`);
+    onClose();
   };
 
   return (
@@ -235,7 +247,7 @@ const CommonStudyModal = ({ onClose, studyCardSetId, noteName, folderName, color
                 </div>
               </Content>
             ))}
-            <ToEditor>
+            <ToEditor onClick={goToNoteEditor}>
               <img src={toNoteEditor} alt="toNoteEditor" />
             </ToEditor>
           </CardBox>
