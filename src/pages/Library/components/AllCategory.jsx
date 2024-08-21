@@ -38,6 +38,14 @@ background: var(--Grays-White, #FFF);
     height: 13rem;
   }
 
+      &:hover {
+      background: #F4F4F4; 
+    }
+
+      &:active {
+      background: #F0F0F0; 
+    }
+
 
 
 
