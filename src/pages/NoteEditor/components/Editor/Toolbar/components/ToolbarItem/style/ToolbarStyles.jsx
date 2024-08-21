@@ -61,8 +61,7 @@ export const DropDownMenu = styled.div`
 border: 1px solid red;
   position: absolute;
   margin-top: -13.5rem;
-  left: 39%;
-  transform: translateX(-50%);
+  transform: translateX(-41%);
   z-index: 10;
   border-radius: 0.375rem;
   display: flex;  
@@ -124,14 +123,33 @@ export const ColorDropDownButton = styled(DropDownButton)`
 `;
 
 export const ColorDropDownMenu = styled.div`
-  position: absolute;
-  top: -1.5rem;
-
-  z-index: 10;
+  position: fixed;
+  bottom: 6rem;
+  transform: translateX(31%); 
   display: flex;  
   flex-direction: column;
-  display: flex;
   justify-content: center;
   align-items: flex-start;
-  background: transparent;
+  background: var(--Grays-White, #FFF);
+  padding: 0.5rem 0.4375rem;
+  width: 8.5rem;
+  border-radius: 0.375rem;
+  box-shadow: 0px 4px 26px 0px rgba(0, 0, 0, 0.02), 0px 10px 60px 0px rgba(0, 74, 162, 0.03);
+  z-index: 10;
+`;
+
+export const TextColorDropDownMenu = styled.div`
+  position: fixed;
+  bottom: 6rem;
+  transform: translateX(51.5%); 
+  display: flex;  
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  background: var(--Grays-White, #FFF);
+  padding: 0.5rem 0.4375rem;
+  width: 8.5rem;
+  border-radius: 0.375rem;
+  box-shadow: 0px 4px 26px 0px rgba(0, 0, 0, 0.02), 0px 10px 60px 0px rgba(0, 74, 162, 0.03);
+  z-index: 10;
 `;

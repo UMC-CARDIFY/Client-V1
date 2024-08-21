@@ -418,7 +418,10 @@ export const Library = () => {
                   />
 
                   <NoteListSection>
-                    <NoteList />
+                    <NoteList 
+                    searchQuery={''}
+                    categories={[]}
+                    />
                   </NoteListSection>
                 </>
               )}
