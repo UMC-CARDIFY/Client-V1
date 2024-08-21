@@ -78,6 +78,7 @@ const RecentNotes = () => {
             folderName={note.folderName.length > 8 ? `${note.folderName.substring(0, 8)}...` : note.folderName}
             noteName={note.name.length > 8 ? `${note.name.substring(0, 8)}...` : note.name}
             lastModified={note.editDate}
+            folderColor={note.folderColor} 
           />
         ))}
       </RecentNotesContainer>
