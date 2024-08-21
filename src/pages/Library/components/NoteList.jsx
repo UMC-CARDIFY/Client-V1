@@ -16,7 +16,7 @@ line-height: normal;
 display: flex;
 justify-content: center;
 align-items: center;
-margin-top: 12rem;
+height: 100%;
   `;
 
 const NoResultIcon = styled.div`
