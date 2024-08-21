@@ -18,6 +18,7 @@ import BlankCardView from './setup/blankcardView';
 import BlankCardPreviewModal from '../Cards/PreviewModal/blankcardPreview';
 import MultiCardView from './setup/multicardView';
 import MultiCardPreviewModal from '../Cards/PreviewModal/multicardPreview';
+import ImageCardView from './setup/imagecardView';
 import FlashcardButton from './FlashcardButton';
 import { NoteContext } from '../../../../api/NoteContext';
 
@@ -103,6 +104,7 @@ const CombinedEditor = ({ viewRef }) => {
   const contentRef = useRef(null);
   const titleRef = useRef(null);
   const { noteData, setNoteData } = useContext(NoteContext); // NoteContext 사용
+  
   // 모달 열림/닫힘 상태와 question/answer 데이터를 관리
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState(null);
@@ -117,16 +119,13 @@ const CombinedEditor = ({ viewRef }) => {
     setModalQuestionBack(question_back);
     setIsModalOpen(true);
   };
-
   const closeModal = () => setIsModalOpen(false);
   
-
   useEffect(() => {
     if (!contentRef.current || viewRef.current) {
-      console.log('ContentRef is null or ViewRef is not null. Skipping initialization.');
+      //console.log('ContentRef is null or ViewRef is not null. Skipping initialization.');
       return;
     }
-    //console.log('Initializing editor with noteData:', noteData);
 
     let doc;
     try {
@@ -141,7 +140,7 @@ const CombinedEditor = ({ viewRef }) => {
       }
         doc = mySchema.nodeFromJSON(jsonObject);
       } else {
-        console.log('No noteData found or it is empty. Creating default doc structure.');
+        //console.log('No noteData found or it is empty. Creating default doc structure.');
         doc = mySchema.node('doc', null, 
           mySchema.node('bullet_list', null, 
             mySchema.node('list_item', null, 
@@ -191,22 +190,10 @@ const CombinedEditor = ({ viewRef }) => {
               } else if (parent.type === mySchema.nodes.paragraph) {
                   handleEnterKey(viewRef);
                   return true;
-              } else if (parent.type === mySchema.nodes.word_card || parent.type === mySchema.nodes.blank_card || parent.type === mySchema.nodes.multi_card) {
-                  console.warn('Enter key pressed inside a card node, ignoring.');
-                  return false;
               } else {
                   console.warn('Unexpected node type, Enter key ignored:', parent.type);
                   return false;
               }
-          },
-          'Shift-Enter': (state, dispatch) => {
-            const textNode = state.schema.text("\n");
-        
-            if (dispatch) {
-              const tr = state.tr.replaceSelectionWith(textNode, false);
-              dispatch(tr.scrollIntoView());
-            }
-            return true;
           },
           'Backspace': (state, dispatch) => handleBackspaceInCard(state, dispatch),  // 백스페이스
         }),
@@ -230,6 +217,9 @@ const CombinedEditor = ({ viewRef }) => {
           },
           multi_card(node, view, getPos) {
             return new MultiCardView(node, view, getPos, openModal);
+          },
+          image_card(node, view, getPos) {
+            return new ImageCardView(node, view, getPos, openModal);
           }
         },
         dispatchTransaction(transaction) {
@@ -237,6 +227,9 @@ const CombinedEditor = ({ viewRef }) => {
           const newState = viewRef.current.state.apply(transaction);
           viewRef.current.updateState(newState);
           console.log('New state:', JSON.stringify(newState.doc.toJSON(), null, 2));
+       
+          // 노트 내용 업데이트
+          noteData.noteContent = newState.doc.toJSON();
         }
       });
     } catch (error) {
@@ -247,27 +240,11 @@ const CombinedEditor = ({ viewRef }) => {
     
     return () => {
       if (viewRef.current) {
-        console.log('Destroying editor view.');
         viewRef.current.destroy();
         viewRef.current = null; // 에디터를 해제하고 참조를 null로 설정
       }
     };
-  }, [contentRef, noteData, viewRef]);
-  
-  /*
-   // 새로운 useEffect 훅 추가
-   useEffect(() => {
-    // 노트 데이터를 불러온 후 추가로 문서 끝에 빈 텍스트 노드를 삽입
-    if (viewRef.current) {
-      const { state, dispatch } = viewRef.current;
-      const { tr } = state;
-
-      // 문서의 마지막 위치에 빈 텍스트 노드 추가
-      tr.insert(state.doc.content.size, state.schema.text('\n'));
-      dispatch(tr);
-    }
-  }, [noteData, viewRef]);
-  */
+  }, [contentRef, noteData, viewRef, setNoteData]);
 
   useEffect(() => {
     const node = titleRef.current;
@@ -410,13 +387,11 @@ export const addCard = (viewRef, type) => {
     case 'multi_card':
       node = mySchema.nodes.multi_card.create();
       break;
-    /*
     case 'image_card':
       node = mySchema.nodes.image_card.create();
       break;
-    */
     default:
-      console.error('Unknown card type: ${type}');
+      console.error('Unknown card type:', type);
       return;
   }
 

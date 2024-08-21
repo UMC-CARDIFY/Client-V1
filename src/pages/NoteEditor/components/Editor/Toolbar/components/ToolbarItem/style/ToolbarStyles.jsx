@@ -18,6 +18,7 @@ export const ToolBarItem2 = styled.div`
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  margin-left: 0.5rem;
 `;
 
 export const DropDownButton = styled.div`

@@ -49,14 +49,13 @@ const DeleteItem = styled(ExportItem)`
 `;
 
 // eslint-disable-next-line react/display-name
-const KebabMenu = forwardRef(({ onShare, onExport, noteId }, ref) => {
+const KebabMenu = forwardRef(({ onShare, noteId }, ref) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   return (
     <>
       <KebabMenuWrapper ref={ref}>
         <KebabMenuItem onClick={onShare}>공유하기</KebabMenuItem>
-        <ExportItem onClick={onExport}>내보내기</ExportItem>
         <DeleteItem onClick={() => setIsDeleteModalOpen(true)}>삭제</DeleteItem>
       </KebabMenuWrapper>
       {isDeleteModalOpen && (
@@ -71,7 +70,6 @@ const KebabMenu = forwardRef(({ onShare, onExport, noteId }, ref) => {
 
 KebabMenu.propTypes = {
   onShare: PropTypes.func.isRequired,
-  onExport: PropTypes.func.isRequired,
   noteId: PropTypes.number.isRequired,
 };
 
