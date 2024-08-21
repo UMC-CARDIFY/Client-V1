@@ -1,11 +1,12 @@
 import styled from 'styled-components';
 import closeCard from '../../../assets/flashcard/closeCard.svg';
-import toNoteEditor from '../../../assets/flashcard/toNoteEditor.svg';
 import studyCardSet from '../../../api/flashcard/studyCardSet';
 import { useEffect, useState } from 'react';
 import FolderIcon from './FolderIcon';
 import { colorMap } from './colorMap';
 import { useNavigate } from 'react-router-dom';
+import toNoteEditor from '../../../assets/flashcard/toNoteEditor.svg';
+import toNoteEditorHover from '../../../assets/flashcard/toNoteEditorHover.svg';
 
 const ModalBackdrop = styled.div`
   position: fixed;
@@ -196,6 +197,8 @@ const CommonStudyModal = ({ onClose, studyCardSetId, noteName, folderName, color
   const [noteId, setNoteId] = useState(0);
   const [folderId, setFolderId] = useState(0);
 
+  const [isHover, setIsHover] = useState(false);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -283,8 +286,11 @@ const CommonStudyModal = ({ onClose, studyCardSetId, noteName, folderName, color
       ) : null}
     </Content>
   ))}
-  <ToEditor onClick={goToNoteEditor}>
-    <img src={toNoteEditor} alt="toNoteEditor" />
+  <ToEditor onClick={goToNoteEditor}
+  onMouseEnter={() => setIsHover(true)}
+  onMouseLeave={() => setIsHover(false)}
+  >
+    <img alt="toNoteEditor" src={isHover ? toNoteEditorHover : toNoteEditor} />
   </ToEditor>
 </CardBox>
 

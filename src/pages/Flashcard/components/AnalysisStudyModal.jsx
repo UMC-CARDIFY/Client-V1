@@ -9,6 +9,7 @@ import FolderIcon from './FolderIcon';
 import ConfirmModal from './ConfirmModal';
 import CompletionModal from './CompletionModal';
 import StatisticsModal from './StatisticsModal';
+import { nodes } from 'prosemirror-schema-basic';
 
 const ModalBackdrop = styled.div`
   position: fixed;
@@ -164,13 +165,17 @@ const DifficultyButton = styled.button`
   font-style: normal;
   font-weight: 500;
   line-height: normal;
+
+  &:hover {
+    background-color: ${({ color, hoverColor }) => hoverColor || color};
+  }
 `;
 
 const difficultyColors = {
-  어려움: '#FFE1E1',
-  알맞음: '#CEEFE3',
-  쉬움: '#CDDEFF',
-  패스: '#F2DEF9',
+  어려움: {normal: '#FFE1E1', hover: '#FFD9D9'},
+  알맞음: {normal: '#CEEFE3', hover: '#C2EBDC'},
+  쉬움: {normal: '#CDDEFF', hover: '#C0D6FF'},
+  패스: {normal: '#F2DEF9', hover: '#EFD6F7'},
 };
 
 const AnalysisStudyModal = ({ onClose, studyCardSetId, noteName, folderName, color }) => {
@@ -297,7 +302,8 @@ const AnalysisStudyModal = ({ onClose, studyCardSetId, noteName, folderName, col
                     {Object.keys(difficultyColors).map((difficulty) => (
                       <DifficultyButton
                         key={difficulty}
-                        color={difficultyColors[difficulty]}
+                        color={difficultyColors[difficulty].normal}
+                        hoverColor={difficultyColors[difficulty].hover}
                         onClick={() => handleDifficultySelection(difficulty)}
                         disabled={!allRevealed}
                       >
