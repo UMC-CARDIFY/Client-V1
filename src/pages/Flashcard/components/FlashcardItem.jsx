@@ -91,7 +91,7 @@ const Line = styled.div`
 const DayDiv = styled.div`
   display: inline-flex;
   align-items: center;
-  gap: 3rem;
+  gap: 2rem;
   color: var(--Grays-Gray1, #646464);
   text-align: center;
   font-family: Pretendard;
@@ -103,7 +103,7 @@ const DayDiv = styled.div`
 
 const Day = styled.div`
   display: flex;
-  width: 7.5rem;
+  width: 8rem;
   flex-direction: column;
   align-items: center;
   gap: 0.125rem;

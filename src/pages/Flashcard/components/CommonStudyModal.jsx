@@ -167,6 +167,27 @@ const Answer = styled.div`
   }
 `;
 
+const Img = styled.img`
+  width: 100%;
+  height: auto;
+`;
+
+const AnswerOverlay = styled.div`
+  position: absolute;
+  left: ${({ positionOfX }) => `${positionOfX}px`};
+  top: ${({ positionOfY }) => `${positionOfY}px`};
+  width: ${({ width }) => `${width}px`};
+  height: ${({ height }) => `${height}px`};
+  background-color: ${({ revealed }) => (revealed ? 'transparent' : 'rgba(0, 0, 0, 0.5)')};
+  border: ${({ revealed }) => (revealed ? '2px solid #6A9CFC' : 'none')};
+  cursor: pointer;
+  z-index: 10;
+
+  &:hover {
+    background-color: ${({ revealed }) => (revealed ? 'transparent' : 'rgba(0, 0, 0, 0.3)')};
+  }
+`;
+
 const CommonStudyModal = ({ onClose, studyCardSetId, noteName, folderName, color }) => {
   const [content, setContent] = useState([]);
   const [totalPage, setTotalPage] = useState(1);
@@ -246,14 +267,18 @@ const CommonStudyModal = ({ onClose, studyCardSetId, noteName, folderName, color
         </>
       ) : card.cardType === 'image' ? (
         <>
-          <img src={card.contentsFront} alt="content front" />
-          <Answer
-            revealed={revealedAnswers[index]}
-            onClick={() => revealAnswer(index)}
-          >
-            <img src={card.answer} alt="answer" />
-          </Answer>
-          <img src={card.contentsBack} alt="content back" />
+        <Img src={card.imgUrl} alt="content front" />
+                    {card.overlays.map((overlay, i) => (
+                      <AnswerOverlay
+                        key={i}
+                        positionOfX={overlay.positionOfX}
+                        positionOfY={overlay.positionOfY}
+                        width={overlay.width}
+                        height={overlay.height}
+                        revealed={revealedAnswers[index]}
+                        onClick={() => revealAnswer(index)}
+                      />
+                    ))}
         </>
       ) : null}
     </Content>
