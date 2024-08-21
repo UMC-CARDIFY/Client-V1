@@ -4,9 +4,11 @@ import { useContext } from 'react';
 import { NoteContext } from '../../../../../api/NoteContext';
 import { ModalOverlay, ModalContent, Title, Description, ButtonGroup, Button } from '../../../../../components/Modal/style/DeleteModalStyles';
 import  deleteIcon from '../../../../../../src/assets/deleteicon.svg';
+import { useNavigate } from 'react-router-dom';
 
   const DeleteMenu = ({ onClose }) => {
   const { noteData } = useContext(NoteContext);
+  const navigate = useNavigate();
 
   const handleDelete = async () => {
     const token = localStorage.getItem('accessToken');
@@ -17,11 +19,11 @@ import  deleteIcon from '../../../../../../src/assets/deleteicon.svg';
 
     try {
         const response = await deleteNote(noteData.noteId, token);
-        console.log('삭제노트 id: ', noteData.noteId);
-
+    
         if (response.isSuccess) {
           alert('노트가 성공적으로 삭제되었습니다.');
           onClose();
+          navigate('/archive');
         } else {
           alert('노트 삭제에 실패했습니다.');
         }
