@@ -170,7 +170,7 @@ const StatusBadge = styled.div`
   gap: 0.5rem;
   border-radius: 0.375rem;
   background: ${({ status }) => (status === '학습 중' ? '#E7EFFF' : status === '학습 전' ? '#EDEDED' : 'var(--Grays-Gray6, #EDEDED)')};
-  color: ${({ status }) => (status === '학습 중' ? '#0F62FE' : '#1A1A1A')};
+  color: ${({ status }) => (status === '학습 중' ? '#0F62FE' : '#767676')};
   font-family: Pretendard;
   font-size: 0.75rem;
   font-weight: 500;
@@ -197,6 +197,24 @@ const DeleteButton = styled.div`
   width: 9.1rem;
   height: 3.125rem;
   box-sizing: border-box;
+  padding: 1.03125rem 4rem 1.03125rem 1.125rem;
+  border: 1px solid #dedede;
+  background: #fff;
+  cursor: pointer;
+  z-index: 10;
+  color: #000;
+  font-family: Inter;
+  font-size: 0.875rem;
+  font-weight: 500;
+`;
+
+const RelearnButton = styled.button`
+  display: ${({ show }) => (show ? 'block' : 'none')};
+  position: absolute;
+  right: 2.81rem;
+  width: 9.1rem;
+  height: 3.125rem;
+    box-sizing: border-box;
   padding: 1.03125rem 4rem 1.03125rem 1.125rem;
   border: 1px solid #dedede;
   background: #fff;
@@ -298,9 +316,20 @@ const FlashcardItem = ({ noteName, folderName, recentStudyDate, nextStudyDate, s
         <MoreOptions onClick={toggleDeleteButton}>
           <img src={moreoptions} alt="더보기" />
         </MoreOptions>
+        {studyStatus === '영구 보관' ? (
+        <>
+          <RelearnButton show={showDeleteButton} onClick={handleRelearn}>
+            재학습
+          </RelearnButton>
+          <DeleteButton show={showDeleteButton} onClick={handleDelete}>
+            카드 삭제
+          </DeleteButton>
+        </>
+      ) : (
         <DeleteButton show={showDeleteButton} onClick={handleDelete}>
           카드 삭제
         </DeleteButton>
+      )}
 
         <CardHeader>
           <CardIconDiv>
