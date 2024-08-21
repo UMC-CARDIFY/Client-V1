@@ -123,10 +123,9 @@ const CombinedEditor = ({ viewRef }) => {
   
   useEffect(() => {
     if (!contentRef.current || viewRef.current) {
-      console.log('ContentRef is null or ViewRef is not null. Skipping initialization.');
+      //console.log('ContentRef is null or ViewRef is not null. Skipping initialization.');
       return;
     }
-    //console.log('Initializing editor with noteData:', noteData);
 
     let doc;
     try {
@@ -141,7 +140,7 @@ const CombinedEditor = ({ viewRef }) => {
       }
         doc = mySchema.nodeFromJSON(jsonObject);
       } else {
-        console.log('No noteData found or it is empty. Creating default doc structure.');
+        //console.log('No noteData found or it is empty. Creating default doc structure.');
         doc = mySchema.node('doc', null, 
           mySchema.node('bullet_list', null, 
             mySchema.node('list_item', null, 
@@ -230,7 +229,7 @@ const CombinedEditor = ({ viewRef }) => {
           console.log('New state:', JSON.stringify(newState.doc.toJSON(), null, 2));
        
           // 노트 내용 업데이트
-          noteData.noteContent = JSON.stringify(newState.doc.toJSON());
+          noteData.noteContent = newState.doc.toJSON();
         }
       });
     } catch (error) {
@@ -241,7 +240,6 @@ const CombinedEditor = ({ viewRef }) => {
     
     return () => {
       if (viewRef.current) {
-        console.log('Destroying editor view.');
         viewRef.current.destroy();
         viewRef.current = null; // 에디터를 해제하고 참조를 null로 설정
       }

@@ -1,9 +1,11 @@
 import { useState, useEffect, useContext } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 import { getNotesByFolder } from '../../../api/noteeditor/getNoteToFolder';
 import { addNoteToFolder } from '../../../api/noteeditor/addNote';
 import { NoteContext } from '../../../api/NoteContext';
+import { getNote } from '../../../api/noteeditor/getNote';
 
 const MenuBarContainer = styled.div.withConfig({
   shouldForwardProp: (prop) => prop !== 'isCollapsed',
@@ -109,11 +111,12 @@ const NoteList = styled.div`
   font-family: Pretendard;
   font-size: 0.875rem;
   font-style: normal;
-  font-weight: 500;
+  font-weight: 400;
   line-height: normal;
 
   &:hover {
     background-color: #ffffff;
+    color: var(--Grays-Black, #1A1A1A);
   }
 
   &.selected {
@@ -205,12 +208,17 @@ const colorMap = {
   rose: '#ED83B1'
 };
 
-const MenuBar = ({ isCollapsed, toggleMenuBar, selectedFolderId, selectedNoteId, onSelectNote }) => {
+const MenuBar = ({ isCollapsed, toggleMenuBar, selectedFolderId, onSelectNote }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const { noteData, setNoteData } = useContext(NoteContext);
-  const [selectedNote, setSelectedNote] = useState(selectedNoteId);
   const [notes, setNotes] = useState([]);
+  const [favoriteNotes, setFavoriteNotes] = useState([]);
   const [folderName, setFolderName] = useState(''); // 폴더 이름 상태 추가
   const [folderColor, setFolderColor] = useState('gray'); // 폴더 색상 상태 추가 (기본값: gray)
+
+  // 현재 URL에서 noteId를 가져와 숫자로 변환
+  const selectedNoteId = Number(new URLSearchParams(location.search).get('noteId'));
 
   useEffect(() => {
     const fetchNotesAndFolderName = async () => {
@@ -219,6 +227,9 @@ const MenuBar = ({ isCollapsed, toggleMenuBar, selectedFolderId, selectedNoteId,
         setNotes(data.noteList); // 노트 목록 설정
         setFolderName(data.folderName); // 폴더 이름 설정
         setFolderColor(data.folderColor); // 폴더 색상 설정
+        // favoriteNotes 업데이트
+        const favoriteNotes = data.noteList.filter(note => note.noteId === noteData.noteId ? noteData.markState : note.markState === 'ACTIVE' || note.markState === true);
+        setFavoriteNotes(favoriteNotes);
       } catch (error) {
         console.error('노트 목록을 가져오는 중 오류 발생:', error);
       }
@@ -231,45 +242,61 @@ const MenuBar = ({ isCollapsed, toggleMenuBar, selectedFolderId, selectedNoteId,
 
   
   useEffect(() => {
-    // noteData가 변경되었을 때 notes 상태를 업데이트
-    setNotes((prevNotes) =>
-      prevNotes.map((note) =>
-        note.noteId === noteData.noteId
-          ? { ...note, markState: noteData.markState }
-          : note
-      )
-    );
+    if (noteData.noteId) {
+      setNotes(prevNotes => {
+        const updatedNotes = prevNotes.map(note =>
+          note.noteId === noteData.noteId ? { ...note, markState: noteData.markState } : note
+        );
+        // favoriteNotes 업데이트
+        const updatedFavoriteNotes = updatedNotes.filter(note => note.noteId === noteData.noteId ? noteData.markState : note.markState === 'ACTIVE' || note.markState === true);
+        setFavoriteNotes(updatedFavoriteNotes);
+        return updatedNotes;
+      });
+    }
   }, [noteData]);
 
-  const favoriteNotes = notes.filter(note => note.markState === 'ACTIVE' || note.markState === true);
+  //const favoriteNotes = notes.filter(note => note.markState === 'ACTIVE' || note.markState === true);
   const folderIconColor = colorMap[folderColor] || colorMap.gray;
 
   const handleAddNote = async () => {
     try {
       const { noteId, createdAt } = await addNoteToFolder(selectedFolderId);
-      console.log('생성된 noteId:', noteId);
 
-      setNotes((prevNotes) => [
-        ...prevNotes,
-        {
-          noteId,
-          name: `제목없음`, // 기본 노트 이름 설정
-          markState: false,
-          createdAt,
-        },
-      ]);
+      const newNote = {
+        noteId,
+        name: `제목없음`, 
+        markState: false,
+        createdAt,
+      };
+
+      setNotes((prevNotes) => [...prevNotes, newNote]);
+
+      // 새로 추가된 노트를 선택하도록 처리
+      handleClick(newNote);
     } catch (error) {
       console.error('노트 생성 중 오류 발생:', error);
     }
   };
 
-  useEffect(() => {
-    setSelectedNote(selectedNoteId); // 초기 선택된 노트 설정
-  }, [selectedNoteId]);
+  const handleClick = async (note) => {
+    try {
+      // 새로운 노트의 데이터를 가져옵니다.
+      const data = await getNote(note.noteId);
 
-  const handleClick = (note) => {
-    setSelectedNote(note.noteId);
-    onSelectNote(note.noteId); // 선택된 노트의 ID를 NoteEditor로 전달
+      // 노트 ID 및 관련된 모든 데이터를 업데이트합니다.
+      setNoteData(prevData => ({
+        ...prevData,
+        noteId: note.noteId,
+        noteName: data.noteName,
+        noteContent: data.noteContent,
+        markState: data.markState,
+      }));
+    } catch (error) {
+      console.error('노트를 가져오는 중 오류가 발생했습니다:', error);
+    }
+
+    onSelectNote(note.noteId);
+    navigate(`/note-editor?folderId=${selectedFolderId}&noteId=${note.noteId}`);
   };
 
   return (
@@ -400,7 +427,6 @@ MenuBar.propTypes = {
   isCollapsed: PropTypes.bool.isRequired,
   toggleMenuBar: PropTypes.func.isRequired,
   selectedFolderId: PropTypes.number.isRequired, // 아카이브에서 선택된 폴더 ID
-  selectedNoteId: PropTypes.number, // 여기 추가
   onSelectNote: PropTypes.func.isRequired, 
 };
 

@@ -147,12 +147,13 @@ const Header = ({ isMenuCollapsed, toggleMenuBar, editorView = null, selectedFor
       return;
     }
     const noteDataToSave = {
-      title: document.querySelector('div[contentEditable=true]').innerText, // 제목 가져오기
-      content: editorView.state.doc.toJSON(), // ProseMirror의 상태를 JSON으로 직렬화
+      title: document.querySelector('div[contentEditable=true]').innerText || '제목없음',
+      content: noteData.noteContent,  // 최신 상태의 noteContent를 가져옴
     };
+    //console.log(noteData.noteContent);
 
     // ProseMirror의 상태를 JSON으로 직렬화하여 로그로 출력
-    console.log("Document JSON:", JSON.stringify(editorView.state.doc.toJSON(), null, 2));
+    //console.log("Document JSON:", JSON.stringify(editorView.state.doc.toJSON(), null, 2));
     console.log("Note Data to Save:", noteDataToSave);
 
     // localStorage에서 토큰 가져오기
@@ -169,18 +170,15 @@ const Header = ({ isMenuCollapsed, toggleMenuBar, editorView = null, selectedFor
             noteDataToSave.content,
             token
         );
-        
-        console.log("Response from server:", response);
-
         if (response.isSuccess) {
-            alert('저장이 완료되었습니다.');
+          alert('저장이 완료되었습니다.');
         } else {
-            alert('저장에 실패했습니다.');
+          alert('저장에 실패했습니다.');
         }
-    } catch (error) {
-        alert(error.message);
-        console.log("Error during save:", error);
-    }
+      } catch (error) {
+        console.error("API Error Response:", error.response);
+        alert(`저장에 실패했습니다: ${error.message}`);
+      }
 };
 
   return (

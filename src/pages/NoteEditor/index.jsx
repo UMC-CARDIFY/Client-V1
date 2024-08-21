@@ -43,7 +43,7 @@ const NoteEditor = () => {
   const searchParams = new URLSearchParams(location.search);
   const folderId = searchParams.get('folderId');
   const noteId = searchParams.get('noteId');
-  console.log(' 폴더아이디: ', folderId, '노트아이디: ', noteId);
+  //console.log(' 폴더아이디: ', folderId, '노트아이디: ', noteId);
   //const { noteId: initialNoteId, folderId } = location.state || {}; // folderId를 가져옴
   //const [noteId, setNoteId] = useState(initialNoteId);
   const { noteData, setNoteData } = useContext(NoteContext);
@@ -111,8 +111,7 @@ const NoteEditor = () => {
         <MenuBar
           isCollapsed={isMenuCollapsed}
           toggleMenuBar={toggleMenuBar}
-          selectedFolderId={folderId} // folderId를 MenuBar에 전달
-          selectedNoteId={noteId} // 초기 선택된 노트를 MenuBar에 전달
+          selectedFolderId={Number(folderId)} // folderId를 MenuBar에 전달
           onSelectNote={handleNoteSelect} // MenuBar에서 노트를 선택할 때 호출될 함수
         />
       </MenuBarWrapper>
@@ -121,8 +120,8 @@ const NoteEditor = () => {
           isMenuCollapsed={isMenuCollapsed} 
           toggleMenuBar={toggleMenuBar} 
           editorView={editorView} 
-          selectedFolderId={folderId} 
-          currentNoteId={noteId}
+          selectedFolderId={Number(folderId)}
+          currentNoteId={Number(noteId)}
         />
         <EditorWrapper>
           <Editor setEditorView={setEditorView} />
