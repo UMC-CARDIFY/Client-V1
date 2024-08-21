@@ -231,26 +231,38 @@ const CommonStudyModal = ({ onClose, studyCardSetId, noteName, folderName, color
         <ModalBody>
           <LeftBox onClick={goToPreviousPage} isClickable={currentPage > 0} />
           <CardBox>
-            {content.map((card, index) => (
-              <Content key={index}>
-                <div>
-                  {card.contentsFront}
-                </div>
-                <Answer
-                  revealed={revealedAnswers[index]}
-                  onClick={() => revealAnswer(index)}
-                >
-                  {card.answer}
-                </Answer>
-                <div>
-                  {card.contentsBack}
-                </div>
-              </Content>
-            ))}
-            <ToEditor onClick={goToNoteEditor}>
-              <img src={toNoteEditor} alt="toNoteEditor" />
-            </ToEditor>
-          </CardBox>
+  {content.map((card, index) => (
+    <Content key={index}>
+      {card.cardType === 'word' ? (
+        <>
+          <div>{card.contentsFront}</div>
+          <Answer
+            revealed={revealedAnswers[index]}
+            onClick={() => revealAnswer(index)}
+          >
+            {card.answer}
+          </Answer>
+          <div>{card.contentsBack}</div>
+        </>
+      ) : card.cardType === 'image' ? (
+        <>
+          <img src={card.contentsFront} alt="content front" />
+          <Answer
+            revealed={revealedAnswers[index]}
+            onClick={() => revealAnswer(index)}
+          >
+            <img src={card.answer} alt="answer" />
+          </Answer>
+          <img src={card.contentsBack} alt="content back" />
+        </>
+      ) : null}
+    </Content>
+  ))}
+  <ToEditor onClick={goToNoteEditor}>
+    <img src={toNoteEditor} alt="toNoteEditor" />
+  </ToEditor>
+</CardBox>
+
           <RightBox onClick={goToNextPage} isClickable={currentPage < totalPage - 1} />
         </ModalBody>
 
