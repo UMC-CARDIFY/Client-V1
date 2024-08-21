@@ -11,6 +11,7 @@ import SearchInput from './SearchInput';
 import CloseButton from './CloseButton';
 import { useContext } from 'react';
 import { NoteContext } from '../../../../api/NoteContext';
+import { shareLib } from '../../../../api/noteeditor/shareLib';
 
 const HeaderWrapper = styled.header`
   background: var(--Grays-White, #FFF);
@@ -119,12 +120,13 @@ const Header = ({ isMenuCollapsed, toggleMenuBar, editorView = null, selectedFor
     };
   }, [isKebabMenuOpen, isShareMenuOpen]);
 
-  const handleCopyLink = () => {
-    alert('링크가 복사되었습니다.');
-  };
-
-  const handleShareToLibrary = () => {
-    alert('자료실에 공유되었습니다.');
+  const handleShareToLibrary = async (selectedCategories) => {
+    try {
+      const response = await shareLib(currentNoteId, selectedCategories);
+      console.log('자료실에 공유 성공:', response);
+    } catch (error) {
+      console.error('노트 자료실 업로드 중 오류 발생:', error);
+    }
   };
 
   /*이미지 카드 저장
@@ -207,7 +209,6 @@ const Header = ({ isMenuCollapsed, toggleMenuBar, editorView = null, selectedFor
         {isShareMenuOpen && (
           <ShareMenu
             ref={shareMenuRef}
-            onCopyLink={handleCopyLink}
             onShareToLibrary={handleShareToLibrary}
           />
         )}
