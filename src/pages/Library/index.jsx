@@ -15,6 +15,7 @@ const Container = styled.div`
   display: flex;
   width: 100%;
   height: 100vh;
+  overflow: hidden;
 `;
 
 const Vcontainer = styled.div`
@@ -29,6 +30,7 @@ const ContentArea = styled.div`
   height: 100%; 
   padding: 3.56rem 4.8rem 3.5rem 4.1rem;
   background: var(--Main-BackGround, #F2F4F8);
+  overflow: auto;
 `;
 
 // const ContentArea = styled.div`
