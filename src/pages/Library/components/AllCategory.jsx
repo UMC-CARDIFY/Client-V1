@@ -290,6 +290,7 @@ const AllCategory = ({ selectedCategory, onBackClick }) => {
                 uploadAt={note.uploadAt}
                 noteId={note.noteId} // Note ID 전달
                 isDownload={note.isDownload}
+                libraryId={note.libraryId}
               />
               ))
             )}
