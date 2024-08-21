@@ -87,6 +87,7 @@ const NoteItem = ({ noteName, categoryName, cntCard, userName, uploadAt, noteId,
   const [showModal, setShowModal] = useState(false);
   const [noteContent, setNoteContent] = useState('');
   const [isContainCard, setIsContainCard] = useState('');
+  const [folderId, setFolderId] = useState();
 
   const formattedDate = new Date(uploadAt).toISOString().split('T')[0];
   const formattedCategoryName = Array.isArray(categoryName) ? categoryName.join(', ') : categoryName;
@@ -100,6 +101,7 @@ const NoteItem = ({ noteName, categoryName, cntCard, userName, uploadAt, noteId,
     const download = await checkDownload(libraryId);
     console.log(download);
     setIsContainCard(download.isDownload);
+    setFolderId(download.folderId);
   };
 
   return (
@@ -143,7 +145,8 @@ const NoteItem = ({ noteName, categoryName, cntCard, userName, uploadAt, noteId,
         content={noteContent}
         isContainCard={isContainCard}
         libraryId={libraryId}
-        folderId={noteId}
+        noteId={noteId}
+        folderId={folderId}
       />
     </>
   );
