@@ -59,6 +59,7 @@ const NoteList = ({ searchQuery, categories = [], showAllNotes = false }) => {
             uploadAt={note.uploadAt}
             noteId={note.noteId} 
             libraryId={note.libraryId}
+            isDownload={note.isDownload}
           />
         ))
       ) : (

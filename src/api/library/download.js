@@ -1,11 +1,12 @@
 import axiosInstance from '..';
 
-export const download = async (libraryId, folderId, isContainCard) => {
+export const download = async (libraryId, folderId, isDownloadContain) => {
+    console.log(libraryId, folderId, isDownloadContain);
     try {
         const response = await axiosInstance.post('/library/download', {
             libraryId: libraryId,
             folderId: folderId,
-            isContainCard: isContainCard
+            isEdit: isDownloadContain
         });
         return response.data.noteId;
     } catch (error) {

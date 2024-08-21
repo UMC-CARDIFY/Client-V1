@@ -79,7 +79,7 @@ const DownloadButton = styled.button`
   cursor: ${(props) => (props.disabled ? '' : 'pointer')};
 `;
 
-const NoteModal = ({ show, onClose, title, content, isContainCard, libraryId,noteId, folderId }) => {
+const NoteModal = ({ show, onClose, title, content, isDownloadCard, libraryId,noteId, folderId }) => {
     const navigate = useNavigate();
   
     const [isFolderSelectModal, setIsFolderSelectModal] = useState(false);
@@ -118,27 +118,28 @@ const NoteModal = ({ show, onClose, title, content, isContainCard, libraryId,not
             </ModalBody>
           </NoteDiv>
           <DownloadDiv>
-            {isContainCard === 'None' ? (
+            {isDownloadCard === 'None' ? (
               <>
                 <DownloadButton onClick={downloadContain}>
-                  플래시카드 포함 300P
+                  편집 허용 300P
                 </DownloadButton>
                 <DownloadButton onClick={downloadNotContain}>
-                  플래시카드 미포함 200P
+                  편집 불가 200P
                 </DownloadButton>
               </>
-            ) : isContainCard === 'ContainCard' ? (
+            ) : isDownloadCard === 'Edit' ? (
               <DownloadButton onClick={downloadContain}>
                 새로운 노트로 저장
               </DownloadButton>
-            ) : isContainCard === 'Upload' ? (
+            ) : isDownloadCard === 'Upload' ? (
               <DownloadButton onClick={myNote}>
                 공유 중인 노트로 이동
               </DownloadButton>
             ) : (
+                // isDownloadCard === 'Edit'
               <>
                 <DownloadButton onClick={downloadContain}>
-                  플래시카드 포함 100P
+                  편집 허용 100P
                 </DownloadButton>
                 <DownloadButton onClick={downloadNotContain}>
                   새로운 노트로 저장
