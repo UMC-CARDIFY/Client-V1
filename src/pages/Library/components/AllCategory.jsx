@@ -17,6 +17,7 @@ const CategoryItems = styled.div`
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 4rem 3rem;
+   width: 100%
 `;
 
 const CategoryItemContainer = styled.div`
@@ -24,20 +25,20 @@ const CategoryItemContainer = styled.div`
 flex-shrink: 0;
   border-radius: 0.75rem;
 background: var(--Grays-White, #FFF);
-padding: 3.25rem 3.68rem 3.75rem 3.75rem;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   align-items: center;
+  height: 16.5rem;
+  align-items:center;
+  display:flex;
+  justify-content:center;
 
-
-  @media (min-width: 1440px) and (max-width: 1680px) {
-    padding: 3.25rem 3.68rem 3.75rem 3.75rem;
+  @media  (max-width: 1680px) {
+    height: 13rem;
   }
 
-  @media (max-width: 1440px) {
-    padding: 3.25rem 3.68rem 3.75rem 3.75rem;
-  }
+
 
 
 `;
