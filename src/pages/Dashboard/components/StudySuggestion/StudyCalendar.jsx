@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css'; 
 import styled from 'styled-components';
@@ -115,7 +115,7 @@ const StyledCalendar = styled(Calendar)`
     }
   }
   .react-calendar__tile--now {
-    color: #0F62FE; /* 오늘 날짜 글씨 색상 */
+    color: #0F62FE; 
 
     &:focus {
       background: #0F62FE;
@@ -201,7 +201,7 @@ const CardsContainer = styled.div`
   }
 
   &::-webkit-scrollbar-thumb:hover {
-    background-color: #555; /* 스크롤바에 호버 효과 추가 */
+    background-color: #D3D3D3; 
   }
 `;
 
@@ -225,8 +225,7 @@ const StudyCalendar = () => {
     '2024-07-03': [{ name: '노트 1', timeLeft: '3시간 20분 후' }],
     '2024-07-11': [
       { name: '노트 2', timeLeft: '5일 2시간 후' },
-      { name: '노트 19', timeLeft: '5일 2시간 후' }]
-      ,
+      { name: '노트 19', timeLeft: '5일 2시간 후' }],
     '2024-07-13': [
       { name: '노트 3', timeLeft: '10분 후' },
       { name: '노트 4', timeLeft: '2시간 10분 후' },
@@ -234,7 +233,27 @@ const StudyCalendar = () => {
       { name: '노트 6', timeLeft: '1시간 10분 후' },
       { name: '노트 7', timeLeft: '5시간 10분 후' }
     ],
+    '2024-08-22': [
+      { name: '노트 3', timeLeft: '10분 후' },
+      { name: '노트 4', timeLeft: '2시간 10분 후' },
+      { name: '노트 5', timeLeft: '3시간 10분 후' },
+      { name: '노트 6', timeLeft: '1시간 10분 후' },
+      { name: '노트 7', timeLeft: '5시간 10분 후' }
+    ],
   };
+
+  useEffect(() => {
+    // 컴포넌트가 처음 렌더링될 때 오늘 날짜의 학습 제안이 표시되도록 설정
+    const today = new Date();
+    setDate(today);
+    const formattedDate = formatDate(today);
+    const sortedCards = (studyCards[formattedDate] || []).sort((a, b) => {
+      const timeA = parseTimeLeft(a.timeLeft);
+      const timeB = parseTimeLeft(b.timeLeft);
+      return timeA - timeB;
+    });
+    setCards(sortedCards);
+  }, []);
 
   const handlePrevMonth = () => {
     setViewDate(new Date(viewDate.getFullYear(), viewDate.getMonth() - 1, 1));
@@ -248,7 +267,13 @@ const StudyCalendar = () => {
     const today = new Date();
     setViewDate(new Date(today.getFullYear(), today.getMonth(), 1));
     setDate(today);
-    setCards([]);
+    const formattedDate = formatDate(today);
+    const sortedCards = (studyCards[formattedDate] || []).sort((a, b) => {
+      const timeA = parseTimeLeft(a.timeLeft);
+      const timeB = parseTimeLeft(b.timeLeft);
+      return timeA - timeB;
+    });
+    setCards(sortedCards);
   };
 
   const handleClickDay = (value) => {
