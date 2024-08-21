@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import postNoteSearch from '../../../../api/noteeditor/postNoteSearch';
 import { useLocation, useNavigate } from 'react-router-dom';
+import arrow from '../../../../assets/arrow.svg';
 
 const SearchWrapper = styled.div`
   display: flex;
@@ -64,10 +65,15 @@ const SearchResultItemTitle = styled.div`
   cursor: pointer;
   width: 100%;
   box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
 
   &:hover {
-    background: #f2f4f8;
+    background: #ECEFF4;
   }
+    &.active{
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.02) 0%, rgba(0, 0, 0, 0.02) 100%), #ECEFF4;
+    }
 `;
 
 const NoteContent = styled.div`
@@ -81,6 +87,10 @@ const NoteContent = styled.div`
 const NoteDiv =styled.div`
   width: 100%;
   
+`;
+
+const Img = styled.img`
+   justify-content: flex-end;
 `;
 
 const Search = () => {
@@ -150,7 +160,8 @@ const Search = () => {
           {results.map((result) => (
             <NoteDiv key={result.noteId}>
               <SearchResultItemTitle onClick={() => handleResultClick(result.noteId)}>
-                {result.noteName}
+                <div>{result.noteName}</div>
+                <Img src={arrow} alt='arrow'/>
               </SearchResultItemTitle>
               {result.textList.length > 0 ? (
                     result.textList.map((text, index) => (
