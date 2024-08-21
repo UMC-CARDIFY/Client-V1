@@ -71,9 +71,9 @@ const SearchResultItemTitle = styled.div`
   &:hover {
     background: #ECEFF4;
   }
-    &.active{
+  &.active {
     background: linear-gradient(0deg, rgba(0, 0, 0, 0.02) 0%, rgba(0, 0, 0, 0.02) 100%), #ECEFF4;
-    }
+  }
 `;
 
 const NoteContent = styled.div`
@@ -84,9 +84,8 @@ const NoteContent = styled.div`
   box-sizing: border-box;
 `;
 
-const NoteDiv =styled.div`
+const NoteDiv = styled.div`
   width: 100%;
-  
 `;
 
 const Img = styled.img`
@@ -101,7 +100,6 @@ const Search = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [expandedNoteId, setExpandedNoteId] = useState(null);
   const dropdownRef = useRef(null);
 
   const handleSearch = async (term) => {
@@ -133,8 +131,19 @@ const Search = () => {
     }
   };
 
-  const toggleExpand = (noteId) => {
-    setExpandedNoteId(prevId => (prevId === noteId ? null : noteId)); // 클릭된 노트를 확장하거나 닫기
+
+  const highlightText = (text, searchTerm) => {
+    if (!searchTerm) return text;
+    const parts = text.split(new RegExp(`(${searchTerm})`, 'gi'));
+    return parts.map((part, index) =>
+      part.toLowerCase() === searchTerm.toLowerCase() ? (
+        <span key={index} style={{ color: '#007bff', fontWeight: 'bold' }}>
+          {part}
+        </span>
+      ) : (
+        part
+      )
+    );
   };
 
   useEffect(() => {
@@ -164,12 +173,14 @@ const Search = () => {
                 <Img src={arrow} alt='arrow'/>
               </SearchResultItemTitle>
               {result.textList.length > 0 ? (
-                    result.textList.map((text, index) => (
-                      <NoteContent key={index}>{text}</NoteContent>
-                    ))
-                  ) : (
-                    '내용 없음'
-                  )}
+                result.textList.map((text, index) => (
+                  <NoteContent key={index}>
+                    {highlightText(text, searchTerm)}
+                  </NoteContent>
+                ))
+              ) : (
+                '내용 없음'
+              )}
             </NoteDiv>
           ))}
         </SearchResultList>
