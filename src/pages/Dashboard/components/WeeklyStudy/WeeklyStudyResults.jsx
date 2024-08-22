@@ -49,12 +49,30 @@ const GraphTitle = styled.div`
   font-style: normal;
   font-weight: 400;
   line-height: normal;
+  white-space: nowrap; /* 텍스트가 여러 줄로 넘어가지 않도록 고정 */
+  margin-right: 1rem; /* 적당한 간격 부여 */
+
+  @media (max-width: 1440px) and (min-width: 1200px) {
+    flex-grow: 1; /* 이 구간에서 충분히 공간을 차지하도록 */
+  }
 `;
 
 const LegendContainer = styled.div`
   display: flex;
   gap: 2rem;
-  margin-left: 31rem;
+  margin-left: 30rem; 
+  flex-shrink: 0; 
+
+  @media (max-width: 1680px) and (min-width: 1440px) {
+    flex-shrink: 0; 
+    margin-left: 14rem; 
+  }
+
+
+  @media (max-width: 1440px) and (min-width: 1200px) {
+    flex-shrink: 0; 
+    margin-left: 10rem; 
+  }
 `;
 
 const ChartWrapper = styled.div`
