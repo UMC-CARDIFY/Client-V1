@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import closeCard from '../../../assets/flashcard/closeCard.svg';
 import studyCardSet from '../../../api/flashcard/studyCardSet';
 import { useEffect, useState } from 'react';
@@ -152,6 +152,11 @@ const PageDiv = styled.div`
 const Content = styled.div`
     display: flex;
     gap: 0.75rem;
+    ${(props) =>
+      props.isMulti &&
+      css`
+        flex-direction: column; /* 멀티카드일 때 세로 정렬 */
+      `}
 `;
 
 const Answer = styled.div`
@@ -280,7 +285,7 @@ const CommonStudyModal = ({ onClose, studyCardSetId, noteName, folderName, color
           <LeftBox onClick={goToPreviousPage} isClickable={currentPage > 0} />
           <CardBox>
   {content.map((card, index) => (
-    <Content key={index}>
+    <Content key={index}  isMulti={card.cardType === 'multi'}>
       {card.cardType === 'word' ? (
         <>
           <div>{card.contentsFront}</div>
