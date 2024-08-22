@@ -176,15 +176,28 @@ const SortDropdown = ({ onSortOptionClick, selectedTab, currentFolderId }) => {
     >
       {selectedOption ? (
         <>
-          <CloseButton src={Close} alt="Clear" onClick={handleClearSelection} />
-          <span>
-            {selectedOption.includes('asc') ? '이름 ↑' : 
-            selectedOption.includes('desc') ? '이름 ↓' : 
-            selectedOption.includes('edit-newest') ? '수정일 - 최신순' : 
-            selectedOption.includes('edit-oldest') ? '수정일 - 오래된 순' : '정렬'}
-          </span>
-
-        </>
+        {selectedTab === '폴더' ? (
+          <>
+            <CloseButton src={Close} alt="Clear" onClick={handleClearSelection} />
+            <span>
+              {selectedOption.includes('asc') ? '폴더 이름 ↑' : 
+              selectedOption.includes('desc') ? '폴더 이름 ↓' : 
+              selectedOption.includes('edit-newest') ? '수정일 - 최신순' : 
+              selectedOption.includes('edit-oldest') ? '수정일 - 오래된 순' : '정렬'}
+            </span>
+          </>
+        ) : (
+          <>
+            <CloseButton src={Close} alt="Clear" onClick={handleClearSelection} />
+            <span>
+            {selectedOption.includes('asc') ? '노트 이름 ↑' : 
+              selectedOption.includes('desc') ? '노트 이름 ↓' : 
+              selectedOption.includes('edit-newest') ? '수정일 - 최신순' : 
+              selectedOption.includes('edit-oldest') ? '수정일 - 오래된 순' : '정렬'}
+            </span>
+          </>
+        )}
+      </>
       ) : (
         <>
           <img src={Sort} alt="Sort Icon" />
@@ -200,7 +213,7 @@ const SortDropdown = ({ onSortOptionClick, selectedTab, currentFolderId }) => {
                 handleSortOptionClick('asc');
               }}
             >
-              {currentFolderId ? '현재 폴더 이름 ↑' : '전체 폴더 이름 ↑'}
+              {currentFolderId ? '폴더 이름 ↑' : '폴더 이름 ↑'}
             </DropdownItem>
             <DropdownItem 
               onClick={(e) => {
@@ -208,7 +221,7 @@ const SortDropdown = ({ onSortOptionClick, selectedTab, currentFolderId }) => {
                 handleSortOptionClick('desc');
               }}
             >
-              {currentFolderId ? '현재 폴더 이름 ↓' : '전체 폴더 이름 ↓'}
+              {currentFolderId ? '폴더 이름 ↓' : '폴더 이름 ↓'}
             </DropdownItem>
             <DropdownItem 
               onClick={(e) => {
@@ -216,7 +229,7 @@ const SortDropdown = ({ onSortOptionClick, selectedTab, currentFolderId }) => {
                 handleSortOptionClick('edit-newest');
               }}
             >
-              {currentFolderId ? '현재 폴더 수정일 - 최신순' : '전체 폴더 수정일 - 최신순'}
+              {currentFolderId ? '수정일 - 최신순' : '수정일 - 최신순'}
             </DropdownItem>
             <DropdownItem 
               onClick={(e) => {
@@ -224,7 +237,7 @@ const SortDropdown = ({ onSortOptionClick, selectedTab, currentFolderId }) => {
                 handleSortOptionClick('edit-oldest');
               }}
             >
-              {currentFolderId ? '현재 폴더 수정일 - 오래된 순' : '전체 폴더 수정일 - 오래된 순'}
+              {currentFolderId ? '수정일 - 오래된 순' : '수정일 - 오래된 순'}
             </DropdownItem>
           </FolderDropdown>
         ) : (
@@ -251,7 +264,7 @@ const SortDropdown = ({ onSortOptionClick, selectedTab, currentFolderId }) => {
                 handleSortOptionClick('edit-newest');
               }}
             >
-              노트 수정일 - 최신순
+              수정일 - 최신순
             </DropdownItem>
             <DropdownItem 
               onClick={(e) => {
@@ -259,7 +272,7 @@ const SortDropdown = ({ onSortOptionClick, selectedTab, currentFolderId }) => {
                 handleSortOptionClick('edit-oldest');
               }}
             >
-              노트 수정일 - 오래된 순
+              수정일 - 오래된 순
             </DropdownItem>
           </NoteDropdown>
         )
