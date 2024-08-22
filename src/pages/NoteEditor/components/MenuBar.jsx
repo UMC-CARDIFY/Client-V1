@@ -290,6 +290,8 @@ const MenuBar = ({ isCollapsed, toggleMenuBar, selectedFolderId, onSelectNote })
         noteName: data.noteName,
         noteContent: data.noteContent,
         markState: data.markState,
+        isEdit: data.isEdit,
+        isUpload: data.isUpload,
       }));
     } catch (error) {
       console.error('노트를 가져오는 중 오류가 발생했습니다:', error);

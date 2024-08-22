@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import styled from 'styled-components';
 import { EditorState } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 import { Node as ProseMirrorNode } from 'prosemirror-model';
@@ -8,6 +9,12 @@ import WordCardView from '../../NoteEditor/components/Editor/setup/wordcardView'
 import BlankCardView from '../../NoteEditor/components/Editor/setup/blankcardView';
 import MultiCardView from '../../NoteEditor/components/Editor/setup/multicardView';
 import ImageCardView from '../../NoteEditor/components/Editor/setup/imagecardView';
+
+const DisabledEditorWrapper = styled.div`
+  .prosemirror-editor-view {
+    pointer-events: none;
+  }
+`;
 
 const NotePreview = ({ content }) => {
   const editorRef = useRef(null);
@@ -73,7 +80,9 @@ const NotePreview = ({ content }) => {
   }
 
   return (
+    <DisabledEditorWrapper>
     <div ref={editorRef} />
+    </DisabledEditorWrapper>
   );
 };
 

@@ -15,7 +15,7 @@ const RecommendationTitleDiv = styled.div`
 
 const RecommendationTitle = styled.div`
   color: #343C6A;
-  font-family: Inter;
+  font-family: Pretendard;
   font-size: 1.125rem;
   font-style: normal;
   font-weight: 700;
@@ -25,11 +25,11 @@ const RecommendationTitle = styled.div`
 
 const RecommendationSubTitle = styled.div`
   margin-bottom: 1rem;
-  color: #000;
-  font-family: Inter;
+  color: #646464;
+  font-family: Pretendard;
   font-size: 0.9375rem;
   font-style: normal;
-  font-weight: 300;
+  font-weight: 500;
   line-height: normal;
 `;
 
@@ -38,7 +38,7 @@ const ViewAllButton = styled.div`
   right: 0;
   bottom: 0;
   color: #000;
-  font-family: Inter;
+  font-family: Pretendard;
   font-size: 0.9375rem;
   font-style: normal;
   font-weight: 300;

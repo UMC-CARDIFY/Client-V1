@@ -76,6 +76,8 @@ const NoteEditor = () => {
             noteName: data.noteName,
             noteContent: data.noteContent,
             markState: data.markState,
+            isEdit: data.isEdit,
+            isUpload: data.isUpload,
             // 필요한 다른 데이터들 추가
           }));
           console.log('Fetched Note Data:', data);
@@ -99,6 +101,8 @@ const NoteEditor = () => {
         noteName: data.noteName,
         noteContent: data.noteContent,
         markState: data.markState,
+        isEdit: data.isEdit,
+        isUpload: data.isUpload,
       }));
     } catch (error) {
       console.error('노트를 가져오는 중 오류가 발생했습니다:', error);

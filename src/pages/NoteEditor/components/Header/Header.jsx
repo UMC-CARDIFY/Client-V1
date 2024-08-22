@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import KebabMenu from './KebabMenu/KebabMenu';
@@ -9,7 +9,6 @@ import StarButton from './StarButton';
 import SaveButton from './SaveButton';
 import SearchInput from './SearchInput';
 import CloseButton from './CloseButton';
-import { useContext } from 'react';
 import { NoteContext } from '../../../../api/NoteContext';
 import { shareLib } from '../../../../api/noteeditor/shareLib';
 import { NoteStatusContext } from '../../../../api/NoteStatus';
@@ -94,13 +93,13 @@ const ToggleMenuButton = styled.button`
 `;
 
 const Header = ({ isMenuCollapsed, toggleMenuBar, editorView = null, selectedForderId, currentNoteId }) => {
-  const { noteData } = useContext(NoteContext);
+  const { noteData, setNoteData } = useContext(NoteContext);
   const { isNameChanged, isContentChanged, setIsNameChanged, setIsContentChanged } = useContext(NoteStatusContext);
   const [isKebabMenuOpen, setIsKebabMenuOpen] = useState(false);
   const [isShareMenuOpen, setIsShareMenuOpen] = useState(false);
   const kebabMenuRef = useRef(null);
   const shareMenuRef = useRef(null);
-
+  const { isUpload } = noteData; // isUpload 상태 가져오기
 
   const handleKebabClick = () => {
     setIsKebabMenuOpen(!isKebabMenuOpen);
@@ -133,6 +132,7 @@ const Header = ({ isMenuCollapsed, toggleMenuBar, editorView = null, selectedFor
     try {
       const response = await shareLib(currentNoteId, selectedCategories);
       console.log('자료실에 공유 성공:', response);
+      setNoteData((prevData) => ({ ...prevData, isUpload: true }));
     } catch (error) {
       console.error('노트 자료실 업로드 중 오류 발생:', error);
     }
