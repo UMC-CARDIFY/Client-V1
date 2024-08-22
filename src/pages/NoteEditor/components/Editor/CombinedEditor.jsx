@@ -21,6 +21,7 @@ import MultiCardPreviewModal from '../Cards/PreviewModal/multicardPreview';
 import ImageCardView from './setup/imagecardView';
 import FlashcardButton from './FlashcardButton';
 import { NoteContext } from '../../../../api/NoteContext';
+import { NoteStatusContext } from '../../../../api/NoteStatus';
 
 const ContentArea = styled.div`
   flex: 1;
@@ -104,6 +105,7 @@ const CombinedEditor = ({ viewRef }) => {
   const contentRef = useRef(null);
   const titleRef = useRef(null);
   const { noteData, setNoteData } = useContext(NoteContext); // NoteContext 사용
+  const { setIsNameChanged, setIsContentChanged } = useContext(NoteStatusContext);
   
   // 모달 열림/닫힘 상태와 question/answer 데이터를 관리
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -227,9 +229,14 @@ const CombinedEditor = ({ viewRef }) => {
           const newState = viewRef.current.state.apply(transaction);
           viewRef.current.updateState(newState);
           console.log('New state:', JSON.stringify(newState.doc.toJSON(), null, 2));
-       
+          
           // 노트 내용 업데이트
-          noteData.noteContent = newState.doc.toJSON();
+          //noteData.noteContent = newState.doc.toJSON();
+          const newContent = newState.doc.toJSON();
+          if (JSON.stringify(newContent) !== JSON.stringify(noteData.noteContent)) {
+            setIsContentChanged(true);
+          }
+          noteData.noteContent = newContent;
         }
       });
     } catch (error) {
@@ -263,6 +270,11 @@ const CombinedEditor = ({ viewRef }) => {
         node.classList.add('empty');
       } else {
         node.classList.remove('empty');
+      }
+      if (node.innerText !== noteData.noteName) {
+        setIsNameChanged(true);
+      } else {
+        setIsNameChanged(false);
       }
     };
 

@@ -12,6 +12,8 @@ const SaveButtonWrapper = styled.button`
   border: none;
   cursor: pointer;
   margin-left: 1rem;
+  opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
+  transition: opacity 0.3s ease-in-out;
 
   span {
     color: var(--Semantic-Acitve, #699BF7);
@@ -24,15 +26,16 @@ const SaveButtonWrapper = styled.button`
   }
 `;
 
-const SaveButton = ({ onSave }) => {
+const SaveButton = ({ isVisible, onSave }) => {
     return (
-      <SaveButtonWrapper onClick={onSave}>
+      <SaveButtonWrapper isVisible={isVisible} onClick={onSave}>
         <span>저장하기</span>
       </SaveButtonWrapper>
     );
   };
   
   SaveButton.propTypes = {
+    isVisible: PropTypes.bool.isRequired,
     onSave: PropTypes.func.isRequired,
   };
   
