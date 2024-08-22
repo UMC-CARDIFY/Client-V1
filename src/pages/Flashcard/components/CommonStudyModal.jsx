@@ -7,6 +7,42 @@ import { colorMap } from './colorMap';
 import { useNavigate } from 'react-router-dom';
 import toNoteEditor from '../../../assets/flashcard/toNoteEditor.svg';
 import toNoteEditorHover from '../../../assets/flashcard/toNoteEditorHover.svg';
+import { 
+  Overlay, ModalContainer, ModalHeader, PreviewTitle, PreviewIcon,
+  CardContent, HighlightedAnswer, ArrowIcon
+ } from './style/CardPreviewModalStyles';
+ import rightArrow from '../../../assets/noteEditor/rightArrow.svg';
+ import bulletIcon from '../../../assets/noteEditor/bulletIcon.svg';
+
+ // 카드 타입별 수정
+ const CardFront = styled.div`
+ margin-top: 0;
+`;
+
+const CardFrontMulti = styled(CardFront)`
+margin-bottom: 1rem;
+`;
+
+ const AnswerList = styled.div`
+  list-style: none;
+  padding-left: 0;
+  flex-direction: column;
+  display: flex;
+  align-items: flex-start;
+`;
+
+const CardBack = styled.div`
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  position: relative;
+`;
+
+const BulletIcon = styled.img`
+  width: 0.375rem;
+  height: 0.375rem;
+  margin-right: 1rem;
+`;
 
 const ModalBackdrop = styled.div`
   position: fixed;
@@ -288,7 +324,10 @@ const CommonStudyModal = ({ onClose, studyCardSetId, noteName, folderName, color
     <Content key={index}  isMulti={card.cardType === 'multi'}>
       {card.cardType === 'word' ? (
         <>
-          <div>{card.contentsFront}</div>
+          <CardFront>{card.contentsFront}</CardFront>
+          <ArrowIcon> 
+              <img src={rightArrow} alt="rightArrow" />
+            </ArrowIcon>
           <Answer
            revealed={revealedAnswers[index]}
            onClick={() => revealAnswer(index)}
@@ -299,20 +338,23 @@ const CommonStudyModal = ({ onClose, studyCardSetId, noteName, folderName, color
       ) 
       : card.cardType === 'blank' ? (
           <>
-          <div>{card.contentsFront}</div>
+          <CardFront>{card.contentsFront}</CardFront>
           <Answer
             revealed={revealedAnswers[index]}
             onClick={() => revealAnswer(index)}
           >
             {card.answer}
           </Answer>
-          <div>{card.contentsBack}</div>
+          <CardFront>{card.contentsBack}</CardFront>
         </>
       )
       : card.cardType === 'multi' ? (
         <>
-        <div>{card.contentsFront}</div>
+        <CardFrontMulti>{card.contentsFront}</CardFrontMulti>
+        <AnswerList>
         {card.multiAnswer.map((answer, answerIndex) => (
+          <CardBack key={answerIndex}>
+          <BulletIcon src={bulletIcon} alt="bulletIcon" />
           <Answer
             key={answerIndex}
             revealed={revealedAnswers[index]?.[answerIndex] || false}
@@ -320,7 +362,9 @@ const CommonStudyModal = ({ onClose, studyCardSetId, noteName, folderName, color
           >
             {answer}
           </Answer>
+        </CardBack>
         ))}
+      </AnswerList>
       </>
     )
       : card.cardType === 'image' ? (
