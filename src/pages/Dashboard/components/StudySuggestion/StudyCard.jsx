@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import cardIcon from '../../../../assets/dashboard/cardIcon.svg';
+import { intervalToDuration } from 'date-fns';
 
 const CardContainer = styled.div`
   display: flex;
@@ -46,11 +47,29 @@ const CardSubtitle = styled.div`
   line-height: normal;
 `;
 
+const calculateTimeLeft = (remainTime) => {
+  const now = new Date();
+  const targetDate = new Date(remainTime);
+  const duration = intervalToDuration({ start: now, end: targetDate });
+
+  if (duration.years > 0) {
+    return `${String(duration.years).padStart(2, '0')}년 ${String(duration.months).padStart(2, '0')}달 후`;
+  } else if (duration.months > 0) {
+    return `${String(duration.months).padStart(2, '0')}달 ${String(duration.days).padStart(2, '0')}일 후`;
+  } else if (duration.days > 0) {
+    return `${String(duration.days).padStart(2, '0')}일 ${String(duration.hours).padStart(2, '0')}시간 후`;
+  } else if (duration.hours > 0) {
+    return `${String(duration.hours).padStart(2, '0')}시간 ${String(duration.minutes).padStart(2, '0')}분 후`;
+  } else {
+    return `${String(duration.minutes).padStart(2, '0')}분 후`;
+  }
+};
+
 const StudyCard = ({ card }) => (
   <CardContainer>
     <CardIcon src={cardIcon} alt="Card Icon" />
     <CardDetails>
-      <CardTitle>{card.timeLeft}</CardTitle>
+      <CardTitle>{calculateTimeLeft(card.remainTime)}</CardTitle>
       <CardSubtitle>{card.name}</CardSubtitle>
     </CardDetails>
   </CardContainer>
@@ -58,7 +77,7 @@ const StudyCard = ({ card }) => (
 
 StudyCard.propTypes = {
   card: PropTypes.shape({
-    timeLeft: PropTypes.string.isRequired,
+    remainTime: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired
   }).isRequired
 };
