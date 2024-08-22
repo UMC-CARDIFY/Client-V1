@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
-import CircleCheck from './CircleCheck'; 
+import Circle from './Circle'; 
 import filterIcon from '../../../assets/filterIcon.svg';
 import closeIcon from '../../../assets/closeIcon.svg'; // X 버튼 아이콘
 
@@ -98,7 +98,30 @@ const CloseButton = styled.img`
   cursor: pointer;
 `;
 
-const FilteringDropdown = ({ onFilterApply, type, selectedTab }) => {
+const Line = styled.div`
+border: 1px solid var(--grays-gray-5-divider, #E8E8E8);
+width: 100%;
+margin: 0.81rem 0 1rem 0;
+`;
+
+const StatusDiv = styled.div`
+display: flex;
+width: 100%;
+padding: 0.5rem 0.75rem;
+justify-content: center;
+align-items: center;
+gap: 0.5rem;
+border-radius: 0.25rem;
+background: var(--Grays-Gray8, #F4F4F4);
+margin-top: 0.38rem;
+box-sizing: border-box;
+
+&:hover {
+  background: #F0F0F0;
+}
+`;
+
+const FilteringDropdown = ({ onFilterApply, type }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedColors, setSelectedColors] = useState([]);
   const [filtersApplied, setFiltersApplied] = useState(false);
@@ -126,7 +149,7 @@ const FilteringDropdown = ({ onFilterApply, type, selectedTab }) => {
   useEffect(() => {
     setSelectedColors([]);
     setFiltersApplied(false);
-  }, [selectedTab]);
+  }, []);
 
   const toggleDropdown = (event) => {
     event.stopPropagation();
@@ -201,14 +224,21 @@ const FilteringDropdown = ({ onFilterApply, type, selectedTab }) => {
       )}
       {isOpen && !filtersApplied && (
         <Dropdown ref={dropdownRef}>
+          <div>학습 상태</div>
+          <StatusDiv>학습 전</StatusDiv>
+          <StatusDiv>학습 중</StatusDiv>
+          <StatusDiv>영구 보관</StatusDiv>
+
+<Line />
           <div>색상</div>
           <ColorMatrix>
             {colorNames.map((colorName) => (
-              <CircleCheck
+              <Circle
                 key={colorName}
-                circleColor={colorMap[colorName]}
+                bgColor={colorMap[colorName]}
                 isSelected={selectedColors.includes(colorName)}
                 onClick={(event) => handleCircleClick(event, colorName)}
+                isFilter={true}
               />
             ))}
           </ColorMatrix>

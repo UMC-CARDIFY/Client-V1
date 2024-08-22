@@ -1,4 +1,4 @@
-import axiosInstance from '../path_to_axios_instance';
+import axiosInstance from '../../';
 
 export const getImageCard = async (imgCardId) => {
   try {

@@ -12,3 +12,4 @@ export const getCards = async () => {
 };
 
 export default getCards;
+

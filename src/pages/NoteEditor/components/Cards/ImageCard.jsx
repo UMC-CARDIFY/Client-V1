@@ -7,9 +7,9 @@ import { useSaveContext } from '../SaveContext';
 const CardContainer = styled.div`
   width: 100%;
   height: 3.5rem;
-  border-radius: 0.5rem;
-  border: 1px solid var(--Grays-Gray4, #CACACA);
-  padding: 1rem 1.25rem;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  padding: 1.25rem;
   margin: 0.5rem 0;
   box-sizing: border-box;
   display: flex;
@@ -432,7 +432,7 @@ const handleMouseMove = (event) => {
 
   return (
     <>
-      <button onClick={() => getImage(12)}>이미지 카드 불러오기(test)</button>
+      { /*<button onClick={() => getImage(12)}>이미지 카드 불러오기(test)</button>*/ }
       {isCreated && image ? (
         <ImageCardContainer>
           <ImageCardImage src={image.src} alt="Image" />

@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import Sort from '../../../assets/sortIcon.svg';
-import Close from '../../../assets/closeIcon.svg'; // X 버튼 아이콘
+import Close from '../../../assets/closeIcon.svg'; 
 
 const SortDiv = styled.div`
   cursor: pointer;
@@ -75,21 +75,39 @@ const CloseButton = styled.img`
   cursor: pointer;
 `;
 
-const SortDropdown = ({ onSortOptionClick, selectedTab }) => {
+const SortDropdown = ({ onSortOptionClick, selectedTab, currentFolderId }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState(null);
+
+  // Separate states for each entity
+  const [folderSortOption, setFolderSortOption] = useState(null);
+  const [folderNoteSortOption, setFolderNoteSortOption] = useState(null);
+  const [noteSortOption, setNoteSortOption] = useState(null);
+
   const dropdownRef = useRef(null);
   const sortDivRef = useRef(null);
 
   const toggleDropdown = (event) => {
     event.stopPropagation();
-    setIsOpen(prev => !prev);
+    setIsOpen((prev) => !prev);
   };
 
   const handleSortOptionClick = (option) => {
-    const optionWithTab = `${selectedTab};${option}`;
-    console.log(optionWithTab)
-    setSelectedOption(option); 
+    let optionWithTab = `${selectedTab};${option}`;
+
+  console.log(optionWithTab)
+  console.log(option)
+
+    if (selectedTab === '폴더') {
+
+      if (currentFolderId) {
+      setFolderNoteSortOption(optionWithTab);
+    } else {
+      setFolderSortOption(optionWithTab);
+    }
+    } else {
+      setNoteSortOption(optionWithTab);
+    }
+
     if (onSortOptionClick) {
       onSortOptionClick(optionWithTab); 
     }
@@ -116,12 +134,38 @@ const SortDropdown = ({ onSortOptionClick, selectedTab }) => {
 
   const handleClearSelection = (event) => {
     event.stopPropagation();
-    setSelectedOption(null); // 상태를 초기 상태로 변경
+
+    if (selectedTab === '폴더') {
+      setFolderSortOption(null);
+      
+      if (currentFolderId) {
+      setFolderNoteSortOption(null);
+    }
+    }  else {
+      setNoteSortOption(null);
+    }
+
     if (onSortOptionClick) {
-      onSortOptionClick(`${selectedTab};edit-newest`); // 초기 상태로 API 호출
+      onSortOptionClick(`${selectedTab};edit-newest`);
     }
     setIsOpen(false);
   };
+
+  const getSelectedOption = () => {
+    if (selectedTab === '폴더') {
+
+      if (currentFolderId) {
+        return folderNoteSortOption;
+      }
+
+      return folderSortOption;
+
+
+    } 
+    return noteSortOption;
+  };
+
+  const selectedOption = getSelectedOption();
 
   return (
     <SortDiv 
@@ -132,14 +176,28 @@ const SortDropdown = ({ onSortOptionClick, selectedTab }) => {
     >
       {selectedOption ? (
         <>
-          <CloseButton src={Close} alt="Clear" onClick={handleClearSelection} />
-          <span>
-            {selectedOption === 'asc' ? '이름 ↑' : 
-             selectedOption === 'desc' ? '이름 ↓' : 
-             selectedOption === 'edit-newest' ? '수정일 - 최신순' : 
-             selectedOption === 'edit-oldest' ? '수정일 - 오래된 순' : '정렬'}
-          </span>
-        </>
+        {selectedTab === '폴더' ? (
+          <>
+            <CloseButton src={Close} alt="Clear" onClick={handleClearSelection} />
+            <span>
+              {selectedOption.includes('asc') ? '폴더 이름 ↑' : 
+              selectedOption.includes('desc') ? '폴더 이름 ↓' : 
+              selectedOption.includes('edit-newest') ? '수정일 - 최신순' : 
+              selectedOption.includes('edit-oldest') ? '수정일 - 오래된 순' : '정렬'}
+            </span>
+          </>
+        ) : (
+          <>
+            <CloseButton src={Close} alt="Clear" onClick={handleClearSelection} />
+            <span>
+            {selectedOption.includes('asc') ? '노트 이름 ↑' : 
+              selectedOption.includes('desc') ? '노트 이름 ↓' : 
+              selectedOption.includes('edit-newest') ? '수정일 - 최신순' : 
+              selectedOption.includes('edit-oldest') ? '수정일 - 오래된 순' : '정렬'}
+            </span>
+          </>
+        )}
+      </>
       ) : (
         <>
           <img src={Sort} alt="Sort Icon" />
@@ -151,42 +209,42 @@ const SortDropdown = ({ onSortOptionClick, selectedTab }) => {
           <FolderDropdown ref={dropdownRef}>
             <DropdownItem 
               onClick={(e) => {
-                e.stopPropagation(); // 이벤트 버블링 방지
+                e.stopPropagation(); 
                 handleSortOptionClick('asc');
               }}
             >
-              폴더 이름 ↑
+              {currentFolderId ? '폴더 이름 ↑' : '폴더 이름 ↑'}
             </DropdownItem>
             <DropdownItem 
               onClick={(e) => {
-                e.stopPropagation(); // 이벤트 버블링 방지
+                e.stopPropagation(); 
                 handleSortOptionClick('desc');
               }}
             >
-              폴더 이름 ↓
+              {currentFolderId ? '폴더 이름 ↓' : '폴더 이름 ↓'}
             </DropdownItem>
             <DropdownItem 
               onClick={(e) => {
-                e.stopPropagation(); // 이벤트 버블링 방지
+                e.stopPropagation(); 
                 handleSortOptionClick('edit-newest');
               }}
             >
-              수정일 - 최신순
+              {currentFolderId ? '수정일 - 최신순' : '수정일 - 최신순'}
             </DropdownItem>
             <DropdownItem 
               onClick={(e) => {
-                e.stopPropagation(); // 이벤트 버블링 방지
+                e.stopPropagation(); 
                 handleSortOptionClick('edit-oldest');
               }}
             >
-              수정일 - 오래된 순
+              {currentFolderId ? '수정일 - 오래된 순' : '수정일 - 오래된 순'}
             </DropdownItem>
           </FolderDropdown>
         ) : (
           <NoteDropdown ref={dropdownRef}>
             <DropdownItem 
               onClick={(e) => {
-                e.stopPropagation(); // 이벤트 버블링 방지
+                e.stopPropagation(); 
                 handleSortOptionClick('asc');
               }}
             >
@@ -194,7 +252,7 @@ const SortDropdown = ({ onSortOptionClick, selectedTab }) => {
             </DropdownItem>
             <DropdownItem 
               onClick={(e) => {
-                e.stopPropagation(); // 이벤트 버블링 방지
+                e.stopPropagation(); 
                 handleSortOptionClick('desc');
               }}
             >
@@ -202,7 +260,7 @@ const SortDropdown = ({ onSortOptionClick, selectedTab }) => {
             </DropdownItem>
             <DropdownItem 
               onClick={(e) => {
-                e.stopPropagation(); // 이벤트 버블링 방지
+                e.stopPropagation(); 
                 handleSortOptionClick('edit-newest');
               }}
             >
@@ -210,7 +268,7 @@ const SortDropdown = ({ onSortOptionClick, selectedTab }) => {
             </DropdownItem>
             <DropdownItem 
               onClick={(e) => {
-                e.stopPropagation(); // 이벤트 버블링 방지
+                e.stopPropagation(); 
                 handleSortOptionClick('edit-oldest');
               }}
             >
@@ -226,6 +284,7 @@ const SortDropdown = ({ onSortOptionClick, selectedTab }) => {
 SortDropdown.propTypes = {
   onSortOptionClick: PropTypes.func.isRequired,
   selectedTab: PropTypes.string.isRequired,
+  currentFolderId: PropTypes.string, 
 };
 
 export default SortDropdown;
