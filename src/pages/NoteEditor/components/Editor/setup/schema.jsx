@@ -78,6 +78,8 @@ const mySchema = new Schema({
       attrs: {
         src: { default: '' },
         alt: { default: '' },
+        baseImageWidth: { default: 0 },
+        baseImageHeight: { default: 0 },
         overlays: { default: [] },  // 사각형 영역을 나타내는 데이터
       },
       parseDOM: [{
@@ -87,13 +89,23 @@ const mySchema = new Schema({
           return {
             src: img.getAttribute('src'),
             alt: img.getAttribute('alt'),
-            overlays: JSON.parse(dom.getAttribute('data-overlays') || '[]'),  // 사각형 데이터 파싱
+            baseImageWidth: parseInt(dom.getAttribute('data-base-image-width'), 10),
+            baseImageHeight: parseInt(dom.getAttribute('data-base-image-height'), 10),
+            overlays: JSON.parse(dom.getAttribute('data-overlays') || '[]'), // 사각형 데이터 파싱
           };
         }
       }],
       toDOM(node) {
-        return ['div', { class: 'image-card', 'data-overlays': JSON.stringify(node.attrs.overlays) }, 
-          ['img', { src: node.attrs.src, alt: node.attrs.alt }], 0
+        return [
+          'div', 
+          { 
+            class: 'image-card',
+            'data-base-image-width': node.attrs.baseImageWidth,
+            'data-base-image-height': node.attrs.baseImageHeight,
+            'data-overlays': JSON.stringify(node.attrs.overlays),
+          }, 
+          ['img', { src: node.attrs.src, alt: node.attrs.alt }], 
+          0
         ];
       }
     },
