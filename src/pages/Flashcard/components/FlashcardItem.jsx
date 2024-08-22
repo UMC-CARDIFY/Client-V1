@@ -280,10 +280,15 @@ const FlashcardItem = ({ noteName, folderName, recentStudyDate, nextStudyDate, s
     }
   };
   
-  const confirmDelete = () => {
-    deleteCard();
-    setShowModal(false);
-    onDelete();
+  const confirmDelete = async () => {
+    try{
+      await deleteCard();
+      setShowModal(false);
+      onDelete();
+    }
+    catch (error) {
+      console.error(error);
+    }
   };
 
   const cancelDelete = () => {

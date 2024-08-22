@@ -6,7 +6,6 @@ import {cardSortFilter} from '../../api/flashcard/cardSortFilter';
 import {useEffect, useState} from 'react';
 import SortDropdown from './components/SortDropdown';
 import FilteringDropdown from './components/FilteringDropdown';
-import StatusFilteringDropdown from './components/StatusFilteringDropdown';
 
 const Container = styled.div`
   display: flex;
@@ -66,33 +65,6 @@ const OptionDiv = styled.div`
   margin-bottom: 1.06rem;
 `;
 
-const OptionButton = styled.button`
-  display: flex;
-  width: 5.1rem;
-  height: 1.875rem;
-  padding: 0.1875rem 0.3125rem;
-  justify-content: center;
-  align-items: center;
-  gap: 0.3125rem;
-  border-radius: 0.3125rem;
-  background: #FFF;
-  border: none;
-  cursor: pointer;
-  color: var(--Grays-Black, #1A1A1A);
-  font-family: Inter;
-  font-size: 0.875rem;
-  font-style: normal;
-  font-weight: 500;
-  line-height: normal;
-`;
-
-const SortButton = styled(OptionButton)`
-  width: 4.5rem;
-  height: 1.875rem;
-  padding: 0.1875rem 0.375rem 0.1875rem 0.4375rem;
-  gap: 0.375rem;
-`;
-
 const NoData = styled.div`
   display: flex;
   justify-content: center;
@@ -136,7 +108,7 @@ const [status, setStatus] = useState([]);
   const handleFilterApply = (colors) => {
     setFilterColors(colors);
   };
-  const statuses = ['완료', '진행중', '대기중'];
+
   return (
     <Container>
       <MenuBar />
@@ -150,10 +122,6 @@ const [status, setStatus] = useState([]);
             <OptionDiv>
           <SortDropdown 
             onSortOptionClick={handleSortOptionClick} 
-          />
-          <StatusFilteringDropdown
-            onFilterApply={setStatus}
-            statuses={statuses}
           />
 
           <FilteringDropdown 
