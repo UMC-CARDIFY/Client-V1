@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { getWeeklyStudyResults } from '../../../../api/dashboard/weeklyStudyResults';
+import PropTypes from 'prop-types';
 
 const WeeklyDiv = styled.div`
   display: flex;
@@ -81,6 +82,19 @@ const ChartWrapper = styled.div`
   height: 80%;
 `;
 
+const CustomTooltipContainer = styled.div`
+  background: rgba(255, 255, 255, 0.80);
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--Main-PrimaryLight2, #CDDDFF);
+  color: var(--Grays-Black, #1A1A1A);
+  font-family: Pretendard;
+  font-size: 0.6875rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+`;
+
 const CustomLegend = () => {
   return (
     <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
@@ -112,6 +126,33 @@ const CustomLegend = () => {
       </div>
     </div>
   );
+};
+
+const CustomTooltip = ({ active, payload }) => {
+  if (active && payload && payload.length) {
+    const lastWeek = payload[0]?.payload?.lastWeek;
+    const thisWeek = payload[1]?.payload?.thisWeek;
+    
+    return (
+      <CustomTooltipContainer>
+        <div>저번주: {lastWeek}</div>
+        <div>이번주: {thisWeek}</div>
+      </CustomTooltipContainer>
+    );
+  }
+  return null;
+};
+
+CustomTooltip.propTypes = {
+  active: PropTypes.bool,
+  payload: PropTypes.arrayOf(
+    PropTypes.shape({
+      payload: PropTypes.shape({
+        lastWeek: PropTypes.number,
+        thisWeek: PropTypes.number,
+      }),
+    })
+  ),
 };
 
 const WeeklyStudyResults = () => {
@@ -169,7 +210,7 @@ const WeeklyStudyResults = () => {
               }}
               tickMargin={16}
             />
-            <Tooltip />
+            <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255, 255, 255, 0.3)' }} />
             <Bar
               dataKey="lastWeek"
               fill="#E3EAF6"
