@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import { addNote } from '../../../api/archive';
 import AddIcon from '../../../assets/addIcon.svg';
+import FolderSelectModal from '../../../components/Modal/SelectFolderModal';
+import { useState } from 'react';
 
 const StyledButton = styled.button`
   display: flex;
@@ -38,6 +40,15 @@ const StyledButton = styled.button`
 const AddButton = ({ selectedTab, setSelectedItem, setShowAddModal, setModalType, currentFolderId }) => {
   const navigate = useNavigate();
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  
+
+
+  const handleModalClose = () => {
+    setIsModalOpen(false); 
+  };
+
   const handleClick = async () => {
     setSelectedItem(null);
 
@@ -54,13 +65,32 @@ const AddButton = ({ selectedTab, setSelectedItem, setShowAddModal, setModalType
       setShowAddModal(true);
       setModalType('addFolder');
     }
+    else{
+        setIsModalOpen(true);
+      
+    }
   };
 
   return (
     <StyledButton onClick={handleClick}>
-      <img src={AddIcon} alt={selectedTab === '폴더' && currentFolderId ? '노트 추가' : '폴더 추가'} />
-      {selectedTab === '폴더' && currentFolderId ? '노트 추가' : '폴더 추가'}
-    </StyledButton>
+  <img 
+    src={AddIcon} 
+    alt={
+      selectedTab === '폴더' && currentFolderId
+        ? '노트 추가'
+        : selectedTab === '노트'
+        ? '노트 추가'
+        : '폴더 추가'
+    } 
+  />
+  {selectedTab === '폴더' && currentFolderId
+    ? '노트 추가'
+    : selectedTab === '노트'
+    ? '노트 추가'
+    : '폴더 추가'}
+    <FolderSelectModal isOpen={isModalOpen} onClose={handleModalClose} />
+</StyledButton>
+
   );
 };
 
