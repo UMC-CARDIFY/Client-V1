@@ -11,6 +11,7 @@ import {
   getNoteToFolder,
   getNoteFilterSort
 } from '../../../api/archive';
+import { useNavigate } from 'react-router-dom';
 
 import FolderModal from './FolderModal';
 import DeleteConfirmModal from './DeleteConfirmModal';
@@ -19,6 +20,7 @@ import FilteringDropdown from './FilteringDropdown';
 import Pagination from './Pagination';
 import ItemList from './ItemList';
 import AddButton from './AddButton';
+import back from '../../../assets/back.svg';
 
 const FrameContainer = styled.div`
   width: 89rem;
@@ -97,12 +99,38 @@ const colorMap = {
   rose: '#ED83B1'
 };
 
+const Back =styled.img`
+  width: 2rem;
+  height: 2rem;
+  display: ${({ visible }) => (visible ? 'block' : 'none')};
+`;
+
+const TitleContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 1.25rem;
+`;
+
+const Title = styled.div`
+  color: var(--Grays-Black, #1A1A1A);
+  font-family: Pretendard;
+  font-size: 1.25rem;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  
+`; 
+
 const getColorNameByCode = (colorCode) => {
   const colorEntry = Object.entries(colorMap).find(([key, code]) => code === colorCode);
   return colorEntry ? colorEntry[0] : 'defaultColorName';
 };
 
 const Frame = ({ selectedTab, setSelectedTab }) => {
+
+  const navigate = useNavigate();
+
   const [folders, setFolders] = useState([]);
   const [notes, setNotes] = useState([]);
   const [currentPageFolder, setCurrentPageFolder] = useState(0);
@@ -332,10 +360,18 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
       }
     : {};
 
+    const handleBackClick = () => {
+      window.location.reload();
+    };
+
+
   return (
     <FrameContainer>
       <Header>
-        <h3>{title}</h3>
+        <TitleContainer>
+        <Back src={back} alt='뒤로가기 버튼' visible={!!currentFolderId} onClick={handleBackClick}/>
+        <Title>{title}</Title>
+        </TitleContainer>
         <ButtonContainer>
           <SortDropdown 
             onSortOptionClick={handleSortOptionClick} 
