@@ -55,6 +55,10 @@ const NoteEditor = () => {
     setIsMenuCollapsed(!isMenuCollapsed);
   };
 
+  useEffect(() => {
+    console.log("Received noteId:", noteId);
+  }, [noteId]);
+
   // 폴더 ID와 노트 ID를 전역 상태 관리에 저장
   useEffect(() => {
     setNoteData(prevData => ({
