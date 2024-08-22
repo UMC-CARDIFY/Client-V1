@@ -20,7 +20,7 @@ const StyledButton = styled.button`
   font-style: normal;
   font-weight: 500;
   line-height: normal;
-
+  font-family: Pretendard;
   img {
     width: 1rem;
     height: 1rem;
