@@ -21,7 +21,6 @@ import Pagination from './Pagination';
 import ItemList from './ItemList';
 import AddButton from './AddButton';
 import back from '../../../assets/back.svg';
-import FolderSelectModal from '../../../components/Modal/SelectFolderModal';
 
 const FrameContainer = styled.div`
   width: 89rem;
@@ -180,6 +179,8 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
           // order 값이 없으면 기본값으로 "create-newest" 설정
           const finalOrder = folderNoteSort || "create-newest";
           const folderNotesData = await getNoteToFolder(currentFolderId, folderNotesPage, pageSize, finalOrder);
+          
+          console.log(folderNotesData)
           
           console.log('currentFolderId, folderNotesPage, pageSize, finalOrder:', currentFolderId, folderNotesPage, pageSize, finalOrder);
           

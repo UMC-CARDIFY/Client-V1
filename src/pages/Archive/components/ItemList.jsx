@@ -6,6 +6,7 @@ import FolderIcon from './FolderIcon';
 import NoteIcon from './NoteIcon';
 import MoreDiv from './MoreDiv';
 import PropTypes from 'prop-types';
+import DownloadNote from './DownloadNote';
 
 const Data = styled.div`
   display: flex;
@@ -111,7 +112,11 @@ const ItemList = ({
                   alt='즐겨찾기'
                   onClick={() => handleMarkNoteStatus(note)}
                 />
-                <NoteIcon color={colorMap[note.folderColor]} />
+                {note.isDownload ? (
+                  <DownloadNote color={colorMap[note.folderColor]}/>
+                  ) : (
+                    <NoteIcon color={colorMap[note.folderColor]} />
+                  )}
                 <Line />
                 <TextContainer
                   onClick={() => navigate(`/note-editor?folderId=${currentFolderId}&noteId=${note.noteId}`)}
@@ -183,7 +188,11 @@ const ItemList = ({
                   </>
                 ) : (
                   <>
-                    <NoteIcon color={colorMap[item.folderColor]} />
+                    {item.isDownload ? (
+                    <DownloadNote color={colorMap[item.folderColor]}/>
+                    ) : (
+                      <NoteIcon color={colorMap[item.folderColor]} />
+                    )}
                     <Line />
                     <div
                     style={{ cursor: 'pointer' }} 
