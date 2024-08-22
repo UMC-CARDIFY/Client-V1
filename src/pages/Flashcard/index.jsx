@@ -6,6 +6,7 @@ import {cardSortFilter} from '../../api/flashcard/cardSortFilter';
 import {useEffect, useState} from 'react';
 import SortDropdown from './components/SortDropdown';
 import FilteringDropdown from './components/FilteringDropdown';
+import StatusFilteringDropdown from './components/StatusFilteringDropdown';
 
 const Container = styled.div`
   display: flex;
@@ -135,7 +136,7 @@ const [status, setStatus] = useState([]);
   const handleFilterApply = (colors) => {
     setFilterColors(colors);
   };
-
+  const statuses = ['완료', '진행중', '대기중'];
   return (
     <Container>
       <MenuBar />
@@ -150,6 +151,11 @@ const [status, setStatus] = useState([]);
           <SortDropdown 
             onSortOptionClick={handleSortOptionClick} 
           />
+          <StatusFilteringDropdown
+            onFilterApply={setStatus}
+            statuses={statuses}
+          />
+
           <FilteringDropdown 
             onFilterApply={handleFilterApply} 
           />
