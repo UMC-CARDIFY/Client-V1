@@ -53,9 +53,9 @@ const horizontalRuleInputRule = new InputRule(/^---$/, (state, match, start, end
 
 // 마크다운 스타일 규칙
 const boldRule = markInputRule(/__(.+)__/g, mySchema.marks.strong, 2, 2 - 1);
-const italicRule = markInputRule(/\*(.+)\*/g, mySchema.marks.em, 1, 1 - 1);
+const italicRule = markInputRule(/\*\*(.+)\*\*/g, mySchema.marks.em, 2, 2 - 1);
 const strikethroughRule = markInputRule(/==(.+)==/g, mySchema.marks.strikethrough, 2, 2 - 1);
-const underlineRule = markInputRule(/~(.+)~/g, mySchema.marks.underline, 1, 1 - 1);
+const underlineRule = markInputRule(/~~(.+)~~/g, mySchema.marks.underline, 2, 2 - 1);
 const codeRule = markInputRule(/`([^`]+)`/, mySchema.marks.code, 1, 1 - 1);
 
 const myInputRules = (schema) => inputRules({
