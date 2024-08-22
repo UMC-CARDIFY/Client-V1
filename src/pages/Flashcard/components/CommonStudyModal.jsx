@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import closeCard from '../../../assets/flashcard/closeCard.svg';
 import studyCardSet from '../../../api/flashcard/studyCardSet';
 import { useEffect, useState } from 'react';
@@ -7,6 +7,42 @@ import { colorMap } from './colorMap';
 import { useNavigate } from 'react-router-dom';
 import toNoteEditor from '../../../assets/flashcard/toNoteEditor.svg';
 import toNoteEditorHover from '../../../assets/flashcard/toNoteEditorHover.svg';
+import { 
+  Overlay, ModalContainer, ModalHeader, PreviewTitle, PreviewIcon,
+  CardContent, HighlightedAnswer, ArrowIcon
+ } from './style/CardPreviewModalStyles';
+ import rightArrow from '../../../assets/noteEditor/rightArrow.svg';
+ import bulletIcon from '../../../assets/noteEditor/bulletIcon.svg';
+
+ // 카드 타입별 수정
+ const CardFront = styled.div`
+ margin-top: 0;
+`;
+
+const CardFrontMulti = styled(CardFront)`
+margin-bottom: 1rem;
+`;
+
+ const AnswerList = styled.div`
+  list-style: none;
+  padding-left: 0;
+  flex-direction: column;
+  display: flex;
+  align-items: flex-start;
+`;
+
+const CardBack = styled.div`
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  position: relative;
+`;
+
+const BulletIcon = styled.img`
+  width: 0.375rem;
+  height: 0.375rem;
+  margin-right: 1rem;
+`;
 
 const ModalBackdrop = styled.div`
   position: fixed;
@@ -152,6 +188,11 @@ const PageDiv = styled.div`
 const Content = styled.div`
     display: flex;
     gap: 0.75rem;
+    ${(props) =>
+      props.isMulti &&
+      css`
+        flex-direction: column; /* 멀티카드일 때 세로 정렬 */
+      `}
 `;
 
 const Answer = styled.div`
@@ -193,9 +234,11 @@ const CommonStudyModal = ({ onClose, studyCardSetId, noteName, folderName, color
   const [content, setContent] = useState([]);
   const [totalPage, setTotalPage] = useState(1);
   const [currentPage, setCurrentPage] = useState(0);
-  const [revealedAnswers, setRevealedAnswers] = useState({});
   const [noteId, setNoteId] = useState(0);
   const [folderId, setFolderId] = useState(0);
+  
+  const [revealedAnswer, setRevealedAnswer] = useState([]);
+  const [revealedAnswers, setRevealedAnswers] = useState([]);
 
   const [isHover, setIsHover] = useState(false);
 
@@ -236,6 +279,28 @@ const CommonStudyModal = ({ onClose, studyCardSetId, noteName, folderName, color
     }));
   };
 
+  const revealAnswers = (cardIndex, answerIndex) => {
+    setRevealedAnswers((prevRevealed) => {
+      // 해당 카드에 대한 상태를 가져오거나 기본값으로 빈 배열 사용
+      const updatedRevealed = prevRevealed[cardIndex] ? [...prevRevealed[cardIndex]] : [];
+  
+      // 해당 인덱스의 상태가 이미 true라면 아무 것도 하지 않음
+      if (updatedRevealed[answerIndex]) {
+        return prevRevealed; // 상태를 변경하지 않고 그대로 반환
+      }
+  
+      // 해당 인덱스의 상태를 true로 설정 (한번 클릭 후 변경 불가)
+      updatedRevealed[answerIndex] = true;
+  
+      // 새로운 상태 배열을 반환
+      return {
+        ...prevRevealed,
+        [cardIndex]: updatedRevealed,
+      };
+    });
+  };
+  
+  
   const goToNoteEditor = () => {
     navigate(`/note-editor?folderId=${folderId}&noteId=${noteId}`);
     onClose();
@@ -256,19 +321,53 @@ const CommonStudyModal = ({ onClose, studyCardSetId, noteName, folderName, color
           <LeftBox onClick={goToPreviousPage} isClickable={currentPage > 0} />
           <CardBox>
   {content.map((card, index) => (
-    <Content key={index}>
+    <Content key={index}  isMulti={card.cardType === 'multi'}>
       {card.cardType === 'word' ? (
         <>
-          <div>{card.contentsFront}</div>
+          <CardFront>{card.contentsFront}</CardFront>
+          <ArrowIcon> 
+              <img src={rightArrow} alt="rightArrow" />
+            </ArrowIcon>
+          <Answer
+           revealed={revealedAnswers[index]}
+           onClick={() => revealAnswer(index)}
+          >
+            {card.answer}
+          </Answer>
+        </>
+      ) 
+      : card.cardType === 'blank' ? (
+          <>
+          <CardFront>{card.contentsFront}</CardFront>
           <Answer
             revealed={revealedAnswers[index]}
             onClick={() => revealAnswer(index)}
           >
             {card.answer}
           </Answer>
-          <div>{card.contentsBack}</div>
+          <CardFront>{card.contentsBack}</CardFront>
         </>
-      ) : card.cardType === 'image' ? (
+      )
+      : card.cardType === 'multi' ? (
+        <>
+        <CardFrontMulti>{card.contentsFront}</CardFrontMulti>
+        <AnswerList>
+        {card.multiAnswer.map((answer, answerIndex) => (
+          <CardBack key={answerIndex}>
+          <BulletIcon src={bulletIcon} alt="bulletIcon" />
+          <Answer
+            key={answerIndex}
+            revealed={revealedAnswers[index]?.[answerIndex] || false}
+        onClick={() => revealAnswers(index, answerIndex)}
+          >
+            {answer}
+          </Answer>
+        </CardBack>
+        ))}
+      </AnswerList>
+      </>
+    )
+      : card.cardType === 'image' ? (
         <>
         <Img src={card.imgUrl} alt="content front" />
                     {card.overlays.map((overlay, i) => (
@@ -278,8 +377,8 @@ const CommonStudyModal = ({ onClose, studyCardSetId, noteName, folderName, color
                         positionOfY={overlay.positionOfY}
                         width={overlay.width}
                         height={overlay.height}
-                        revealed={revealedAnswers[index]}
-                        onClick={() => revealAnswer(index)}
+                        revealed={revealedAnswers[index]?.[0]}
+                        onClick={() => revealAnswer(index, 0)}
                       />
                     ))}
         </>
