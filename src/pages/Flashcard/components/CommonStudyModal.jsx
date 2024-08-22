@@ -1,10 +1,12 @@
 import styled from 'styled-components';
 import closeCard from '../../../assets/flashcard/closeCard.svg';
-import toNoteEditor from '../../../assets/flashcard/toNoteEditor.svg';
 import studyCardSet from '../../../api/flashcard/studyCardSet';
 import { useEffect, useState } from 'react';
 import FolderIcon from './FolderIcon';
 import { colorMap } from './colorMap';
+import { useNavigate } from 'react-router-dom';
+import toNoteEditor from '../../../assets/flashcard/toNoteEditor.svg';
+import toNoteEditorHover from '../../../assets/flashcard/toNoteEditorHover.svg';
 
 const ModalBackdrop = styled.div`
   position: fixed;
@@ -107,13 +109,13 @@ const SideBox = styled.div`
 `;
 
 const LeftBox = styled(SideBox)`
-  left: calc(-20vw); /* 화면 크기에 따라 위치 조정 */
+  left: calc(-23vw); /* 화면 크기에 따라 위치 조정 */
   transform: rotate(-6deg);
   cursor: ${({ isClickable }) => (isClickable ? 'pointer' : 'default')};
 `;
 
 const RightBox = styled(SideBox)`
-  right: calc(-20vw); /* 화면 크기에 따라 위치 조정 */
+  right: calc(-23vw); /* 화면 크기에 따라 위치 조정 */
   transform: rotate(6deg);
   cursor: ${({ isClickable }) => (isClickable ? 'pointer' : 'default')};
 `;
@@ -166,17 +168,46 @@ const Answer = styled.div`
   }
 `;
 
+const Img = styled.img`
+  width: 100%;
+  height: auto;
+`;
+
+const AnswerOverlay = styled.div`
+  position: absolute;
+  left: ${({ positionOfX }) => `${positionOfX}px`};
+  top: ${({ positionOfY }) => `${positionOfY}px`};
+  width: ${({ width }) => `${width}px`};
+  height: ${({ height }) => `${height}px`};
+  background-color: ${({ revealed }) => (revealed ? 'transparent' : 'rgba(0, 0, 0, 0.5)')};
+  border: ${({ revealed }) => (revealed ? '2px solid #6A9CFC' : 'none')};
+  cursor: pointer;
+  z-index: 10;
+
+  &:hover {
+    background-color: ${({ revealed }) => (revealed ? 'transparent' : 'rgba(0, 0, 0, 0.3)')};
+  }
+`;
+
 const CommonStudyModal = ({ onClose, studyCardSetId, noteName, folderName, color }) => {
   const [content, setContent] = useState([]);
   const [totalPage, setTotalPage] = useState(1);
   const [currentPage, setCurrentPage] = useState(0);
   const [revealedAnswers, setRevealedAnswers] = useState({});
+  const [noteId, setNoteId] = useState(0);
+  const [folderId, setFolderId] = useState(0);
+
+  const [isHover, setIsHover] = useState(false);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
       const response = await studyCardSet(studyCardSetId, currentPage);
       setContent(response.content);
       setTotalPage(response.totalPages);
+      setNoteId(response.content[0].noteId);
+      setFolderId(response.content[0].folderId);
     };
     fetchData();
   }, [currentPage]);
@@ -205,6 +236,11 @@ const CommonStudyModal = ({ onClose, studyCardSetId, noteName, folderName, color
     }));
   };
 
+  const goToNoteEditor = () => {
+    navigate(`/note-editor?folderId=${folderId}&noteId=${noteId}`);
+    onClose();
+  };
+
   return (
     <ModalBackdrop onClick={onClose}>
       <ModalContent onClick={(e) => e.stopPropagation()}>
@@ -219,26 +255,45 @@ const CommonStudyModal = ({ onClose, studyCardSetId, noteName, folderName, color
         <ModalBody>
           <LeftBox onClick={goToPreviousPage} isClickable={currentPage > 0} />
           <CardBox>
-            {content.map((card, index) => (
-              <Content key={index}>
-                <div>
-                  {card.contentsFront}
-                </div>
-                <Answer
-                  revealed={revealedAnswers[index]}
-                  onClick={() => revealAnswer(index)}
-                >
-                  {card.answer}
-                </Answer>
-                <div>
-                  {card.contentsBack}
-                </div>
-              </Content>
-            ))}
-            <ToEditor>
-              <img src={toNoteEditor} alt="toNoteEditor" />
-            </ToEditor>
-          </CardBox>
+  {content.map((card, index) => (
+    <Content key={index}>
+      {card.cardType === 'word' ? (
+        <>
+          <div>{card.contentsFront}</div>
+          <Answer
+            revealed={revealedAnswers[index]}
+            onClick={() => revealAnswer(index)}
+          >
+            {card.answer}
+          </Answer>
+          <div>{card.contentsBack}</div>
+        </>
+      ) : card.cardType === 'image' ? (
+        <>
+        <Img src={card.imgUrl} alt="content front" />
+                    {card.overlays.map((overlay, i) => (
+                      <AnswerOverlay
+                        key={i}
+                        positionOfX={overlay.positionOfX}
+                        positionOfY={overlay.positionOfY}
+                        width={overlay.width}
+                        height={overlay.height}
+                        revealed={revealedAnswers[index]}
+                        onClick={() => revealAnswer(index)}
+                      />
+                    ))}
+        </>
+      ) : null}
+    </Content>
+  ))}
+  <ToEditor onClick={goToNoteEditor}
+  onMouseEnter={() => setIsHover(true)}
+  onMouseLeave={() => setIsHover(false)}
+  >
+    <img alt="toNoteEditor" src={isHover ? toNoteEditorHover : toNoteEditor} />
+  </ToEditor>
+</CardBox>
+
           <RightBox onClick={goToNextPage} isClickable={currentPage < totalPage - 1} />
         </ModalBody>
 

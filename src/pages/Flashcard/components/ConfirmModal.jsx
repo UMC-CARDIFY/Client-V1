@@ -1,6 +1,7 @@
 import styled from 'styled-components';
+import DeleteIcon from '../../../assets/deleteicon.svg';
 
-const ConfirmModalBackdrop = styled.div`
+const ModalBackground = styled.div`
   position: fixed;
   top: 0;
   left: 0;
@@ -8,96 +9,97 @@ const ConfirmModalBackdrop = styled.div`
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
   display: flex;
-  align-items: center;
   justify-content: center;
-  z-index: 2000;
-`;
-
-const ConfirmModalContent = styled.div`
-display: flex;
-width: 29.5rem;
-padding: 2rem 2rem 1.5rem 2rem;
-flex-direction: column;
-align-items: flex-start;
-gap: 1.5rem;
-background: #FFF;
-box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.04), 0px 4px 20px 0px rgba(0, 0, 0, 0.06);
-
-  color: var(--kakao-logo, #000);
-font-family: Pretendard;
-font-size: 1rem;
-font-style: normal;
-font-weight: 400;
-line-height: normal;
-`;
-
-const ModalHeader = styled.div`
-  display: flex;
   align-items: center;
-  margin-bottom: 1rem;
+  z-index: 1000;
+`;
+
+const ModalContainer = styled.div`
+  display: flex;
+  width: 29.5rem;
+  padding: 2rem 2rem 1.5rem 2rem;
+  flex-direction: column;
+  align-items: flex-start;
+  background: var(--Grays-White, #FFF);
+  box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.04), 0px 4px 20px 0px rgba(0, 0, 0, 0.06);
+  border-radius: 8px;
+`;
+
+const ModalTitleDiv = styled.div`
+  display: flex;
+  align-items: center; 
+  justify-content: center;
   gap: 0.75rem;
 `;
 
-const IconWrapper = styled.div`
-width: 1.5rem;
-height: 1.5rem;
+const ModalTitle = styled.p`
+  color: #EA1215;
+  font-size: 1.25rem;
+  font-style: normal;
+  font-weight: 700;
+  margin: 0;
+  display: flex;
+  align-items: center; /* 텍스트와 아이콘의 세로 정렬을 맞추기 위해 추가 */
 `;
 
-const WarningText = styled.div`
-  color: var(--alert, #EA1215);
-font-family: Pretendard;
-font-size: 1.25rem;
-font-style: normal;
-font-weight: 700;
-line-height: normal;
+const ModalMessage = styled.p`
+  width: 25.5rem;
+  color: var(--Grays-Black, #1A1A1A);
+  font-family: Pretendard;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
 `;
 
-const ModalMessage = styled.div`
-`;
-
-const ConfirmModalButtonContainer = styled.div`
-width: 100%;
-display: flex;
-justify-content: flex-end;
-align-items: center;
+const ModalButtonDiv = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+  align-items: center;
   margin-top: 1.5rem;
+  gap: 0.5rem; 
 `;
 
-const ConfirmButton = styled.div`
-display: flex;
-padding: 0.4375rem 0.875rem 0.375rem 0.875rem;
-justify-content: center;
-align-items: center;
-  border: 1px solid #DDD;
-  background-color: ${({ variant }) => (variant === 'confirm' ? '#FF3B3B' : '#FFFFFF')};
-  color: ${({ variant }) => (variant === 'confirm' ? '#FFFFFF' : '#000000')};
+const ModalButton = styled.button`
+  display: flex;
+  padding: 0.4375rem 0.875rem;
+  justify-content: center;
+  align-items: center;
+  background: #fff;
+  border: none;
+  color: var(--Grays-Black, #1A1A1A);
+  font-family: Pretendard;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
   cursor: pointer;
+  border-radius: 4px;
 
   &:hover {
-    background-color: ${({ variant }) => (variant === 'confirm' ? '#D32F2F' : '#F5F5F5')};
+    background: var(--Grays-Gray7, #F0F0F0);
   }
 `;
 
 const ConfirmModal = ({ onCancel, onConfirm }) => {
   return (
-    <ConfirmModalBackdrop>
-      <ConfirmModalContent>
-        <ModalHeader>
-          <IconWrapper>
-            <img src="/path-to-your-icon.svg" alt="icon" />
-          </IconWrapper>
-          <WarningText>학습 중단</WarningText>
-        </ModalHeader>
+    <ModalBackground aria-modal="true">
+  <ModalContainer>
+    <ModalTitleDiv>
+      <img src={DeleteIcon} alt="Delete Icon" /> 
+      <ModalTitle>학습 중단</ModalTitle>
+    </ModalTitleDiv>
         <ModalMessage>
           분석 학습을 중단하시겠습니까? <br />
           학습 내용은 저장되지 않으며 다음 학습 시 처음부터 다시 시작해야 합니다.
         </ModalMessage>
-        <ConfirmModalButtonContainer>
-          <ConfirmButton onClick={onCancel}>취소</ConfirmButton>
-          <ConfirmButton variant="confirm" onClick={onConfirm}>확인</ConfirmButton>
-        </ConfirmModalButtonContainer>
-      </ConfirmModalContent>
-    </ConfirmModalBackdrop>
+        <ModalButtonDiv>
+          <ModalButton onClick={onCancel}>취소</ModalButton>
+          <ModalButton onClick={onConfirm}>확인</ModalButton>
+      </ModalButtonDiv>
+      </ModalContainer>
+    </ModalBackground>
   );
 };
 
