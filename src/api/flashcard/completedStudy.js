@@ -1,6 +1,7 @@
 import axiosInstance from '..';
 
 export const completedStudy = async (studyCardSetId) => {
+    console.log(studyCardSetId);
     try {
         const response = await axiosInstance.get(`/cards/${studyCardSetId}/study-completed`, {
             params: {
