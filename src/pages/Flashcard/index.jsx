@@ -93,7 +93,7 @@ const [status, setStatus] = useState([]);
 
   console.log(cards);
 
-  const handleCardDeleted = () => {
+  const handleReload = () => {
     fetchCards();
   };
 
@@ -141,7 +141,7 @@ const [status, setStatus] = useState([]);
                   recentStudyDate={card.recentStudyDate}
                   studyCardSetId={card.studyCardSetId}
                   markStatus={card.markStatus}
-                  onDelete={handleCardDeleted}
+                  onReload={handleReload}
                  />
               )
               )) : (

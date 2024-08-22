@@ -231,7 +231,7 @@ border-radius: 0rem 0rem 0.5rem 0.5rem;
 `;
 
 const FlashcardItem = ({ noteName, folderName, recentStudyDate, nextStudyDate, studyStatus, color, 
-  studyCardSetId, markStatus, onDelete }) => {
+  studyCardSetId, markStatus, onReload }) => {
 
   const [showDeleteButton, setShowDeleteButton] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -284,7 +284,7 @@ const FlashcardItem = ({ noteName, folderName, recentStudyDate, nextStudyDate, s
     try{
       await deleteCard();
       setShowModal(false);
-      onDelete();
+      onReload();
     }
     catch (error) {
       console.error(error);
@@ -313,6 +313,7 @@ const FlashcardItem = ({ noteName, folderName, recentStudyDate, nextStudyDate, s
 
   const closeAnalysisStudyModal = () => {
     setShowAnalysisStudyModal(false);  // Close the analysis study modal
+    onReload();
   };
 
   const formatDate = (date) => {
@@ -334,11 +335,13 @@ const FlashcardItem = ({ noteName, folderName, recentStudyDate, nextStudyDate, s
 
   const handleStatisticsClose = () => {
     setShowStatisticsModal(false); 
+    onReload();
   };
 
   const handleRelearn = async() => {
     try {
       await reStudy(studyCardSetId);
+      onReload();
     } catch (error) {
       console.error(error);
     }
