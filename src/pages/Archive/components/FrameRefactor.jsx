@@ -110,6 +110,10 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
   const [pageCountFolder, setPageCountFolder] = useState(0);
   const [pageCountNote, setPageCountNote] = useState(0);
   const [sortOption, setSortOption] = useState('');
+  const [folderNoteSort , setFolderNoteSort] =useState('');
+  const [folderSort , setFolderSort] =useState('');
+  const [noteSort , setNoteSort] =useState('');
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [activeMoreDiv, setActiveMoreDiv] = useState(null);
@@ -135,17 +139,16 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
       const pageSize = getPageSize();
       let data;
       const colorQuery = selectedTab === '폴더' ? (folderFilterColors.length > 0 ? folderFilterColors.join(',') : '') : (noteFilterColors.length > 0 ? noteFilterColors.join(',') : '');
-      const order = sortOption || '';
   
       if (selectedTab === '폴더') {
         // 폴더 관련 데이터 가져오기
-        data = await getFolderFilterSort(colorQuery, order, currentPageFolder, pageSize);
+        data = await getFolderFilterSort(colorQuery, folderSort, currentPageFolder, pageSize);
         setFolders(data.foldersList || []);
         setPageCountFolder(data.totalPages || 0);
   
         if (currentFolderId) {
           // order 값이 없으면 기본값으로 "create-newest" 설정
-          const finalOrder = order || "create-newest";
+          const finalOrder = folderNoteSort || "create-newest";
           const folderNotesData = await getNoteToFolder(currentFolderId, folderNotesPage, pageSize, finalOrder);
           
           console.log('currentFolderId, folderNotesPage, pageSize, finalOrder:', currentFolderId, folderNotesPage, pageSize, finalOrder);
@@ -158,7 +161,7 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
         
       } else if (selectedTab === '노트') {
         // 노트 관련 데이터 가져오기
-        data = await getNoteFilterSort(colorQuery, order, currentPageNote, pageSize);
+        data = await getNoteFilterSort(colorQuery, noteSort, currentPageNote, pageSize);
         setNotes(data.noteList || []);
         setPageCountNote(data.totalPage || 0);
       }
@@ -173,15 +176,20 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
   
   useEffect(() => {
     fetchData();
-  }, [selectedTab, currentPageFolder, currentPageNote, sortOption, currentFolderId, folderNotesPage, folderFilterColors, noteFilterColors]);
+  }, [selectedTab, currentPageFolder, currentPageNote, sortOption, currentFolderId, folderNotesPage, folderFilterColors, noteFilterColors, folderSort, folderNoteSort, noteSort]);
 
   useEffect(() => {
     if (selectedTab === '폴더') {
       setNoteFilterColors([]);
+      setCurrentFolderId(null);
+      setFolderNotes([]);
+      setFolderNotesPage(0);
     } else if (selectedTab === '노트') {
       setFolderFilterColors([]);
     }
   }, [selectedTab]);
+  
+  
 
   const getCurrentFolderName = (folderId) => {
     const folder = folderNotes.find(note => note.folderId === folderId);
@@ -213,15 +221,17 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
   const handleSortOptionClick = (option) => {
     if (option) {
       const [tab, sortOption] = option.split(';');
-      if (tab === '폴더' || tab === '노트') {
-        setSortOption(sortOption);
-      } else {
-        console.error('잘못된 탭:', tab);
+    if (tab ==='폴더'){
+      if(currentFolderId){
+        setFolderNoteSort(sortOption);
+      }else{
+        setFolderSort(sortOption);
       }
-    } else {
-      console.error('잘못된 정렬 옵션:', option);
-    }
-  };
+    }else if (tab ==='노트'){
+        setNoteSort(sortOption);
+      }
+  }
+};
 
   const handleEdit = (item) => {
     setSelectedItem(item);

@@ -94,15 +94,18 @@ const SortDropdown = ({ onSortOptionClick, selectedTab, currentFolderId }) => {
   const handleSortOptionClick = (option) => {
     let optionWithTab = `${selectedTab};${option}`;
 
+  console.log(optionWithTab)
+  console.log(option)
+
     if (selectedTab === '폴더') {
 
       if (currentFolderId) {
-        setFolderNoteSortOption(option);
-      } 
-
-      setFolderSortOption(option);
+      setFolderNoteSortOption(optionWithTab);
     } else {
-      setNoteSortOption(option);
+      setFolderSortOption(optionWithTab);
+    }
+    } else {
+      setNoteSortOption(optionWithTab);
     }
 
     if (onSortOptionClick) {
@@ -134,9 +137,11 @@ const SortDropdown = ({ onSortOptionClick, selectedTab, currentFolderId }) => {
 
     if (selectedTab === '폴더') {
       setFolderSortOption(null);
-    } else if (currentFolderId) {
+      
+      if (currentFolderId) {
       setFolderNoteSortOption(null);
-    } else {
+    }
+    }  else {
       setNoteSortOption(null);
     }
 
@@ -173,11 +178,12 @@ const SortDropdown = ({ onSortOptionClick, selectedTab, currentFolderId }) => {
         <>
           <CloseButton src={Close} alt="Clear" onClick={handleClearSelection} />
           <span>
-            {selectedOption === 'asc' ? '이름 ↑' : 
-             selectedOption === 'desc' ? '이름 ↓' : 
-             selectedOption === 'edit-newest' ? '수정일 - 최신순' : 
-             selectedOption === 'edit-oldest' ? '수정일 - 오래된 순' : '정렬'}
+            {selectedOption.includes('asc') ? '이름 ↑' : 
+            selectedOption.includes('desc') ? '이름 ↓' : 
+            selectedOption.includes('edit-newest') ? '수정일 - 최신순' : 
+            selectedOption.includes('edit-oldest') ? '수정일 - 오래된 순' : '정렬'}
           </span>
+
         </>
       ) : (
         <>

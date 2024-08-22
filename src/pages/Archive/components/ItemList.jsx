@@ -143,6 +143,7 @@ const ItemList = ({
                     <FolderIcon fill={colorMap[item.color]} />
                     <Line />
                     <div
+                      style={{ cursor: 'pointer' }} 
                       onClick={() => {
                         moveItem(item);
                         if (selectedTab === '폴더' && onFolderClick) {
