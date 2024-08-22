@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, {css} from 'styled-components';
 import closeCard from '../../../assets/flashcard/closeCard.svg';
 import studyCardSet from '../../../api/flashcard/studyCardSet';
 import { useEffect, useState } from 'react';
@@ -149,11 +149,13 @@ const PageDiv = styled.div`
 `;
 
 const Content = styled.div`
-  display: flex;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-  word-break: break-word;
-  width: 100%;
+    display: flex;
+    gap: 0.75rem;
+    ${(props) =>
+      props.isMulti &&
+      css`
+        flex-direction: column; /* 멀티카드일 때 세로 정렬 */
+      `}
 `;
 
 const Answer = styled.div`
@@ -212,6 +214,26 @@ const difficultyColors = {
   쉬움: {normal: '#CDDEFF', hover: '#C0D6FF'},
   패스: {normal: '#F2DEF9', hover: '#EFD6F7'},
 };
+const Img = styled.img`
+  width: 100%;
+  height: auto;
+`;
+
+const AnswerOverlay = styled.div`
+  position: absolute;
+  left: ${({ positionOfX }) => `${positionOfX}px`};
+  top: ${({ positionOfY }) => `${positionOfY}px`};
+  width: ${({ width }) => `${width}px`};
+  height: ${({ height }) => `${height}px`};
+  background-color: ${({ revealed }) => (revealed ? 'transparent' : 'rgba(0, 0, 0, 0.5)')};
+  border: ${({ revealed }) => (revealed ? '2px solid #6A9CFC' : 'none')};
+  cursor: pointer;
+  z-index: 10;
+
+  &:hover {
+    background-color: ${({ revealed }) => (revealed ? 'transparent' : 'rgba(0, 0, 0, 0.3)')};
+  }
+`;
 
 const AnalysisStudyModal = ({ onClose, studyCardSetId, noteName, folderName, color }) => {
     const [content, setContent] = useState([]);
@@ -266,9 +288,18 @@ const AnalysisStudyModal = ({ onClose, studyCardSetId, noteName, folderName, col
         };
       });
     };
+
+    const checkAllRevealed = () => {
+      return content.every((card, index) => {
+        if (card.cardType === 'multi') {
+          return card.multiAnswer.every((_, answerIndex) => revealedAnswers[index]?.[answerIndex]);
+        }
+        return revealedAnswers[index];
+      });
+    };
   
     const handleDifficultySelection = async (difficulty) => {
-      const allRevealed = content.every((_, index) => revealedAnswers[index]);
+      const allRevealed = checkAllRevealed();
   
       if (allRevealed) {
         console.log(`Selected Difficulty: ${difficulty}`);
@@ -328,7 +359,7 @@ const AnalysisStudyModal = ({ onClose, studyCardSetId, noteName, folderName, col
         // 학습하기 버튼 눌렀을때 노트에디터로 이동
       };
   
-    const allRevealed = content.every((_, index) => revealedAnswers[index]);
+      const allRevealed = checkAllRevealed();
   
     return (
       <>
