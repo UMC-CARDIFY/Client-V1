@@ -286,7 +286,11 @@ const SignIn = () => {
     }
   };
 
-
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      handleSignIn();
+    }
+  };
 
   return (
     <Body>
@@ -317,6 +321,7 @@ const SignIn = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               hasError={emailError}
+              onKeyDown={handleKeyDown}
             />
             <PasswordWrapper>
               <PasswordInput
@@ -325,6 +330,7 @@ const SignIn = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 hasError={passwordError}
+                onKeyDown={handleKeyDown}
               />
               <ShowEye onClick={togglePasswordVisibility}>
                 {passwordVisible ? (
