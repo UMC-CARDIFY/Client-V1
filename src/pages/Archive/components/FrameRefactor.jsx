@@ -330,6 +330,7 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
           <SortDropdown 
             onSortOptionClick={handleSortOptionClick} 
             selectedTab={selectedTab} 
+            currentFolderId={currentFolderId}
           />
           <FilteringDropdown 
             onFilterApply={handleFilterApply} 
