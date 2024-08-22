@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { EditorState, TextSelection } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 import { keymap } from 'prosemirror-keymap';
-import { baseKeymap } from 'prosemirror-commands';
+import { baseKeymap, deleteSelection } from 'prosemirror-commands';
 import { history } from 'prosemirror-history';
 import { dropCursor } from 'prosemirror-dropcursor';
 import { gapCursor } from 'prosemirror-gapcursor';
@@ -163,6 +163,33 @@ const CombinedEditor = ({ viewRef }) => {
         );
       }
 
+      const handleBackspaceInCard = (state, dispatch) => {
+        const { selection } = state;
+        const { $from, empty } = selection;
+      
+        // 현재 선택된 노드가 card 타입인지 확인
+        for (let depth = $from.depth; depth > 0; depth--) {
+          const currentNode = $from.node(depth);
+          if (currentNode.type === mySchema.nodes.word_card ) {
+              return false; 
+          }
+        }
+      
+        // 노드가 비어 있을 때만 삭제를 수행하도록 처리
+        if (empty && $from.parent.type === mySchema.nodes.paragraph) {
+          const currentText = $from.parent.textContent;
+      
+          if (currentText.length === 0) {
+            if (dispatch) {
+              dispatch(state.tr.deleteRange($from.before(), $from.after()));
+            }
+            return true; // 동작을 처리했으므로 기본 동작을 막음
+          }
+        }
+      
+        return deleteSelection(state, dispatch); // 기본 동작 (텍스트 삭제) 유지
+      };
+      
     const state = EditorState.create({
       doc,
       schema: mySchema,
