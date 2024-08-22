@@ -189,6 +189,13 @@ const MoreOptions = styled.div`
   position: absolute;
   top: 1.5rem;
   right: 1.25rem;
+    &:hover {
+    border-radius: 0.25rem;
+    background: var(--Grays-Gray7, #F0F0F0);
+  }
+      &:active {
+    background: #ECEFF4;
+  }
 `;
 
 const DeleteButton = styled.div`

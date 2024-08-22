@@ -102,13 +102,14 @@ const NoData = styled.div`
 
 export const Flashcard = () => {
   const [cards, setCards] = useState([]);
-  const [sortOption, setSortOption] = useState('최신순');
+  const [sortOption, setSortOption] = useState('');
 const [filterColors, setFilterColors] = useState([]);
+const [status, setStatus] = useState([]);
 
   const fetchCards = async () => {
     const colorQuery = filterColors.length > 0 ? filterColors.join(',') : '';
     const order = sortOption || '';
-    const data = await cardSortFilter(colorQuery, order);
+    const data = await cardSortFilter(colorQuery, order, status);
     setCards(data);
     console.log(data);
   };

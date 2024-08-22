@@ -1,13 +1,13 @@
 import axiosInstance from '..';
 
-export const cardSortFilter = async (color, order, studyStatus) => {
-    console.log(color, order, studyStatus);
+export const cardSortFilter = async (color, order, status) => {
+    console.log(color, order, status);
     try {
         const response = await axiosInstance.get(`/cards/sort-filter`, {
             params: {
                 order: order,
                 color: color,
-                studyStatus: studyStatus
+                studyStatus: status
             }
         });
         return response.data;
