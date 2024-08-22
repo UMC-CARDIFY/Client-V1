@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
-import Circle from './Circle'; 
+import CircleCheck from './CircleCheck'; 
 import filterIcon from '../../../assets/filterIcon.svg';
 import closeIcon from '../../../assets/closeIcon.svg'; // X 버튼 아이콘
 
@@ -204,12 +204,11 @@ const FilteringDropdown = ({ onFilterApply, type, selectedTab }) => {
           <div>색상</div>
           <ColorMatrix>
             {colorNames.map((colorName) => (
-              <Circle
+              <CircleCheck
                 key={colorName}
-                bgColor={colorMap[colorName]}
+                circleColor={colorMap[colorName]}
                 isSelected={selectedColors.includes(colorName)}
                 onClick={(event) => handleCircleClick(event, colorName)}
-                isFilter={true}
               />
             ))}
           </ColorMatrix>
