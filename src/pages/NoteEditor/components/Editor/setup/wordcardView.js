@@ -112,23 +112,22 @@ class WordCardView {
         }
       });
 
-      // QuestionDiv에 대한 백스페이스 처리
       this.questionDiv.addEventListener('keydown', (event) => {
         const content = this.questionDiv.innerText.trim();
         if (event.key === 'Backspace') {
-            if (content === '카드 앞면') {
-                event.preventDefault(); 
-                event.stopPropagation(); // 이벤트 전파 중단
-            } else {
-                // 기본 백스페이스 동작 허용
-            }
+          if (content === '카드 앞면' || content === '') {
+            // 카드 앞면 기본 텍스트가 있을 때는 백스페이스로 삭제하지 않음
+            event.preventDefault();
+            event.stopPropagation();
+          } else {
+            // 기본 백스페이스 동작 허용
+          }
         }
-        else if ( event.key === 'Enter') {  // 엔터키 막기
+        if (event.key === 'Enter') {// Enter 키 막기
           event.preventDefault();
           event.stopPropagation();
         }
-        
-    });
+      });
 
     // 카드 answer(뒷면) div
     const containerDiv = document.createElement('div');
@@ -172,18 +171,20 @@ class WordCardView {
       this.answerDiv.addEventListener('keydown', (event) => {
         const content = this.answerDiv.innerText.trim();
         if (event.key === 'Backspace') {
-            if (content === '' || content === '카드 뒷면') {
-                event.preventDefault(); // 기본 백스페이스 동작 방지
-                this.answerDiv.innerText = ''; // 화살표와 기본 텍스트가 지워지는 것을 막음
-                this.answerDiv.style.color = '#aaa';
-                this.answerDiv.innerText = '카드 뒷면';
-            }
+          if (content === '' || content === '카드 뒷면') {
+            // 카드 뒷면 기본 텍스트가 있을 때는 백스페이스로 삭제하지 않음
+            event.preventDefault();
+            event.stopPropagation();
+          } else {
+            // 기본 동작을 허용하여 텍스트 삭제 가능
+          }
         }
-        else if ( event.key === 'Enter') {  // 엔터키 막기
+        if (event.key === 'Enter') {
+          // Enter 키 막기
           event.preventDefault();
           event.stopPropagation();
         }
-    });
+      });
     
     //attrs 값 설정
     this.questionDiv.addEventListener('blur', this.updateAttrs.bind(this));
