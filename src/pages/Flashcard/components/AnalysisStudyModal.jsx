@@ -9,7 +9,41 @@ import FolderIcon from './FolderIcon';
 import ConfirmModal from './ConfirmModal';
 import CompletionModal from './CompletionModal';
 import StatisticsModal from './StatisticsModal';
-import { nodes } from 'prosemirror-schema-basic';
+import { 
+  Overlay, ModalContainer, ModalHeader, PreviewTitle, PreviewIcon,
+  CardContent, HighlightedAnswer, ArrowIcon
+ } from './style/CardPreviewModalStyles';
+ import rightArrow from '../../../assets/noteEditor/rightArrow.svg';
+ import bulletIcon from '../../../assets/noteEditor/bulletIcon.svg';
+
+ const CardFront = styled.div`
+ margin-top: 0;
+`;
+
+const CardFrontMulti = styled(CardFront)`
+margin-bottom: 1rem;
+`;
+
+ const AnswerList = styled.div`
+  list-style: none;
+  padding-left: 0;
+  flex-direction: column;
+  display: flex;
+  align-items: flex-start;
+`;
+
+const CardBack = styled.div`
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  position: relative;
+`;
+
+const BulletIcon = styled.img`
+  width: 0.375rem;
+  height: 0.375rem;
+  margin-right: 1rem;
+`;
 
 const ModalBackdrop = styled.div`
   position: fixed;
@@ -124,6 +158,7 @@ const Content = styled.div`
 
 const Answer = styled.div`
   display: flex;
+  height: 100%;
   border-radius: 0.125rem;
   padding: 0 1rem;
   background-color: ${({ revealed }) => (revealed ? 'transparent' : 'var(--Main-PrimaryLight2, #CDDDFF)')};
@@ -182,10 +217,11 @@ const AnalysisStudyModal = ({ onClose, studyCardSetId, noteName, folderName, col
     const [content, setContent] = useState([]);
     const [totalPage, setTotalPage] = useState(1);
     const [currentPage, setCurrentPage] = useState(0);
-    const [revealedAnswers, setRevealedAnswers] = useState({});
     const [showConfirmModal, setShowConfirmModal] = useState(false);
     const [showCompletionModal, setShowCompletionModal] = useState(false);
     const [showStatisticsModal, setShowStatisticsModal] = useState(false); 
+
+    const [revealedAnswers, setRevealedAnswers] = useState([]);
 
     const [cardId, setCardId] = useState(0);
   
@@ -208,6 +244,27 @@ const AnalysisStudyModal = ({ onClose, studyCardSetId, noteName, folderName, col
         ...prevRevealed,
         [index]: true, // Ensure the answer is revealed on click
       }));
+    };
+
+    const revealAnswers = (cardIndex, answerIndex) => {
+      setRevealedAnswers((prevRevealed) => {
+        // 해당 카드에 대한 상태를 가져오거나 기본값으로 빈 배열 사용
+        const updatedRevealed = prevRevealed[cardIndex] ? [...prevRevealed[cardIndex]] : [];
+    
+        // 해당 인덱스의 상태가 이미 true라면 아무 것도 하지 않음
+        if (updatedRevealed[answerIndex]) {
+          return prevRevealed; // 상태를 변경하지 않고 그대로 반환
+        }
+    
+        // 해당 인덱스의 상태를 true로 설정 (한번 클릭 후 변경 불가)
+        updatedRevealed[answerIndex] = true;
+    
+        // 새로운 상태 배열을 반환
+        return {
+          ...prevRevealed,
+          [cardIndex]: updatedRevealed,
+        };
+      });
     };
   
     const handleDifficultySelection = async (difficulty) => {
@@ -287,16 +344,68 @@ const AnalysisStudyModal = ({ onClose, studyCardSetId, noteName, folderName, col
             </ModalSubTitle>
             <ModalBody>
               <CardBox>
-                {content.map((card, index) => (
-                  <Content key={index}>
-                    <div>{card.contentsFront}</div>
-                    <Answer revealed={revealedAnswers[index]} onClick={() => revealAnswer(index)}>
-                      {card.answer}
-                    </Answer>
-                    <div>{card.contentsBack}</div>
-                  </Content>
+        {content.map((card, index) => (
+        <Content key={index}  isMulti={card.cardType === 'multi'}>
+      {card.cardType === 'word' ? (
+        <>
+          <CardFront>{card.contentsFront}</CardFront>
+          <ArrowIcon> 
+              <img src={rightArrow} alt="rightArrow" />
+            </ArrowIcon>
+          <Answer
+           revealed={revealedAnswers[index]}
+           onClick={() => revealAnswer(index)}
+          >
+            {card.answer}
+          </Answer>
+        </>
+      ) : card.cardType === 'blank' ? (
+        <>
+        <CardFront>{card.contentsFront}</CardFront>
+        <Answer
+          revealed={revealedAnswers[index]}
+          onClick={() => revealAnswer(index)}
+        >
+          {card.answer}
+        </Answer>
+        <CardFront>{card.contentsBack}</CardFront>
+      </>
+    ) :card.cardType === 'multi' ? (
+      <>
+      <CardFrontMulti>{card.contentsFront}</CardFrontMulti>
+      <AnswerList>
+      {card.multiAnswer.map((answer, answerIndex) => (
+        <CardBack key={answerIndex}>
+        <BulletIcon src={bulletIcon} alt="bulletIcon" />
+        <Answer
+          key={answerIndex}
+          revealed={revealedAnswers[index]?.[answerIndex] || false}
+      onClick={() => revealAnswers(index, answerIndex)}
+        >
+          {answer}
+        </Answer>
+      </CardBack>
+      ))}
+    </AnswerList>
+    </>
+  ) : card.cardType === 'image' ? (
+    <>
+    <Img src={card.imgUrl} alt="content front" />
+                {card.overlays.map((overlay, i) => (
+                  <AnswerOverlay
+                    key={i}
+                    positionOfX={overlay.positionOfX}
+                    positionOfY={overlay.positionOfY}
+                    width={overlay.width}
+                    height={overlay.height}
+                    revealed={revealedAnswers[index]?.[0]}
+                    onClick={() => revealAnswer(index, 0)}
+                  />
                 ))}
-                
+    </>
+  ) : null}
+</Content>
+))}
                 {allRevealed && (
                   <DifficultyButtonContainer>
                     {Object.keys(difficultyColors).map((difficulty) => (

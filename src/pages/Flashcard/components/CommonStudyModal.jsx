@@ -14,7 +14,6 @@ import {
  import rightArrow from '../../../assets/noteEditor/rightArrow.svg';
  import bulletIcon from '../../../assets/noteEditor/bulletIcon.svg';
 
- // 카드 타입별 수정
  const CardFront = styled.div`
  margin-top: 0;
 `;
@@ -197,6 +196,7 @@ const Content = styled.div`
 
 const Answer = styled.div`
   display: flex;
+  height: 100%;
   border-radius: 0.125rem;
   padding: 0 1rem;
   background-color: ${({ revealed }) => (revealed ? 'transparent' : 'var(--Main-PrimaryLight2, #CDDDFF)')};
@@ -237,7 +237,6 @@ const CommonStudyModal = ({ onClose, studyCardSetId, noteName, folderName, color
   const [noteId, setNoteId] = useState(0);
   const [folderId, setFolderId] = useState(0);
   
-  const [revealedAnswer, setRevealedAnswer] = useState([]);
   const [revealedAnswers, setRevealedAnswers] = useState([]);
 
   const [isHover, setIsHover] = useState(false);
@@ -275,7 +274,7 @@ const CommonStudyModal = ({ onClose, studyCardSetId, noteName, folderName, color
   const revealAnswer = (index) => {
     setRevealedAnswers((prevRevealed) => ({
       ...prevRevealed,
-      [index]: !prevRevealed[index], // 클릭 시 토글
+      [index]: true,
     }));
   };
 
