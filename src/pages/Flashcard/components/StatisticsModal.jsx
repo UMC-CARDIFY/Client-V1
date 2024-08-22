@@ -94,12 +94,16 @@ const BarContainerWrapper = styled.div`
 `;
 
 const BarContainer = styled.div`
+  max-width: 35rem; 
   height: 2rem;
   border-radius: 0.125rem 0.5rem 0.5rem 0.125rem;
   background: ${({ color }) => color};
-  width: ${({ widthPercent }) => widthPercent || '0%'};
-  transition: width 0.3s ease;  /* Optional: Smooth transition */
+  margin: 0 1rem;
+  align-self: flex-start;
+  width: ${({ widthPercent }) => (parseInt(widthPercent) === 0 ? '2%' : `${widthPercent}`)}; 
 `;
+
+
 
 const Count = styled.div`
   margin-left: auto; /* Push the count to the right */
@@ -234,13 +238,19 @@ const StatisticsModal = ({ onClose, studyCardSetId, color, folderName, noteName 
     setLogVisible((prev) => !prev);
   };
 
-  const formattedDate = (date) => {
+  const formatDate = (date) => {
     const dateObj = new Date(date);
+    dateObj.setHours(dateObj.getHours() + 9);
+  
     const year = dateObj.getFullYear();
-    const month = String(dateObj.getMonth() + 1).padStart(2, '0'); // Adds a leading zero if necessary
-    const day = String(dateObj.getDate()).padStart(2, '0'); // Adds a leading zero if necessary
-    return `${year}-${month}-${day}`;
+    const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+    const day = String(dateObj.getDate()).padStart(2, '0');
+    const hours = String(dateObj.getHours()).padStart(2, '0');
+    const minutes = String(dateObj.getMinutes()).padStart(2, '0');
+  
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
   };
+  
 
   return (
     <ModalBackdrop>
@@ -308,7 +318,7 @@ const StatisticsModal = ({ onClose, studyCardSetId, color, folderName, noteName 
             <LogItem key={index}>
               <DateDiv>
                 <div>
-                  {formattedDate(item.studyDate)}
+                  {formatDate(item.studyDate)}
                 </div>
                 <SmallText>
                   학습일
