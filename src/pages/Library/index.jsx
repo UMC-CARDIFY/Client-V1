@@ -59,7 +59,7 @@ const SearchSection = styled.div`
   display: flex;
   align-items: center;
   color: #1A1A1A;
-  font-family: Inter;
+  font-family: Pretendard;
   font-size: 0.9375rem;
   font-style: normal;
   font-weight: 300;
@@ -157,7 +157,7 @@ const DropdownItem = styled.li`
   display: flex;
   align-items: center;
   padding: 0.5rem 0rem;
-  font-family: Inter;
+  font-family: Pretendard;
   font-size: 0.9375rem;
   font-style: normal;
   font-weight: 300;
