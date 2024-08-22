@@ -83,7 +83,7 @@ const PlaceholderBox = styled.div`
 const colorMap = {
   blue: '#6698F5',
   ocean: '#5AA6C7',
-  lavedar: '#949AEC',
+  lavender: '#949AEC',
   gray: '#A9A9A9',
   mint: '#77CEC6',
   sage: '#AECA99',
