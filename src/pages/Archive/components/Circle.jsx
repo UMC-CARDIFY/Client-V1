@@ -1,7 +1,9 @@
 import styled from 'styled-components';
 import check from '../../../assets/check.svg'; // 체크 아이콘 경로
 
-const Circle = styled.div`
+const Circle = styled.div.withConfig({
+  shouldForwardProp: (prop) => !['bgColor', 'isFilter', 'isSelected'].includes(prop)
+})`
   width: 18px;
   height: 18px;
   border-radius: 50%;
@@ -24,7 +26,6 @@ const Circle = styled.div`
     transform: translate(-50%, -50%);
     z-index: 1;
   }
-
 `;
 
 export default Circle;
