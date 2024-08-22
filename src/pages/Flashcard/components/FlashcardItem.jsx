@@ -170,8 +170,8 @@ const StatusBadge = styled.div`
   align-items: center;
   gap: 0.5rem;
   border-radius: 0.375rem;
-  background: ${({ status }) => (status === '학습 중' ? '#E7EFFF' : status === '학습 전' ? '#EDEDED' : 'var(--Grays-Gray6, #EDEDED)')};
-  color: ${({ status }) => (status === '학습 중' ? '#0F62FE' : '#767676')};
+  background: ${({ status }) => (status === 1 ? '#E7EFFF' : status === 0 ? '#EDEDED' : 'var(--Grays-Gray6, #EDEDED)')};
+  color: ${({ status }) => (status ===  1 ? '#0F62FE' : '#767676')};
   font-family: Pretendard;
   font-size: 0.75rem;
   font-weight: 500;
@@ -332,6 +332,8 @@ const FlashcardItem = ({ noteName, folderName, recentStudyDate, nextStudyDate, s
     // 재학습 요청 api 호출
   };
 
+  // studyStatus 0:학습전, 1:학습중, 2:영구보관
+
   return (
     <CardStackContainer>
       {/* 겹쳐진 카드 레이어들 */}
@@ -341,7 +343,9 @@ const FlashcardItem = ({ noteName, folderName, recentStudyDate, nextStudyDate, s
       {/* 실제 콘텐츠를 담고 있는 카드 */}
       <ForegroundCard>
       <StatusDiv>
-        <StatusBadge status={studyStatus}>{studyStatus}</StatusBadge>
+        <StatusBadge status={studyStatus}>
+          { studyStatus === 1 ? '학습 중' : studyStatus === 0 ? '학습 전' : '영구 보관' }
+          </StatusBadge>
         {markStatus === "ACTIVE" && (
     <StarIconWrapper>
       <img src={star} alt="star" />

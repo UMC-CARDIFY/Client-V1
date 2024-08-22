@@ -152,6 +152,7 @@ const PageDiv = styled.div`
 const Content = styled.div`
     display: flex;
     gap: 0.75rem;
+    flex-direction: column;
 `;
 
 const Answer = styled.div`
@@ -193,7 +194,7 @@ const CommonStudyModal = ({ onClose, studyCardSetId, noteName, folderName, color
   const [content, setContent] = useState([]);
   const [totalPage, setTotalPage] = useState(1);
   const [currentPage, setCurrentPage] = useState(0);
-  const [revealedAnswers, setRevealedAnswers] = useState({});
+  const [revealedAnswers, setRevealedAnswers] = useState([]);
   const [noteId, setNoteId] = useState(0);
   const [folderId, setFolderId] = useState(0);
 
@@ -229,13 +230,28 @@ const CommonStudyModal = ({ onClose, studyCardSetId, noteName, folderName, color
     }
   };
 
-  const revealAnswer = (index) => {
-    setRevealedAnswers((prevRevealed) => ({
-      ...prevRevealed,
-      [index]: !prevRevealed[index], // 클릭 시 토글
-    }));
+  const revealAnswer = (cardIndex, answerIndex) => {
+    setRevealedAnswers((prevRevealed) => {
+      // 해당 카드에 대한 상태를 가져오거나 기본값으로 빈 배열 사용
+      const updatedRevealed = prevRevealed[cardIndex] ? [...prevRevealed[cardIndex]] : [];
+  
+      // 해당 인덱스의 상태가 이미 true라면 아무 것도 하지 않음
+      if (updatedRevealed[answerIndex]) {
+        return prevRevealed; // 상태를 변경하지 않고 그대로 반환
+      }
+  
+      // 해당 인덱스의 상태를 true로 설정 (한번 클릭 후 변경 불가)
+      updatedRevealed[answerIndex] = true;
+  
+      // 새로운 상태 배열을 반환
+      return {
+        ...prevRevealed,
+        [cardIndex]: updatedRevealed,
+      };
+    });
   };
-
+  
+  
   const goToNoteEditor = () => {
     navigate(`/note-editor?folderId=${folderId}&noteId=${noteId}`);
     onClose();
@@ -261,14 +277,40 @@ const CommonStudyModal = ({ onClose, studyCardSetId, noteName, folderName, color
         <>
           <div>{card.contentsFront}</div>
           <Answer
-            revealed={revealedAnswers[index]}
-            onClick={() => revealAnswer(index)}
+            revealed={revealedAnswers[index]?.[0]}
+            onClick={() => revealAnswer(index, 0)}
+          >
+            {card.answer}
+          </Answer>
+        </>
+      ) 
+      : card.cardType === 'blank' ? (
+          <>
+          <div>{card.contentsFront}</div>
+          <Answer
+            revealed={revealedAnswers[index]?.[0]}
+            onClick={() => revealAnswer(index, 0)}
           >
             {card.answer}
           </Answer>
           <div>{card.contentsBack}</div>
         </>
-      ) : card.cardType === 'image' ? (
+      )
+      : card.cardType === 'multi' ? (
+        <>
+        <div>{card.contentsFront}</div>
+        {card.multiAnswer.map((answer, answerIndex) => (
+          <Answer
+            key={answerIndex}
+            revealed={revealedAnswers[index]?.[answerIndex] || false}
+        onClick={() => revealAnswer(index, answerIndex)}
+          >
+            {answer}
+          </Answer>
+        ))}
+      </>
+    )
+      : card.cardType === 'image' ? (
         <>
         <Img src={card.imgUrl} alt="content front" />
                     {card.overlays.map((overlay, i) => (
@@ -278,8 +320,8 @@ const CommonStudyModal = ({ onClose, studyCardSetId, noteName, folderName, color
                         positionOfY={overlay.positionOfY}
                         width={overlay.width}
                         height={overlay.height}
-                        revealed={revealedAnswers[index]}
-                        onClick={() => revealAnswer(index)}
+                        revealed={revealedAnswers[index]?.[0]}
+                        onClick={() => revealAnswer(index, 0)}
                       />
                     ))}
         </>

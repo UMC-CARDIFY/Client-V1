@@ -2,7 +2,7 @@ import axiosInstance from '..';
 
 export const getCards = async () => {
     try {
-        const response = await axiosInstance.get(`/cards`);
+        const response = await axiosInstance.get(`/cards/sort-filter`);
         console.log(response.data);
         return response.data;
     } catch (error) {

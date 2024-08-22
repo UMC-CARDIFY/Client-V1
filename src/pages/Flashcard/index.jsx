@@ -104,7 +104,8 @@ export const Flashcard = () => {
   useEffect(() => {
     const fetchCards = async () => {
       const data = await getCards();
-      setCards(data.content);
+      setCards(data);
+      console.log(data);
     };
     fetchCards();
   }, []);
