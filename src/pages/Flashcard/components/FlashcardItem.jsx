@@ -5,6 +5,7 @@ import DeleteModal from './DeleteModal';
 import styled from 'styled-components';
 import studycommon from '../../../assets/flashcard/studycommon.svg';
 import studymore from '../../../assets/flashcard/studymore.svg';
+import studymoreDis from '../../../assets/flashcard/studymoreDis.svg';
 import statistics from '../../../assets/flashcard/statistics.svg';
 import moreoptions from '../../../assets/flashcard/moreoptions.svg';
 import star from '../../../assets/flashcard/star.svg';
@@ -146,14 +147,13 @@ const Button = styled.button`
   gap: 0.5rem;
   border-radius: 0.375rem;
   border: none;
-  cursor: pointer;
-  background: var(--Main-BackGround, #F2F4F8);
-  color: var(--Grays-Black, #1A1A1A);
+  cursor: ${({ disabled }) => (disabled ? '' : 'pointer')};
+  background: ${({ disabled }) => (disabled ? '#F4F4F4' : '#F2F4F8')};
+  color: ${({ disabled }) => (disabled ? '#B1B1B1' : '#1A1A1A')};
   font-family: Pretendard;
   font-size: 0.75rem;
   font-weight: 500;
 `;
-
 
 const StatusDiv = styled.div`
   position: absolute;
@@ -235,6 +235,27 @@ const FlashcardItem = ({ noteName, folderName, recentStudyDate, nextStudyDate, s
   const [showAnalysisStudyModal, setShowAnalysisStudyModal] = useState(false);
   const [showStatisticsModal, setShowStatisticsModal] = useState(false);
 
+  const [isAnalysisDisabled, setIsAnalysisDisabled] = useState(true);
+  const isAnalysisDisabSrc = studymoreDis;
+  const isAnalysisAbleSrc = studymore;
+
+  useEffect(() => {
+    const checkDate = () => {
+      const now = new Date();
+      const studyDate = new Date(new Date(nextStudyDate).getTime() + 9 * 60 * 60 * 1000);      
+      if (now >= studyDate) {
+        setIsAnalysisDisabled(false);
+      } else {
+        setIsAnalysisDisabled(true);
+      }
+    };
+
+    checkDate(); // 컴포넌트 마운트 시 즉시 체크
+    const interval = setInterval(checkDate, 10000); // 1초마다 시간 체크
+
+    return () => clearInterval(interval); // 컴포넌트 언마운트 시 인터벌 클리어
+  }, [nextStudyDate]);
+
   const toggleDeleteButton = () => {
     setShowDeleteButton((prev) => !prev);
   };
@@ -257,7 +278,6 @@ const FlashcardItem = ({ noteName, folderName, recentStudyDate, nextStudyDate, s
     // 다시 list api 호출
 
 
-
     console.log('카드가 삭제되었습니다.');
     setShowModal(false);
   };
@@ -275,6 +295,11 @@ const FlashcardItem = ({ noteName, folderName, recentStudyDate, nextStudyDate, s
   };
 
   const handleAnalysisStudyClick = () => {
+    if (isAnalysisDisabled) {
+      console.log('분석학습은 다음 학습시간 이후에만 가능합니다.');
+      return;
+    }
+    else
     setShowAnalysisStudyModal(true);  // Show the analysis study modal
   };
 
@@ -301,6 +326,10 @@ const FlashcardItem = ({ noteName, folderName, recentStudyDate, nextStudyDate, s
 
   const handleStatisticsClose = () => {
     setShowStatisticsModal(false); 
+  };
+
+  const handleRelearn = () => {
+    // 재학습 요청 api 호출
   };
 
   return (
@@ -360,8 +389,8 @@ const FlashcardItem = ({ noteName, folderName, recentStudyDate, nextStudyDate, s
           <Button onClick={handleCommonStudyClick}>
             <img src={studycommon} alt="일반학습" />
           일반학습</Button>
-            <Button onClick={handleAnalysisStudyClick}>
-              <img src={studymore} alt="분석학습" />
+            <Button onClick={handleAnalysisStudyClick} disabled={isAnalysisDisabled}>
+              <img src={isAnalysisDisabled ? isAnalysisDisabSrc : isAnalysisAbleSrc} alt="분석학습" />
               분석학습</Button>
           <Button onClick={handleStatisticsOpen}>
             <img src={statistics} alt="학습통계" />
