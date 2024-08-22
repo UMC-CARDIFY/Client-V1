@@ -21,6 +21,7 @@ import Pagination from './Pagination';
 import ItemList from './ItemList';
 import AddButton from './AddButton';
 import back from '../../../assets/back.svg';
+import FolderSelectModal from '../../../components/Modal/SelectFolderModal';
 
 const FrameContainer = styled.div`
   width: 89rem;
@@ -156,6 +157,7 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
 
   const [folderFilterColors, setFolderFilterColors] = useState([]);
   const [noteFilterColors, setNoteFilterColors] = useState([]);
+
 
   const getPageSize = () => window.innerWidth < 1440 ? 5 : 6;
 
@@ -389,6 +391,13 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
               setShowAddModal={setShowAddModal}
               setModalType={setModalType}
               currentFolderId={currentFolderId}
+            />
+          )}{selectedTab == '노트' && (
+            <AddButton
+              selectedTab={selectedTab}
+              setSelectedItem={setSelectedItem}
+              setShowAddModal={setShowAddModal}
+              setModalType={setModalType}
             />
           )}
         </ButtonContainer>
