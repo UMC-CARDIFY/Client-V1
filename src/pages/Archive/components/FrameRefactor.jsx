@@ -174,6 +174,8 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
         data = await getFolderFilterSort(colorQuery, folderSort, currentPageFolder, pageSize);
         setFolders(data.foldersList || []);
         setPageCountFolder(data.totalPages || 0);
+
+        console.log('folders',folders);
   
         if (currentFolderId) {
           // order 값이 없으면 기본값으로 "create-newest" 설정
@@ -356,10 +358,10 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
     }
   };
 
-  const initialData = selectedItem
+  const initialData = folders
     ? {
-        folderName: selectedItem.folderName || '',
-        selectedColor: selectedItem.selectedColor || '',
+        folderName: folders.folderName,
+        selectedColor: folders.folderColor || '',
       }
     : {};
 

@@ -154,6 +154,7 @@ const ItemList = ({
                   isActive={activeMoreDiv === index}
                   onMoreClick={() => handleMoreClick(index)}
                   itemId={note.noteId}
+                  color={note.folderColor}
                 />
               </RightData>
             </Data>
@@ -232,6 +233,7 @@ const ItemList = ({
                   isActive={activeMoreDiv === index}
                   onMoreClick={() => handleMoreClick(index)}
                   itemId={selectedTab === '폴더' ? item.folderId : item.noteId}
+                  color={item.folderColor}
                 />
               </RightData>
             </Data>
