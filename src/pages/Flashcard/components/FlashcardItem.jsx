@@ -245,6 +245,10 @@ const FlashcardItem = ({ noteName, folderName, recentStudyDate, nextStudyDate, s
       } else {
         setIsAnalysisDisabled(true);
       }
+
+      if (studyStatus === 2) {
+        setIsAnalysisDisabled(true);
+      }
     };
 
     checkDate(); // 컴포넌트 마운트 시 즉시 체크
@@ -289,7 +293,6 @@ const FlashcardItem = ({ noteName, folderName, recentStudyDate, nextStudyDate, s
 
   const handleAnalysisStudyClick = () => {
     if (isAnalysisDisabled) {
-      console.log('분석학습은 다음 학습시간 이후에만 가능합니다.');
       return;
     }
     else
@@ -327,7 +330,7 @@ const FlashcardItem = ({ noteName, folderName, recentStudyDate, nextStudyDate, s
     } catch (error) {
       console.error(error);
     }
-    
+
   };
 
   // studyStatus 0:학습전, 1:학습중, 2:영구보관
