@@ -12,6 +12,7 @@ import CloseButton from './CloseButton';
 import { useContext } from 'react';
 import { NoteContext } from '../../../../api/NoteContext';
 import { shareLib } from '../../../../api/noteeditor/shareLib';
+import { NoteStatusContext } from '../../../../api/NoteStatus';
 
 const HeaderWrapper = styled.header`
   background: var(--Grays-White, #FFF);
@@ -53,6 +54,16 @@ const NotificationText = styled.span`
   font-style: normal;
   font-weight: 500;
   line-height: normal;
+  opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
+  transition: opacity 0.3s ease-in-out;
+
+  @media screen and (max-width: 1440px) {
+    font-size: 0.85rem;
+  }
+
+  @media screen and (max-width: 1200px) {
+    font-size: 0.8rem;
+  }
 `;
 
 const RightSection = styled.div`
@@ -84,14 +95,16 @@ const ToggleMenuButton = styled.button`
 
 const Header = ({ isMenuCollapsed, toggleMenuBar, editorView = null, selectedForderId, currentNoteId }) => {
   const { noteData } = useContext(NoteContext);
+  const { isNameChanged, isContentChanged, setIsNameChanged, setIsContentChanged } = useContext(NoteStatusContext);
   const [isKebabMenuOpen, setIsKebabMenuOpen] = useState(false);
   const [isShareMenuOpen, setIsShareMenuOpen] = useState(false);
   const kebabMenuRef = useRef(null);
   const shareMenuRef = useRef(null);
 
+
   const handleKebabClick = () => {
     setIsKebabMenuOpen(!isKebabMenuOpen);
-    setIsShareMenuOpen(false); // Hide share menu if it's open
+    setIsShareMenuOpen(false);
   };
 
   const handleShareClick = () => {
@@ -100,9 +113,6 @@ const Header = ({ isMenuCollapsed, toggleMenuBar, editorView = null, selectedFor
   };
 
   const handleClickOutside = (event) => {
-    /*if (kebabMenuRef.current && !kebabMenuRef.current.contains(event.target)) {
-      setIsKebabMenuOpen(false);
-    }*/
     if (shareMenuRef.current && !shareMenuRef.current.contains(event.target)) {
       setIsShareMenuOpen(false);
     }
@@ -114,7 +124,6 @@ const Header = ({ isMenuCollapsed, toggleMenuBar, editorView = null, selectedFor
     } else {
       document.removeEventListener('mousedown', handleClickOutside);
     }
-
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
@@ -158,7 +167,6 @@ const Header = ({ isMenuCollapsed, toggleMenuBar, editorView = null, selectedFor
     //console.log("Document JSON:", JSON.stringify(editorView.state.doc.toJSON(), null, 2));
     console.log("Note Data to Save:", noteDataToSave);
 
-    // localStorage에서 토큰 가져오기
     const token = localStorage.getItem('accessToken');
     if (!token) {
         alert('토큰이 존재하지 않습니다. 다시 로그인해주세요.');
@@ -174,6 +182,8 @@ const Header = ({ isMenuCollapsed, toggleMenuBar, editorView = null, selectedFor
         );
         if (response.isSuccess) {
           alert('저장이 완료되었습니다.');
+          setIsNameChanged(false);
+          setIsContentChanged(false);          
         } else {
           alert('저장에 실패했습니다.');
         }
@@ -213,8 +223,10 @@ const Header = ({ isMenuCollapsed, toggleMenuBar, editorView = null, selectedFor
           />
         )}
         <StarButton />
-        <NotificationText>저장되지 않은 변경 사항이 있습니다.</NotificationText>
-        <SaveButton onSave={handleSave} />
+        <NotificationText isVisible={isNameChanged || isContentChanged}>
+          저장되지 않은 변경 사항이 있습니다.
+        </NotificationText>
+        <SaveButton isVisible={isNameChanged || isContentChanged} onSave={handleSave} />
       </LeftSection>
       <RightSection>
         <SearchInput ForderId={selectedForderId}/>

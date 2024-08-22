@@ -2,7 +2,7 @@ import { createRoot } from 'react-dom/client';
 import ImageCard from '../../Cards/ImageCard';
 
 class ImageCardView {
-  constructor(node, view, getPos, openModal) {
+  constructor(node, view, getPos) {
     this.node = node;
     this.view = view;
     this.getPos = getPos;
@@ -18,6 +18,8 @@ class ImageCardView {
         src={node.attrs.src}
         alt={node.attrs.alt}
         overlays={node.attrs.overlays}
+        baseImageWidth={node.attrs.baseImageWidth}
+        baseImageHeight={node.attrs.baseImageHeight}
         view={view} 
         getPos={getPos}
         updateCard={(attrs) => this.updateNode(attrs)}
@@ -45,6 +47,8 @@ class ImageCardView {
           src={node.attrs.src}
           alt={node.attrs.alt}
           overlays={node.attrs.overlays}
+          baseImageWidth={node.attrs.baseImageWidth}
+          baseImageHeight={node.attrs.baseImageHeight}
           view={this.view} 
           getPos={this.getPos}
           updateCard={(attrs) => this.updateNode(attrs)}

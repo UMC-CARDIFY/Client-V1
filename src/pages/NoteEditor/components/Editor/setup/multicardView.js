@@ -213,8 +213,27 @@ class MultiCardView {
         this.answerDivs.splice(index, 1);
         containerDiv.remove(); // DOM에서 해당 컨테이너 삭제
         this.updateAttrs(); // 속성 업데이트
+
+        // 커서 이동 처리
+        if (this.answerDivs.length > 0) {
+            let focusIndex = index - 1;
+            if (focusIndex < 0) {
+                focusIndex = 0;
+            }
+
+            const range = document.createRange();
+            const selection = window.getSelection();
+            range.setStart(this.answerDivs[focusIndex].childNodes[0], this.answerDivs[focusIndex].innerText.length);
+            range.collapse(true);
+            selection.removeAllRanges();
+            selection.addRange(range);
+            this.answerDivs[focusIndex].focus();
+        } else {
+            this.questionDiv.focus();
+        }
     }
-  }
+}
+
   
   updateAttrs() {
       const question_front = this.questionDiv.innerText.trim();

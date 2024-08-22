@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { EditorState, TextSelection } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 import { keymap } from 'prosemirror-keymap';
-import { baseKeymap } from 'prosemirror-commands';
+import { baseKeymap, deleteSelection } from 'prosemirror-commands';
 import { history } from 'prosemirror-history';
 import { dropCursor } from 'prosemirror-dropcursor';
 import { gapCursor } from 'prosemirror-gapcursor';
@@ -21,6 +21,7 @@ import MultiCardPreviewModal from '../Cards/PreviewModal/multicardPreview';
 import ImageCardView from './setup/imagecardView';
 import FlashcardButton from './FlashcardButton';
 import { NoteContext } from '../../../../api/NoteContext';
+import { NoteStatusContext } from '../../../../api/NoteStatus';
 
 const ContentArea = styled.div`
   flex: 1;
@@ -104,6 +105,7 @@ const CombinedEditor = ({ viewRef }) => {
   const contentRef = useRef(null);
   const titleRef = useRef(null);
   const { noteData, setNoteData } = useContext(NoteContext); // NoteContext 사용
+  const { setIsNameChanged, setIsContentChanged } = useContext(NoteStatusContext);
   
   // 모달 열림/닫힘 상태와 question/answer 데이터를 관리
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -161,6 +163,33 @@ const CombinedEditor = ({ viewRef }) => {
         );
       }
 
+      const handleBackspaceInCard = (state, dispatch) => {
+        const { selection } = state;
+        const { $from, empty } = selection;
+      
+        // 현재 선택된 노드가 card 타입인지 확인
+        for (let depth = $from.depth; depth > 0; depth--) {
+          const currentNode = $from.node(depth);
+          if (currentNode.type === mySchema.nodes.word_card ) {
+              return false; 
+          }
+        }
+      
+        // 노드가 비어 있을 때만 삭제를 수행하도록 처리
+        if (empty && $from.parent.type === mySchema.nodes.paragraph) {
+          const currentText = $from.parent.textContent;
+      
+          if (currentText.length === 0) {
+            if (dispatch) {
+              dispatch(state.tr.deleteRange($from.before(), $from.after()));
+            }
+            return true; // 동작을 처리했으므로 기본 동작을 막음
+          }
+        }
+      
+        return deleteSelection(state, dispatch); // 기본 동작 (텍스트 삭제) 유지
+      };
+      
     const state = EditorState.create({
       doc,
       schema: mySchema,
@@ -227,9 +256,14 @@ const CombinedEditor = ({ viewRef }) => {
           const newState = viewRef.current.state.apply(transaction);
           viewRef.current.updateState(newState);
           console.log('New state:', JSON.stringify(newState.doc.toJSON(), null, 2));
-       
+          
           // 노트 내용 업데이트
-          noteData.noteContent = newState.doc.toJSON();
+          //noteData.noteContent = newState.doc.toJSON();
+          const newContent = newState.doc.toJSON();
+          if (JSON.stringify(newContent) !== JSON.stringify(noteData.noteContent)) {
+            setIsContentChanged(true);
+          }
+          noteData.noteContent = newContent;
         }
       });
     } catch (error) {
@@ -263,6 +297,11 @@ const CombinedEditor = ({ viewRef }) => {
         node.classList.add('empty');
       } else {
         node.classList.remove('empty');
+      }
+      if (node.innerText !== noteData.noteName) {
+        setIsNameChanged(true);
+      } else {
+        setIsNameChanged(false);
       }
     };
 
