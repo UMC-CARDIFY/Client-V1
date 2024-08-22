@@ -6,6 +6,7 @@ import MenuBar from './components/MenuBar';
 import { useLocation } from 'react-router-dom';
 import { getNote } from '../../api/noteeditor/getNote';
 import { NoteContext } from '../../api/NoteContext';
+import { NoteStatusProvider } from '../../api/NoteStatus';
 
 const NoteEditorWrapper = styled.div`
   display: flex;
@@ -105,6 +106,9 @@ const NoteEditor = () => {
   };
 
   return (
+    <NoteStatusProvider
+      initialNoteId={noteId}
+    >
     <NoteEditorWrapper>
       <MenuBarWrapper isCollapsed={isMenuCollapsed}>
         {/* MenuBar에 folderId를 전달 */}
@@ -128,6 +132,7 @@ const NoteEditor = () => {
         </EditorWrapper>
       </ContentWrapper>
     </NoteEditorWrapper>
+  </NoteStatusProvider>
   );
 };
 
