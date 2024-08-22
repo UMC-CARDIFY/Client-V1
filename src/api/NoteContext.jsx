@@ -8,6 +8,8 @@ export const NoteProvider = ({ children }) => {
     noteName: '',
     noteContent: '',
     markState: false,
+    isEdit: false,
+    isUpload: false,
   });
 
   return (

@@ -5,7 +5,6 @@ import { NoteContext } from '../../../../../api/NoteContext';
 import { cancelShare } from '../../../../../api/noteeditor/cancelShare';
 import LibraryIcon from '../../../../../assets/shareLibrary.svg';
 
-
 const ShareMenuWrapper = styled.div`
   position: absolute;
   width: 16.625rem;
@@ -108,10 +107,9 @@ const ShareMenuButton = styled.button`
 // eslint-disable-next-line react/display-name
 const ShareMenu = forwardRef(({ onShareToLibrary }, ref) => {
   const [selectedCategories, setSelectedCategories] = useState([]);
-  const [shared, setShared] = useState(false);
-  const { noteData } = useContext(NoteContext); // NoteContext 사용
-
-
+  //const [shared, setShared] = useState(false);
+  const { noteData, setNoteData } = useContext(NoteContext); // NoteContext 사용
+  const { isUpload, noteId } = noteData; // isUpload 상태와 noteId 가져오기
   const handleCategoryClick = (category) => {
     setSelectedCategories((prevSelected) => {
       if (prevSelected.includes(category)) {
@@ -126,18 +124,18 @@ const ShareMenu = forwardRef(({ onShareToLibrary }, ref) => {
   };
 
   const handleShareToLibrary = async () => {
-    if (shared) {
+    if (isUpload) {
       try {
         await cancelShare(noteData.noteId);
-        setShared(false);
+        setNoteData((prevData) => ({ ...prevData, isUpload: false }));
         setSelectedCategories([]); // 공유 취소 후 선택된 카테고리 초기화
-        console.log('공유취소성공');
+        console.log('공유 취소 성공');
       } catch (error) {
         console.error('공유 취소 중 오류 발생:', error);
       }
     } else {
       onShareToLibrary(selectedCategories);
-      setShared(true);
+      setNoteData((prevData) => ({ ...prevData, isUpload: true }));
     }
   };
 
@@ -146,7 +144,7 @@ const ShareMenu = forwardRef(({ onShareToLibrary }, ref) => {
       <Title>공유하기</Title>
       <SubTitle>* 최대 3개 선택</SubTitle>
       <CategoryDiv>
-        {shared ? (
+        {isUpload ? (
           <CategoryRow>
             {selectedCategories.map((category) => (
               <CategoryButton key={category} selected>
@@ -250,9 +248,9 @@ const ShareMenu = forwardRef(({ onShareToLibrary }, ref) => {
       </CategoryDiv>
 
       <ButtonWrapper>
-      <ShareMenuButton onClick={handleShareToLibrary} disabled={selectedCategories.length === 0 && !shared}>
+      <ShareMenuButton onClick={handleShareToLibrary} disabled={selectedCategories.length === 0 && !isUpload}>
       <img src={LibraryIcon} alt="LibraryIcon" style={{padding: '0'}} />
-          {shared ? '공유 취소' : '자료실에 공유'}
+          {isUpload ? '공유 취소' : '자료실에 공유'}
         </ShareMenuButton>
       </ButtonWrapper>
     </ShareMenuWrapper>
