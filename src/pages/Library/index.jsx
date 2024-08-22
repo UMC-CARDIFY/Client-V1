@@ -241,23 +241,26 @@ const SelectedCategoriesWrapper = styled.div`
 `;
 
 const SelectedCategoryTag = styled.div`
-  display: inline-flex;
-  padding: 0.1875rem 0.3125rem;
-  justify-content: center;
-  gap: 0.25rem;
+display: flex;
+padding: 0.5rem 0.7rem 0.5rem var(--font-size-md, 1rem);
+justify-content: center;
+gap: 0.5rem;
+border-radius: 0.25rem;
+background: var(--Grays-White, #FFF);
+box-shadow: 0px 4px 26px 0px rgba(0, 0, 0, 0.02), 0px 10px 60px 0px rgba(0, 74, 162, 0.03);
   flex-shrink: 0;
-  border-radius: 0.25rem;
-  background: #FFF;
+
   color: var(--Grays-Black, #1A1A1A);
-  text-align: center;
-  font-family: Pretendard;
-  font-size: 0.75rem;
-  font-style: normal;
-  font-weight: 500;
-  line-height: normal;
+font-family: Pretendard;
+font-size: 0.9375rem;
+font-style: normal;
+font-weight: 500;
+line-height: normal;
 `;
 
 const RemoveButton = styled.div`
+width: var(--font-size-md, 1rem);
+height: var(--font-size-md, 1rem);
   cursor: pointer;
 `;
 
@@ -360,7 +363,7 @@ export const Library = () => {
                       ? '카테고리 선택' 
                       : selectedCategories.includes('전체 카테고리') 
                       ? '전체 카테고리' 
-                      : '카테고리 선택'}
+                      : '카테고리 선택됨'}
                     <DropdownArrow src={dropdownArrow} alt="dropdown arrow" />
                   </DropdownHeader>
                   {isDropdownOpen && (
@@ -393,10 +396,11 @@ export const Library = () => {
                 {selectedCategories.map((category, index) =>
                   category !== '전체 카테고리' ? (
                     <SelectedCategoryTag key={index}>
+                      {category}
                       <RemoveButton onClick={() => removeCategory(category)}>
                         <img src={removeButtonsvg} alt="remove" />
                       </RemoveButton>
-                      {category}
+                      
                     </SelectedCategoryTag>
                   ) : null
                 )}
