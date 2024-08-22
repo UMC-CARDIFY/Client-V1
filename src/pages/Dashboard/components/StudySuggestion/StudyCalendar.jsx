@@ -3,6 +3,7 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css'; 
 import styled from 'styled-components';
 import StudyCard from './StudyCard'; 
+import { getStudySuggestions } from '../../../../api/dashboard/studySuggestions'; // API 파일 불러오기
 
 const Container = styled.div`
   flex-shrink: 0;
@@ -110,6 +111,17 @@ const StyledCalendar = styled(Calendar)`
     justify-content: center;
     background: none;
     border-radius: 50%;
+
+    &:hover {
+      background: var(--Grays-Gray7, #F0F0F0);
+     }
+
+    &:focus {
+      background: var(--Main-Primary, #0F62FE);
+      color: #fff;
+    }
+
+    
   }
   
   .react-calendar__tile--now {
@@ -154,7 +166,6 @@ const StyledCalendar = styled(Calendar)`
     visibility: hidden;
   }
 `;
-
 
 const Divider = styled.div`
   width: 100%;
@@ -202,8 +213,6 @@ const CardsContainer = styled.div`
   }
 `;
 
-
-
 const formatShortWeekday = (locale, date) => {
   const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
   return weekdays[date.getDay()];
@@ -217,39 +226,31 @@ const StudyCalendar = () => {
   const [date, setDate] = useState(new Date());
   const [viewDate, setViewDate] = useState(new Date());
   const [cards, setCards] = useState([]);
-
-  const studyCards = {
-    '2024-07-03': [{ name: '노트 1', timeLeft: '3시간 20분 후' }],
-    '2024-07-11': [
-      { name: '노트 2', timeLeft: '5일 2시간 후' },
-      { name: '노트 19', timeLeft: '5일 2시간 후' }],
-    '2024-07-13': [
-      { name: '노트 3', timeLeft: '10분 후' },
-      { name: '노트 4', timeLeft: '2시간 10분 후' },
-      { name: '노트 5', timeLeft: '3시간 10분 후' },
-      { name: '노트 6', timeLeft: '1시간 10분 후' },
-      { name: '노트 7', timeLeft: '5시간 10분 후' }
-    ],
-    '2024-08-22': [
-      { name: '노트 3', timeLeft: '10분 후' },
-      { name: '노트 4', timeLeft: '2시간 10분 후' },
-      { name: '노트 5', timeLeft: '3시간 10분 후' },
-      { name: '노트 6', timeLeft: '1시간 10분 후' },
-      { name: '노트 7', timeLeft: '5시간 10분 후' }
-    ],
-  };
+  const [studyCards, setStudyCards] = useState({}); // API 데이터를 저장할 상태
 
   useEffect(() => {
-    // 컴포넌트가 처음 렌더링될 때 오늘 날짜의 학습 제안이 표시되도록 설정
-    const today = new Date();
-    setDate(today);
-    const formattedDate = formatDate(today);
-    const sortedCards = (studyCards[formattedDate] || []).sort((a, b) => {
-      const timeA = parseTimeLeft(a.timeLeft);
-      const timeB = parseTimeLeft(b.timeLeft);
-      return timeA - timeB;
-    });
-    setCards(sortedCards);
+    // 컴포넌트가 처음 렌더링될 때 학습 제안 데이터를 가져옴
+    const fetchStudySuggestionsData = async () => {
+      try {
+        const suggestions = await getStudySuggestions(new Date()); // 오늘 날짜의 현재 시간을 기반으로 요청
+        setStudyCards(suggestions);
+
+        // 오늘 날짜의 학습 제안 카드 설정
+        const today = new Date();
+        setDate(today);
+        const formattedDate = formatDate(today);
+        const sortedCards = (suggestions[formattedDate] || []).sort((a, b) => {
+          const timeA = new Date(a.remainTime).getTime();
+          const timeB = new Date(b.remainTime).getTime();
+          return timeA - timeB;
+        });
+        setCards(sortedCards);
+      } catch (error) {
+        console.error('Error loading study suggestions:', error);
+      }
+    };
+
+    fetchStudySuggestionsData();
   }, []);
 
   const handlePrevMonth = () => {
@@ -266,52 +267,34 @@ const StudyCalendar = () => {
     setDate(today);
     const formattedDate = formatDate(today);
     const sortedCards = (studyCards[formattedDate] || []).sort((a, b) => {
-      const timeA = parseTimeLeft(a.timeLeft);
-      const timeB = parseTimeLeft(b.timeLeft);
+      const timeA = new Date(a.remainTime).getTime();
+      const timeB = new Date(b.remainTime).getTime();
       return timeA - timeB;
     });
     setCards(sortedCards);
   };
 
-  const handleClickDay = (value) => {
+  const handleClickDay = async (value) => {
     setDate(value);
-    const formattedDate = formatDate(value);
-    const sortedCards = (studyCards[formattedDate] || []).sort((a, b) => {
-      const timeA = parseTimeLeft(a.timeLeft);
-      const timeB = parseTimeLeft(b.timeLeft);
-      return timeA - timeB;
-    });
-    setCards(sortedCards);
+    try {
+      const suggestions = await getStudySuggestions(value); // 클릭된 날짜를 전달
+      const formattedDate = formatDate(value);
+      const sortedCards = (suggestions[formattedDate.split('T')[0]] || []).sort((a, b) => {
+        const timeA = new Date(a.remainTime).getTime();
+        const timeB = new Date(b.remainTime).getTime();
+        return timeA - timeB;
+      });
+      setCards(sortedCards);
+    } catch (error) {
+      console.error('Error fetching study suggestions:', error);
+    }
   };
-
+  
   const formatDate = (date) => {
     const d = new Date(date);
     const month = `${d.getMonth() + 1}`.padStart(2, '0');
     const day = `${d.getDate()}`.padStart(2, '0');
     return `${d.getFullYear()}-${month}-${day}`;
-  };
-
-  const parseTimeLeft = (timeLeft) => {
-    const timeParts = timeLeft.match(/(\d+)(?=[년달일시간분])/g) || [];
-    let totalMinutes = 0;
-
-    if (timeParts.length === 4) {
-      totalMinutes += parseInt(timeParts[0]) * 525600; // 년
-      totalMinutes += parseInt(timeParts[1]) * 43800;  // 달
-      totalMinutes += parseInt(timeParts[2]) * 1440;   // 일
-      totalMinutes += parseInt(timeParts[3]);          // 시간
-    } else if (timeParts.length === 3) {
-      totalMinutes += parseInt(timeParts[0]) * 43800;  // 달
-      totalMinutes += parseInt(timeParts[1]) * 1440;   // 일
-      totalMinutes += parseInt(timeParts[2]);          // 시간
-    } else if (timeParts.length === 2) {
-      totalMinutes += parseInt(timeParts[0]) * 1440;   // 일
-      totalMinutes += parseInt(timeParts[1]);          // 시간
-    } else if (timeParts.length === 1) {
-      totalMinutes += parseInt(timeParts[0]);          // 분
-    }
-
-    return totalMinutes;
   };
 
   const tileClassName = ({ date }) => {
