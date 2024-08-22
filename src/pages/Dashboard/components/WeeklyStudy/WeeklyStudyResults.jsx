@@ -58,13 +58,11 @@ const LegendContainer = styled.div`
 `;
 
 const ChartWrapper = styled.div`
-  margin-top: 1rem; // 그래프만 조금 아래로 이동
+  margin-top: 1rem;
   width: 100%;
   height: 80%;
 `;
 
-
-// 커스텀 레전드 컴포넌트
 const CustomLegend = () => {
   return (
     <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
@@ -101,13 +99,13 @@ const CustomLegend = () => {
 const WeeklyStudyResults = () => {
   const [thisWeekCardCount, setThisWeekCardCount] = useState(0);
   const [graphData, setGraphData] = useState([]);
+  const [animationKey, setAnimationKey] = useState(0); // 애니메이션 트리거를 위한 키
 
   useEffect(() => {
     const fetchWeeklyResults = async () => {
       try {
         const data = await getWeeklyStudyResults();
 
-        // 그래프 데이터 생성
         const formattedData = [
           { day: '일', lastWeek: data.dayOfLastWeekCard[7] || 0, thisWeek: data.dayOfThisWeekCard[7] || 0 },
           { day: '월', lastWeek: data.dayOfLastWeekCard[1] || 0, thisWeek: data.dayOfThisWeekCard[1] || 0 },
@@ -120,6 +118,7 @@ const WeeklyStudyResults = () => {
 
         setThisWeekCardCount(data.thisWeekCardCount);
         setGraphData(formattedData);
+        setAnimationKey((prevKey) => prevKey + 1); // 데이터를 가져온 후 애니메이션 트리거
       } catch (error) {
         console.error('Error fetching weekly study results:', error);
       }
@@ -134,12 +133,12 @@ const WeeklyStudyResults = () => {
       <Header>
         <GraphTitle>이번 주에 {thisWeekCardCount}개의 카드를 학습했습니다.</GraphTitle>
         <LegendContainer>
-        <CustomLegend />
+          <CustomLegend />
         </LegendContainer>
       </Header>
       <ChartWrapper>
         <ResponsiveContainer>
-          <BarChart data={graphData} barGap={16} barCategoryGap="15%">
+          <BarChart key={animationKey} data={graphData} barGap={16} barCategoryGap="15%">
             <XAxis
               dataKey="day"
               axisLine={false}
@@ -153,8 +152,26 @@ const WeeklyStudyResults = () => {
               tickMargin={16}
             />
             <Tooltip />
-            <Bar dataKey="lastWeek" fill="#E3EAF6" barSize={30} radius={[8, 8, 2, 2]} minPointSize={5}/>
-            <Bar dataKey="thisWeek" fill="#6A9CFC" barSize={30} radius={[8, 8, 2, 2]} minPointSize={5}/>
+            <Bar
+              dataKey="lastWeek"
+              fill="#E3EAF6"
+              barSize={30}
+              radius={[8, 8, 2, 2]}
+              minPointSize={5}
+              isAnimationActive={true}
+              animationDuration={1000}
+              animationBegin={0} // 애니메이션 시작 시간
+            />
+            <Bar
+              dataKey="thisWeek"
+              fill="#6A9CFC"
+              barSize={30}
+              radius={[8, 8, 2, 2]}
+              minPointSize={5}
+              isAnimationActive={true}
+              animationDuration={1000}
+              animationBegin={0} // 애니메이션 시작 시간
+            />
           </BarChart>
         </ResponsiveContainer>
       </ChartWrapper>
