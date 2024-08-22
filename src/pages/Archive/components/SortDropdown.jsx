@@ -95,11 +95,12 @@ const SortDropdown = ({ onSortOptionClick, selectedTab, currentFolderId }) => {
     let optionWithTab = `${selectedTab};${option}`;
 
     if (selectedTab === '폴더') {
+
+      if (currentFolderId) {
+        setFolderNoteSortOption(option);
+      } 
+
       setFolderSortOption(option);
-      optionWithTab += currentFolderId ? `;${currentFolderId}` : '';
-    } else if (currentFolderId) {
-      setFolderNoteSortOption(option);
-      optionWithTab += `;${currentFolderId}`;
     } else {
       setNoteSortOption(option);
     }
@@ -147,10 +148,15 @@ const SortDropdown = ({ onSortOptionClick, selectedTab, currentFolderId }) => {
 
   const getSelectedOption = () => {
     if (selectedTab === '폴더') {
+
+      if (currentFolderId) {
+        return folderNoteSortOption;
+      }
+
       return folderSortOption;
-    } else if (currentFolderId) {
-      return folderNoteSortOption;
-    }
+
+
+    } 
     return noteSortOption;
   };
 
