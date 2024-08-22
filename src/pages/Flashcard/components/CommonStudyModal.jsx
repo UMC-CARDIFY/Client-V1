@@ -152,7 +152,6 @@ const PageDiv = styled.div`
 const Content = styled.div`
     display: flex;
     gap: 0.75rem;
-    flex-direction: column;
 `;
 
 const Answer = styled.div`
@@ -194,9 +193,11 @@ const CommonStudyModal = ({ onClose, studyCardSetId, noteName, folderName, color
   const [content, setContent] = useState([]);
   const [totalPage, setTotalPage] = useState(1);
   const [currentPage, setCurrentPage] = useState(0);
-  const [revealedAnswers, setRevealedAnswers] = useState([]);
   const [noteId, setNoteId] = useState(0);
   const [folderId, setFolderId] = useState(0);
+  
+  const [revealedAnswer, setRevealedAnswer] = useState([]);
+  const [revealedAnswers, setRevealedAnswers] = useState([]);
 
   const [isHover, setIsHover] = useState(false);
 
@@ -230,7 +231,14 @@ const CommonStudyModal = ({ onClose, studyCardSetId, noteName, folderName, color
     }
   };
 
-  const revealAnswer = (cardIndex, answerIndex) => {
+  const revealAnswer = (index) => {
+    setRevealedAnswers((prevRevealed) => ({
+      ...prevRevealed,
+      [index]: !prevRevealed[index], // 클릭 시 토글
+    }));
+  };
+
+  const revealAnswers = (cardIndex, answerIndex) => {
     setRevealedAnswers((prevRevealed) => {
       // 해당 카드에 대한 상태를 가져오거나 기본값으로 빈 배열 사용
       const updatedRevealed = prevRevealed[cardIndex] ? [...prevRevealed[cardIndex]] : [];
@@ -277,8 +285,8 @@ const CommonStudyModal = ({ onClose, studyCardSetId, noteName, folderName, color
         <>
           <div>{card.contentsFront}</div>
           <Answer
-            revealed={revealedAnswers[index]?.[0]}
-            onClick={() => revealAnswer(index, 0)}
+           revealed={revealedAnswers[index]}
+           onClick={() => revealAnswer(index)}
           >
             {card.answer}
           </Answer>
@@ -288,8 +296,8 @@ const CommonStudyModal = ({ onClose, studyCardSetId, noteName, folderName, color
           <>
           <div>{card.contentsFront}</div>
           <Answer
-            revealed={revealedAnswers[index]?.[0]}
-            onClick={() => revealAnswer(index, 0)}
+            revealed={revealedAnswers[index]}
+            onClick={() => revealAnswer(index)}
           >
             {card.answer}
           </Answer>
@@ -303,7 +311,7 @@ const CommonStudyModal = ({ onClose, studyCardSetId, noteName, folderName, color
           <Answer
             key={answerIndex}
             revealed={revealedAnswers[index]?.[answerIndex] || false}
-        onClick={() => revealAnswer(index, answerIndex)}
+        onClick={() => revealAnswers(index, answerIndex)}
           >
             {answer}
           </Answer>
