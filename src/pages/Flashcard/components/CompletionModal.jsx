@@ -38,7 +38,7 @@ background: #FFF;
 const CompletionTitle = styled.div`
 color: var(--kakao-logo, #000);
 text-align: center;
-font-family: Inter;
+font-family: Pretendard;
 font-size: 1.5625rem;
 font-style: normal;
 font-weight: 600;
@@ -49,7 +49,7 @@ margin-bottom: 0.88rem;
 const CompletionMessage = styled.div`
 color: var(--kakao-logo, #000);
 text-align: center;
-font-family: Inter;
+font-family: Pretendard;
 font-size: 1.125rem;
 font-style: normal;
 font-weight: 400;
@@ -75,7 +75,7 @@ flex-shrink: 0;
   align-items: center;
   justify-content: center;
   text-align: center;
-font-family: Inter;
+  font-family: Pretendard;
 font-size: 0.9375rem;
 font-style: normal;
 font-weight: 600;

@@ -217,7 +217,7 @@ const ItemList = ({
               <RightData>
                 <Line />
                 <div>
-                  <Text>{selectedTab === '폴더' ? item.getNoteCount : item.folderName}개</Text>
+                  <Text>{selectedTab === '폴더' ? item.getNoteCount : item.folderName}</Text>
                   <div>{selectedTab === '폴더' ? '포함된 노트 개수' : '폴더'}</div>
                 </div>
                 <Line />
