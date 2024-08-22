@@ -10,7 +10,10 @@ import moreoptions from '../../../assets/flashcard/moreoptions.svg';
 import star from '../../../assets/flashcard/star.svg';
 import CommonStudyModal from './CommonStudyModal';
 import AnalysisStudyModal from './AnalysisStudyModal';
+import StatisticsModal from './StatisticsModal';
 import { colorMap } from './colorMap';
+import deleteCardSet from '../../../api/flashcard/deleteCardSet';
+import getCards from '../../../api/flashcard/getCards';
 
 // 겹쳐진 카드들을 감싸는 컨테이너
 const CardStackContainer = styled.div`
@@ -89,7 +92,7 @@ const Line = styled.div`
 const DayDiv = styled.div`
   display: inline-flex;
   align-items: center;
-  gap: 3rem;
+  gap: 2rem;
   color: var(--Grays-Gray1, #646464);
   text-align: center;
   font-family: Pretendard;
@@ -101,7 +104,7 @@ const DayDiv = styled.div`
 
 const Day = styled.div`
   display: flex;
-  width: 7.5rem;
+  width: 8rem;
   flex-direction: column;
   align-items: center;
   gap: 0.125rem;
@@ -168,7 +171,7 @@ const StatusBadge = styled.div`
   gap: 0.5rem;
   border-radius: 0.375rem;
   background: ${({ status }) => (status === '학습 중' ? '#E7EFFF' : status === '학습 전' ? '#EDEDED' : 'var(--Grays-Gray6, #EDEDED)')};
-  color: ${({ status }) => (status === '학습 중' ? '#0F62FE' : '#1A1A1A')};
+  color: ${({ status }) => (status === '학습 중' ? '#0F62FE' : '#767676')};
   font-family: Pretendard;
   font-size: 0.75rem;
   font-weight: 500;
@@ -206,12 +209,31 @@ const DeleteButton = styled.div`
   font-weight: 500;
 `;
 
+const RelearnButton = styled.button`
+  display: ${({ show }) => (show ? 'block' : 'none')};
+  position: absolute;
+  right: 2.81rem;
+  width: 9.1rem;
+  height: 3.125rem;
+    box-sizing: border-box;
+  padding: 1.03125rem 4rem 1.03125rem 1.125rem;
+  border: 1px solid #dedede;
+  background: #fff;
+  cursor: pointer;
+  z-index: 10;
+  color: #000;
+  font-family: Inter;
+  font-size: 0.875rem;
+  font-weight: 500;
+`;
+
 const FlashcardItem = ({ noteName, folderName, recentStudyDate, nextStudyDate, studyStatus, color, studyCardSetId, markStatus }) => {
 
   const [showDeleteButton, setShowDeleteButton] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showCommonStudyModal, setShowCommonStudyModal] = useState(false); 
   const [showAnalysisStudyModal, setShowAnalysisStudyModal] = useState(false);
+  const [showStatisticsModal, setShowStatisticsModal] = useState(false);
 
   const toggleDeleteButton = () => {
     setShowDeleteButton((prev) => !prev);
@@ -222,6 +244,20 @@ const FlashcardItem = ({ noteName, folderName, recentStudyDate, nextStudyDate, s
   };
 
   const confirmDelete = () => {
+    // Delete the card
+    const deleteCard = async () => {
+      try {
+        await deleteCardSet(studyCardSetId);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    deleteCard();
+
+    // 다시 list api 호출
+
+
+
     console.log('카드가 삭제되었습니다.');
     setShowModal(false);
   };
@@ -245,8 +281,28 @@ const FlashcardItem = ({ noteName, folderName, recentStudyDate, nextStudyDate, s
   const closeAnalysisStudyModal = () => {
     setShowAnalysisStudyModal(false);  // Close the analysis study modal
   };
-  const formatRecentStudyDate = new Date(recentStudyDate).toISOString().replace('T', ' ').slice(0, 16);
-  const formatNextStudyDate = new Date(nextStudyDate).toISOString().split('T', ' ').slice(0, 16);
+
+  const formatDate = (date) => {
+    const dateObj = new Date(date);
+    dateObj.setHours(dateObj.getHours() + 9);
+  
+    const year = dateObj.getFullYear();
+    const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+    const day = String(dateObj.getDate()).padStart(2, '0');
+    const hours = String(dateObj.getHours()).padStart(2, '0');
+    const minutes = String(dateObj.getMinutes()).padStart(2, '0');
+  
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
+  };
+
+  const handleStatisticsOpen = () => {
+    setShowStatisticsModal(true); 
+  };
+
+  const handleStatisticsClose = () => {
+    setShowStatisticsModal(false); 
+  };
+
   return (
     <CardStackContainer>
       {/* 겹쳐진 카드 레이어들 */}
@@ -266,9 +322,20 @@ const FlashcardItem = ({ noteName, folderName, recentStudyDate, nextStudyDate, s
         <MoreOptions onClick={toggleDeleteButton}>
           <img src={moreoptions} alt="더보기" />
         </MoreOptions>
+        {studyStatus === '영구 보관' ? (
+        <>
+          <RelearnButton show={showDeleteButton} onClick={handleRelearn}>
+            재학습
+          </RelearnButton>
+          <DeleteButton show={showDeleteButton} onClick={handleDelete}>
+            카드 삭제
+          </DeleteButton>
+        </>
+      ) : (
         <DeleteButton show={showDeleteButton} onClick={handleDelete}>
           카드 삭제
         </DeleteButton>
+      )}
 
         <CardHeader>
           <CardIconDiv>
@@ -280,11 +347,11 @@ const FlashcardItem = ({ noteName, folderName, recentStudyDate, nextStudyDate, s
         </CardHeader>
         <DayDiv>
           <Day>
-            {recentStudyDate ? <DateDay>{formatRecentStudyDate}</DateDay> : <DateDay>-</DateDay>}
+            {recentStudyDate ? <DateDay>{formatDate(recentStudyDate)}</DateDay> : <DateDay>-</DateDay>}
             <DateText>최근 학습일</DateText>
           </Day>
           <Day>
-            {nextStudyDate ? <DateDay>{formatNextStudyDate}</DateDay> : <DateDay>-</DateDay>}
+            {nextStudyDate ? <DateDay>{formatDate(nextStudyDate)}</DateDay> : <DateDay>-</DateDay>}
             <DateText>다음 학습일</DateText>
           </Day>
         </DayDiv>
@@ -296,7 +363,7 @@ const FlashcardItem = ({ noteName, folderName, recentStudyDate, nextStudyDate, s
             <Button onClick={handleAnalysisStudyClick}>
               <img src={studymore} alt="분석학습" />
               분석학습</Button>
-          <Button>
+          <Button onClick={handleStatisticsOpen}>
             <img src={statistics} alt="학습통계" />
               학습통계
           </Button>
@@ -305,7 +372,7 @@ const FlashcardItem = ({ noteName, folderName, recentStudyDate, nextStudyDate, s
       </ForegroundCard>
 
       {/* 삭제 모달 */}
-      {showModal && <DeleteModal onClose={cancelDelete} onConfirm={confirmDelete} />}
+      {showModal && <DeleteModal onClose={cancelDelete} onConfirm={confirmDelete} noteName={noteName} />}
 
       {/* 일반학습 모달 */}
           {showCommonStudyModal && (
@@ -325,6 +392,16 @@ const FlashcardItem = ({ noteName, folderName, recentStudyDate, nextStudyDate, s
         color={color}
         folderName={folderName}
          />
+      )}
+
+{showStatisticsModal && (
+        <StatisticsModal
+          onClose={handleStatisticsClose}
+          studyCardSetId={studyCardSetId}
+          color={color}
+            noteName={noteName}
+            folderName={folderName}
+        />
       )}
 
     </CardStackContainer>
