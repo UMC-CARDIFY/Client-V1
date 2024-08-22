@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import cardIcon from '../../../../assets/dashboard/cardIcon.svg';
 import { intervalToDuration } from 'date-fns';
 
 const CardContainer = styled.div`
@@ -18,11 +17,6 @@ const CardContainer = styled.div`
   box-sizing: border-box;
 `;
 
-const CardIcon = styled.img`
-  width: 1.64363rem;
-  height: 1.28781rem;
-  flex-shrink: 0;
-`;
 
 const CardDetails = styled.div`
   display: flex;
@@ -47,6 +41,20 @@ const CardSubtitle = styled.div`
   line-height: normal;
 `;
 
+const colorMap = {
+  blue: '#6698F5',
+  ocean: '#5AA6C7',
+  lavender: '#949AEC',
+  gray: '#A9A9A9',
+  mint: '#77CEC6',
+  sage: '#AECA99',
+  orange: '#FDB456',
+  plum: '#D49AE9',
+  coral: '#FD855F',
+  rose: '#ED83B1',
+};
+
+
 const calculateTimeLeft = (remainTime) => {
   const now = new Date();
   const targetDate = new Date(remainTime);
@@ -65,20 +73,32 @@ const calculateTimeLeft = (remainTime) => {
   }
 };
 
-const StudyCard = ({ card }) => (
-  <CardContainer>
-    <CardIcon src={cardIcon} alt="Card Icon" />
-    <CardDetails>
-      <CardTitle>{calculateTimeLeft(card.remainTime)}</CardTitle>
-      <CardSubtitle>{card.name}</CardSubtitle>
-    </CardDetails>
-  </CardContainer>
-);
+const StudyCard = ({ card }) => {
+  const iconColor = colorMap[card.color] || '#A9A9A9'; 
+
+  return (
+    <CardContainer>
+      {/* SVG 직접 사용 */}
+      <svg xmlns="http://www.w3.org/2000/svg" width="29" height="24" viewBox="0 0 29 24" fill="none">
+        <path d="M6.87535 5.73529L7.03417 4.90523L7.66943 1.58496L27.5001 5.17686L24.9591 18.4579L22.4802 18.0089L21.8605 17.8967" 
+          stroke={iconColor} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+        <rect x="1.20215" y="6.65625" width="20.1024" height="15.5337" 
+          stroke={iconColor} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+        <rect x="1.20215" y="6.65625" width="20.1024" height="15.5337" fill={iconColor}/>
+      </svg>
+      <CardDetails>
+        <CardTitle>{calculateTimeLeft(card.remainTime)}</CardTitle>
+        <CardSubtitle>{card.name}</CardSubtitle>
+      </CardDetails>
+    </CardContainer>
+  );
+};
 
 StudyCard.propTypes = {
   card: PropTypes.shape({
     remainTime: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired
+    name: PropTypes.string.isRequired,
+    color: PropTypes.string.isRequired,
   }).isRequired
 };
 
