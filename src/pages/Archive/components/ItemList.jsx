@@ -59,14 +59,14 @@ const TextContainer = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  width: 45.9rem;;
+  width: 42rem;;
 
     @media (min-width: 1440px) and (max-width: 1680px) {
-    max-width: 24.5rem;
+    max-width: 21rem;
   }
 
   @media (max-width: 1440px) {
-    max-width: 16.9rem;
+    max-width: 11rem;
   }
 
 `;
