@@ -9,10 +9,8 @@ const formatDateForBackend = (date) => {
   const hours = String(date.getHours()).padStart(2, '0');
   const minutes = String(date.getMinutes()).padStart(2, '0');
   const seconds = String(date.getSeconds()).padStart(2, '0');
-  const milliseconds = String(date.getMilliseconds()).padStart(3, '0');
 
-  // 시간대 오프셋은 이제 고려하지 않음
-  return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}`;
+  return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
 };
 
 export const getStudySuggestions = async (date) => {
@@ -35,14 +33,15 @@ export const getStudySuggestions = async (date) => {
     // 백엔드에서 요구하는 타임스탬프 형식으로 변환 (로컬 시간으로 유지)
     const formattedDate = formatDateForBackend(adjustedDate);
 
-    const response = await axios.get(`${config.apiBaseUrl}/cards/study-suggestion`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-      },
-      params: {
-        date: formattedDate, // 포맷팅된 날짜를 API에 전달
-      },
-    });
+    const response = await axios.post(
+      `${config.apiBaseUrl}/cards/study-suggestion`,
+      { date: formattedDate }, // POST 요청에서 body에 date 전달
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+      }
+    );
 
     // 데이터 가공 및 반환
     return response.data.reduce((acc, item) => {

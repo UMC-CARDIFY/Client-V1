@@ -121,7 +121,6 @@ const StyledCalendar = styled(Calendar)`
       color: #fff;
     }
 
-    
   }
   
   .react-calendar__tile--now {
