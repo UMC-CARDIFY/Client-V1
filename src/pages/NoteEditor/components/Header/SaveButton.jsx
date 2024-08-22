@@ -23,6 +23,14 @@ const SaveButtonWrapper = styled.button`
     font-style: normal;
     font-weight: 500;
     line-height: normal;
+    
+    @media screen and (max-width: 1440px) {
+      font-size: 0.85rem;
+    }
+
+    @media screen and (max-width: 1200px) {
+      font-size: 0.8rem;
+    }
   }
 `;
 
