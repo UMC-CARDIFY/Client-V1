@@ -15,7 +15,6 @@ const formatDateForBackend = (date) => {
 
 export const getStudySuggestions = async (date) => {
   try {
-    // 날짜가 오늘인지 확인
     const isToday = (inputDate) => {
       const today = new Date();
       return (
@@ -25,17 +24,16 @@ export const getStudySuggestions = async (date) => {
       );
     };
 
-    // 오늘 날짜는 현재 시간을 그대로 사용, 다른 날짜는 12:00 고정
     const adjustedDate = isToday(date)
       ? date
-      : new Date(date.getFullYear(), date.getMonth(), date.getDate(), 12, 0, 0);
+      : new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0); 
 
-    // 백엔드에서 요구하는 타임스탬프 형식으로 변환 (로컬 시간으로 유지)
+
     const formattedDate = formatDateForBackend(adjustedDate);
 
     const response = await axios.post(
       `${config.apiBaseUrl}/cards/study-suggestion`,
-      { date: formattedDate }, // POST 요청에서 body에 date 전달
+      { date: formattedDate },
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
@@ -43,14 +41,16 @@ export const getStudySuggestions = async (date) => {
       }
     );
 
-    // 데이터 가공 및 반환
+    console.log("API 요청 날짜:", formattedDate); // 요청한 날짜 확인
+    console.log("API 응답 데이터:", response.data); 
     return response.data.reduce((acc, item) => {
-      const dateKey = item.remainTime.split('T')[0]; // 날짜만 추출하여 키로 사용
+      const dateKey = item.remainTime.split('T')[0];
       const cardData = {
         name: item.noteName,
         folderName: item.folderName,
         cardId: item.cardId,
         remainTime: item.remainTime,
+        color: item.color 
       };
       if (!acc[dateKey]) {
         acc[dateKey] = [];

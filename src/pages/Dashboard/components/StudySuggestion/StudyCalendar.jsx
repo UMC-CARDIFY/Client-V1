@@ -274,20 +274,27 @@ const StudyCalendar = () => {
   };
 
   const handleClickDay = async (value) => {
-    setDate(value);
+    console.log("클릭한 날짜:", value);
     try {
       const suggestions = await getStudySuggestions(value); // 클릭된 날짜를 전달
-      const formattedDate = formatDate(value);
-      const sortedCards = (suggestions[formattedDate.split('T')[0]] || []).sort((a, b) => {
+      console.log("API에서 받아온 데이터:", suggestions);
+  
+      const formattedDate = formatDate(value); // "YYYY-MM-DD" 형식으로 변환
+      console.log("포맷된 날짜:", formattedDate);
+  
+      const sortedCards = (suggestions[formattedDate] || []).sort((a, b) => {
         const timeA = new Date(a.remainTime).getTime();
         const timeB = new Date(b.remainTime).getTime();
         return timeA - timeB;
       });
+      console.log("필터링된 카드:", sortedCards);
+  
       setCards(sortedCards);
     } catch (error) {
       console.error('Error fetching study suggestions:', error);
     }
   };
+  
   
   const formatDate = (date) => {
     const d = new Date(date);
