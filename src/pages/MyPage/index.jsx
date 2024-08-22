@@ -7,6 +7,7 @@ import {
   InstagramId, AttendanceImage, Divider
 } from './styles/MyPageStyles'; 
 import { getMyPageInfo } from '../../api/mypage/getMypage';
+import { userCheck } from '../../api/mypage/userCheck';
 import Switch from './components/Switch';
 import ProfileSection from './components/ProfileSection';
 import BackButton from './components/BackButton';
@@ -27,19 +28,40 @@ export const MyPage = () => {
   const [showTermsModal, setShowTermsModal] = useState(false);
   const [showPrivacyModal, setShowPrivacyModal] = useState(false);
   const [showAttendanceModal, setShowAttendanceModal] = useState(false);
+  const [isAttendanceChecked, setIsAttendanceChecked] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await getMyPageInfo();
         setProfileData(data);
+        setIsAttendanceChecked(data.todayCheck === 1);
       } catch (error) {
         console.error('Error fetching profile info:', error);
       }
     };
 
     fetchData();
+
+    const interval = setInterval(async () => {
+      const data = await getMyPageInfo();
+      setIsAttendanceChecked(data.todayCheck === 1);
+    }, 60000); // 1분마다 체크
+
+    return () => clearInterval(interval); // 컴포넌트가 언마운트될 때 인터벌 클리어
   }, []);
+
+  const handleAttendanceClick = async () => {
+    if (!isAttendanceChecked) {
+      try {
+        await userCheck(); // 출석 체크
+        setIsAttendanceChecked(true);
+        setShowAttendanceModal(true);
+      } catch (error) {
+        console.error('Error during attendance check:', error);
+      }
+    }
+  };
 
   if (!profileData) {
     return <div>Loading...</div>;
@@ -82,7 +104,11 @@ export const MyPage = () => {
             <AttendanceLeftSection>
               <SectionText>출석해서 포인트 받고</SectionText>
               <SectionText style={{fontWeight: '600', fontSize:'1.3125rem'}}>학습 자료로 교환하기</SectionText>
-              <AttendanceButton onClick={() => setShowAttendanceModal(true)} />
+              <AttendanceButton 
+                onClick={handleAttendanceClick}
+                disabled={isAttendanceChecked}              >
+                {isAttendanceChecked ? '출석완료' : '출석체크'}
+              </AttendanceButton>
             </AttendanceLeftSection>
             <AttendanceRightSection> 
               <AttendanceImage />
