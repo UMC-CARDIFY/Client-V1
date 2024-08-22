@@ -11,6 +11,7 @@ const Container = styled.div`
   display: flex;
   width: 100%;
   height: 100vh;
+
 `;
 
 const MainContent = styled.div`
@@ -18,6 +19,18 @@ const MainContent = styled.div`
   flex-direction: column;
   width: 100%;
   background: var(--Main-BackGround, #F2F4F8);
+  const colorMap = {
+    blue: '#6698F5',
+    ocean: '#5AA6C7',
+    lavender: '#949AEC',
+    gray: '#A9A9A9',
+    mint: '#77CEC6',
+    sage: '#AECA99',
+    orange: '#FDB456',
+    plum: '#D49AE9',
+    coral: '#FD855F',
+    rose: '#ED83B1',
+  };
 `;
 
 const ContentArea = styled.div`
@@ -26,6 +39,7 @@ const ContentArea = styled.div`
   background: var(--Main-BackGround, #F2F4F8);
   padding-top: 5rem;
   padding-bottom: 2.13rem;
+  overflow-y: scroll;
 `;
 
 const FlashcardContainer = styled.div`
