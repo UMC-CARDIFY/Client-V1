@@ -1,15 +1,17 @@
 import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyle = createGlobalStyle`
-	body {
-	margin: 0;
-	padding: 0;
-	font-family: 'Noto Sans KR', sans-serif;
+  @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Pretendard', sans-serif;
   }
 
   a {
     text-decoration: none;
-	color: inherit;
+    color: inherit;
   }
 `;
 
