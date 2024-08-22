@@ -134,27 +134,31 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
     try {
       const pageSize = getPageSize();
       let data;
+      const colorQuery = selectedTab === '폴더' ? (folderFilterColors.length > 0 ? folderFilterColors.join(',') : '') : (noteFilterColors.length > 0 ? noteFilterColors.join(',') : '');
+      const order = sortOption || '';
   
       if (selectedTab === '폴더') {
         // 폴더 관련 데이터 가져오기
-        const colorQuery = folderFilterColors.length > 0 ? folderFilterColors.join(',') : '';
-        const order = sortOption || '';
         data = await getFolderFilterSort(colorQuery, order, currentPageFolder, pageSize);
-  
         setFolders(data.foldersList || []);
         setPageCountFolder(data.totalPages || 0);
   
         if (currentFolderId) {
-          const folderNotesData = await getNoteToFolder(currentFolderId, folderNotesPage, pageSize,order);
+          // order 값이 없으면 기본값으로 "create-newest" 설정
+          const finalOrder = order || "create-newest";
+          const folderNotesData = await getNoteToFolder(currentFolderId, folderNotesPage, pageSize, finalOrder);
+          
+          console.log('currentFolderId, folderNotesPage, pageSize, finalOrder:', currentFolderId, folderNotesPage, pageSize, finalOrder);
+          
           setFolderNotes(folderNotesData.noteList || []);
           setFolderNotesPageCount(folderNotesData.totalPage || 0);
+        } else {
+          console.log('currentFolderId is null or undefined:', currentFolderId);
         }
+        
       } else if (selectedTab === '노트') {
         // 노트 관련 데이터 가져오기
-        const colorQuery = noteFilterColors.length > 0 ? noteFilterColors.join(',') : '';
-        const order = sortOption || '';
         data = await getNoteFilterSort(colorQuery, order, currentPageNote, pageSize);
-  
         setNotes(data.noteList || []);
         setPageCountNote(data.totalPage || 0);
       }
@@ -165,7 +169,7 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
       setLoading(false);
     }
   };
-  
+
   
   useEffect(() => {
     fetchData();
