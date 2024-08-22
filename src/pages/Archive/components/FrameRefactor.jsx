@@ -11,6 +11,7 @@ import {
   getNoteToFolder,
   getNoteFilterSort
 } from '../../../api/archive';
+import { useNavigate } from 'react-router-dom';
 
 import FolderModal from './FolderModal';
 import DeleteConfirmModal from './DeleteConfirmModal';
@@ -19,6 +20,7 @@ import FilteringDropdown from './FilteringDropdown';
 import Pagination from './Pagination';
 import ItemList from './ItemList';
 import AddButton from './AddButton';
+import back from '../../../assets/back.svg';
 
 const FrameContainer = styled.div`
   width: 89rem;
@@ -97,12 +99,38 @@ const colorMap = {
   rose: '#ED83B1'
 };
 
+const Back =styled.img`
+  width: 2rem;
+  height: 2rem;
+  display: ${({ visible }) => (visible ? 'block' : 'none')};
+`;
+
+const TitleContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 1.25rem;
+`;
+
+const Title = styled.div`
+  color: var(--Grays-Black, #1A1A1A);
+  font-family: Pretendard;
+  font-size: 1.25rem;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  
+`; 
+
 const getColorNameByCode = (colorCode) => {
   const colorEntry = Object.entries(colorMap).find(([key, code]) => code === colorCode);
   return colorEntry ? colorEntry[0] : 'defaultColorName';
 };
 
 const Frame = ({ selectedTab, setSelectedTab }) => {
+
+  const navigate = useNavigate();
+
   const [folders, setFolders] = useState([]);
   const [notes, setNotes] = useState([]);
   const [currentPageFolder, setCurrentPageFolder] = useState(0);
@@ -110,6 +138,10 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
   const [pageCountFolder, setPageCountFolder] = useState(0);
   const [pageCountNote, setPageCountNote] = useState(0);
   const [sortOption, setSortOption] = useState('');
+  const [folderNoteSort , setFolderNoteSort] =useState('');
+  const [folderSort , setFolderSort] =useState('');
+  const [noteSort , setNoteSort] =useState('');
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [activeMoreDiv, setActiveMoreDiv] = useState(null);
@@ -125,6 +157,7 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
   const [folderFilterColors, setFolderFilterColors] = useState([]);
   const [noteFilterColors, setNoteFilterColors] = useState([]);
 
+
   const getPageSize = () => window.innerWidth < 1440 ? 5 : 6;
 
   const fetchData = async () => {
@@ -134,27 +167,34 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
     try {
       const pageSize = getPageSize();
       let data;
+      const colorQuery = selectedTab === '폴더' ? (folderFilterColors.length > 0 ? folderFilterColors.join(',') : '') : (noteFilterColors.length > 0 ? noteFilterColors.join(',') : '');
   
       if (selectedTab === '폴더') {
         // 폴더 관련 데이터 가져오기
-        const colorQuery = folderFilterColors.length > 0 ? folderFilterColors.join(',') : '';
-        const order = sortOption || '';
-        data = await getFolderFilterSort(colorQuery, order, currentPageFolder, pageSize);
-  
+        data = await getFolderFilterSort(colorQuery, folderSort, currentPageFolder, pageSize);
         setFolders(data.foldersList || []);
         setPageCountFolder(data.totalPages || 0);
+
+        console.log('folders',folders);
   
         if (currentFolderId) {
-          const folderNotesData = await getNoteToFolder(currentFolderId, folderNotesPage, pageSize,order);
+          // order 값이 없으면 기본값으로 "create-newest" 설정
+          const finalOrder = folderNoteSort || "create-newest";
+          const folderNotesData = await getNoteToFolder(currentFolderId, folderNotesPage, pageSize, finalOrder);
+          
+          console.log(folderNotesData)
+          
+          console.log('currentFolderId, folderNotesPage, pageSize, finalOrder:', currentFolderId, folderNotesPage, pageSize, finalOrder);
+          
           setFolderNotes(folderNotesData.noteList || []);
           setFolderNotesPageCount(folderNotesData.totalPage || 0);
+        } else {
+          console.log('currentFolderId is null or undefined:', currentFolderId);
         }
+        
       } else if (selectedTab === '노트') {
         // 노트 관련 데이터 가져오기
-        const colorQuery = noteFilterColors.length > 0 ? noteFilterColors.join(',') : '';
-        const order = sortOption || '';
-        data = await getNoteFilterSort(colorQuery, order, currentPageNote, pageSize);
-  
+        data = await getNoteFilterSort(colorQuery, noteSort, currentPageNote, pageSize);
         setNotes(data.noteList || []);
         setPageCountNote(data.totalPage || 0);
       }
@@ -165,19 +205,24 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
       setLoading(false);
     }
   };
-  
+
   
   useEffect(() => {
     fetchData();
-  }, [selectedTab, currentPageFolder, currentPageNote, sortOption, currentFolderId, folderNotesPage, folderFilterColors, noteFilterColors]);
+  }, [selectedTab, currentPageFolder, currentPageNote, sortOption, currentFolderId, folderNotesPage, folderFilterColors, noteFilterColors, folderSort, folderNoteSort, noteSort]);
 
   useEffect(() => {
     if (selectedTab === '폴더') {
       setNoteFilterColors([]);
+      setCurrentFolderId(null);
+      setFolderNotes([]);
+      setFolderNotesPage(0);
     } else if (selectedTab === '노트') {
       setFolderFilterColors([]);
     }
   }, [selectedTab]);
+  
+  
 
   const getCurrentFolderName = (folderId) => {
     const folder = folderNotes.find(note => note.folderId === folderId);
@@ -209,15 +254,17 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
   const handleSortOptionClick = (option) => {
     if (option) {
       const [tab, sortOption] = option.split(';');
-      if (tab === '폴더' || tab === '노트') {
-        setSortOption(sortOption);
-      } else {
-        console.error('잘못된 탭:', tab);
+    if (tab ==='폴더'){
+      if(currentFolderId){
+        setFolderNoteSort(sortOption);
+      }else{
+        setFolderSort(sortOption);
       }
-    } else {
-      console.error('잘못된 정렬 옵션:', option);
-    }
-  };
+    }else if (tab ==='노트'){
+        setNoteSort(sortOption);
+      }
+  }
+};
 
   const handleEdit = (item) => {
     setSelectedItem(item);
@@ -311,21 +358,30 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
     }
   };
 
-  const initialData = selectedItem
+  const initialData = folders
     ? {
-        folderName: selectedItem.folderName || '',
-        selectedColor: selectedItem.selectedColor || '',
+        folderName: folders.folderName,
+        selectedColor: folders.folderColor || '',
       }
     : {};
+
+    const handleBackClick = () => {
+      window.location.reload();
+    };
+
 
   return (
     <FrameContainer>
       <Header>
-        <h3>{title}</h3>
+        <TitleContainer>
+        <Back src={back} alt='뒤로가기 버튼' visible={!!currentFolderId} onClick={handleBackClick}/>
+        <Title>{title}</Title>
+        </TitleContainer>
         <ButtonContainer>
           <SortDropdown 
             onSortOptionClick={handleSortOptionClick} 
             selectedTab={selectedTab} 
+            currentFolderId={currentFolderId}
           />
           <FilteringDropdown 
             onFilterApply={handleFilterApply} 
@@ -338,6 +394,13 @@ const Frame = ({ selectedTab, setSelectedTab }) => {
               setShowAddModal={setShowAddModal}
               setModalType={setModalType}
               currentFolderId={currentFolderId}
+            />
+          )}{selectedTab == '노트' && (
+            <AddButton
+              selectedTab={selectedTab}
+              setSelectedItem={setSelectedItem}
+              setShowAddModal={setShowAddModal}
+              setModalType={setModalType}
             />
           )}
         </ButtonContainer>

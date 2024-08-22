@@ -6,6 +6,7 @@ import FolderIcon from './FolderIcon';
 import NoteIcon from './NoteIcon';
 import MoreDiv from './MoreDiv';
 import PropTypes from 'prop-types';
+import DownloadNote from './DownloadNote';
 
 const Data = styled.div`
   display: flex;
@@ -41,6 +42,44 @@ const RightData = styled.div`
 const FlexSpacer = styled.div`
   flex-grow: 1;
 `;
+
+const NonData = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-size: 1.5rem;
+font-style: normal;
+font-weight: 400;
+line-height: normal;
+`;
+
+const TextContainer = styled.div`
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 45.9rem;;
+
+    @media (min-width: 1440px) and (max-width: 1680px) {
+    max-width: 24.5rem;
+  }
+
+  @media (max-width: 1440px) {
+    max-width: 16.9rem;
+  }
+
+`;
+
+const Text = styled.div`
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 5.875rem;
+  
+`;
+
 
 const colorMap = {
   blue: '#6698F5',
@@ -83,14 +122,17 @@ const ItemList = ({
                   alt='즐겨찾기'
                   onClick={() => handleMarkNoteStatus(note)}
                 />
-                <NoteIcon color={colorMap[note.folderColor]} />
+                {note.isDownload ? (
+                  <DownloadNote color={colorMap[note.folderColor]}/>
+                  ) : (
+                    <NoteIcon color={colorMap[note.folderColor]} />
+                  )}
                 <Line />
-                <div
-                  style={{ cursor: 'pointer' }} 
-                  onClick={() => navigate(`/note-editor?folderId=${currentFolderId}&noteId=${note.noteId}`)} 
+                <TextContainer
+                  onClick={() => navigate(`/note-editor?folderId=${currentFolderId}&noteId=${note.noteId}`)}
                 >
                   {note.name}
-                </div>
+                </TextContainer>
               </LeftData>
               <FlexSpacer />
               <RightData>
@@ -112,12 +154,13 @@ const ItemList = ({
                   isActive={activeMoreDiv === index}
                   onMoreClick={() => handleMoreClick(index)}
                   itemId={note.noteId}
+                  color={note.folderColor}
                 />
               </RightData>
             </Data>
           ))
         ) : (
-          <div>No notes found in this folder</div>
+          <NonData>노트 데이터가 없습니다.</NonData>
         )
       ) : (
         // 폴더 목록 UI
@@ -142,7 +185,8 @@ const ItemList = ({
                   <>
                     <FolderIcon fill={colorMap[item.color]} />
                     <Line />
-                    <div
+                    <TextContainer
+                      style={{ cursor: 'pointer' }} 
                       onClick={() => {
                         moveItem(item);
                         if (selectedTab === '폴더' && onFolderClick) {
@@ -151,11 +195,15 @@ const ItemList = ({
                       }}
                     >
                       {item.name}
-                    </div>
+                    </TextContainer>
                   </>
                 ) : (
                   <>
-                    <NoteIcon color={colorMap[item.folderColor]} />
+                    {item.isDownload ? (
+                    <DownloadNote color={colorMap[item.folderColor]}/>
+                    ) : (
+                      <NoteIcon color={colorMap[item.folderColor]} />
+                    )}
                     <Line />
                     <div
                     style={{ cursor: 'pointer' }} 
@@ -169,7 +217,7 @@ const ItemList = ({
               <RightData>
                 <Line />
                 <div>
-                  <div>{selectedTab === '폴더' ? item.getNoteCount : item.folderName}</div>
+                  <Text>{selectedTab === '폴더' ? item.getNoteCount : item.folderName}개</Text>
                   <div>{selectedTab === '폴더' ? '포함된 노트 개수' : '폴더'}</div>
                 </div>
                 <Line />
@@ -185,12 +233,13 @@ const ItemList = ({
                   isActive={activeMoreDiv === index}
                   onMoreClick={() => handleMoreClick(index)}
                   itemId={selectedTab === '폴더' ? item.folderId : item.noteId}
+                  color={item.folderColor}
                 />
               </RightData>
             </Data>
           ))
         ) : (
-          <div>No items found</div>
+          <NonData>데이터가 없습니다.</NonData>
         )
       )}
     </>
