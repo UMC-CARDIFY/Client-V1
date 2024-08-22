@@ -42,6 +42,34 @@ const FlexSpacer = styled.div`
   flex-grow: 1;
 `;
 
+const NonData = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-size: 1.5rem;
+font-style: normal;
+font-weight: 400;
+line-height: normal;
+`;
+
+const TextContainer = styled.div`
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 17.5625rem;
+`;
+
+const Text = styled.div`
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 5.875rem;
+`;
+
+
 const colorMap = {
   blue: '#6698F5',
   ocean: '#5AA6C7',
@@ -85,12 +113,11 @@ const ItemList = ({
                 />
                 <NoteIcon color={colorMap[note.folderColor]} />
                 <Line />
-                <div
-                  style={{ cursor: 'pointer' }} 
-                  onClick={() => navigate(`/note-editor?folderId=${currentFolderId}&noteId=${note.noteId}`)} 
+                <TextContainer
+                  onClick={() => navigate(`/note-editor?folderId=${currentFolderId}&noteId=${note.noteId}`)}
                 >
                   {note.name}
-                </div>
+                </TextContainer>
               </LeftData>
               <FlexSpacer />
               <RightData>
@@ -117,7 +144,7 @@ const ItemList = ({
             </Data>
           ))
         ) : (
-          <div>No notes found in this folder</div>
+          <NonData>노트 데이터가 없습니다.</NonData>
         )
       ) : (
         // 폴더 목록 UI
@@ -142,7 +169,7 @@ const ItemList = ({
                   <>
                     <FolderIcon fill={colorMap[item.color]} />
                     <Line />
-                    <div
+                    <TextContainer
                       style={{ cursor: 'pointer' }} 
                       onClick={() => {
                         moveItem(item);
@@ -152,7 +179,7 @@ const ItemList = ({
                       }}
                     >
                       {item.name}
-                    </div>
+                    </TextContainer>
                   </>
                 ) : (
                   <>
@@ -170,7 +197,7 @@ const ItemList = ({
               <RightData>
                 <Line />
                 <div>
-                  <div>{selectedTab === '폴더' ? item.getNoteCount : item.folderName}</div>
+                  <Text>{selectedTab === '폴더' ? item.getNoteCount : item.folderName}개</Text>
                   <div>{selectedTab === '폴더' ? '포함된 노트 개수' : '폴더'}</div>
                 </div>
                 <Line />
@@ -191,7 +218,7 @@ const ItemList = ({
             </Data>
           ))
         ) : (
-          <div>No items found</div>
+          <NonData>데이터가 없습니다.</NonData>
         )
       )}
     </>
