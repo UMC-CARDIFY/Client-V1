@@ -109,13 +109,13 @@ const SideBox = styled.div`
 `;
 
 const LeftBox = styled(SideBox)`
-  left: calc(-20vw); /* 화면 크기에 따라 위치 조정 */
+  left: calc(-23vw); /* 화면 크기에 따라 위치 조정 */
   transform: rotate(-6deg);
   cursor: ${({ isClickable }) => (isClickable ? 'pointer' : 'default')};
 `;
 
 const RightBox = styled(SideBox)`
-  right: calc(-20vw); /* 화면 크기에 따라 위치 조정 */
+  right: calc(-23vw); /* 화면 크기에 따라 위치 조정 */
   transform: rotate(6deg);
   cursor: ${({ isClickable }) => (isClickable ? 'pointer' : 'default')};
 `;
