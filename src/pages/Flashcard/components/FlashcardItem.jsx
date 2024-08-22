@@ -15,6 +15,7 @@ import StatisticsModal from './StatisticsModal';
 import { colorMap } from './colorMap';
 import deleteCardSet from '../../../api/flashcard/deleteCardSet';
 import getCards from '../../../api/flashcard/getCards';
+import reStudy from '../../../api/flashcard/reStudy';
 
 // 겹쳐진 카드들을 감싸는 컨테이너
 const CardStackContainer = styled.div`
@@ -192,42 +193,38 @@ const MoreOptions = styled.div`
 
 const DeleteButton = styled.div`
   position: absolute;
-  top: 2.38rem;
-  right: 2.81rem;
-  display: ${({ show }) => (show ? 'block' : 'none')};
-  width: 9.1rem;
-  height: 3.125rem;
-  box-sizing: border-box;
-  padding: 1.03125rem 4rem 1.03125rem 1.125rem;
-  border: 1px solid #dedede;
-  background: #fff;
+  top: 1.5rem;
+  right: 3.3rem;
+  display: ${({ show }) => (show ? 'flex' : 'none')};
+justify-content: center;
+align-items: center;
+align-self: stretch;
+border-radius: 0.5rem;
+border: 1px solid var(--grays-gray-5-divider, #E8E8E8);
+background: var(--Grays-White, #FFF);
   cursor: pointer;
   z-index: 10;
-  color: #000;
-  font-family: Inter;
-  font-size: 0.875rem;
-  font-weight: 500;
+color: var(--Grays-Black, #1A1A1A);
+font-family: Pretendard;
+font-size: 0.875rem;
+font-style: normal;
+font-weight: 500;
+line-height: normal;
+width: 8.8125rem;
+height: 3.1875rem;
 `;
 
-const RelearnButton = styled.button`
-  display: ${({ show }) => (show ? 'block' : 'none')};
-  position: absolute;
-  right: 2.81rem;
-  width: 9.1rem;
-  height: 3.125rem;
-    box-sizing: border-box;
-  padding: 1.03125rem 4rem 1.03125rem 1.125rem;
-  border: 1px solid #dedede;
-  background: #fff;
-  cursor: pointer;
-  z-index: 10;
-  color: #000;
-  font-family: Inter;
-  font-size: 0.875rem;
-  font-weight: 500;
+const RelearnButton = styled(DeleteButton)`
+  border-radius: 0.5rem 0.5rem 0rem 0rem;
 `;
 
-const FlashcardItem = ({ noteName, folderName, recentStudyDate, nextStudyDate, studyStatus, color, studyCardSetId, markStatus }) => {
+const DeleteButton2 = styled(DeleteButton)`
+top: 4.69rem;
+border-radius: 0rem 0rem 0.5rem 0.5rem;
+`;
+
+const FlashcardItem = ({ noteName, folderName, recentStudyDate, nextStudyDate, studyStatus, color, 
+  studyCardSetId, markStatus, onDelete }) => {
 
   const [showDeleteButton, setShowDeleteButton] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -264,22 +261,18 @@ const FlashcardItem = ({ noteName, folderName, recentStudyDate, nextStudyDate, s
     setShowModal(true);
   };
 
+  const deleteCard = async () => {
+    try {
+      await deleteCardSet(studyCardSetId);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
   const confirmDelete = () => {
-    // Delete the card
-    const deleteCard = async () => {
-      try {
-        await deleteCardSet(studyCardSetId);
-      } catch (error) {
-        console.error(error);
-      }
-    };
     deleteCard();
-
-    // 다시 list api 호출
-
-
-    console.log('카드가 삭제되었습니다.');
     setShowModal(false);
+    onDelete();
   };
 
   const cancelDelete = () => {
@@ -328,8 +321,13 @@ const FlashcardItem = ({ noteName, folderName, recentStudyDate, nextStudyDate, s
     setShowStatisticsModal(false); 
   };
 
-  const handleRelearn = () => {
-    // 재학습 요청 api 호출
+  const handleRelearn = async() => {
+    try {
+      await reStudy(studyCardSetId);
+    } catch (error) {
+      console.error(error);
+    }
+    
   };
 
   // studyStatus 0:학습전, 1:학습중, 2:영구보관
@@ -355,14 +353,14 @@ const FlashcardItem = ({ noteName, folderName, recentStudyDate, nextStudyDate, s
         <MoreOptions onClick={toggleDeleteButton}>
           <img src={moreoptions} alt="더보기" />
         </MoreOptions>
-        {studyStatus === '영구 보관' ? (
+        {studyStatus === 2 ? (
         <>
           <RelearnButton show={showDeleteButton} onClick={handleRelearn}>
             재학습
           </RelearnButton>
-          <DeleteButton show={showDeleteButton} onClick={handleDelete}>
+          <DeleteButton2 show={showDeleteButton} onClick={handleDelete}>
             카드 삭제
-          </DeleteButton>
+          </DeleteButton2>
         </>
       ) : (
         <DeleteButton show={showDeleteButton} onClick={handleDelete}>
@@ -441,13 +439,5 @@ const FlashcardItem = ({ noteName, folderName, recentStudyDate, nextStudyDate, s
   );
 };
 
-FlashcardItem.propTypes = {
-  noteName: PropTypes.string.isRequired,
-  folderName: PropTypes.string.isRequired,
-  recentStudyDate: PropTypes.string.isRequired,
-  nextStudyDate: PropTypes.string.isRequired,
-  studyStatus: PropTypes.oneOf(['학습 중', '학습 전', '영구 보관']).isRequired,
-  color: PropTypes.string.isRequired,
-};
 
 export default FlashcardItem;

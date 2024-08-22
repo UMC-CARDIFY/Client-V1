@@ -101,16 +101,21 @@ const NoData = styled.div`
 export const Flashcard = () => {
   const [cards, setCards] = useState([]);
 
+  const fetchCards = async () => {
+    const data = await getCards();
+    setCards(data);
+    console.log(data);
+  };
+
   useEffect(() => {
-    const fetchCards = async () => {
-      const data = await getCards();
-      setCards(data);
-      console.log(data);
-    };
     fetchCards();
   }, []);
 
   console.log(cards);
+
+  const handleCardDeleted = () => {
+    fetchCards();
+  };
 
   return (
     <Container>
@@ -148,6 +153,7 @@ export const Flashcard = () => {
                   recentStudyDate={card.recentStudyDate}
                   studyCardSetId={card.studyCardSetId}
                   markStatus={card.markStatus}
+                  onDelete={handleCardDeleted}
                  />
               )
               )) : (
