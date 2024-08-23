@@ -1,5 +1,8 @@
+import { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import DayBar from './DayBar';
+import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { getWeeklyStudyResults } from '../../../../api/dashboard/weeklyStudyResults';
+import PropTypes from 'prop-types';
 
 const WeeklyDiv = styled.div`
   display: flex;
@@ -10,124 +13,227 @@ const WeeklyDiv = styled.div`
   box-shadow: 0px 4px 26.7px 0px rgba(0, 0, 0, 0.02), 0px 10px 60px 0px rgba(0, 74, 162, 0.03);
   width: 58.6875rem;
   height: 22.75rem;
-  @media (max-width: 1680px) and (min-width: 1440px) {
-  width: 41.5rem;
-  height: 20.25em;
-  }
-  @media (max-width: 1440px) and (min-width: 1200px) {
-  width: 38.8125rem; 
-  height: 19.5rem;
-  padding: 1.5rem;
-  }
   box-sizing: border-box;
-  `;
 
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 1.69rem;
-  background: #FFF;
+  @media (max-width: 1680px) and (min-width: 1440px) {
+    width: 41.5rem;
+    height: 20.25rem;
+  }
+
+  @media (max-width: 1440px) and (min-width: 1200px) {
+    width: 38.8125rem;
+    height: 19.5rem;
+    padding: 1.5rem;
+  }
 `;
 
 const Title = styled.div`
-color: var(--Grays-Black, #1A1A1A);
-font-family: Pretendard;
-font-size: 1.125rem;
-font-style: normal;
-font-weight: 500;
-line-height: normal;
+  color: var(--Grays-Black, #1A1A1A);
+  font-family: Pretendard;
+  font-size: 1.125rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
   margin-bottom: 0.44rem;
 `;
 
 const Header = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   width: 100%;
 `;
 
 const GraphTitle = styled.div`
-color: var(--Grays-Gray1, #646464);
-font-family: Pretendard;
-font-size: 0.75rem;
-font-style: normal;
-font-weight: 400;
-line-height: normal;
+  color: var(--Grays-Gray1, #646464);
+  font-family: Pretendard;
+  font-size: 0.9rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  white-space: nowrap; /* 텍스트가 여러 줄로 넘어가지 않도록 고정 */
+  margin-right: 1rem; /* 적당한 간격 부여 */
+
+  @media (max-width: 1440px) and (min-width: 1200px) {
+    flex-grow: 1; /* 이 구간에서 충분히 공간을 차지하도록 */
+  }
 `;
 
-const Legend = styled.div`
+const LegendContainer = styled.div`
   display: flex;
   gap: 2rem;
+  margin-left: 30rem; 
+  flex-shrink: 0; 
+
+  @media (max-width: 1680px) and (min-width: 1440px) {
+    flex-shrink: 0; 
+    margin-left: 14rem; 
+  }
+
+
+  @media (max-width: 1440px) and (min-width: 1200px) {
+    flex-shrink: 0; 
+    margin-left: 10rem; 
+  }
 `;
 
-const LegendItem = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-`;
-
-const LegendBox = styled.div`
-  width: var(--font-size-md, 1rem);
-  height: var(--font-size-md, 1rem);
-  flex-shrink: 0;
-  border-radius: 0.125rem;
-  background: ${props => props.color};
-`;
-
-const LegendLabel = styled.div`
-color: var(--Grays-Gray1, #646464);
-font-family: Pretendard;
-font-size: 0.75rem;
-font-style: normal;
-font-weight: 400;
-line-height: normal;
-`;
-
-const BarGraphContainer = styled.div`
+const ChartWrapper = styled.div`
+  margin-top: 1rem;
   width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
+  height: 80%;
 `;
+
+const CustomTooltipContainer = styled.div`
+  background: rgba(255, 255, 255, 0.80);
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--Main-PrimaryLight2, #CDDDFF);
+  color: var(--Grays-Black, #1A1A1A);
+  font-family: Pretendard;
+  font-size: 0.6875rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+`;
+
+const CustomLegend = () => {
+  return (
+    <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+        <div style={{ width: '1.0625rem', height: '1.0625rem', backgroundColor: '#E3EAF6', borderRadius: '0.25rem' }} />
+        <span style={{ 
+          color: '#646464', 
+          fontSize: '0.75rem', 
+          fontWeight: 500, 
+          fontFamily: 'Pretendard', 
+          lineHeight: 'normal', 
+          fontStyle: 'normal' 
+        }}>
+          저번주
+        </span>
+      </div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+        <div style={{ width: '1.0625rem', height: '1.0625rem', backgroundColor: '#6A9CFC', borderRadius: '0.25rem' }} />
+        <span style={{ 
+          color: '#646464', 
+          fontSize: '0.75rem', 
+          fontWeight: 500, 
+          fontFamily: 'Pretendard', 
+          lineHeight: 'normal', 
+          fontStyle: 'normal' 
+        }}>
+          이번주
+        </span>
+      </div>
+    </div>
+  );
+};
+
+const CustomTooltip = ({ active, payload }) => {
+  if (active && payload && payload.length) {
+    const lastWeek = payload[0]?.payload?.lastWeek;
+    const thisWeek = payload[1]?.payload?.thisWeek;
+    
+    return (
+      <CustomTooltipContainer>
+        <div>저번주: {lastWeek}</div>
+        <div>이번주: {thisWeek}</div>
+      </CustomTooltipContainer>
+    );
+  }
+  return null;
+};
+
+CustomTooltip.propTypes = {
+  active: PropTypes.bool,
+  payload: PropTypes.arrayOf(
+    PropTypes.shape({
+      payload: PropTypes.shape({
+        lastWeek: PropTypes.number,
+        thisWeek: PropTypes.number,
+      }),
+    })
+  ),
+};
 
 const WeeklyStudyResults = () => {
-  const data = [
-    { day: '일', currentWeekHeight: '134.328' },
-    { day: '월', currentWeekHeight: '120' },
-    { day: '화', currentWeekHeight: '140' },
-    { day: '수', currentWeekHeight: '160' },
-    { day: '목', currentWeekHeight: '100' },
-    { day: '금', currentWeekHeight: '110' },
-    { day: '토', currentWeekHeight: '130' },
-  ];
+  const [thisWeekCardCount, setThisWeekCardCount] = useState(0);
+  const [graphData, setGraphData] = useState([]);
+  const [animationKey, setAnimationKey] = useState(0); // 애니메이션 트리거를 위한 키
+
+  useEffect(() => {
+    const fetchWeeklyResults = async () => {
+      try {
+        const data = await getWeeklyStudyResults();
+
+        const formattedData = [
+          { day: '일', lastWeek: data.dayOfLastWeekCard[7] || 0, thisWeek: data.dayOfThisWeekCard[7] || 0 },
+          { day: '월', lastWeek: data.dayOfLastWeekCard[1] || 0, thisWeek: data.dayOfThisWeekCard[1] || 0 },
+          { day: '화', lastWeek: data.dayOfLastWeekCard[2] || 0, thisWeek: data.dayOfThisWeekCard[2] || 0 },
+          { day: '수', lastWeek: data.dayOfLastWeekCard[3] || 0, thisWeek: data.dayOfThisWeekCard[3] || 0 },
+          { day: '목', lastWeek: data.dayOfLastWeekCard[4] || 0, thisWeek: data.dayOfThisWeekCard[4] || 0 },
+          { day: '금', lastWeek: data.dayOfLastWeekCard[5] || 0, thisWeek: data.dayOfThisWeekCard[5] || 0 },
+          { day: '토', lastWeek: data.dayOfLastWeekCard[6] || 0, thisWeek: data.dayOfThisWeekCard[6] || 0 },
+        ];
+
+        setThisWeekCardCount(data.thisWeekCardCount);
+        setGraphData(formattedData);
+        setAnimationKey((prevKey) => prevKey + 1); // 데이터를 가져온 후 애니메이션 트리거
+      } catch (error) {
+        console.error('Error fetching weekly study results:', error);
+      }
+    };
+
+    fetchWeeklyResults();
+  }, []);
 
   return (
     <WeeklyDiv>
       <Title>주간 학습 결과</Title>
-      <Container>
-        <Header>
-          <GraphTitle>이번 주에 XX개의 카드를 학습했습니다.</GraphTitle>
-          <Legend>
-            <LegendItem>
-              <LegendBox color="#E3EAF6" />
-              <LegendLabel>저번주</LegendLabel>
-            </LegendItem>
-            <LegendItem>
-              <LegendBox color="#6A9CFC" />
-              <LegendLabel>이번주</LegendLabel>
-            </LegendItem>
-          </Legend>
-        </Header>
-        <BarGraphContainer>
-          {data.map((item, index) => (
-            <DayBar
-              key={index}
-              day={item.day}
-              currentWeekHeight={item.currentWeekHeight}
+      <Header>
+        <GraphTitle>이번 주에 {thisWeekCardCount}개의 카드를 학습했습니다.</GraphTitle>
+        <LegendContainer>
+          <CustomLegend />
+        </LegendContainer>
+      </Header>
+      <ChartWrapper>
+        <ResponsiveContainer>
+          <BarChart key={animationKey} data={graphData} barGap={16} barCategoryGap="15%">
+            <XAxis
+              dataKey="day"
+              axisLine={false}
+              tickLine={false}
+              tick={{
+                fill: '#646464',
+                fontSize: '0.875rem',
+                fontFamily: 'Pretendard',
+                fontWeight: 500,
+              }}
+              tickMargin={16}
             />
-          ))}
-        </BarGraphContainer>
-      </Container>
+            <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255, 255, 255, 0.3)' }} />
+            <Bar
+              dataKey="lastWeek"
+              fill="#E3EAF6"
+              barSize={30}
+              radius={[8, 8, 2, 2]}
+              minPointSize={5}
+              isAnimationActive={true}
+              animationDuration={1000}
+              animationBegin={0} // 애니메이션 시작 시간
+            />
+            <Bar
+              dataKey="thisWeek"
+              fill="#6A9CFC"
+              barSize={30}
+              radius={[8, 8, 2, 2]}
+              minPointSize={5}
+              isAnimationActive={true}
+              animationDuration={1000}
+              animationBegin={0} // 애니메이션 시작 시간
+            />
+          </BarChart>
+        </ResponsiveContainer>
+      </ChartWrapper>
     </WeeklyDiv>
   );
 };
