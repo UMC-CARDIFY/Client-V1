@@ -11,6 +11,7 @@ import checkIconsvg from '../../assets/checkIconsvg.svg';
 import { useState, useEffect } from 'react';
 import { getCategory } from '../../api/library/getCategory';
 import backButton from '../../assets/backButton.svg';
+import CategoryCheck from './components/CategoryCheck';
 
 const BackButton = styled.div` 
 width: 2.25rem;
@@ -387,9 +388,9 @@ export const Library = () => {
                       {categories.length > 0 ? (
                         categories.map((category, index) => (
                           <DropdownItem key={index} onClick={() => handleCategorySelect(category)}>
-                            <CustomCheckbox
+                            <CategoryCheck
+                            isSelected={selectedCategories.includes(category)}
                               checked={selectedCategories.includes(category)}
-                              onClick={() => handleCategorySelect(category)}
                             />
                             {category}
                           </DropdownItem>
