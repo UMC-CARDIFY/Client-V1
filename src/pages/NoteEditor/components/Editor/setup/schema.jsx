@@ -76,8 +76,8 @@ const mySchema = new Schema({
       group: 'block',
       content: 'inline*',  // 이미지 카드에 텍스트가 포함될 수 있습니다.
       attrs: {
-        src: { default: '' },
-        alt: { default: '' },
+        //src: { default: '' },
+        //alt: { default: '' },
         baseImageWidth: { default: 0 },
         baseImageHeight: { default: 0 },
         overlays: { default: [] },  // 사각형 영역을 나타내는 데이터
@@ -87,8 +87,8 @@ const mySchema = new Schema({
         getAttrs(dom) {
           const img = dom.querySelector('img');
           return {
-            src: img.getAttribute('src'),
-            alt: img.getAttribute('alt'),
+            //src: img.getAttribute('src'),
+            //alt: img.getAttribute('alt'),
             baseImageWidth: parseInt(dom.getAttribute('data-base-image-width'), 10),
             baseImageHeight: parseInt(dom.getAttribute('data-base-image-height'), 10),
             overlays: JSON.parse(dom.getAttribute('data-overlays') || '[]'), // 사각형 데이터 파싱

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import imageIcon from '../../../../assets/images.png';
 import { getImageCard, uploadImageCard } from '../../../../api/editor/card/imagecard';
 import { useSaveContext } from '../SaveContext';
-import { getNoteIdFromUrl } from '../../../../api/noteeditor/imageCard/getNote';
+import { addImageCard } from '../../../../api/noteeditor/imageCard/addImageCard';
 
 const CardContainer = styled.div`
   width: 100%;
@@ -127,7 +127,8 @@ const ImageCardContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: ${({ imageWidth }) => `${imageWidth}px` || 'auto'}; /* 이미지 width로 설정 */
+  width: ${({ imageWidth }) => `${imageWidth}px`}; /* 이미지 width로 설정 */
+
   border-radius: 0.5rem;
   border: 1px solid var(--grays-gray-5-divider, #E8E8E8);
 `;
@@ -144,17 +145,17 @@ const Rectangle = styled.div`
   z-index: 10;
 `;
 
-const EditButton = styled.div`
+const DeleteButton = styled.div`
   position: absolute;
   top: 0.5rem;
   right: 0.5rem;
   display: inline-flex;
-  padding: 0.4rem 0.725rem 0.4rem 0.475rem;
+  padding: 0.5rem;
   align-items: center;
-  gap: 0.375rem;
+
   border-radius: 0.25rem;
   border: 1px solid var(--grays-gray-5-divider, #E8E8E8);
-  background: var(--Grays-White, #FFF);
+  background: rgba(255, 255, 255, 0.5); /* 70% 투명 */
   color: var(--Main-Primary, #0F62FE);
   font-family: Pretendard;
   font-size: 0.875rem;
@@ -164,22 +165,11 @@ const EditButton = styled.div`
   cursor: pointer;
 `;
 
-const ImageCard = () => {
-
-    // Get noteId from URL
-    const noteId = getNoteIdFromUrl();
-    console.log('Extracted noteId:', noteId);
-
-    useEffect(() => {
-        if (noteId) {
-            setCurrentNoteId(parseInt(noteId, 10));
-        }
-    }, [noteId]);
-
+const ImageCard = (props) => {
   const fileInputRef = useRef(null);
   const canvasRef = useRef(null);
   const [image, setImage] = useState(null);
-  const [rectangles, setRectangles] = useState([]);
+ // const [rectangles, setRectangles] = useState([]);
   const [isDrawing, setIsDrawing] = useState(false);
   const [newRect, setNewRect] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -189,11 +179,25 @@ const ImageCard = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [scale, setScale] = useState({ x: 1, y: 1 });
   
-  const [imageWidth, setImageWidth] = useState(0); // 이미지 width 상태
+  //const [imageWidth, setImageWidth] = useState(0); // 이미지 width 상태
   const [savedImageCard, setSavedImageCard] = useState(null); // Store the saved image card
-
-  const [currentNoteId, setCurrentNoteId] =useState(null);
+  const [rectangles, setRectangles] = useState(props.overlays || []);
+  const [imageWidth, setImageWidth] = useState(props.baseImageWidth || 0);
+  const [imageHeight, setImageHeight] = useState(props.baseImageHeight || 0);
   //const { setSaveImageCard } = useSaveContext(); // Context에서 setSaveImageCard 함수 가져오기
+
+  useEffect(() => {
+    if (props.src) {
+      const img = new Image();
+      img.src = props.src;
+      img.onload = () => {
+        setImage(img);
+        setImageWidth(props.baseImageWidth);
+        setImageHeight(props.baseImageHeight);
+        setRectangles(props.overlays || []);
+      };
+    }
+  }, [props.src, props.baseImageWidth, props.baseImageHeight, props.overlays]);
 
   const handleCardClick = () => {
     fileInputRef.current.click();
@@ -204,13 +208,13 @@ const ImageCard = () => {
     setIsLoaded(false);
   };
 
-  console.log(noteId)
-
-
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
       setImageFile(file);
+
+      //props.updateCard && props.updateCard({ imageFile: file });  // 부모 컴포넌트로 파일 전달
+
       const reader = new FileReader();
       reader.onload = (e) => {
         const img = new Image();
@@ -286,78 +290,40 @@ const handleMouseMove = (event) => {
 
   const handleSubmit = async () => {
     if (!imageFile || rectangles.length === 0) return;
-  
-    // Canvas 생성
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d");
-  
-    // 원본 이미지 크기 설정
-    canvas.width = image.width;
-    canvas.height = image.height;
-  
-    // 이미지 로드
-    const img = new Image();
-    img.src = URL.createObjectURL(imageFile);
-  
-    img.onload = () => {
-      // 이미지 그리기
-      ctx.drawImage(img, 0, 0, image.width, image.height);
-  
-      // 오버레이 그리기
-      rectangles.forEach(rect => {
-        ctx.strokeStyle = "red"; // 사각형 색상 (원하는 색상으로 변경)
-        ctx.lineWidth = 2; // 선 두께
-        ctx.strokeRect(
-          rect.x / scale.x,
-          rect.y / scale.y,
-          rect.width / scale.x,
-          rect.height / scale.y
-        );
-      });
-  
-      // 캔버스를 이미지로 변환
-      canvas.toBlob(async (blob) => {
-        const finalImageFile = new File([blob], "image_with_overlay.png", { type: "image/png" });
-  
-        // MIME 타입 확인
-        console.log("Final Image MIME Type:", finalImageFile.type);
-  
-        // finalImageFile이 이미지인지 확인
-        if (finalImageFile.type.startsWith("image/")) {
-          console.log("The file is an image.");
-  
-          // 이미지 카드 데이터를 생성
-          const imageCard = {
-            noteId: currentNoteId,
-            baseImageWidth: image.width,
-            baseImageHeight: image.height,
-            overlays: rectangles.map(rect => ({
-              positionOfX: rect.x / scale.x,
-              positionOfY: rect.y / scale.y,
-              width: rect.width / scale.x,
-              height: rect.height / scale.y,
-            })),
-          };
-  
-          try {
-            const upload = await uploadImageCard(finalImageFile, imageCard);
-            console.log(upload);
-            setIsModalOpen(false); // 모달 닫기
-            setIsCreated(true); // 이미지 카드 생성
-          } catch (error) {
-            console.log(error)
-            alert('이미지 카드 저장에 실패했습니다.');
-          }
-        } else {
-          console.error("The file is not an image.");
-          alert("생성된 파일이 이미지가 아닙니다.");
-        }
-      }, "image/png");
+
+    const imageCard = {
+      baseImageWidth: image.width, // 저장시의 원본 이미지 크기
+      baseImageHeight: image.height,
+      overlays: rectangles.map(rect => ({
+        positionOfX: rect.x / scale.x,
+        positionOfY: rect.y / scale.y,
+        width: rect.width / scale.x,
+        height: rect.height / scale.y,
+      })),
     };
-  };
-  
-  
-  
+    console.log(imageCard);
+    try {
+      // addImageCard 호출
+      const upload = await addImageCard(imageFile, imageCard);
+      console.log('Upload successful:', upload);
+
+    // prosemirror 노드의 attrs 업데이트
+    if (props.updateCard) {
+      props.updateCard({
+        src: upload.imageUrl, // 업로드된 이미지 URL
+        baseImageWidth: imageCard.baseImageWidth,
+        baseImageHeight: imageCard.baseImageHeight,
+        overlays: imageCard.overlays,
+      });
+    }
+
+      setIsModalOpen(false); // 모달 닫기
+      setIsCreated(true); // 이미지 카드 생성 완료 상태
+    } catch (error) {
+      alert('이미지 카드 저장에 실패했습니다.');
+      console.error(error);
+    }
+};
 
     // 저장된 이미지 카드 불러오기
     const getImage = () => {
@@ -440,7 +406,9 @@ const handleMouseMove = (event) => {
         }
 
         // 이 부분에서 이미지의 스케일을 설정하고, 이 값을 나중에 사용해야 함
-        setScale({ x: canvasWidth / image.width, y: canvasHeight / image.height });
+        //setScale({ x: canvasWidth / image.width, y: canvasHeight / image.height });
+    // 원본 이미지 크기와 동일하게 설정
+    setScale({ x: 1, y: 1 });
 
         canvas.width = image.width; // 캔버스 실제 크기
         canvas.height = image.height;
@@ -475,17 +443,26 @@ const handleMouseMove = (event) => {
     }
   }, [rectangles, newRect]);
 
+const deleteNode = () => {
+  const { view, getPos } = props;
+  const pos = getPos(); // 현재 노드의 시작 위치를 가져옵니다.
+  
+  // 노드의 위치가 올바르게 계산되었는지 확인
+  const resolvedPos = view.state.doc.resolve(pos);
+  const nodeSize = resolvedPos.nodeAfter.nodeSize;
+
+  const tr = view.state.tr.deleteRange(pos, pos + nodeSize);
+  view.dispatch(tr);
+};
+
 
   return (
     <>
       { /*<button onClick={() => getImage(12)}>이미지 카드 불러오기(test)</button>*/ }
       {isCreated && image ? (
-        <ImageCardContainer>
+      <ImageCardContainer imageWidth={imageWidth} imageHeight={imageHeight}>
           <ImageCardImage src={image.src} alt="Image" />
-          <EditButton onClick={() => getImage(12)}><svg xmlns="http://www.w3.org/2000/svg" width="23" height="17" viewBox="0 0 23 17" fill="none">
-  <path d="M11.2841 3.6369L10.842 3.1948L9.07361 1.42639L2 8.5L9.07361 15.5736L10.842 13.8052L11.2841 13.3631" stroke="#6A9CFC" strokeWidth="1.5"/>
-  <rect x="6.85352" y="8.5" width="10.0036" height="10.0036" transform="rotate(-45 6.85352 8.5)" stroke="#0F62FE" strokeWidth="1.5"/>
-</svg>카드 편집</EditButton>
+        <DeleteButton onClick={deleteNode}>X</DeleteButton>
           {rectangles.map((rect, index) => (
             <Rectangle
               key={index}
