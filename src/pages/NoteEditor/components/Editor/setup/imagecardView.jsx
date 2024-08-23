@@ -15,8 +15,8 @@ class ImageCardView {
     this.root = createRoot(this.dom);
     this.root.render(
       <ImageCard 
-        src={node.attrs.src}
-        alt={node.attrs.alt}
+        //src={node.attrs.src}
+        //alt={node.attrs.alt}
         overlays={node.attrs.overlays}
         baseImageWidth={node.attrs.baseImageWidth}
         baseImageHeight={node.attrs.baseImageHeight}
@@ -44,8 +44,8 @@ class ImageCardView {
       this.node = node;
       this.root.render(
         <ImageCard 
-          src={node.attrs.src}
-          alt={node.attrs.alt}
+          //src={node.attrs.src}
+          //alt={node.attrs.alt}
           overlays={node.attrs.overlays}
           baseImageWidth={node.attrs.baseImageWidth}
           baseImageHeight={node.attrs.baseImageHeight}

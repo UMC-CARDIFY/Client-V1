@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import imageIcon from '../../../../assets/images.png';
 import { getImageCard, uploadImageCard } from '../../../../api/editor/card/imagecard';
 import { useSaveContext } from '../SaveContext';
+import { addImageCard } from '../../../../api/noteeditor/imageCard/addImageCard';
 
 const CardContainer = styled.div`
   width: 100%;
@@ -163,11 +164,11 @@ const EditButton = styled.div`
   cursor: pointer;
 `;
 
-const ImageCard = () => {
+const ImageCard = (props) => {
   const fileInputRef = useRef(null);
   const canvasRef = useRef(null);
   const [image, setImage] = useState(null);
-  const [rectangles, setRectangles] = useState([]);
+ // const [rectangles, setRectangles] = useState([]);
   const [isDrawing, setIsDrawing] = useState(false);
   const [newRect, setNewRect] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -177,10 +178,25 @@ const ImageCard = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [scale, setScale] = useState({ x: 1, y: 1 });
   
-  const [imageWidth, setImageWidth] = useState(0); // 이미지 width 상태
+  //const [imageWidth, setImageWidth] = useState(0); // 이미지 width 상태
   const [savedImageCard, setSavedImageCard] = useState(null); // Store the saved image card
-
+  const [rectangles, setRectangles] = useState(props.overlays || []);
+  const [imageWidth, setImageWidth] = useState(props.baseImageWidth || 0);
+  const [imageHeight, setImageHeight] = useState(props.baseImageHeight || 0);
   //const { setSaveImageCard } = useSaveContext(); // Context에서 setSaveImageCard 함수 가져오기
+
+  useEffect(() => {
+    if (props.src) {
+      const img = new Image();
+      img.src = props.src;
+      img.onload = () => {
+        setImage(img);
+        setImageWidth(props.baseImageWidth);
+        setImageHeight(props.baseImageHeight);
+        setRectangles(props.overlays || []);
+      };
+    }
+  }, [props.src, props.baseImageWidth, props.baseImageHeight, props.overlays]);
 
   const handleCardClick = () => {
     fileInputRef.current.click();
@@ -195,6 +211,9 @@ const ImageCard = () => {
     const file = event.target.files[0];
     if (file) {
       setImageFile(file);
+
+      props.updateCard && props.updateCard({ imageFile: file });  // 부모 컴포넌트로 파일 전달
+
       const reader = new FileReader();
       reader.onload = (e) => {
         const img = new Image();
@@ -282,36 +301,29 @@ const handleMouseMove = (event) => {
         height: rect.height / scale.y,
       })),
     };
-
-    setSavedImageCard({ imageFile, imageCard });
-    setIsModalOpen(false); // Close modal
-    setIsCreated(true); // Image card created
-
-    // 저장 기능을 Context에 등록
-    setSaveImageCard(() => async () => {
-      try {
-        const upload = await uploadImageCard(imageFile, imageCard);
-        console.log(upload);
-      } catch (error) {
-        alert('이미지 카드 저장에 실패했습니다.');
-      }
-    });
-
-    setIsModalOpen(false); // 모달 닫기
-    setIsCreated(true); // 이미지 카드 생성
-
-    /*
+    console.log(imageCard);
     try {
-      const upload = await uploadImageCard(imageFile, imageCard);
-      handleModalClose();
-      setIsCreated(true);
-      console.log(upload);
+      // addImageCard 호출
+      const upload = await addImageCard(imageFile, imageCard);
+      console.log('Upload successful:', upload);
+
+    // prosemirror 노드의 attrs 업데이트
+    if (props.updateCard) {
+      props.updateCard({
+        src: upload.imageUrl, // 업로드된 이미지 URL
+        baseImageWidth: imageCard.baseImageWidth,
+        baseImageHeight: imageCard.baseImageHeight,
+        overlays: imageCard.overlays,
+      });
     }
-    catch (error) {
+
+      setIsModalOpen(false); // 모달 닫기
+      setIsCreated(true); // 이미지 카드 생성 완료 상태
+    } catch (error) {
       alert('이미지 카드 저장에 실패했습니다.');
+      console.error(error);
     }
-      */
-  };
+};
 
     // 저장된 이미지 카드 불러오기
     const getImage = () => {

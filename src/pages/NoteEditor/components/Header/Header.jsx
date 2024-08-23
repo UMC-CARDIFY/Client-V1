@@ -100,6 +100,7 @@ const Header = ({ isMenuCollapsed, toggleMenuBar, editorView = null, selectedFor
   const kebabMenuRef = useRef(null);
   const shareMenuRef = useRef(null);
   const { isUpload } = noteData; // isUpload 상태 가져오기
+  const [imageCardData, setImageCardData] = useState(null); // 이미지 카드 데이터를 저장할 상태
 
   const handleKebabClick = () => {
     setIsKebabMenuOpen(!isKebabMenuOpen);
@@ -138,18 +139,6 @@ const Header = ({ isMenuCollapsed, toggleMenuBar, editorView = null, selectedFor
     }
   };
 
-  /*이미지 카드 저장
-  const { saveImageCard } = useSaveContext(); // Context에서 saveImageCard 함수 가져오기
-
-  const handleSave = () => {
-    if (saveImageCard) { // 가림판카드가 저장되어야 하는 경우
-      saveImageCard(); // ImageCard의 saveImageCard 함수 호출
-    } else {
-      //alert('저장할 데이터가 없습니다.');
-    }
-  };
-  */
-
   // 노트 저장
   const handleSave = async () => {
     if (!editorView || !editorView.state) {
@@ -161,12 +150,16 @@ const Header = ({ isMenuCollapsed, toggleMenuBar, editorView = null, selectedFor
       title: document.querySelector('div[contentEditable=true]').innerText || '제목없음',
       content: noteData.noteContent,  // 최신 상태의 noteContent를 가져옴
     };
+
+    // 전역 상태에서 imageFile 가져오기
+    const imageFile = noteData.imageFile;
+
     //console.log(noteData.noteContent);
 
     // ProseMirror의 상태를 JSON으로 직렬화하여 로그로 출력
     //console.log("Document JSON:", JSON.stringify(editorView.state.doc.toJSON(), null, 2));
     console.log("Note Data to Save:", noteDataToSave);
-
+    console.log("이미지파일? ", imageCardData?.imageFile);
     const token = localStorage.getItem('accessToken');
     if (!token) {
         alert('토큰이 존재하지 않습니다. 다시 로그인해주세요.');
@@ -178,6 +171,7 @@ const Header = ({ isMenuCollapsed, toggleMenuBar, editorView = null, selectedFor
             currentNoteId,
             noteDataToSave.title,
             noteDataToSave.content,
+            imageCardData?.imageFile,  // imageCardData에서 imageFile을 가져와 전달
             token
         );
         if (response.isSuccess) {
