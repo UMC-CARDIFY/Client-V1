@@ -44,7 +44,7 @@ const AddTextBlockButton = styled.button`
   }
 `;
 
-const ToolBar = ({ addCard, addHeading, toggleBold, onSelectColor, viewRef, onSelectHighlightColor, isCardSelected, onAddTextBlock }) => {
+const ToolBar = ({ addCard, addHeading, toggleBold, onSelectColor, viewRef, onSelectHighlightColor, onAddTextBlock }) => {
   const [activeDropDown, setActiveDropDown] = useState(null);
   const dropDownRef = useRef(null);
 
@@ -94,11 +94,9 @@ const ToolBar = ({ addCard, addHeading, toggleBold, onSelectColor, viewRef, onSe
         onToggle={() => handleToggleDropDown('highlightColor')}
       />
       <Divider />
-      {isCardSelected && (
-        <AddTextBlockButton onClick={onAddTextBlock}>
-          텍스트 블록 추가
-        </AddTextBlockButton>
-      )}
+      <AddTextBlockButton onClick={onAddTextBlock}>
+        텍스트 블록 추가
+      </AddTextBlockButton>
       <MoreOptionsButton />
     </ToolBarContainer>
   );
@@ -111,7 +109,6 @@ ToolBar.propTypes = {
   onSelectColor: PropTypes.func.isRequired,
   onSelectHighlightColor: PropTypes.func.isRequired,
   onAddTextBlock: PropTypes.func.isRequired,
-  isCardSelected: PropTypes.bool.isRequired,  // 새로운 prop 추가
   viewRef: PropTypes.shape({
     current: PropTypes.object,
   }).isRequired,

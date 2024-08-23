@@ -14,7 +14,7 @@ const MoreOptionsContainer = styled.div`
     z-index: 10;
     top: 2.5rem;
     right: 0;
-    top: -20.5rem;
+    top: -18.25rem;
 `;
 
 const MoreOptionsItem = styled.div`
