@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import imageIcon from '../../../../assets/images.png';
 import { getImageCard, uploadImageCard } from '../../../../api/editor/card/imagecard';
 import { useSaveContext } from '../SaveContext';
+import { getNoteIdFromUrl } from '../../../../api/noteeditor/imageCard/getNote';
 
 const CardContainer = styled.div`
   width: 100%;
@@ -164,6 +165,17 @@ const EditButton = styled.div`
 `;
 
 const ImageCard = () => {
+
+    // Get noteId from URL
+    const noteId = getNoteIdFromUrl();
+    console.log('Extracted noteId:', noteId);
+
+    useEffect(() => {
+        if (noteId) {
+            setCurrentNoteId(parseInt(noteId, 10));
+        }
+    }, [noteId]);
+
   const fileInputRef = useRef(null);
   const canvasRef = useRef(null);
   const [image, setImage] = useState(null);
@@ -180,6 +192,7 @@ const ImageCard = () => {
   const [imageWidth, setImageWidth] = useState(0); // 이미지 width 상태
   const [savedImageCard, setSavedImageCard] = useState(null); // Store the saved image card
 
+  const [currentNoteId, setCurrentNoteId] =useState(null);
   //const { setSaveImageCard } = useSaveContext(); // Context에서 setSaveImageCard 함수 가져오기
 
   const handleCardClick = () => {
@@ -190,6 +203,9 @@ const ImageCard = () => {
     setIsModalOpen(false);
     setIsLoaded(false);
   };
+
+  console.log(noteId)
+
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -268,50 +284,80 @@ const handleMouseMove = (event) => {
     setRectangles((prevRectangles) => prevRectangles.slice(0, -1));
   };
 
-  // 이미지 카드 저장하기
   const handleSubmit = async () => {
     if (!imageFile || rectangles.length === 0) return;
-
-    const imageCard = {
-      baseImageWidth: image.width, // 저장시의 원본 이미지 크기
-      baseImageHeight: image.height,
-      overlays: rectangles.map(rect => ({
-        positionOfX: rect.x / scale.x,
-        positionOfY: rect.y / scale.y,
-        width: rect.width / scale.x,
-        height: rect.height / scale.y,
-      })),
+  
+    // Canvas 생성
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+  
+    // 원본 이미지 크기 설정
+    canvas.width = image.width;
+    canvas.height = image.height;
+  
+    // 이미지 로드
+    const img = new Image();
+    img.src = URL.createObjectURL(imageFile);
+  
+    img.onload = () => {
+      // 이미지 그리기
+      ctx.drawImage(img, 0, 0, image.width, image.height);
+  
+      // 오버레이 그리기
+      rectangles.forEach(rect => {
+        ctx.strokeStyle = "red"; // 사각형 색상 (원하는 색상으로 변경)
+        ctx.lineWidth = 2; // 선 두께
+        ctx.strokeRect(
+          rect.x / scale.x,
+          rect.y / scale.y,
+          rect.width / scale.x,
+          rect.height / scale.y
+        );
+      });
+  
+      // 캔버스를 이미지로 변환
+      canvas.toBlob(async (blob) => {
+        const finalImageFile = new File([blob], "image_with_overlay.png", { type: "image/png" });
+  
+        // MIME 타입 확인
+        console.log("Final Image MIME Type:", finalImageFile.type);
+  
+        // finalImageFile이 이미지인지 확인
+        if (finalImageFile.type.startsWith("image/")) {
+          console.log("The file is an image.");
+  
+          // 이미지 카드 데이터를 생성
+          const imageCard = {
+            noteId: currentNoteId,
+            baseImageWidth: image.width,
+            baseImageHeight: image.height,
+            overlays: rectangles.map(rect => ({
+              positionOfX: rect.x / scale.x,
+              positionOfY: rect.y / scale.y,
+              width: rect.width / scale.x,
+              height: rect.height / scale.y,
+            })),
+          };
+  
+          try {
+            const upload = await uploadImageCard(finalImageFile, imageCard);
+            console.log(upload);
+            setIsModalOpen(false); // 모달 닫기
+            setIsCreated(true); // 이미지 카드 생성
+          } catch (error) {
+            console.log(error)
+            alert('이미지 카드 저장에 실패했습니다.');
+          }
+        } else {
+          console.error("The file is not an image.");
+          alert("생성된 파일이 이미지가 아닙니다.");
+        }
+      }, "image/png");
     };
-
-    setSavedImageCard({ imageFile, imageCard });
-    setIsModalOpen(false); // Close modal
-    setIsCreated(true); // Image card created
-
-    // 저장 기능을 Context에 등록
-    setSaveImageCard(() => async () => {
-      try {
-        const upload = await uploadImageCard(imageFile, imageCard);
-        console.log(upload);
-      } catch (error) {
-        alert('이미지 카드 저장에 실패했습니다.');
-      }
-    });
-
-    setIsModalOpen(false); // 모달 닫기
-    setIsCreated(true); // 이미지 카드 생성
-
-    /*
-    try {
-      const upload = await uploadImageCard(imageFile, imageCard);
-      handleModalClose();
-      setIsCreated(true);
-      console.log(upload);
-    }
-    catch (error) {
-      alert('이미지 카드 저장에 실패했습니다.');
-    }
-      */
   };
+  
+  
+  
 
     // 저장된 이미지 카드 불러오기
     const getImage = () => {
