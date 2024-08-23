@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { intervalToDuration } from 'date-fns';
+import { useNavigate } from 'react-router-dom';
 
 const CardContainer = styled.div`
   display: flex;
@@ -13,10 +13,13 @@ const CardContainer = styled.div`
   width: 100%;
   gap: 1.5rem;
   border-radius: 0.5rem;
-  background: linear-gradient(90deg, #F6F6F6 0%, #F0F0F0 100%);
+  background: ${({ isDue }) =>
+    isDue
+      ? 'var(--Etc-Blue-Gradiant, linear-gradient(90deg, #DCE8FF 0%, #C0D6FF 100%))'
+      : 'linear-gradient(90deg, #F6F6F6 0%, #F0F0F0 100%)'};
   box-sizing: border-box;
+  cursor: ${({ isDue }) => (isDue ? 'pointer' : 'default')};
 `;
-
 
 const CardDetails = styled.div`
   display: flex;
@@ -24,7 +27,7 @@ const CardDetails = styled.div`
 `;
 
 const CardTitle = styled.div`
-  color: var(--Grays-Gray2, #767676);
+  color: ${({ isDue }) => (isDue ? 'var(--Grays-Black, #1A1A1A)' : 'var(--Grays-Gray2, #767676)')};
   font-family: Pretendard;
   font-size: 0.875rem;
   font-style: normal;
@@ -41,6 +44,10 @@ const CardSubtitle = styled.div`
   line-height: normal;
 `;
 
+const StyledIcon = styled.svg`
+  opacity: ${({ isDue }) => (isDue ? 1 : 0.6)};
+`;
+
 const colorMap = {
   blue: '#6698F5',
   ocean: '#5AA6C7',
@@ -54,41 +61,62 @@ const colorMap = {
   rose: '#ED83B1',
 };
 
-
-const calculateTimeLeft = (remainTime) => {
-  const now = new Date();
-  const targetDate = new Date(remainTime);
-  const duration = intervalToDuration({ start: now, end: targetDate });
-
-  if (duration.years > 0) {
-    return `${String(duration.years).padStart(2, '0')}년 ${String(duration.months).padStart(2, '0')}달 후`;
-  } else if (duration.months > 0) {
-    return `${String(duration.months).padStart(2, '0')}달 ${String(duration.days).padStart(2, '0')}일 후`;
-  } else if (duration.days > 0) {
-    return `${String(duration.days).padStart(2, '0')}일 ${String(duration.hours).padStart(2, '0')}시간 후`;
-  } else if (duration.hours > 0) {
-    return `${String(duration.hours).padStart(2, '0')}시간 ${String(duration.minutes).padStart(2, '0')}분 후`;
-  } else {
-    return `${String(duration.minutes).padStart(2, '0')}분 후`;
+const formatRemainTime = (remainTime) => {
+  // remainTime이 음수이거나 0일 때 '학습하기'로 표시
+  if (parseInt(remainTime) <= 0) {
+    return '학습하기';
   }
+
+  // 숫자가 아니라면 그대로 반환하고 '후'를 붙임
+  return `${remainTime} 후`;
 };
 
+
 const StudyCard = ({ card }) => {
-  const iconColor = colorMap[card.color] || '#A9A9A9'; 
+  const navigate = useNavigate();
+  const iconColor = colorMap[card.color] || '#A9A9A9';
+  
+  // remainTime이 '학습하기'로 설정된 경우 학습 가능
+  const isDue = formatRemainTime(card.remainTime) === '학습하기';
+
+  const handleClick = () => {
+    if (isDue) {
+      navigate('/flashcard');
+    }
+  };
 
   return (
-    <CardContainer>
-      {/* SVG 직접 사용 */}
-      <svg xmlns="http://www.w3.org/2000/svg" width="29" height="24" viewBox="0 0 29 24" fill="none">
-        <path d="M6.87535 5.73529L7.03417 4.90523L7.66943 1.58496L27.5001 5.17686L24.9591 18.4579L22.4802 18.0089L21.8605 17.8967" 
-          stroke={iconColor} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
-        <rect x="1.20215" y="6.65625" width="20.1024" height="15.5337" 
-          stroke={iconColor} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
-        <rect x="1.20215" y="6.65625" width="20.1024" height="15.5337" fill={iconColor}/>
-      </svg>
+    <CardContainer isDue={isDue} onClick={handleClick}>
+      <StyledIcon
+        xmlns="http://www.w3.org/2000/svg"
+        width="29"
+        height="24"
+        viewBox="0 0 29 24"
+        fill="none"
+        isDue={isDue}
+      >
+        <path
+          d="M6.87535 5.73529L7.03417 4.90523L7.66943 1.58496L27.5001 5.17686L24.9591 18.4579L22.4802 18.0089L21.8605 17.8967"
+          stroke={iconColor}
+          strokeWidth="2.2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <rect
+          x="1.20215"
+          y="6.65625"
+          width="20.1024"
+          height="15.5337"
+          stroke={iconColor}
+          strokeWidth="2.2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <rect x="1.20215" y="6.65625" width="20.1024" height="15.5337" fill={iconColor} />
+      </StyledIcon>
       <CardDetails>
-        <CardTitle>{calculateTimeLeft(card.remainTime)}</CardTitle>
-        <CardSubtitle>{card.name}</CardSubtitle>
+        <CardTitle isDue={isDue}>{formatRemainTime(card.remainTime)}</CardTitle> {/* remainTime을 포맷팅해서 표시 */}
+        <CardSubtitle>{card.noteName}</CardSubtitle> {/* 제목을 noteName으로 표시 */}
       </CardDetails>
     </CardContainer>
   );
@@ -96,8 +124,8 @@ const StudyCard = ({ card }) => {
 
 StudyCard.propTypes = {
   card: PropTypes.shape({
-    remainTime: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
+    remainTime: PropTypes.string.isRequired, 
+    noteName: PropTypes.string.isRequired, // noteName으로 변경
     color: PropTypes.string.isRequired,
   }).isRequired
 };

@@ -3,7 +3,7 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css'; 
 import styled from 'styled-components';
 import StudyCard from './StudyCard'; 
-import { getStudySuggestions } from '../../../../api/dashboard/studySuggestions'; // API 파일 불러오기
+import { getStudySuggestions, getMonthlyStudyDates } from '../../../../api/dashboard/studySuggestions';
 
 const Container = styled.div`
   flex-shrink: 0;
@@ -104,7 +104,6 @@ const StyledCalendar = styled(Calendar)`
   }
   .react-calendar__tile {
     aspect-ratio: 1 / 1;
-    width: 2.7rem;
     height: auto; 
     display: flex;
     align-items: center;
@@ -120,7 +119,6 @@ const StyledCalendar = styled(Calendar)`
       background: var(--Main-Primary, #0F62FE);
       color: #fff;
     }
-
   }
   
   .react-calendar__tile--now {
@@ -159,7 +157,6 @@ const StyledCalendar = styled(Calendar)`
       background: #D8E6FF;
       color: #0F62FE;
     }
-    
   }
   .react-calendar__month-view__days__day--neighboringMonth {
     visibility: hidden;
@@ -225,10 +222,27 @@ const StudyCalendar = () => {
   const [date, setDate] = useState(new Date());
   const [viewDate, setViewDate] = useState(new Date());
   const [cards, setCards] = useState([]);
+  const [studyDates, setStudyDates] = useState([]); // 이번 달 학습 예정 일자를 저장
   const [studyCards, setStudyCards] = useState({}); // API 데이터를 저장할 상태
 
   useEffect(() => {
-    // 컴포넌트가 처음 렌더링될 때 학습 제안 데이터를 가져옴
+    // 이번 달 학습 예정 일자 불러오기
+    const fetchStudyDates = async () => {
+      const year = viewDate.getFullYear();
+      const month = viewDate.getMonth() + 1; // 0부터 시작하므로 +1
+      try {
+        const response = await getMonthlyStudyDates(year, month);
+        setStudyDates(response.expectedDate); // 날짜 리스트를 설정
+      } catch (error) {
+        console.error('Error loading study dates:', error);
+      }
+    };
+
+    fetchStudyDates();
+  }, [viewDate]);
+
+  useEffect(() => {
+    // 오늘 날짜의 학습 제안 데이터를 불러옴
     const fetchStudySuggestionsData = async () => {
       try {
         const suggestions = await getStudySuggestions(new Date()); // 오늘 날짜의 현재 시간을 기반으로 요청
@@ -238,11 +252,7 @@ const StudyCalendar = () => {
         const today = new Date();
         setDate(today);
         const formattedDate = formatDate(today);
-        const sortedCards = (suggestions[formattedDate] || []).sort((a, b) => {
-          const timeA = new Date(a.remainTime).getTime();
-          const timeB = new Date(b.remainTime).getTime();
-          return timeA - timeB;
-        });
+        const sortedCards = suggestions.filter((card) => card.date === formattedDate);
         setCards(sortedCards);
       } catch (error) {
         console.error('Error loading study suggestions:', error);
@@ -265,11 +275,7 @@ const StudyCalendar = () => {
     setViewDate(new Date(today.getFullYear(), today.getMonth(), 1));
     setDate(today);
     const formattedDate = formatDate(today);
-    const sortedCards = (studyCards[formattedDate] || []).sort((a, b) => {
-      const timeA = new Date(a.remainTime).getTime();
-      const timeB = new Date(b.remainTime).getTime();
-      return timeA - timeB;
-    });
+    const sortedCards = studyCards.filter((card) => card.date === formattedDate);
     setCards(sortedCards);
   };
 
@@ -282,20 +288,16 @@ const StudyCalendar = () => {
       const formattedDate = formatDate(value); // "YYYY-MM-DD" 형식으로 변환
       console.log("포맷된 날짜:", formattedDate);
   
-      const sortedCards = (suggestions[formattedDate] || []).sort((a, b) => {
-        const timeA = new Date(a.remainTime).getTime();
-        const timeB = new Date(b.remainTime).getTime();
-        return timeA - timeB;
-      });
-      console.log("필터링된 카드:", sortedCards);
+      // 응답 데이터를 필터링하여 클릭한 날짜의 카드만 남김
+      const filteredCards = suggestions.filter((card) => card.date === formattedDate);
+      console.log("필터링된 카드:", filteredCards);
   
-      setCards(sortedCards);
+      setCards(filteredCards);
     } catch (error) {
       console.error('Error fetching study suggestions:', error);
     }
   };
-  
-  
+
   const formatDate = (date) => {
     const d = new Date(date);
     const month = `${d.getMonth() + 1}`.padStart(2, '0');
@@ -304,23 +306,23 @@ const StudyCalendar = () => {
   };
 
   const tileClassName = ({ date }) => {
-    const formattedDate = formatDate(date);
-    const isToday = formatDate(new Date()) === formattedDate;
-    const hasCards = studyCards[formattedDate];
+    const day = date.getDate(); // 날짜만 확인
+    const isToday = new Date().toDateString() === date.toDateString();
+    const hasCards = studyDates.includes(day); // 날짜가 있는지 확인
 
-    if (isToday && hasCards) {
-      return 'react-calendar__tile--today-with-cards';
+    if (hasCards) {
+      return isToday
+        ? 'react-calendar__tile--today-with-cards'
+        : 'react-calendar__tile--hasCards';
     } else if (isToday) {
       return 'react-calendar__tile--now';
-    } else if (hasCards) {
-      return 'react-calendar__tile--hasCards';
     }
     return '';
   };
 
   const tileContent = ({ date }) => {
-    const formattedDate = formatDate(date);
-    return studyCards[formattedDate] ? (
+    const day = date.getDate();
+    return studyDates.includes(day) ? (
       <div className="highlight" />
     ) : null;
   };
@@ -362,7 +364,7 @@ const StudyCalendar = () => {
       <CardsContainer>
         {cards.length > 0 ? (
           cards.map((card, index) => (
-            <StudyCard key={index} card={card} />
+            <StudyCard key={index} card={card}  />
           ))
         ) : (
           <NoStudyMessage>필요한 학습이 없습니다.</NoStudyMessage>

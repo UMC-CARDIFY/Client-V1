@@ -13,27 +13,14 @@ const formatDateForBackend = (date) => {
   return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
 };
 
+// 특정 날짜의 학습 제안 카드 가져오기
+// 특정 날짜의 학습 제안 카드 가져오기
 export const getStudySuggestions = async (date) => {
   try {
-    const isToday = (inputDate) => {
-      const today = new Date();
-      return (
-        inputDate.getDate() === today.getDate() &&
-        inputDate.getMonth() === today.getMonth() &&
-        inputDate.getFullYear() === today.getFullYear()
-      );
-    };
-
-    const adjustedDate = isToday(date)
-      ? date
-      : new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0); 
-
-
-    const formattedDate = formatDateForBackend(adjustedDate);
-
+    const formattedDate = formatDateForBackend(date); // 날짜를 ISO 8601 형식으로 변환
     const response = await axios.post(
       `${config.apiBaseUrl}/cards/study-suggestion`,
-      { date: formattedDate },
+      { date: formattedDate }, // 올바른 형식으로 전달
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
@@ -41,25 +28,28 @@ export const getStudySuggestions = async (date) => {
       }
     );
 
-    console.log("API 요청 날짜:", formattedDate); // 요청한 날짜 확인
-    console.log("API 응답 데이터:", response.data); 
-    return response.data.reduce((acc, item) => {
-      const dateKey = item.remainTime.split('T')[0];
-      const cardData = {
-        name: item.noteName,
-        folderName: item.folderName,
-        cardId: item.cardId,
-        remainTime: item.remainTime,
-        color: item.color 
-      };
-      if (!acc[dateKey]) {
-        acc[dateKey] = [];
-      }
-      acc[dateKey].push(cardData);
-      return acc;
-    }, {});
+    return response.data; // 전체 배열을 반환
   } catch (error) {
-    console.error('Error details:', error.response?.data || error.message);
+    console.error('Error fetching study suggestions:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+
+// 이번 달 학습 예정 일자 가져오기
+export const getMonthlyStudyDates = async (year, month) => {
+  try {
+    const response = await axios.get(
+      `${config.apiBaseUrl}/cards/study-suggestion/${year}/${month}`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+      }
+    );
+    return response.data; // 날짜 리스트 반환
+  } catch (error) {
+    console.error('Error fetching study dates:', error.response?.data || error.message);
     throw error;
   }
 };
