@@ -119,6 +119,13 @@ const StyledCalendar = styled(Calendar)`
       background: var(--Main-Primary, #0F62FE);
       color: #fff;
     }
+
+    &:active {
+      background: var(--Grays-Gray7, #F0F0F0);
+      color: var(--Grays-Black, #1A1A1A);
+    }
+  
+
   }
   
   .react-calendar__tile--now {
@@ -142,6 +149,10 @@ const StyledCalendar = styled(Calendar)`
    &:hover {
     background: #D8E6FF;
    }
+
+   &:active {
+    color: var(--Grays-Black, #1A1A1A); // 클릭을 유지할 때 글씨를 검은색으로
+  }
   }
   .react-calendar__tile--hasCards.react-calendar__tile--active { 
     border-radius: 50%;
