@@ -150,7 +150,7 @@ const SortDropdown = ({ onSortOptionClick }) => {
                 handleSortOptionClick('asc');
               }}
             >
-              폴더 이름 ↑
+              카드 이름 ↑
             </DropdownItem>
             <DropdownItem 
               onClick={(e) => {
@@ -158,7 +158,7 @@ const SortDropdown = ({ onSortOptionClick }) => {
                 handleSortOptionClick('desc');
               }}
             >
-              폴더 이름 ↓
+              카드 이름 ↓
             </DropdownItem>
             <DropdownItem 
               onClick={(e) => {
