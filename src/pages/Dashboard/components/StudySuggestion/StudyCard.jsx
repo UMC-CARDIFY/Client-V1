@@ -63,13 +63,18 @@ const colorMap = {
 
 const formatRemainTime = (remainTime) => {
   // remainTime이 음수이거나 0일 때 '학습하기'로 표시
-  if (parseInt(remainTime) <= 0) {
+  if (/^-/.test(remainTime) || remainTime === "0 시간 0 분") {
     return '학습하기';
   }
 
-  // 숫자가 아니라면 그대로 반환하고 '후'를 붙임
-  return `${remainTime} 후`;
+  // "00 시간"을 제거하고, 앞에 있는 0을 제거
+  let cleanedRemainTime = remainTime.replace(/^00 시간\s*/, '').replace(/\b0(\d+)/g, '$1');
+
+  // 결과 반환
+  return `${cleanedRemainTime} 후`;
 };
+
+
 
 
 const StudyCard = ({ card }) => {

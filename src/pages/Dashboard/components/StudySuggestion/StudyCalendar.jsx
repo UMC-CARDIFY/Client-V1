@@ -252,7 +252,14 @@ const StudyCalendar = () => {
         const today = new Date();
         setDate(today);
         const formattedDate = formatDate(today);
-        const sortedCards = suggestions.filter((card) => card.date === formattedDate);
+        const sortedCards = suggestions
+          .filter((card) => card.date === formattedDate)
+          .sort((a, b) => {
+            const timeA = parseRemainTime(a.remainTime);
+            const timeB = parseRemainTime(b.remainTime);
+            return timeA - timeB; // 남은 시간이 적은 순으로 정렬
+          });
+
         setCards(sortedCards);
       } catch (error) {
         console.error('Error loading study suggestions:', error);
@@ -261,6 +268,16 @@ const StudyCalendar = () => {
 
     fetchStudySuggestionsData();
   }, []);
+
+  const parseRemainTime = (remainTime) => {
+    const match = remainTime.match(/(\d+) 시간 (\d+) 분/);
+    if (match) {
+      const hours = parseInt(match[1], 10);
+      const minutes = parseInt(match[2], 10);
+      return hours * 60 + minutes; // 시간을 분 단위로 변환
+    }
+    return parseInt(remainTime, 10); // "학습하기"일 경우 음수 값으로 처리
+  };
 
   const handlePrevMonth = () => {
     setViewDate(new Date(viewDate.getFullYear(), viewDate.getMonth() - 1, 1));
@@ -275,7 +292,10 @@ const StudyCalendar = () => {
     setViewDate(new Date(today.getFullYear(), today.getMonth(), 1));
     setDate(today);
     const formattedDate = formatDate(today);
-    const sortedCards = studyCards.filter((card) => card.date === formattedDate);
+    const sortedCards = studyCards
+      .filter((card) => card.date === formattedDate)
+      .sort((a, b) => parseRemainTime(a.remainTime) - parseRemainTime(b.remainTime));
+
     setCards(sortedCards);
   };
 
@@ -289,7 +309,10 @@ const StudyCalendar = () => {
       console.log("포맷된 날짜:", formattedDate);
   
       // 응답 데이터를 필터링하여 클릭한 날짜의 카드만 남김
-      const filteredCards = suggestions.filter((card) => card.date === formattedDate);
+      const filteredCards = suggestions
+        .filter((card) => card.date === formattedDate)
+        .sort((a, b) => parseRemainTime(a.remainTime) - parseRemainTime(b.remainTime)); // 남은 시간이 적은 순으로 정렬
+  
       console.log("필터링된 카드:", filteredCards);
   
       setCards(filteredCards);
@@ -364,7 +387,7 @@ const StudyCalendar = () => {
       <CardsContainer>
         {cards.length > 0 ? (
           cards.map((card, index) => (
-            <StudyCard key={index} card={card}  />
+            <StudyCard key={index} card={card} />
           ))
         ) : (
           <NoStudyMessage>필요한 학습이 없습니다.</NoStudyMessage>
