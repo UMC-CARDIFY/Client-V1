@@ -12,7 +12,7 @@ const LogoutButtonContainer = styled.div`
   flex-shrink: 0;
   border: none;
   border-radius: 0.625rem;
-  background: #F8F8F8;
+  background: #F2F4F8;
   color: #000;
   font-family: Pretendard;
   font-size: 1.25rem;
@@ -22,8 +22,7 @@ const LogoutButtonContainer = styled.div`
   cursor: pointer;
 
   &:hover {
-    background: #1C6BFF;
-    color: white;
+    background: #ECEFF4;
   }
 `;
 

@@ -12,7 +12,7 @@ const SectionContainer = styled.div`
   flex-shrink: 0;
   border: none;
   border-radius: 0.625rem;
-  background: #F8F8F8;
+  background: #F2F4F8;
 `;
 
 const ProfileImageContainer = styled.div`

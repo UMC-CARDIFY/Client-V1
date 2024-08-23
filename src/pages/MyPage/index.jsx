@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   MyPageContainer, Header, ContentDiv, LeftSection, RightSection, AlarmSection,
-  PointSection, AttendanceSection, AttendanceLeftSection, AttendanceRightSection,
+  PointSection, AttendanceSection,AttendanceLeftSection,AttendanceRightSection,
   InfoSection, FlexRow, SectionText, PointText, InfoText, NotificationText,
-  InstagramId, AttendanceImage, Divider
+  InstagramId, Divider
 } from './styles/MyPageStyles'; 
 import { getMyPageInfo } from '../../api/mypage/getMypage';
 import { userCheck } from '../../api/mypage/userCheck';
@@ -96,22 +96,23 @@ export const MyPage = () => {
             <SectionText>내 포인트</SectionText>
             </FlexRow>
             <FlexRow>
-             <PointText onClick={() => navigate('point')}>{profileData.point}P</PointText>
-             <img src={angleRight} alt="angleRight" onClick={() => navigate('point')} style={{margin: '0 2rem 0 2.5rem', cursor: 'pointer'}} />
+             <PointText>{profileData.point}P</PointText>
+             <img src={angleRight} alt="angleRight" style={{margin: '0 2rem 0 2.5rem'}} />
              </FlexRow>
           </PointSection>
           <AttendanceSection>
             <AttendanceLeftSection>
               <SectionText>출석해서 포인트 받고</SectionText>
               <SectionText style={{fontWeight: '600', fontSize:'1.3125rem'}}>학습 자료로 교환하기</SectionText>
+
+            </AttendanceLeftSection>
+            <AttendanceRightSection> 
               <AttendanceButton 
                 onClick={handleAttendanceClick}
                 disabled={isAttendanceChecked}              >
                 {isAttendanceChecked ? '출석완료' : '출석체크'}
               </AttendanceButton>
-            </AttendanceLeftSection>
-            <AttendanceRightSection> 
-              <AttendanceImage />
+              {/*<AttendanceImage />*/}
             </AttendanceRightSection>
           </AttendanceSection>
           <InfoSection>
