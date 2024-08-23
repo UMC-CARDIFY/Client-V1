@@ -58,7 +58,7 @@ export const DropDownButton = styled.div`
 `;
 
 export const DropDownMenu = styled.div`
-border: 1px solid red;
+
   position: absolute;
   margin-top: -13.5rem;
   transform: translateX(-41%);
