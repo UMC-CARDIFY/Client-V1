@@ -12,12 +12,12 @@ import { useState, useEffect } from 'react';
 import { getCategory } from '../../api/library/getCategory';
 import backButton from '../../assets/backButton.svg';
 
-const BackButton = styled.div`
+const BackButton = styled.div` 
 width: 2.25rem;
 height: 2.25rem;
 flex-shrink: 0;
-  cursor: pointer;
-  margin-bottom: 1rem;
+cursor: pointer;
+ margin-bottom: 1rem;
 `;
 
 const Container = styled.div`
