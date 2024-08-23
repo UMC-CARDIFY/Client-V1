@@ -217,13 +217,33 @@ const ItemList = ({
               <RightData>
                 <Line />
                 <div>
-                  <Text>{selectedTab === '폴더' ? item.getNoteCount : item.folderName}</Text>
-                  <div>{selectedTab === '폴더' ? '포함된 노트 개수' : '폴더'}</div>
+                <Text>
+                  {selectedTab === '폴더' ? `${item.getNoteCount}개` : item.folderName}
+                </Text>
+                <div
+                  style={{
+                    color: 'var(--Grays-Gray1, #646464)',
+                    fontFamily: 'Pretendard',
+                    fontSize: '0.85rem',
+                    fontStyle: 'normal',
+                    fontWeight: 500,
+                    lineHeight: 'normal',
+                  }}
+                >
+                  {selectedTab === '폴더' ? '포함된 노트 개수' : '폴더'}
+                </div>
                 </div>
                 <Line />
                 <div>
                   <div>{item.editDate.split('T')[0]}</div>
-                  <div>최근 수정일</div>
+                  <div style={{
+                      color: 'var(--Grays-Gray1, #646464)',
+                      fontFamily: 'Pretendard',
+                      fontSize: '0.85rem',
+                      fontStyle: 'normal',
+                      fontWeight: 500,
+                      lineHeight: 'normal',
+                    }}>최근 수정일</div>
                 </div>
                 <MoreDiv
                   type={selectedTab==='폴더'? 'folder': 'note'}

@@ -207,6 +207,9 @@ const ImageCard = (props) => {
     setIsLoaded(false);
   };
 
+  console.log(noteId)
+
+
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -287,7 +290,6 @@ const handleMouseMove = (event) => {
     setRectangles((prevRectangles) => prevRectangles.slice(0, -1));
   };
 
-  // 이미지 카드 저장하기
   const handleSubmit = async () => {
     if (!imageFile || rectangles.length === 0) return;
 

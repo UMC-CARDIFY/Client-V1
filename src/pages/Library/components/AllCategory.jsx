@@ -41,7 +41,6 @@ background: var(--Grays-White, #FFF);
   cursor: pointer;
   display: flex;
   flex-direction: column;
-  align-items: center;
   height: 16.5rem;
   align-items:center;
   display:flex;
@@ -59,14 +58,11 @@ background: var(--Grays-White, #FFF);
       background: #F0F0F0; 
     }
 
-
-
-
 `;
 
 const CategoryIcon = styled.div`
-width: 5.0625rem;
-height: 5.0625rem;
+width: 5.5rem;
+height: 5.5rem;
 flex-shrink: 0;
 margin-bottom: 1.5rem;
 `;
@@ -188,7 +184,6 @@ flex-shrink: 0;
   cursor: pointer;
 `;
 
-/*
 const categoryIcons = {
   "과학": science,
   "예술": Art,
@@ -204,13 +199,13 @@ const categoryIcons = {
   "기타": Miscellaneous,
   "정치 · 사회": Politics,
 };
-*/
+
 
 const CategoryItem = ({ title, cntNote, onClick }) => {
   return (
     <CategoryItemContainer onClick={() => onClick(title)}>
             <CategoryIcon>
-        <img src={science} alt="science" />
+        <img src={categoryIcons[title]} alt={title} />
       </CategoryIcon>
       <CategoryName>{title}</CategoryName>
       <CategoryCnt>{cntNote}개의 노트</CategoryCnt>

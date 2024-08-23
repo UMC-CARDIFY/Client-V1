@@ -41,13 +41,25 @@ margin-bottom: 0.06rem;
 `;
 
 const Sub = styled.div`
-color: var(--Grays-Gray1, #646464);
-font-family: Pretendard;
-font-size: 0.75rem;
-font-style: normal;
-font-weight: 500;
-line-height: normal;
+  color: var(--Grays-Gray1, #646464);
+  font-family: Pretendard;
+  font-size: 0.75rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+
+  @media (max-width: 1200px) {
+    // 조건부 스타일링
+    &.user-name {
+      display: inline-block;
+      width: 4em;  // 대략 3글자 크기에 맞추어 설정
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
 `;
+
 
 const NoteIcon = styled.div`
     width: 2.5rem;
@@ -81,6 +93,7 @@ gap: 0.5rem;
     `;
 
 const DateDiv = styled.div`
+width: 8.5rem;
 `;
 
 const Tag= styled.div`
@@ -158,9 +171,10 @@ const NoteItem = ({ noteName, categoryName, cntCard, userName, uploadAt, noteId,
         </Cnt>
         <Line />
         <User>
-          <img src={userIcon} alt="userIcon" />
-          <Sub>{userName}</Sub>
-        </User>
+  <img src={userIcon} alt="userIcon" />
+  <Sub className="user-name">{userName}</Sub>
+</User>
+
         <Line />
         <DateDiv>
           <Title>{formattedDate}</Title>
