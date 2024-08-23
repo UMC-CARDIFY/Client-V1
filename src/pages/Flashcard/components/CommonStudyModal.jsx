@@ -210,23 +210,29 @@ const Answer = styled.div`
 `;
 
 const Img = styled.img`
-  width: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
   height: auto;
+  object-fit: contain;  /* 이미지를 상자 안에 맞게 조정 */
+  display: block;
+  margin: 0 auto;  /* 이미지를 가운데 정렬 */
+  border-radius: 0.75rem;  /* CardBox와 동일한 border-radius 적용 */
 `;
-
 const AnswerOverlay = styled.div`
   position: absolute;
   left: ${({ positionOfX }) => `${positionOfX}px`};
   top: ${({ positionOfY }) => `${positionOfY}px`};
   width: ${({ width }) => `${width}px`};
   height: ${({ height }) => `${height}px`};
-  background-color: ${({ revealed }) => (revealed ? 'transparent' : 'rgba(0, 0, 0, 0.5)')};
-  border: ${({ revealed }) => (revealed ? '2px solid #6A9CFC' : 'none')};
+  background-color: ${({ revealed }) => (revealed ? 'transparent' : 'var(--Main-PrimaryLight2, #CDDDFF)')};
+  color: ${({ revealed }) => (revealed ? 'var(--Grays-Black, #1A1A1A)' : 'transparent')};
+  border: ${({ revealed }) => (revealed ? '1px solid var(--Main-PrimaryLight2, #CDDDFF)' : 'none')};
   cursor: pointer;
   z-index: 10;
 
   &:hover {
-    background-color: ${({ revealed }) => (revealed ? 'transparent' : 'rgba(0, 0, 0, 0.3)')};
+    background-color: ${({ revealed }) => (revealed ? 'transparent' : '#C0D4FF')}; /* Change to hover color when not revealed */
   }
 `;
 
