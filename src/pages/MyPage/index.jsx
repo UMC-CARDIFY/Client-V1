@@ -24,7 +24,7 @@ import angleRight from '../../assets/angleRight.svg';
 export const MyPage = () => {
   const navigate = useNavigate();
   const [profileData, setProfileData] = useState(null);
-  const [isNotificationOn, setIsNotificationOn] = useState(false);
+  const [isNotificationOn, setIsNotificationOn] = useState(true);
   const [showTermsModal, setShowTermsModal] = useState(false);
   const [showPrivacyModal, setShowPrivacyModal] = useState(false);
   const [showAttendanceModal, setShowAttendanceModal] = useState(false);
