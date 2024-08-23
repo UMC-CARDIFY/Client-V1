@@ -52,7 +52,7 @@ const ModalTitle = styled.h2`
 const ModalBody = styled.div`
   font-size: 1rem;
   line-height: 1.5;
-  overflow-y: scroll;
+  overflow-y: auto;
   height: 32.375rem;
   padding-right: 1rem;
 `;

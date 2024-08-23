@@ -1,21 +1,24 @@
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
 
 const CardContainer = styled.div`
   display: flex;
   align-items: center;
-  padding: 1rem;
-  margin-top: 1rem;
-width: 16.0625rem;
-gap: 1.5rem;
-border-radius: 0.5rem;
-background: linear-gradient(90deg, #F6F6F6 0%, #F0F0F0 100%);
-box-sizing: border-box;
-`;
-
-const CardIcon = styled.div`
-  width: 2.25rem;
-  height: 2.25rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  padding-right: 1rem;
+  padding-left: 1.33rem;
+  margin-bottom: 0.75rem;
+  width: 100%;
+  gap: 1.5rem;
+  border-radius: 0.5rem;
+  background: ${({ isDue }) =>
+    isDue
+      ? 'var(--Etc-Blue-Gradiant, linear-gradient(90deg, #DCE8FF 0%, #C0D6FF 100%))'
+      : 'linear-gradient(90deg, #F6F6F6 0%, #F0F0F0 100%)'};
+  box-sizing: border-box;
+  cursor: ${({ isDue }) => (isDue ? 'pointer' : 'default')};
 `;
 
 const CardDetails = styled.div`
@@ -24,43 +27,112 @@ const CardDetails = styled.div`
 `;
 
 const CardTitle = styled.div`
-  color: var(--Grays-Gray2, #767676);
-font-family: Pretendard;
-font-size: 0.875rem;
-font-style: normal;
-font-weight: 500;
-line-height: normal;
+  color: ${({ isDue }) => (isDue ? 'var(--Grays-Black, #1A1A1A)' : 'var(--Grays-Gray2, #767676)')};
+  font-family: Pretendard;
+  font-size: 0.875rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
 `;
 
 const CardSubtitle = styled.div`
   color: var(--Grays-Gray2, #767676);
-font-family: Pretendard;
-font-size: 0.75rem;
-font-style: normal;
-font-weight: 400;
-line-height: normal;
+  font-family: Pretendard;
+  font-size: 0.75rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
 `;
 
-const StudyCard = ({ card }) => (
-  <CardContainer>
-    <CardIcon>
-    <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36" fill="none">
-  <g opacity="0.6">
-    <path d="M9.38541 32.4C8.64834 32.4 8.0334 32.1536 7.5406 31.6608C7.0478 31.168 6.80087 30.553 6.7998 29.816V6.18397C6.7998 5.44798 7.04674 4.83358 7.5406 4.34078C8.03447 3.84798 8.64941 3.60104 9.38541 3.59998H21.5856C21.8508 3.59998 22.1052 3.70533 22.2927 3.89287L28.9069 10.5071C29.0944 10.6946 29.1998 10.949 29.1998 11.2142V29.816C29.1998 30.552 28.9534 31.1669 28.4606 31.6608C27.9678 32.1546 27.3523 32.401 26.6142 32.4H9.38541ZM21.1998 11.6H27.3584C27.4475 11.6 27.4921 11.4923 27.4291 11.4293L21.3705 5.37069C21.3075 5.30769 21.1998 5.35231 21.1998 5.4414V11.6Z" fill="#949AEC"/>
-  </g>
-</svg>
-    </CardIcon>
-    <CardDetails>
-      <CardTitle>{card.timeLeft}</CardTitle>
-      <CardSubtitle>{card.name}</CardSubtitle>
-    </CardDetails>
-  </CardContainer>
-);
+const StyledIcon = styled.svg`
+  opacity: ${({ isDue }) => (isDue ? 1 : 0.6)};
+`;
+
+const colorMap = {
+  blue: '#6698F5',
+  ocean: '#5AA6C7',
+  lavender: '#949AEC',
+  gray: '#A9A9A9',
+  mint: '#77CEC6',
+  sage: '#AECA99',
+  orange: '#FDB456',
+  plum: '#D49AE9',
+  coral: '#FD855F',
+  rose: '#ED83B1',
+};
+
+const formatRemainTime = (remainTime) => {
+  // remainTime이 음수인 경우, 또는 0 시간이 포함된 경우 '학습하기'로 표시
+  if (/^-|\b0 시간\b/.test(remainTime) || remainTime.includes("-")) {
+    return '학습하기';
+  }
+
+  // "00 시간"을 제거하고, 앞에 있는 0을 제거
+  let cleanedRemainTime = remainTime.replace(/^00 시간\s*/, '').replace(/\b0(\d+)/g, '$1');
+
+  // 결과 반환
+  return `${cleanedRemainTime} 후`;
+};
+
+
+
+
+
+const StudyCard = ({ card }) => {
+  const navigate = useNavigate();
+  const iconColor = colorMap[card.color] || '#A9A9A9';
+  
+  // remainTime이 '학습하기'로 설정된 경우 학습 가능
+  const isDue = formatRemainTime(card.remainTime) === '학습하기';
+
+  const handleClick = () => {
+    if (isDue) {
+      navigate('/flashcard');
+    }
+  };
+
+  return (
+    <CardContainer isDue={isDue} onClick={handleClick}>
+      <StyledIcon
+        xmlns="http://www.w3.org/2000/svg"
+        width="29"
+        height="24"
+        viewBox="0 0 29 24"
+        fill="none"
+        isDue={isDue}
+      >
+        <path
+          d="M6.87535 5.73529L7.03417 4.90523L7.66943 1.58496L27.5001 5.17686L24.9591 18.4579L22.4802 18.0089L21.8605 17.8967"
+          stroke={iconColor}
+          strokeWidth="2.2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <rect
+          x="1.20215"
+          y="6.65625"
+          width="20.1024"
+          height="15.5337"
+          stroke={iconColor}
+          strokeWidth="2.2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <rect x="1.20215" y="6.65625" width="20.1024" height="15.5337" fill={iconColor} />
+      </StyledIcon>
+      <CardDetails>
+        <CardTitle isDue={isDue}>{formatRemainTime(card.remainTime)}</CardTitle> {/* remainTime을 포맷팅해서 표시 */}
+        <CardSubtitle>{card.noteName}</CardSubtitle> {/* 제목을 noteName으로 표시 */}
+      </CardDetails>
+    </CardContainer>
+  );
+};
 
 StudyCard.propTypes = {
   card: PropTypes.shape({
-    timeLeft: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired
+    remainTime: PropTypes.string.isRequired, 
+    noteName: PropTypes.string.isRequired, // noteName으로 변경
+    color: PropTypes.string.isRequired,
   }).isRequired
 };
 
