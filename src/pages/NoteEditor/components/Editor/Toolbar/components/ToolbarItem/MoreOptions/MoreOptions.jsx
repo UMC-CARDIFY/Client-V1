@@ -9,19 +9,31 @@ const MoreOptionsContainer = styled.div`
     gap: 0.5rem;
     border: 1.25px solid #D9D9D9;
     background: #FFF;
-    box-shadow: 0px 5px 6px 0px rgba(0, 0, 0, 0.05);
+    justify-content: space-between;
     position: absolute;
     z-index: 10;
     top: 2.5rem;
     right: 0;
-    top: -31.5rem;
+    top: -20.5rem;
 `;
 
 const MoreOptionsItem = styled.div`
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 1rem;
+    margin: 0.125rem 0;
+    border-radius: 0.125rem;
     cursor: pointer;
+    padding: 0.2rem;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: #ECEFF4;
+    };
+
+    strong {
+      align-self: flex-end; /* strong 태그에 align-self: flex-end 적용 */
+    }
 `;
 
 const MoreOptions = React.forwardRef((props, ref) => {
@@ -37,40 +49,16 @@ const MoreOptions = React.forwardRef((props, ref) => {
                 <strong>H3</strong> ### 제목 3
             </MoreOptionsItem>
             <MoreOptionsItem>
-                <strong>---</strong> --- 구분선
-            </MoreOptionsItem>
-            <MoreOptionsItem>
                 <strong>B</strong> __굵게__
             </MoreOptionsItem>
             <MoreOptionsItem>
-                <i>i</i> *기울임꼴*
+                <i>i</i> **기울임꼴**
             </MoreOptionsItem>
             <MoreOptionsItem>
-                <u>U</u> ~밑줄~
+                <u>U</u> ~~밑줄~~
             </MoreOptionsItem>
             <MoreOptionsItem>
-                <s>S</s> ~~취소선~~
-            </MoreOptionsItem>
-            <MoreOptionsItem>
-                <a href="#">Link</a> [링크 이름](url)
-            </MoreOptionsItem>
-            <MoreOptionsItem>
-                <span>&bull; 기호 리스트</span>
-            </MoreOptionsItem>
-            <MoreOptionsItem>
-                <span>1. 숫자 리스트</span>
-            </MoreOptionsItem>
-            <MoreOptionsItem>
-                <span>-[ ] 체크박스</span>
-            </MoreOptionsItem>
-            <MoreOptionsItem>
-                <code>Code</code> `코드`
-            </MoreOptionsItem>
-            <MoreOptionsItem>
-                <pre>Code block</pre> ```코드 블록```
-            </MoreOptionsItem>
-            <MoreOptionsItem>
-                <mark>Mark</mark> ==Mark==
+                <s>S</s> ==취소선==
             </MoreOptionsItem>
         </MoreOptionsContainer>
     );
