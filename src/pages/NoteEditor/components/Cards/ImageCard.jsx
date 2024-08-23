@@ -207,15 +207,12 @@ const ImageCard = (props) => {
     setIsLoaded(false);
   };
 
-  console.log(noteId)
-
-
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
       setImageFile(file);
 
-      props.updateCard && props.updateCard({ imageFile: file });  // 부모 컴포넌트로 파일 전달
+      //props.updateCard && props.updateCard({ imageFile: file });  // 부모 컴포넌트로 파일 전달
 
       const reader = new FileReader();
       reader.onload = (e) => {
