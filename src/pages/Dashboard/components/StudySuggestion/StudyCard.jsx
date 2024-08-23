@@ -62,8 +62,8 @@ const colorMap = {
 };
 
 const formatRemainTime = (remainTime) => {
-  // remainTime이 음수이거나 0일 때 '학습하기'로 표시
-  if (/^-/.test(remainTime) || remainTime === "0 시간 0 분") {
+  // remainTime이 음수인 경우, 또는 0 시간이 포함된 경우 '학습하기'로 표시
+  if (/^-|\b0 시간\b/.test(remainTime) || remainTime.includes("-")) {
     return '학습하기';
   }
 
@@ -73,6 +73,7 @@ const formatRemainTime = (remainTime) => {
   // 결과 반환
   return `${cleanedRemainTime} 후`;
 };
+
 
 
 
