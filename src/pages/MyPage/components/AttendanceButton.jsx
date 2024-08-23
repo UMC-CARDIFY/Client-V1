@@ -4,23 +4,24 @@ import PropTypes from 'prop-types';
 const StyledButton = styled.button.attrs((props) => ({
   disabled: props.isCompleted, 
 }))`  align-item: center;
-  width: 8.83644rem;
-  height: 2.8125rem;
+padding: 0.75rem var(--line-height-xl, 2.5rem);
+
+
   flex-shrink: 0;
   border: none;
   border-radius: 0.4375rem;
-  background: ${(props) => (props.isCompleted ? '#E0DEDE' : '#1C6BFF')};
-  color: ${(props) => (props.isCompleted ? '#000' : '#fff')};
+  background: ${(props) => (props.isCompleted ? '#F0F0F0' : '#E3EAF6')};
+  color: ${(props) => (props.isCompleted ? '#B1B1B1' : '#0F62FE')};
   font-family: Pretendard;
-  font-size: 0.75rem;
+  font-size: 1.125rem;
   font-style: normal;
-  font-weight: 400;
+  font-weight: 500;
   line-height: 1.5625rem;
   cursor: ${(props) => (props.isCompleted ? 'default' : 'pointer')}; 
-  margin-top: 2rem;
+
 
   &:hover {
-    background: ${(props) => (props.isCompleted ? '#E0DEDE' : '#244BD7')};
+    background: ${(props) => (props.isCompleted ? '#E0DEDE' : '#D9E5FB')};
   }
 
   &:disabled {

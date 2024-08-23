@@ -62,7 +62,7 @@ export const AlarmSection = styled.div`
   flex-shrink: 0;
   border: none;
   border-radius: 0.625rem;
-  background: #F8F8F8;
+  background: #F2F4F8;
   justify-content: space-between;
 `;
 
@@ -74,7 +74,7 @@ export const PointSection = styled.div`
   flex-shrink: 0;
   border: none;
   border-radius: 0.625rem;
-  background: #F8F8F8;
+  background: #F2F4F8;
   justify-content: space-between;
 `;
 
@@ -86,7 +86,7 @@ export const AttendanceSection = styled.div`
   flex-shrink: 0;
   border: none;
   border-radius: 0.625rem;
-  background: #F8F8F8;
+  background: #F2F4F8;
 `;
 
 export const AttendanceLeftSection = styled.div`
@@ -113,7 +113,7 @@ export const InfoSection = styled.div`
   flex-shrink: 0;
   border: none;
   border-radius: 0.625rem;
-  background: #F8F8F8;
+  background: #F2F4F8;
   justify-content: space-between;
 `;
 
@@ -141,9 +141,7 @@ export const InfoText = styled(SectionText)`
   line-height: 1.5625rem;
   cursor: pointer;
 
-  &:hover {
-    color: darkblue;
-  }
+
 `;
 
 export const NotificationText = styled(SectionText)`
