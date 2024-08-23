@@ -125,24 +125,32 @@ const CombinedEditor = ({ viewRef }) => {
   
   useEffect(() => {
     if (!contentRef.current || viewRef.current) {
-      //console.log('ContentRef is null or ViewRef is not null. Skipping initialization.');
       return;
     }
-
+  
     let doc;
     try {
       if (noteData && noteData.noteContent) {
         let jsonString = noteData.noteContent;
-        jsonString = jsonString.replace(/\\/g, ''); 
-        let jsonObject = JSON.parse(jsonString);
-
-        // 문서 구조를 검사하고 불완전한 구조가 있으면 기본 구조로 대체
-      if (!jsonObject || !jsonObject.content || !Array.isArray(jsonObject.content)) {
-        throw new Error('Invalid document structure');
-      }
-        doc = mySchema.nodeFromJSON(jsonObject);
+  
+        // jsonString이 문자열인지 확인
+        if (typeof jsonString === 'string') {
+          jsonString = jsonString.replace(/\\/g, ''); 
+          let jsonObject = JSON.parse(jsonString);
+  
+          // 문서 구조를 검사하고 불완전한 구조가 있으면 기본 구조로 대체
+          if (!jsonObject || !jsonObject.content || !Array.isArray(jsonObject.content)) {
+            throw new Error('Invalid document structure');
+          }
+          doc = mySchema.nodeFromJSON(jsonObject);
+        } else if (typeof jsonString === 'object') {
+          // jsonString이 이미 객체일 경우 그대로 사용
+          doc = mySchema.nodeFromJSON(jsonString);
+        } else {
+          throw new Error('Unsupported noteContent format');
+        }
       } else {
-        //console.log('No noteData found or it is empty. Creating default doc structure.');
+        // noteData가 없거나 빈 경우 기본 문서 구조 생성
         doc = mySchema.node('doc', null, 
           mySchema.node('bullet_list', null, 
             mySchema.node('list_item', null, 
@@ -153,15 +161,16 @@ const CombinedEditor = ({ viewRef }) => {
       }
     } catch (error) {
       console.error('Error while creating document structure:', error);
+  
       // 기본 구조로 대체
-        doc = mySchema.node('doc', null, 
-          mySchema.node('bullet_list', null, 
-            mySchema.node('list_item', null, 
-              mySchema.node('paragraph', null)
-            )
+      doc = mySchema.node('doc', null, 
+        mySchema.node('bullet_list', null, 
+          mySchema.node('list_item', null, 
+            mySchema.node('paragraph', null)
           )
-        );
-      }
+        )
+      );
+    }
 
       const handleBackspaceInCard = (state, dispatch) => {
         const { selection } = state;
