@@ -19,7 +19,7 @@ const ModalBackdrop = styled.div`
   flex-direction: column;
   align-items: center;
   z-index: 1000;
-  overflow-y: scroll;
+  overflow-y: auto;
 `;
 
 const ModalTitle = styled.div`
