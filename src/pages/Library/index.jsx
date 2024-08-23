@@ -10,6 +10,15 @@ import removeButtonsvg from '../../assets/removeButtonsvg.svg';
 import checkIconsvg from '../../assets/checkIconsvg.svg';
 import { useState, useEffect } from 'react';
 import { getCategory } from '../../api/library/getCategory';
+import backButton from '../../assets/backButton.svg';
+
+const BackButton = styled.div` 
+width: 2.25rem;
+height: 2.25rem;
+flex-shrink: 0;
+cursor: pointer;
+ margin-bottom: 1rem;
+`;
 
 const Container = styled.div`
   display: flex;
@@ -345,6 +354,13 @@ export const Library = () => {
       <Vcontainer>
         <TopBar title="자료실" subtitle="지식 공유 커뮤니티" />
         <ContentArea>
+        {showResults && (
+                <>
+                <BackButton onClick={() => setShowResults(false)}>
+              <img src={backButton} alt="뒤로 가기" />
+            </BackButton>
+                </>
+              )}
           {!isViewAllCategory ? (
             <>
               <SearchSection>
