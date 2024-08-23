@@ -1,8 +1,20 @@
 import styled from 'styled-components';
 import viewAllIcon from '../../../assets/viewAllIcon.svg';
-import science from '../../../assets/category/science.svg';
 import { getTopCategory } from '../../../api/library/getTopCategory';
 import { useEffect, useState } from 'react';
+import science from '../../../assets/category/science.svg';
+import Art from '../../../assets/category/Art.svg';
+import Computer from '../../../assets/category/Computer.svg';
+import Economics from '../../../assets/category/Economics.svg';
+import Employment from '../../../assets/category/Employment.svg';
+import Engineering from '../../../assets/category/Engineering.svg';
+import HistoryCulture from '../../../assets/category/HistoryCulture.svg';
+import Humanities from '../../../assets/category/Humanities.svg';
+import Knowledge from '../../../assets/category/Knowledge.svg';
+import Language from '../../../assets/category/Language.svg';
+import Math from '../../../assets/category/Math.svg';
+import Miscellaneous from '../../../assets/category/Miscellaneous.svg';
+import Politics from '../../../assets/category/Politics.svg';
 
 const RecommendationContainer = styled.div`
   margin-bottom: 2.19rem;
@@ -101,11 +113,27 @@ font-weight: 500;
 line-height: normal;
 `;
 
+const categoryIcons = {
+  "과학": science,
+  "예술": Art,
+  "컴퓨터 · IT": Computer,
+  "경제 · 경영": Economics,
+  "취업 · 수험": Employment,
+  "기술 · 공학": Engineering,
+  "역사 · 문화": HistoryCulture,
+  "인문": Humanities,
+  "일반 상식": Knowledge,
+  "언어": Language,
+  "수학": Math,
+  "기타": Miscellaneous,
+  "정치 · 사회": Politics,
+};
+
 const RecommendItem = ({ categoryName, cntNote, onClick }) => {
   return (
     <RecommendItemContainer onClick={() => onClick(categoryName)}>
       <CategoryIcon>
-        <img src={science} alt="science" />
+      <img src={categoryIcons[categoryName]} alt={categoryName} />
       </CategoryIcon>
       <CategoryName>{categoryName}</CategoryName>
       <CategoryCnt>{cntNote}개의 노트</CategoryCnt>
