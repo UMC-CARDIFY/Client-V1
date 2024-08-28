@@ -2,7 +2,8 @@
 🔗 서비스 링크 : https://cardify.co.kr/
 <br/>
 <br/>
-![image](https://github.com/user-attachments/assets/5e5ec917-56a4-40b4-8161-623ab42001b4)
+![image](https://github.com/user-attachments/assets/360489ca-2976-4ab5-99fe-ed4f77a9546d)
+
 
 
 
@@ -12,6 +13,13 @@ CARDIFY는 전통적인 플래시 카드 학습법의 불편함과 한계점을 
 <br/>
 <br/>
 플래시 카드 학습법은 많은 양의 지식을 효율적으로 습득하는 데 매우 유용하지만, 정보를 일일이 기입하고 카드를 물리적으로 보관하는 데 불편함이 따른다. 그 해답을 이러닝(E-Learning)에서 찾았고 서비스를 기획했다.
+<br/>
+
+
+https://github.com/user-attachments/assets/0003f6df-539c-4c01-8ca7-725298474ed8
+
+
+
 <br/><br/>
 
 ## 프로젝트 개발 기간<br/>
@@ -50,6 +58,11 @@ CARDIFY는 전통적인 플래시 카드 학습법의 불편함과 한계점을 
 <br/><br/>
 
 <br/>
+
+
+
+
+
 
 ## 팀원
 | Frontend | Frontend | Frontend | Frontend |
