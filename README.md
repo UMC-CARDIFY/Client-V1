@@ -51,7 +51,7 @@ https://github.com/user-attachments/assets/0003f6df-539c-4c01-8ca7-725298474ed8
 ![image](https://github.com/user-attachments/assets/9cd87873-ef9d-477f-b302-3b54cf2f848e)
 <br/><br/>
 
-### ✔️ 노트에디 페이지
+### ✔️ 노트에디터 페이지
 트리 구조로 간편하게 지식을 기록하고, 정리할 수 있다. 마크다운 문법을 사용하거나, 툴바를 통해 다양한 서식을 지정할 수 있다. 더불어 작성한 노트는 자료실에 저장할 수 있다.<br/>
 <br/>
 ![image](https://github.com/user-attachments/assets/540202cd-a550-496c-b4ff-c6576c08ba10)
