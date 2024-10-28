@@ -35,7 +35,7 @@ export const DropDownButton = styled.div`
 
   &:hover {
     background-color: ${({ isActive }) =>
-      isActive ? 'var(--Main-BackGround, #F2F4F8)' : 'var(--Grays-Gray7, #F0F0F0)'};
+    isActive ? 'var(--Main-BackGround, #F2F4F8)' : 'var(--Grays-Gray7, #F0F0F0)'};
 
     svg {
       rect {
@@ -130,11 +130,8 @@ export const ColorDropDownMenu = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  background: var(--Grays-White, #FFF);
   padding: 0.5rem 0.4375rem;
   width: 8.5rem;
-  border-radius: 0.375rem;
-  box-shadow: 0px 4px 26px 0px rgba(0, 0, 0, 0.02), 0px 10px 60px 0px rgba(0, 74, 162, 0.03);
   z-index: 10;
 `;
 
