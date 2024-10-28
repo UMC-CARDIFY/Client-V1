@@ -213,8 +213,6 @@ const CombinedEditor = ({ viewRef }) => {
             //const currentNode = $from.node(-1);
             const currentNode = $from.node($from.depth); // 현재 노드 확인
 
-            console.log("Current node type:", currentNode.type.name);
-
             // 현재 노드가 code_block일 때 paragraph로 변환
             if (currentNode.type === mySchema.nodes.code_block) {
               const tr = state.tr;
@@ -234,14 +232,28 @@ const CombinedEditor = ({ viewRef }) => {
             // code_block이 아닌 경우 기본 Enter 동작 유지
             return false;
           },
-
-
+          'Ctrl->': () => {
+            addCard(viewRef, 'word_card');
+            return true;
+          },
+          'Ctrl-[': () => {
+            addCard(viewRef, 'blank_card');
+            return true;
+          },
+          'Ctrl-Shift-[': () => {
+            addCard(viewRef, 'multi_card');
+            return true;
+          },
+          'Ctrl-i': () => {
+            addCard(viewRef, 'image_card');
+            return true;
+          },
           'Backspace': (state, dispatch) => handleBackspaceInCard(state, dispatch),  // 백스페이스
         }),
         keymap(baseKeymap),
         history(),
-        //dropCursor(),
-        //gapCursor(),
+        dropCursor(),
+        gapCursor(),
         myInputRules(mySchema),
       ]
     });
@@ -472,7 +484,7 @@ export const addCard = (viewRef, type) => {
   tr.insert(endOfListItem + 1, node);
 
   // 새로운 카드 뒤에 커서를 이동합니다.
-  tr.setSelection(TextSelection.near(tr.doc.resolve(endOfListItem + 2)));
+  tr.setSelection(TextSelection.near(tr.doc.resolve(endOfListItem)));
 
   dispatch(tr.scrollIntoView());
   viewRef.current.focus();
