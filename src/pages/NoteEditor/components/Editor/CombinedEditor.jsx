@@ -1,6 +1,6 @@
 import { useRef, useEffect, useState, useContext } from 'react';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';  
+import PropTypes from 'prop-types';
 import { EditorState, TextSelection } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 import { keymap } from 'prosemirror-keymap';
@@ -8,7 +8,7 @@ import { baseKeymap, deleteSelection } from 'prosemirror-commands';
 import { history } from 'prosemirror-history';
 import { dropCursor } from 'prosemirror-dropcursor';
 import { gapCursor } from 'prosemirror-gapcursor';
-import { sinkListItem, liftListItem, splitListItem, wrapInList } from 'prosemirror-schema-list';
+import { sinkListItem, liftListItem, splitListItem } from 'prosemirror-schema-list';
 import 'prosemirror-view/style/prosemirror.css';
 import { myInputRules } from './Markdown/inputRules';
 import mySchema from './setup/schema';
@@ -101,12 +101,12 @@ const Divider = styled.div`
   box-sizing: border-box;
 `;
 
-const CombinedEditor = ({ viewRef }) => {  
+const CombinedEditor = ({ viewRef }) => {
   const contentRef = useRef(null);
   const titleRef = useRef(null);
   const { noteData, setNoteData } = useContext(NoteContext); // NoteContext 사용
   const { setIsNameChanged, setIsContentChanged } = useContext(NoteStatusContext);
-  
+
   // 모달 열림/닫힘 상태와 question/answer 데이터를 관리
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState(null);
@@ -122,22 +122,22 @@ const CombinedEditor = ({ viewRef }) => {
     setIsModalOpen(true);
   };
   const closeModal = () => setIsModalOpen(false);
-  
+
   useEffect(() => {
     if (!contentRef.current || viewRef.current) {
       return;
     }
-  
+
     let doc;
     try {
       if (noteData && noteData.noteContent) {
         let jsonString = noteData.noteContent;
-  
+
         // jsonString이 문자열인지 확인
         if (typeof jsonString === 'string') {
-          jsonString = jsonString.replace(/\\/g, ''); 
+          jsonString = jsonString.replace(/\\/g, '');
           let jsonObject = JSON.parse(jsonString);
-  
+
           // 문서 구조를 검사하고 불완전한 구조가 있으면 기본 구조로 대체
           if (!jsonObject || !jsonObject.content || !Array.isArray(jsonObject.content)) {
             throw new Error('Invalid document structure');
@@ -151,54 +151,46 @@ const CombinedEditor = ({ viewRef }) => {
         }
       } else {
         // noteData가 없거나 빈 경우 기본 문서 구조 생성
-        doc = mySchema.node('doc', null, 
-          mySchema.node('bullet_list', null, 
-            mySchema.node('list_item', null, 
-              mySchema.node('paragraph', null)
-            )
-          )
+        doc = mySchema.node('doc', null,
+          mySchema.node('paragraph', null)
         );
       }
     } catch (error) {
       console.error('Error while creating document structure:', error);
-  
+
       // 기본 구조로 대체
-      doc = mySchema.node('doc', null, 
-        mySchema.node('bullet_list', null, 
-          mySchema.node('list_item', null, 
-            mySchema.node('paragraph', null)
-          )
-        )
+      doc = mySchema.node('doc', null,
+        mySchema.node('paragraph', null)
       );
     }
 
-      const handleBackspaceInCard = (state, dispatch) => {
-        const { selection } = state;
-        const { $from, empty } = selection;
-      
-        // 현재 선택된 노드가 card 타입인지 확인
-        for (let depth = $from.depth; depth > 0; depth--) {
-          const currentNode = $from.node(depth);
-          if (currentNode.type === mySchema.nodes.word_card ) {
-              return false; 
-          }
+    const handleBackspaceInCard = (state, dispatch) => {
+      const { selection } = state;
+      const { $from, empty } = selection;
+
+      // 현재 선택된 노드가 card 타입인지 확인
+      for (let depth = $from.depth; depth > 0; depth--) {
+        const currentNode = $from.node(depth);
+        if (currentNode.type === mySchema.nodes.word_card) {
+          return false;
         }
-      
-        // 노드가 비어 있을 때만 삭제를 수행하도록 처리
-        if (empty && $from.parent.type === mySchema.nodes.paragraph) {
-          const currentText = $from.parent.textContent;
-      
-          if (currentText.length === 0) {
-            if (dispatch) {
-              dispatch(state.tr.deleteRange($from.before(), $from.after()));
-            }
-            return true; // 동작을 처리했으므로 기본 동작을 막음
+      }
+
+      // 노드가 비어 있을 때만 삭제를 수행하도록 처리
+      if (empty && $from.parent.type === mySchema.nodes.paragraph) {
+        const currentText = $from.parent.textContent;
+
+        if (currentText.length === 0) {
+          if (dispatch) {
+            dispatch(state.tr.deleteRange($from.before(), $from.after()));
           }
+          return true; // 동작을 처리했으므로 기본 동작을 막음
         }
-      
-        return deleteSelection(state, dispatch); // 기본 동작 (텍스트 삭제) 유지
-      };
-      
+      }
+
+      return deleteSelection(state, dispatch); // 기본 동작 (텍스트 삭제) 유지
+    };
+
     const state = EditorState.create({
       doc,
       schema: mySchema,
@@ -210,39 +202,50 @@ const CombinedEditor = ({ viewRef }) => {
           'Shift-Tab': (state, dispatch) => {
             const { $from } = state.selection;
             const depth = $from.depth;
-  
+
             if (depth === 3) {
               return false;
             }
             return liftListItem(mySchema.nodes.list_item)(state, dispatch);
           },
           'Enter': (state, dispatch) => {
-              const { $from } = state.selection;
-              const parent = $from.node(-1);
-              //console.log('Current parent node type:', parent.type.name);
-              
-              if (parent.type === mySchema.nodes.list_item) {
-                  //return splitListItem(mySchema.nodes.list_item)(state, dispatch);
-                  handleEnterKey(viewRef);
-                  return true; 
-              } else if (parent.type === mySchema.nodes.paragraph) {
-                  handleEnterKey(viewRef);
-                  return true;
-              } else {
-                  console.warn('Unexpected node type, Enter key ignored:', parent.type);
-                  return false;
-              }
+            const { $from } = state.selection;
+            //const currentNode = $from.node(-1);
+            const currentNode = $from.node($from.depth); // 현재 노드 확인
+
+            console.log("Current node type:", currentNode.type.name);
+
+            // 현재 노드가 code_block일 때 paragraph로 변환
+            if (currentNode.type === mySchema.nodes.code_block) {
+              const tr = state.tr;
+
+              // code_block을 paragraph로 변환
+              const newParagraph = mySchema.nodes.paragraph.create();
+              tr.replaceWith($from.before($from.depth), $from.after($from.depth), newParagraph);
+
+              // 새로운 paragraph로 커서 이동
+              const resolvedPos = tr.doc.resolve($from.before($from.depth) + 1);
+              tr.setSelection(TextSelection.near(resolvedPos));
+
+              dispatch(tr.scrollIntoView());
+              return true;  // 기본 엔터키 동작을 막음
+            }
+
+            // code_block이 아닌 경우 기본 Enter 동작 유지
+            return false;
           },
+
+
           'Backspace': (state, dispatch) => handleBackspaceInCard(state, dispatch),  // 백스페이스
         }),
         keymap(baseKeymap),
         history(),
-        dropCursor(),
-        gapCursor(),
+        //dropCursor(),
+        //gapCursor(),
         myInputRules(mySchema),
       ]
     });
-    
+
     try {
       viewRef.current = new EditorView(contentRef.current, {
         state,
@@ -261,11 +264,30 @@ const CombinedEditor = ({ viewRef }) => {
           }
         },
         dispatchTransaction(transaction) {
-          //console.log('Transaction dispatched');
-          const newState = viewRef.current.state.apply(transaction);
+          let newState = viewRef.current.state.apply(transaction);
+
+          // 새로운 문서 상태에서 code_block을 탐색하여 paragraph로 대체
+          let tr = newState.tr; // 새 트랜잭션 생성
+
+          let codeBlockFound = false;
+
+          newState.doc.descendants((node, pos) => {
+            if (node.type === mySchema.nodes.code_block) {
+              // code_block을 paragraph로 변환
+              const newParagraph = mySchema.nodes.paragraph.create();
+              tr.replaceWith(pos, pos + node.nodeSize, newParagraph);
+              codeBlockFound = true;
+            }
+          });
+
+          // 만약 트랜잭션이 변경되었으면 적용
+          if (codeBlockFound && tr.docChanged) {
+            newState = newState.apply(tr); // 트랜잭션이 실제로 변경되었을 경우에만 적용
+          }
+
           viewRef.current.updateState(newState);
           console.log('New state:', JSON.stringify(newState.doc.toJSON(), null, 2));
-          
+
           // 노트 내용 업데이트
           //noteData.noteContent = newState.doc.toJSON();
           const newContent = newState.doc.toJSON();
@@ -278,9 +300,9 @@ const CombinedEditor = ({ viewRef }) => {
     } catch (error) {
       console.error('Error during editor initialization:', error);
     }
-    
+
     console.log('Editor view initialized.');
-    
+
     return () => {
       if (viewRef.current) {
         viewRef.current.destroy();
@@ -317,6 +339,9 @@ const CombinedEditor = ({ viewRef }) => {
     const handleKeyDown = (event) => {
       if (event.key === 'Enter') {
         event.preventDefault();
+        if (viewRef.current) {
+          viewRef.current.focus();
+        }
       }
     };
 
@@ -328,7 +353,7 @@ const CombinedEditor = ({ viewRef }) => {
       node.removeEventListener('input', handleInput);
       node.removeEventListener('keydown', handleKeyDown);
     };
-  }, [noteData]); // noteData가 변경될 때마다 이 useEffect가 실행됨
+  }, [noteData, viewRef]);
 
   return (
     <>
@@ -347,31 +372,31 @@ const CombinedEditor = ({ viewRef }) => {
         <div ref={contentRef}></div>
       </ContentArea>
       {isModalOpen && modalType === 'word_card' && (
-        <WordCardPreviewModal 
-          question={modalQuestion} 
-          answer={[modalAnswer]} 
+        <WordCardPreviewModal
+          question={modalQuestion}
+          answer={[modalAnswer]}
           onClose={closeModal}
         />
       )}
       {isModalOpen && modalType === 'blank_card' && (
-        <BlankCardPreviewModal 
+        <BlankCardPreviewModal
           question_front={modalQuestion}  // 앞부분 텍스트 전달
-          answer={modalAnswer} 
+          answer={modalAnswer}
           question_back={modalQuestionBack}  // 뒷부분 텍스트 전달
           onClose={closeModal}
         />
       )}
       {isModalOpen && modalType === 'multi_card' && (
-        <MultiCardPreviewModal 
-          question={modalQuestion} 
-          answer={modalAnswer} 
+        <MultiCardPreviewModal
+          question={modalQuestion}
+          answer={modalAnswer}
           onClose={closeModal}
         />
       )}
     </>
   );
 };
-
+/*
 export const handleEnterKey = (viewRef) => {
   if (!viewRef.current) return;
 
@@ -391,7 +416,7 @@ export const handleEnterKey = (viewRef) => {
       );
 
       tr.insert($from.after($from.depth - 1), newListItem);
-      
+
       // 새로운 list_item 뒤에 커서를 이동합니다.
       const resolvedPos = tr.doc.resolve($from.after($from.depth - 1) + 1);
       tr.setSelection(TextSelection.near(resolvedPos));
@@ -411,7 +436,7 @@ export const handleEnterKey = (viewRef) => {
   dispatch(tr.scrollIntoView());
   viewRef.current.focus();
 };
-
+*/
 export const addCard = (viewRef, type) => {
   if (!viewRef.current) return;
 

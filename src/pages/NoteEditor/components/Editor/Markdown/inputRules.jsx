@@ -34,13 +34,13 @@ const bulletListRule = wrappingInputRule(/^\s*([-+*])\s$/, mySchema.nodes.bullet
 const orderedListRule = wrappingInputRule(/^\s*(\d+)\.\s$/, mySchema.nodes.ordered_list);
 
 // 코드 블록 규칙
-const codeBlockRule = new InputRule(/^```$/, (state, match, start, end) => {
-  const { tr } = state;
-  if (match) {
-    tr.replaceWith(start, end, mySchema.nodes.code_block.create());
-  }
-  return tr;
-});
+// const codeBlockRule = new InputRule(/^```$/, (state, match, start, end) => {
+//   const { tr } = state;
+//   if (match) {
+//     tr.replaceWith(start, end, mySchema.nodes.code_block.create());
+//   }
+//   return tr;
+// });
 
 // 수평선 규칙
 const horizontalRuleInputRule = new InputRule(/^---$/, (state, match, start, end) => {
@@ -64,7 +64,7 @@ const myInputRules = (schema) => inputRules({
     bulletListRule,
     orderedListRule,
     codeRule,
-    codeBlockRule,
+    //codeBlockRule,
     boldRule,
     italicRule,
     strikethroughRule,
