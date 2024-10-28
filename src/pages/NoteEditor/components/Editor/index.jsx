@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import ToolBar from './Toolbar/ToolBar';
-import CombinedEditor, { addCard } from './CombinedEditor'; // addCard 가져오기
+import CombinedEditor, { addCard } from './CombinedEditor';
 import { TextSelection } from 'prosemirror-state';
-import { toggleMark } from 'prosemirror-commands';  // toggleMark 추가
+import { toggleMark } from 'prosemirror-commands';
 import mySchema from './setup/schema';
 import PropTypes from 'prop-types';
 
@@ -46,11 +46,8 @@ const Editor = ({ setEditorView }) => {
     // 헤딩 노드를 생성합니다.
     const headingNode = mySchema.nodes.heading.create({ level }, mySchema.text(`헤딩${level}`));
 
-    // 헤딩을 포함한 list_item 노드를 생성합니다.
-    const listItemNode = mySchema.nodes.list_item.create(null, headingNode);
-
     // 현재 선택된 위치에 list_item 노드를 삽입합니다.
-    tr.replaceSelectionWith(listItemNode);
+    tr.replaceSelectionWith(headingNode);
 
     // 새로운 블록 뒤에 커서를 이동합니다.
     const resolvedPos = tr.doc.resolve(tr.selection.from + 1);
@@ -59,7 +56,7 @@ const Editor = ({ setEditorView }) => {
 
     dispatch(tr);
     viewRef.current.focus();
-};
+  };
 
 
   const toggleBold = () => {
@@ -69,7 +66,7 @@ const Editor = ({ setEditorView }) => {
     viewRef.current.focus();
   };
 
-  const onSelectColor = (color) => {    
+  const onSelectColor = (color) => {
     if (!viewRef.current) return;
     const { state, dispatch } = viewRef.current;
     const { tr, selection } = state;
@@ -107,27 +104,24 @@ const Editor = ({ setEditorView }) => {
 
   const handleAddTextBlock = () => {
     if (!viewRef.current) return;
-  
+
     const { state, dispatch } = viewRef.current;
     const { tr } = state;
-  
+
     // 텍스트 블록을 생성하는 프로세스
     const paragraphNode = mySchema.nodes.paragraph.create();
-    const listItemNode = mySchema.nodes.list_item.create(null, paragraphNode);
-    const bulletListNode = mySchema.nodes.bullet_list.create(null, listItemNode);
-  
+
     // 문서의 마지막 위치에 새로운 블록 삽입
     const endPos = tr.doc.content.size;
-    tr.insert(endPos, bulletListNode);
-  
-    // 새로운 텍스트 블록 뒤에 커서를 이동합니다.
+    tr.insert(endPos, paragraphNode);
+
+    // 새로운 텍스트 블록 뒤에 커서를 이동
     tr.setSelection(TextSelection.near(tr.doc.resolve(endPos + 1)));
-  
+
     dispatch(tr.scrollIntoView());
     viewRef.current.focus();
   };
-  
-  
+
   const handleEditorStateChange = (editorView) => {
     const { $from } = editorView.state.selection;
 
@@ -141,7 +135,7 @@ const Editor = ({ setEditorView }) => {
         return;
       }
     }
-    
+
     console.log("Card not selected");
     setIsCardSelected(false);
   };
@@ -165,7 +159,7 @@ const Editor = ({ setEditorView }) => {
       };
     }
   }, [viewRef.current, setEditorView]);
-    
+
   return (
     <EditorContainer>
       <CombinedEditor
@@ -173,13 +167,13 @@ const Editor = ({ setEditorView }) => {
       />
       {isEditorInitialized && (
         <ToolBarWrapper>
-          <ToolBar 
-            viewRef={viewRef} 
+          <ToolBar
+            viewRef={viewRef}
             addCard={handleAddCard} // 수정된 addCard 함수 전달
-            addHeading={addHeading} 
-            toggleBold={toggleBold} 
-            onSelectColor={onSelectColor} 
-            onSelectHighlightColor={onSelectHighlightColor} 
+            addHeading={addHeading}
+            toggleBold={toggleBold}
+            onSelectColor={onSelectColor}
+            onSelectHighlightColor={onSelectHighlightColor}
             onAddTextBlock={handleAddTextBlock} // 텍스트 블록 추가 함수 전달
             isCardSelected={isCardSelected} // 카드 선택 여부 전달
           />
