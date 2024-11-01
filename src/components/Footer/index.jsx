@@ -52,10 +52,7 @@ const Footer = () => {
           <Button>이용 약관</Button>
           <Button>개인정보취급방침</Button>
         </ButtonWrapper>
-        <ButtonWrapper>
-          <img src={tistory} />
-          <img src={insta} />
-        </ButtonWrapper>
+        <img src={insta} />
       </ButtonContainer>
       <LogoContainer>
         <Logo src={footerLogo} />
