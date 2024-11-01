@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import footerLogo from "../../assets/footerLogo.svg";
 import insta from "../../assets/insta.svg";
-import tistory from "../../assets/tistory.svg";
 
 const Container = styled.footer`
   background: #ebebeb;
