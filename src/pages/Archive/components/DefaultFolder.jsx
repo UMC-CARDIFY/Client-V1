@@ -5,6 +5,8 @@ import addFolderClick from '../../../assets/addFolderClick.png';
 import folderStar from "../../../assets/folderStar.svg";
 import kebab from "../../../assets/kebab.svg";
 import folder from "../../../assets/folderBig.svg";
+import sortIconArchive from "../../../assets/sortIconArchive.svg";
+import filterIconArchive from "../../../assets/filterIconArchive.svg";
 
 const DefaultFolder = () => {
 
@@ -15,9 +17,11 @@ const DefaultFolder = () => {
             </Name>
             <SortAndFilterDiv>
                 <Sort>
+                <img src={sortIconArchive} />
                 최근 수정일 순
                 </Sort>
                 <Filtering>
+                <img src={filterIconArchive} />
                 필터링
                 </Filtering>
             </SortAndFilterDiv>
@@ -40,6 +44,25 @@ const DefaultFolder = () => {
                         한국사
                     </FolderName>
                 </Folder>
+
+                <Folder>
+                    <Star>
+                        <img src={folderStar}/>
+                    </Star>
+                    <FolderOptionBtn>
+                    <img src={kebab}/>
+                    </FolderOptionBtn>
+                    <FolderIcon>
+                    <img src={folder} />
+                    </FolderIcon>
+                    <FolderName>
+                        한국사
+                    </FolderName>
+                </Folder>
+                
+
+
+
             </FolderList>
         </Container>
     );
@@ -92,12 +115,10 @@ const AddFolder = styled.div`
   &:hover img {
     content: url(${addFolderHover});
   }
-
   &:active img {
     content: url(${addFolderClick});
   }
 `;
-
 
 const Folder = styled.div`
   width: 14.4375rem;
@@ -176,6 +197,10 @@ cursor: pointer;
   }
 &:active {
 background: #E3E3E3;
+}
+img {
+width: 1.25rem;
+height: 1.25rem;
 }
 `
 
