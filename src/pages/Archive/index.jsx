@@ -1,13 +1,14 @@
 import Footer from "../../components/Footer"
 import Header from "../../components/Header"
-
+import DefaultFolder from './components/DefaultFolder'
 
 const Archive = () => {
   return (
-    <div>
+    <>
       <Header />
+      <DefaultFolder />
       <Footer />
-    </div>
+    </>
   )
 }
 
