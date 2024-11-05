@@ -2,7 +2,6 @@ import styled from "styled-components";
 import folderStar from "../../../../assets/folderStar.svg";
 import folderNotStar from "../../../../assets/folderNotStar.svg";
 import kebab from "../../../../assets/kebab.svg";
-//import folder from "../../../assets/folderBig.svg";
 import FolderIcon from './FolderIcon';
 
 const Folder = ({ name, color, mark }) => {
@@ -54,7 +53,6 @@ const FolderOptionBtn = styled.div`
   height: 1.5rem;
   flex-shrink: 0;
 `;
-
 
 const FolderName = styled.div`
   overflow: hidden;
