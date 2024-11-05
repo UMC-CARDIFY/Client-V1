@@ -30,9 +30,15 @@ const DefaultFolder = () => {
                     <img src={addFolderDefault} alt="Add Folder Icon" />
                 </AddFolder>
 
-                <Folder />
-                <Folder />
-                <Folder />
+                {dummyData.map((folder) => (
+                    <Folder 
+                        key={folder.folderId}
+                        name={folder.name}
+                        color={folder.color}
+                        createdAt={folder.createdAt}
+                        mark={folder.mark}
+                    />
+                ))}
             </FolderList>
         </Container>
     );

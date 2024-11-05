@@ -1,27 +1,30 @@
 import styled from "styled-components";
 import folderStar from "../../../assets/folderStar.svg";
+import folderNotStar from "../../../assets/folderNotStar.svg";
 import kebab from "../../../assets/kebab.svg";
 import folder from "../../../assets/folderBig.svg";
 
-const Folder = () => {
-
+const Folder = ({ name, color, mark }) => {
     return (
-        <FolderDiv>
-        <Star>
-            <img src={folderStar}/>
-        </Star>
-        <FolderOptionBtn>
-        <img src={kebab}/>
-        </FolderOptionBtn>
-        <FolderIcon>
-        <img src={folder} />
-        </FolderIcon>
-        <FolderName>
-            한국사
-        </FolderName>
-    </FolderDiv>
-    )
-}
+        <FolderDiv color={color}>
+            {mark ? (
+                <Star>
+                    <img src={folderStar} alt="Star Icon" />
+                </Star>
+            ) : <Star>
+                    <img src={folderNotStar} alt="Star Icon" />
+                </Star>
+            }
+            <FolderOptionBtn>
+                <img src={kebab} alt="Options Icon" />
+            </FolderOptionBtn>
+            <FolderIcon>
+                <img src={folder} alt="Folder Icon" />
+            </FolderIcon>
+            <FolderName>{name}</FolderName>
+        </FolderDiv>
+    );
+};
 
 export default Folder;
 
