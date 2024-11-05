@@ -5,6 +5,7 @@ import addFolderClick from '../../../assets/addFolderClick.png';
 import sortIconArchive from "../../../assets/sortIconArchive.svg";
 import filterIconArchive from "../../../assets/filterIconArchive.svg";
 import Folder from "./Folder";
+import dummyData from "../dummyData";
 
 const DefaultFolder = () => {
 
