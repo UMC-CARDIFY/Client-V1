@@ -2,11 +2,9 @@ import styled from "styled-components";
 import addFolderDefault from '../../../assets/addFolderDefault.png';
 import addFolderHover from '../../../assets/addFolderHover.png';
 import addFolderClick from '../../../assets/addFolderClick.png';
-import folderStar from "../../../assets/folderStar.svg";
-import kebab from "../../../assets/kebab.svg";
-import folder from "../../../assets/folderBig.svg";
 import sortIconArchive from "../../../assets/sortIconArchive.svg";
 import filterIconArchive from "../../../assets/filterIconArchive.svg";
+import Folder from "./Folder";
 
 const DefaultFolder = () => {
 
@@ -30,39 +28,10 @@ const DefaultFolder = () => {
                 >
                     <img src={addFolderDefault} alt="Add Folder Icon" />
                 </AddFolder>
-                <Folder>
-                    <Star>
-                        <img src={folderStar}/>
-                    </Star>
-                    <FolderOptionBtn>
-                    <img src={kebab}/>
-                    </FolderOptionBtn>
-                    <FolderIcon>
-                    <img src={folder} />
-                    </FolderIcon>
-                    <FolderName>
-                        한국사
-                    </FolderName>
-                </Folder>
 
-                <Folder>
-                    <Star>
-                        <img src={folderStar}/>
-                    </Star>
-                    <FolderOptionBtn>
-                    <img src={kebab}/>
-                    </FolderOptionBtn>
-                    <FolderIcon>
-                    <img src={folder} />
-                    </FolderIcon>
-                    <FolderName>
-                        한국사
-                    </FolderName>
-                </Folder>
-                
-
-
-
+                <Folder />
+                <Folder />
+                <Folder />
             </FolderList>
         </Container>
     );
@@ -118,60 +87,6 @@ const AddFolder = styled.div`
   &:active img {
     content: url(${addFolderClick});
   }
-`;
-
-const Folder = styled.div`
-  width: 14.4375rem;
-  height: 14.375rem;
-  flex-shrink: 0;
-  border-radius: 0.676rem;
-  border: 2px solid #F5F5F5;
-  position: relative;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.94rem; /* FolderIcon과 FolderName 사이의 간격 */
-`;
-
-const Star = styled.div`
-position: absolute;
-left:1rem;
-top:1rem;
-width: 1.5rem;
-height: 1.5rem;
-flex-shrink: 0;
-`;
-
-const FolderOptionBtn = styled.div`
-position: absolute;
-right:1rem;
-top:1rem;
-width: 1.5rem;
-height: 1.5rem;
-flex-shrink: 0;
-`;
-
-const FolderIcon = styled.div`
-  width: 4.5rem;
-  height: 4.5rem;
-  flex-shrink: 0;
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-  }
-`;
-
-const FolderName = styled.div`
-  overflow: hidden;
-  color: #1A1A1A;
-  text-align: center;
-  text-overflow: ellipsis;
-  font-size: 1.25rem;
-  font-weight: 600;
 `;
 
 const SortAndFilterDiv = styled.div`
