@@ -4,7 +4,7 @@ import addFolderHover from '../../../assets/addFolderHover.png';
 import addFolderClick from '../../../assets/addFolderClick.png';
 import sortIconArchive from "../../../assets/sortIconArchive.svg";
 import filterIconArchive from "../../../assets/filterIconArchive.svg";
-import Folder from "./Folder";
+import Folder from "./Folder/Folder";
 import dummyData from "../dummyData";
 
 const DefaultFolder = () => {
@@ -25,8 +25,7 @@ const DefaultFolder = () => {
                 </Filtering>
             </SortAndFilterDiv>
             <FolderList>
-                <AddFolder
-                >
+                <AddFolder>
                     <img src={addFolderDefault} alt="Add Folder Icon" />
                 </AddFolder>
 
@@ -97,35 +96,35 @@ const AddFolder = styled.div`
 `;
 
 const SortAndFilterDiv = styled.div`
-display:flex;
-gap:1rem;
-color: #1A1A1A;
-font-size: 1.125rem;
-font-weight: 600;
-margin-bottom:2rem;
+  display:flex;
+  gap:1rem;
+  color: #1A1A1A;
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom:2rem;
 `
 
 const Sort = styled.div`
-    display: inline-flex;
-padding: 0.75rem 1.25rem;
-justify-content: center;
-align-items: center;
-gap: 1rem;
-border-radius: 0.75rem;
-background: #F5F5F5;
-cursor: pointer;
+  display: inline-flex;
+  padding: 0.75rem 1.25rem;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  border-radius: 0.75rem;
+  background: #F5F5F5;
+  cursor: pointer;
   &:hover {
-    color: #1062FE;
+      color: #1062FE;
+    }
+  &:active {
+    background: #E3E3E3;
   }
-&:active {
-background: #E3E3E3;
-}
-img {
-width: 1.25rem;
-height: 1.25rem;
-}
+  img {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
 `
 
 const Filtering  = styled(Sort)`
-gap: 0.5rem;
+  gap: 0.5rem;
 `

@@ -1,26 +1,20 @@
 import styled from "styled-components";
-import folderStar from "../../../assets/folderStar.svg";
-import folderNotStar from "../../../assets/folderNotStar.svg";
-import kebab from "../../../assets/kebab.svg";
-import folder from "../../../assets/folderBig.svg";
+import folderStar from "../../../../assets/folderStar.svg";
+import folderNotStar from "../../../../assets/folderNotStar.svg";
+import kebab from "../../../../assets/kebab.svg";
+//import folder from "../../../assets/folderBig.svg";
+import FolderIcon from './FolderIcon';
 
 const Folder = ({ name, color, mark }) => {
     return (
         <FolderDiv color={color}>
-            {mark ? (
-                <Star>
-                    <img src={folderStar} alt="Star Icon" />
-                </Star>
-            ) : <Star>
-                    <img src={folderNotStar} alt="Star Icon" />
-                </Star>
-            }
+            <Star>
+            <img src={mark ? folderStar : folderNotStar} alt="Star Icon" />
+            </Star>
             <FolderOptionBtn>
                 <img src={kebab} alt="Options Icon" />
             </FolderOptionBtn>
-            <FolderIcon>
-                <img src={folder} alt="Folder Icon" />
-            </FolderIcon>
+            <FolderIcon fill={color} />
             <FolderName>{name}</FolderName>
         </FolderDiv>
     );
@@ -44,34 +38,23 @@ const FolderDiv = styled.div`
 `;
 
 const Star = styled.div`
-position: absolute;
-left:1rem;
-top:1rem;
-width: 1.5rem;
-height: 1.5rem;
-flex-shrink: 0;
+  position: absolute;
+  left:1rem;
+  top:1rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  flex-shrink: 0;
 `;
 
 const FolderOptionBtn = styled.div`
-position: absolute;
-right:1rem;
-top:1rem;
-width: 1.5rem;
-height: 1.5rem;
-flex-shrink: 0;
-`;
-
-const FolderIcon = styled.div`
-  width: 4.5rem;
-  height: 4.5rem;
+  position: absolute;
+  right:1rem;
+  top:1rem;
+  width: 1.5rem;
+  height: 1.5rem;
   flex-shrink: 0;
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-  }
 `;
+
 
 const FolderName = styled.div`
   overflow: hidden;
