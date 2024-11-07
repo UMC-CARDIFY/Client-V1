@@ -31,11 +31,8 @@ const DefaultFolder = () => {
 
                 {dummyData.map((folder) => (
                     <Folder 
-                        key={folder.folderId}
-                        name={folder.name}
-                        color={folder.color}
-                        createdAt={folder.createdAt}
-                        mark={folder.mark}
+                    key={folder.folderId}
+                    {...folder}
                     />
                 ))}
             </FolderList>
