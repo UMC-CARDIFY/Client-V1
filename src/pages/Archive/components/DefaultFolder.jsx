@@ -2,8 +2,8 @@ import styled from "styled-components";
 import addFolderDefault from '../../../assets/addFolderDefault.png';
 import addFolderHover from '../../../assets/addFolderHover.png';
 import addFolderClick from '../../../assets/addFolderClick.png';
-import sortIconArchive from "../../../assets/sortIconArchive.svg";
-import filterIconArchive from "../../../assets/filterIconArchive.svg";
+import SortIconArchive from "../../../assets/sortIconArchive.svg?react";
+import FilterIconArchive from "../../../assets/filterIconArchive.svg?react";
 import Folder from "./Folder/Folder";
 import dummyData from "../dummyData";
 
@@ -16,11 +16,11 @@ const DefaultFolder = () => {
             </Name>
             <SortAndFilterDiv>
                 <Sort>
-                <img src={sortIconArchive} />
+                <SortIconArchive />
                 최근 수정일 순
                 </Sort>
                 <Filtering>
-                <img src={filterIconArchive} />
+                <FilterIconArchive />
                 필터링
                 </Filtering>
             </SortAndFilterDiv>

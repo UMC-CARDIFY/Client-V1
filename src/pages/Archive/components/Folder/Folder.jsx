@@ -1,17 +1,17 @@
 import styled from "styled-components";
-import folderStar from "../../../../assets/folderStar.svg";
-import folderNotStar from "../../../../assets/folderNotStar.svg";
-import kebab from "../../../../assets/kebab.svg";
+import FolderStar from "../../../../assets/folderStar.svg?react";
+import FolderNotStar from "../../../../assets/folderNotStar.svg?react";
+import Kebab from "../../../../assets/kebab.svg?react";
 import FolderIcon from './FolderIcon';
 
 const Folder = ({ name, color, mark }) => {
     return (
         <FolderDiv color={color}>
             <Star>
-            <img src={mark ? folderStar : folderNotStar} alt="Star Icon" />
+              {mark? <FolderStar /> : <FolderNotStar />}
             </Star>
             <FolderOptionBtn>
-                <img src={kebab} alt="Options Icon" />
+                <Kebab />
             </FolderOptionBtn>
             <FolderIcon fill={color} />
             <FolderName>{name}</FolderName>
