@@ -2,7 +2,7 @@ import styled from "styled-components";
 import FolderStar from "../../../../assets/folderStar.svg?react";
 import FolderNotStar from "../../../../assets/folderNotStar.svg?react";
 import Kebab from "../../../../assets/kebab.svg?react";
-import FolderIcon from './FolderIcon';
+import FolderIcon from '../../../../assets/folder.svg?react';
 
 const Folder = ({ name, color, mark }) => {
     return (
@@ -13,13 +13,19 @@ const Folder = ({ name, color, mark }) => {
             <FolderOptionBtn>
                 <Kebab />
             </FolderOptionBtn>
-            <FolderIcon fill={color} />
+            <StyledFolderIcon width='72' height='72' color={color} />
             <FolderName>{name}</FolderName>
         </FolderDiv>
     );
 };
 
 export default Folder;
+
+const StyledFolderIcon = styled(FolderIcon)`
+  path {
+    fill: ${({ color }) => color};
+  }
+`;
 
 const FolderDiv = styled.div`
   width: 14.4375rem;
