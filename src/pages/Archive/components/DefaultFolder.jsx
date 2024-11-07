@@ -47,8 +47,8 @@ const Container = styled.div`
   flex-direction: column;
   width: 100%;
   background: #fff;
-  padding: 0rem 5rem 8rem 5rem;
-  margin: 0;
+  margin: 0rem 4.5rem 8rem 4.5rem; /* left, right margin 조정 */
+  padding: 0;
   box-sizing: border-box;
 `;
 
@@ -66,11 +66,6 @@ const FolderList = styled.div`
   gap: 2rem;
   width: 100%;
   box-sizing: border-box;
-
-  & > div {
-    flex: 1 1 calc(20% - 2rem);
-    max-width: calc(20% - 2rem);
-  }
 `;
 
 const AddFolder = styled.div`

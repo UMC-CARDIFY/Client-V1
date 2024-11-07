@@ -23,6 +23,7 @@ export default Folder;
 
 const FolderDiv = styled.div`
   width: 14.4375rem;
+  max-width: 14.375rem;
   height: 14.375rem;
   flex-shrink: 0;
   border-radius: 0.676rem;
