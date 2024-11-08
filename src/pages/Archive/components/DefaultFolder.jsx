@@ -46,7 +46,7 @@ const Container = styled.div`
   flex-direction: column;
   width: 100%;
   background: #fff;
-  margin: 0rem 4.5rem 8rem 4.5rem; /* left, right margin 조정 */
+  margin: 0rem 5rem 8rem 5rem; 
   padding: 0;
   box-sizing: border-box;
 `;

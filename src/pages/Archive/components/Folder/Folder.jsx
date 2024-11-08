@@ -25,12 +25,13 @@ const StyledFolderIcon = styled(FolderIcon)`
 `;
 
 const FolderDiv = styled.div`
-  width: 14.4375rem;
+  width: 14.375rem;
   max-width: 14.375rem;
   height: 14.375rem;
   flex-shrink: 0;
   border-radius: 0.676rem;
   border: 2px solid #F5F5F5;
+  box-sizing: border-box;
   position: relative;
 
   display: flex;
