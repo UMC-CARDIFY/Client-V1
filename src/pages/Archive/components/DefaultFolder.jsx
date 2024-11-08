@@ -1,9 +1,8 @@
 import styled from "styled-components";
-import addFolderDefault from '../../../assets/addFolderDefault.png';
-import addFolderHover from '../../../assets/addFolderHover.png';
-import addFolderClick from '../../../assets/addFolderClick.png';
-import SortIconArchive from "../../../assets/sortIconArchive.svg?react";
-import FilterIconArchive from "../../../assets/filterIconArchive.svg?react";
+import addFolderDefault from '@/assets/addFolderDefault.png';
+import addFolderHover from '@/assets/addFolderHover.png';
+import addFolderClick from '@/assets/addFolderClick.png';
+import {SortIconArchive, FilterIconArchive} from "@/assets/svg"
 import Folder from "./Folder/Folder";
 import dummyData from "../dummyData";
 

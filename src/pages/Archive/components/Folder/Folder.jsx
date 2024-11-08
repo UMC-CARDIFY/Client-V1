@@ -1,8 +1,5 @@
 import styled from "styled-components";
-import FolderStar from "@/assets/folderStar.svg?react";
-import FolderNotStar from "@/assets/folderNotStar.svg?react";
-import Kebab from "@/assets/kebab.svg?react";
-import { FolderIcon } from "@/assets/svg"
+import { FolderIcon, FolderStar, FolderNotStar, Kebab } from "@/assets/svg"
 
 const Folder = ({ name, color, mark }) => {
     return (
