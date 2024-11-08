@@ -7,10 +7,12 @@ import svgr from 'vite-plugin-svgr';
 export default defineConfig({
   plugins: [react(), svgr()],
   resolve: {
-    alias: {
+    alias: [{
       react: path.resolve('./node_modules/react'),
       'react-dom': path.resolve('./node_modules/react-dom'),
-    },
+      find: '@', replacement: "/src",
+    }
+    ]
   },
   server: {
     proxy: {

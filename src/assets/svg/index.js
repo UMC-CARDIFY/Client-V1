@@ -1,0 +1,1 @@
+export { default as FolderIcon } from './folder.svg?react'
