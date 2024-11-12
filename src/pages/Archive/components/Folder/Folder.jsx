@@ -1,11 +1,11 @@
 import styled from "styled-components";
-import { FolderIcon, FolderStar, FolderNotStar, Kebab } from "@/assets/svg"
+import { FolderIcon, FolderStar, Kebab } from "@/assets/svg"
 
 const Folder = ({ name, color, mark }) => {
     return (
         <FolderDiv color={color}>
             <Star>
-              {mark? <FolderStar /> : <FolderNotStar />}
+              {!mark? <FolderStar stroke='#B1B1B1'/> : <FolderStar fill='#FFD338' />}
             </Star>
             <FolderOptionBtn>
                 <Kebab />
@@ -52,7 +52,7 @@ const Star = styled.div`
 
 const FolderOptionBtn = styled.div`
   position: absolute;
-  right: 0rem;
+  right: 1rem;
   top: 1rem;
   width: 2rem;
   height: 2rem;
@@ -65,5 +65,5 @@ const FolderName = styled.div`
   text-align: center;
   text-overflow: ellipsis;
   font-size: 1.25rem;
-  font-weight: 600;
+  font-weight: 400;
 `;

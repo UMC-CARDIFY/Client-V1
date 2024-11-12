@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import {SortIconArchive, FilterIconArchive, AddFolderDefault, AddFolderHover, AddFolderClick} from "@/assets/svg"
+import { SortIconArchive, FilterIconArchive, AddFolderDefault } from "@/assets/svg";
 import Folder from "./Folder/Folder";
 import dummyData from "../dummyData";
 import { useState } from "react";
@@ -14,30 +14,30 @@ const DefaultFolder = () => {
             </Name>
             <SortAndFilterDiv>
                 <Sort>
-                <SortIconArchive />
-                최근 수정일 순
+                    <SortIconArchive />
+                    최근 수정일 순
                 </Sort>
                 <Filtering>
-                <FilterIconArchive />
-                필터링
+                    <FilterIconArchive />
+                    필터링
                 </Filtering>
             </SortAndFilterDiv>
             <FolderList>
-            <AddFolder
+                <AddFolder
                     onMouseEnter={() => setAddFolderState("hover")}
                     onMouseLeave={() => setAddFolderState("default")}
                     onMouseDown={() => setAddFolderState("click")}
                     onMouseUp={() => setAddFolderState("hover")}
                 >
-                    {addFolderState === "default" && <AddFolderDefault />}
-                    {addFolderState === "hover" && <AddFolderHover />}
-                    {addFolderState === "click" && <AddFolderClick />}
+                    <StyledIcon addFolderState={addFolderState}>
+                        <AddFolderDefault />
+                    </StyledIcon>
                 </AddFolder>
 
                 {dummyData.map((folder) => (
                     <Folder 
-                    key={folder.folderId}
-                    {...folder}
+                        key={folder.folderId}
+                        {...folder}
                     />
                 ))}
             </FolderList>
@@ -82,14 +82,30 @@ const AddFolder = styled.div`
   cursor: pointer;
 `;
 
+const StyledIcon = styled.div`
+  transition: opacity 0.5s ease;
+  opacity: ${({ addFolderState }) => 
+    addFolderState === "default" ? "1" : 
+    addFolderState === "hover" ? "0.7" : "0.4"};
+
+  svg {
+    fill-opacity: ${({ addFolderState }) => 
+      addFolderState === "default" ? "1" : 
+      addFolderState === "hover" ? "0.03" : "0.06"};
+    fill: ${({ addFolderState }) => 
+      addFolderState === "default" ? "none" : "black"};
+  }
+`;
+
 const SortAndFilterDiv = styled.div`
-  display:flex;
-  gap:1rem;
+  display: flex;
+  gap: 1rem;
   color: #1A1A1A;
   font-size: 1.125rem;
   font-weight: 600;
-  margin-bottom:2rem;
-`
+  margin-bottom: 2rem;
+`;
+
 const Sort = styled.div`
   display: inline-flex;
   padding: 0.75rem 1.25rem;
@@ -101,12 +117,12 @@ const Sort = styled.div`
   cursor: pointer;
   &:hover {
     color: #1062FE;
-    }
+  }
   &:active {
     background: #E3E3E3;
   }
-`
+`;
 
-const Filtering  = styled(Sort)`
+const Filtering = styled(Sort)`
   gap: 0.5rem;
-`
+`;
