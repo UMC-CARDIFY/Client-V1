@@ -1,12 +1,11 @@
 import styled from "styled-components";
-import addFolderDefault from '@/assets/addFolderDefault.png';
-import addFolderHover from '@/assets/addFolderHover.png';
-import addFolderClick from '@/assets/addFolderClick.png';
-import {SortIconArchive, FilterIconArchive} from "@/assets/svg"
+import {SortIconArchive, FilterIconArchive, AddFolderDefault, AddFolderHover, AddFolderClick} from "@/assets/svg"
 import Folder from "./Folder/Folder";
 import dummyData from "../dummyData";
+import { useState } from "react";
 
 const DefaultFolder = () => {
+    const [addFolderState, setAddFolderState] = useState("default");
 
     return (
         <Container>
@@ -24,8 +23,15 @@ const DefaultFolder = () => {
                 </Filtering>
             </SortAndFilterDiv>
             <FolderList>
-                <AddFolder>
-                    <img src={addFolderDefault} alt="Add Folder Icon" />
+            <AddFolder
+                    onMouseEnter={() => setAddFolderState("hover")}
+                    onMouseLeave={() => setAddFolderState("default")}
+                    onMouseDown={() => setAddFolderState("click")}
+                    onMouseUp={() => setAddFolderState("hover")}
+                >
+                    {addFolderState === "default" && <AddFolderDefault />}
+                    {addFolderState === "hover" && <AddFolderHover />}
+                    {addFolderState === "click" && <AddFolderClick />}
                 </AddFolder>
 
                 {dummyData.map((folder) => (
@@ -53,9 +59,9 @@ const Container = styled.div`
 const Name = styled.div`
   p {
     height: 100%;
-padding: 0;
-margin: 0;
-margin-bottom: 3rem;
+    padding: 0;
+    margin: 0;
+    margin-bottom: 3rem;
     color: #1A1A1A;
     font-size: 2rem;
     font-weight: 600;
@@ -74,19 +80,6 @@ const AddFolder = styled.div`
   width: 14.375rem;
   height: 14.375rem;
   cursor: pointer;
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-  }
-
-  &:hover img {
-    content: url(${addFolderHover});
-  }
-  &:active img {
-    content: url(${addFolderClick});
-  }
 `;
 
 const SortAndFilterDiv = styled.div`
@@ -97,7 +90,6 @@ const SortAndFilterDiv = styled.div`
   font-weight: 600;
   margin-bottom:2rem;
 `
-
 const Sort = styled.div`
   display: inline-flex;
   padding: 0.75rem 1.25rem;
@@ -108,14 +100,10 @@ const Sort = styled.div`
   background: #F5F5F5;
   cursor: pointer;
   &:hover {
-      color: #1062FE;
+    color: #1062FE;
     }
   &:active {
     background: #E3E3E3;
-  }
-  img {
-    width: 1.25rem;
-    height: 1.25rem;
   }
 `
 

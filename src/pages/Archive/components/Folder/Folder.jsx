@@ -52,10 +52,10 @@ const Star = styled.div`
 
 const FolderOptionBtn = styled.div`
   position: absolute;
-  right:1rem;
-  top:1rem;
-  width: 1.5rem;
-  height: 1.5rem;
+  right: 0rem;
+  top: 1rem;
+  width: 2rem;
+  height: 2rem;
   flex-shrink: 0;
 `;
 
