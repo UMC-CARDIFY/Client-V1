@@ -45,14 +45,17 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  background: #fff;
-  margin: 0rem 5rem 8rem 5rem; 
+  margin: 4.5rem 5rem 8rem 5rem; 
   padding: 0;
   box-sizing: border-box;
 `;
 
 const Name = styled.div`
   p {
+    height: 100%;
+padding: 0;
+margin: 0;
+margin-bottom: 3rem;
     color: #1A1A1A;
     font-size: 2rem;
     font-weight: 600;
