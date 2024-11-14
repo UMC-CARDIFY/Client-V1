@@ -1,0 +1,6 @@
+export { default as FolderIcon } from './folder.svg?react'
+export { default as SortIconArchive } from './sortIconArchive.svg?react'
+export { default as FilterIconArchive } from './filterIconArchive.svg?react'
+export { default as FolderStar } from './folderStar.svg?react'
+export { default as Kebab } from './kebab.svg?react'
+export { default as AddFolderDefault } from './addFolderDefault.svg?react'
