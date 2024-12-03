@@ -58,9 +58,9 @@ export const StarIcon = styled.div`
 `;
 
 export const FolderName = styled.h2`
-  color: #787878;
+  color: #1A1A1A;
   font-family: Pretendard;
-  font-size: 1.5rem;
+  font-size: 2rem;
   font-style: normal;
   font-weight: 500;
   line-height: normal;
