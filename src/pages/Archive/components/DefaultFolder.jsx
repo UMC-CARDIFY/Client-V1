@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { SortIconArchive, FilterIconArchive, AddFolderDefault } from "@/assets/svg";
 import Folder from "./Folder/Folder";
@@ -6,6 +7,11 @@ import { useState } from "react";
 
 const DefaultFolder = () => {
     const [addFolderState, setAddFolderState] = useState("default");
+    const navigate = useNavigate();
+  
+    const handleFolderClick = (folderId) => {
+        navigate(`/archive/folder/${folderId}`);
+    };
 
     return (
         <Container>
@@ -35,9 +41,10 @@ const DefaultFolder = () => {
                 </AddFolder>
 
                 {dummyData.map((folder) => (
-                    <Folder 
+                    <Folder
                         key={folder.folderId}
                         {...folder}
+                        onClick={() => handleFolderClick(folder.folderId)}
                     />
                 ))}
             </FolderList>
