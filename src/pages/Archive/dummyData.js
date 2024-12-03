@@ -34,11 +34,77 @@ const dummyData = [
     {
         parent_folderId: 3,
         folderId: 301,
-        name: "컴퓨터공학",
+        name: "기타로 배우는 음악 이론 요우후 타카시 저자 Part 4-03 블루스의 음악 이론적인 고찰 (P191-197) Part 4-08 실제의 악곡에서 보는 코드 진행 (P240-245)",
         color: "#6698F5",
         createdAt: "2024-10-15",
         mark: true,
-    }
+    },
+    // 자식 폴더 추가
+    {
+        parent_folderId: 201,
+        folderId: 401,
+        name: "1강",
+        color: "#AECA99",
+        createdAt: "2024-11-10",
+        mark: true,
+    },
+    {
+        parent_folderId: 201,
+        folderId: 402,
+        name: "2강 사람 배우기",
+        color: "#AECA99",
+        createdAt: "2024-11-11",
+        mark: false,
+    },
+    {
+        parent_folderId: 201,
+        folderId: 403,
+        name: "3강 이름 외우기",
+        color: "#AECA99",
+        createdAt: "2024-11-11",
+        mark: false,
+    },
+    {
+        parent_folderId: 201,
+        folderId: 404,
+        name: "4강 이름 외우기",
+        color: "#AECA99",
+        createdAt: "2024-11-11",
+        mark: false,
+    },
+    {
+        parent_folderId: 201, 
+        folderId: 405,
+        name: "4강 이름 외우기",
+        color: "#AECA99",
+        createdAt: "2024-11-11",
+        mark: false,
+    },
+    {
+        parent_folderId: 201,
+        folderId: 406,
+        name: "4강 이름 외우기",
+        color: "#AECA99",
+        createdAt: "2024-11-11",
+        mark: false,
+    },
+    {
+        parent_folderId: 202,
+        folderId: 501,
+        name: "양자물리학",
+        color: "#AECA99",
+        createdAt: "2024-11-12",
+        mark: false,
+    },
+    {
+        parent_folderId: 202,
+        folderId: 502,
+        name: "고전역학",
+        color: "#AECA99",
+        createdAt: "2024-11-13",
+        mark: true,
+    },
 ];
 
 export default dummyData;
+
