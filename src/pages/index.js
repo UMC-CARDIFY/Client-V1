@@ -5,6 +5,7 @@ export { default as CompleteSignUp } from './SignUp/completeSignUp';
 export { default as MyPage } from './MyPage/index';
 export { default as PointPage } from './MyPage/PointPage';
 export { default as Archive } from './Archive/index';
+export { default as FolderDetail } from './Archive/components/FolderDetail';
 export { default as Dashboard } from './Dashboard';
 export { default as NoteEditor } from './NoteEditor/index';
 export { default as Flashcard } from './Flashcard/index';
