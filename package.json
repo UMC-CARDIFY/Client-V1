@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "svgr": "find public/svg -name '*.svg' ! -exec test -f src/assets/svg/$(basename {} .svg).jsx \\; -exec npx @svgr/cli --ext jsx -d src/assets/svg --no-dimensions {} +"
   },
   "dependencies": {
     "@types/react-responsive": "^8.0.8",
@@ -37,6 +38,7 @@
     "use-prosemirror": "^1.3.0"
   },
   "devDependencies": {
+    "@svgr/cli": "^8.1.0",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.6",
     "@vitejs/plugin-react": "^4.3.1",
