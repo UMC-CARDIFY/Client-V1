@@ -1,11 +1,11 @@
 import styled from "styled-components";
-import { FolderIcon, FolderStar, Kebab } from "@/assets/svg"
+import { FolderIcon, FolderStar, Kebab } from "@/assets/svg";
 
-const Folder = ({ name, color, mark }) => {
+const Folder = ({ name, color, mark, onClick }) => {
     return (
-        <FolderDiv color={color}>
+        <FolderDiv color={color} onClick={onClick}> {/* onClick 추가 */}
             <Star>
-              {!mark? <FolderStar stroke='#B1B1B1'/> : <FolderStar fill='#FFD338' />}
+              {!mark ? <FolderStar stroke='#B1B1B1'/> : <FolderStar fill='#FFD338' />}
             </Star>
             <FolderOptionBtn>
                 <Kebab />
@@ -33,18 +33,21 @@ const FolderDiv = styled.div`
   border: 2px solid #F5F5F5;
   box-sizing: border-box;
   position: relative;
-
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.94rem; /* FolderIcon과 FolderName 사이의 간격 */
+  gap: 0.94rem;
+  cursor: pointer; /* 클릭 가능하도록 설정 */
+  &:hover {
+    background-color: #f9f9f9; /* 시각적 피드백 추가 */
+  }
 `;
 
 const Star = styled.div`
   position: absolute;
-  left:1rem;
-  top:1rem;
+  left: 1rem;
+  top: 1rem;
   width: 1.5rem;
   height: 1.5rem;
   flex-shrink: 0;
